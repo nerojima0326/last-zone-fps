@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LAST ZONE — 배틀로얄 FPS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<div id="app"></div>
+
+<!-- ============ LOADING ============ -->
+<div id="loading">
+  <div class="logo">LAST<span>ZONE</span></div>
+  <div class="load-bar"><div id="loadFill"></div></div>
+  <div id="loadText">엔진 불러오는 중...</div>
+</div>
+
+<!-- ============ MAIN MENU ============ -->
+<div id="menu" class="hidden">
+  <div class="menu-shade"></div>
+  <div class="menu-left">
+    <div class="logo big">LAST<span>ZONE</span></div>
+    <div class="tag">BATTLE ROYALE · TACTICAL FPS</div>
+
+    <div class="section-title">게임 모드</div>
+    <div class="modes">
+      <button class="mode on" data-size="1"><div class="ppl" data-n="1"></div><b>솔로</b><small>1인</small></button>
+      <button class="mode" data-size="2"><div class="ppl" data-n="2"></div><b>듀오</b><small>2인</small></button>
+      <button class="mode" data-size="3"><div class="ppl" data-n="3"></div><b>트리오</b><small>3인</small></button>
+      <button class="mode" data-size="4"><div class="ppl" data-n="4"></div><b>스쿼드</b><small>4인</small></button>
+    </div>
+    <div class="mode-note" id="modeNote">혼자서 모든 적과 싸워 최후의 1인이 되세요.</div>
+
+    <div class="opts">
+      <div class="opt"><span>닉네임</span><input id="optName" maxlength="12" value="Player" spellcheck="false"></div>
+      <div class="opt"><span>참가 인원</span><div class="seg" data-opt="players"><button data-v="24">24</button><button data-v="40" class="on">40</button><button data-v="60">60</button></div></div>
+      <div class="opt"><span>봇 난이도</span><div class="seg" data-opt="diff"><button data-v="easy">쉬움</button><button data-v="normal" class="on">보통</button><button data-v="hard">어려움</button></div></div>
+      <div class="opt"><span>시작 무기</span><div class="seg" data-opt="loadout"><button data-v="pistol">권총</button><button data-v="rifle" class="on">소총</button><button data-v="shotgun">산탄총</button><button data-v="all">전부</button><button data-v="none">없음</button></div></div>
+      <div class="opt"><span>시간대</span><div class="seg" data-opt="tod"><button data-v="day" class="on">낮</button><button data-v="sunset">노을</button></div></div>
+      <div class="opt"><span>그래픽</span><div class="seg" data-opt="quality"><button data-v="low">낮음</button><button data-v="medium">중간</button><button data-v="high" class="on">높음</button></div></div>
+      <div class="opt"><span>목표 FPS <small class="hint">해상도 자동 조절</small></span><div class="seg" data-opt="fpsTarget"><button data-v="60">60</button><button data-v="120" class="on">120</button><button data-v="144">144</button></div></div>
+      <div class="opt"><span>FPS 표시</span><div class="seg" data-opt="showFps"><button data-v="on" class="on">켜기</button><button data-v="off">끄기</button></div></div>
+      <div class="opt"><span>마우스 감도</span><div class="range"><input type="range" id="optSens" min="0.2" max="3" step="0.05" value="1"><b id="sensVal">1.00</b></div></div>
+    </div>
+
+    <button id="startBtn">게임 시작</button>
+  </div>
+
+  <div class="menu-right">
+    <div class="card">
+      <div class="card-title">조작법</div>
+      <div class="keys">
+        <div><kbd>W A S D</kbd>이동</div>
+        <div><kbd>Shift</kbd>달리기</div>
+        <div><kbd>Space</kbd>점프</div>
+        <div><kbd>C</kbd>앉기</div>
+        <div><kbd>좌클릭</kbd>사격 / 투척</div>
+        <div><kbd>우클릭</kbd>정조준 / 굴리기</div>
+        <div><kbd>R</kbd>재장전</div>
+        <div><kbd>V</kbd>조준경 교체</div>
+        <div><kbd>Shift</kbd>숨 참기 (배율 조준 중)</div>
+        <div><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>소총 · 산탄총 · 권총</div>
+        <div><kbd>4</kbd>투척무기 (반복: 종류 변경)</div>
+        <div><kbd>G</kbd>빠른 투척</div>
+        <div><kbd>B</kbd>사격 모드 (연사/단발)</div>
+        <div><kbd>F</kbd>줍기 · 소생 · 강하 · 낙하산</div>
+        <div><kbd>H</kbd>치료</div>
+        <div><kbd>M</kbd>지도</div>
+        <div><kbd>Esc</kbd>일시정지</div>
+      </div>
+    </div>
+    <div class="card small">
+      <div class="card-title">투척무기</div>
+      <div class="throw-info">
+        <div><i class="ti frag"></i><b>수류탄</b> 3.5초 후 폭발</div>
+        <div><i class="ti smoke"></i><b>연막탄</b> 시야를 가리는 연기</div>
+        <div><i class="ti molotov"></i><b>화염병</b> 충돌 시 화염 지대</div>
+        <div><i class="ti flash"></i><b>섬광탄</b> 바라보는 적 실명</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ HUD ============ -->
+<div id="hud" class="hidden">
+  <canvas id="scopeOverlay"></canvas>
+  <div id="breathBar"><i></i><span>Shift 숨 참기</span></div>
+  <div id="vignette"></div>
+  <div id="zoneOverlay"></div>
+  <div id="knockOverlay"></div>
+  <div id="flashOverlay"></div>
+
+  <div id="compass"><div id="compassStrip"></div><div class="compass-mark"></div><div id="compassDeg">0</div></div>
+
+  <div id="topRight">
+    <div class="pill"><b id="aliveNum">0</b><span>생존</span></div>
+    <div class="pill"><b id="teamsNum">0</b><span>팀</span></div>
+    <div class="pill kill"><b id="killNum">0</b><span>처치</span></div>
+  </div>
+  <div id="killfeed"></div>
+
+  <div id="mapWrap">
+    <div id="zoneInfo"><span id="zoneLabel">자기장</span><b id="zoneTime">0:00</b></div>
+    <canvas id="minimap" width="440" height="440"></canvas>
+  </div>
+
+  <div id="teamPanel"></div>
+
+  <div id="vitals">
+    <div id="gear"><span id="vestIcon" class="gear-i">조끼</span><span id="helmIcon" class="gear-i">헬멧</span><span id="medsInfo"></span></div>
+    <div id="hpBar"><div id="hpLag"></div><div id="hpFill"></div><div id="hpText">100</div></div>
+  </div>
+
+  <div id="weaponPanel">
+    <div id="ammoLine"><b id="ammoMag">0</b><span id="ammoRes">/ 0</span></div>
+    <div id="weaponName">-</div>
+    <div id="fireMode"></div>
+    <div id="slots"></div>
+  </div>
+
+  <div id="crosshair"><i class="t"></i><i class="b"></i><i class="l"></i><i class="r"></i><i class="d"></i></div>
+  <div id="hitmarker"><i></i><i></i><i></i><i></i></div>
+  <div id="dmgDirs"></div>
+  <div id="tags"></div>
+
+  <div id="prompt"></div>
+  <div id="progress"><div id="progressLabel"></div><div class="pbar"><div id="progressFill"></div></div></div>
+  <div id="centerMsg"></div>
+  <div id="killMsg"></div>
+  <div id="pickupMsg"></div>
+  <div id="planeHint"></div>
+  <div id="spectate"></div>
+
+  <div id="bigmapWrap"><canvas id="bigmap" width="1000" height="1000"></canvas><div class="bigmap-hint">M 키로 닫기</div></div>
+</div>
+
+<!-- ============ PAUSE ============ -->
+<div id="pause" class="hidden">
+  <div class="panel">
+    <div class="logo">LAST<span>ZONE</span></div>
+    <div class="ptitle">일시정지</div>
+    <button id="resumeBtn">계속하기</button>
+    <button id="quitBtn" class="ghost">메인 메뉴로</button>
+  </div>
+</div>
+
+<!-- ============ RESULTS ============ -->
+<div id="results" class="hidden">
+  <div class="panel">
+    <div id="resTitle">최후의 생존자!</div>
+    <div id="resRank"><b>#1</b><span>/ 10</span></div>
+    <div class="res-grid">
+      <div><span>처치</span><b id="resKills">0</b></div>
+      <div><span>피해량</span><b id="resDmg">0</b></div>
+      <div><span>생존 시간</span><b id="resTime">0:00</b></div>
+      <div><span>팀 처치</span><b id="resTeamKills">0</b></div>
+    </div>
+    <div class="res-btns">
+      <button id="againBtn">다시 하기</button>
+      <button id="menuBtn" class="ghost">메인 메뉴</button>
+    </div>
+  </div>
+</div>
+
+<div id="fpsBox" class="hidden"></div>
+<div id="errorBox" class="hidden"></div>
+
+<script type="module">
+const loadText = document.getElementById('loadText');
+const loadFill = document.getElementById('loadFill');
+try {
+  const T = await import('three');
+  const { Sky } = await import('three/addons/objects/Sky.js');
+  const { EffectComposer } = await import('three/addons/postprocessing/EffectComposer.js');
+  const { RenderPass } = await import('three/addons/postprocessing/RenderPass.js');
+  const { UnrealBloomPass } = await import('three/addons/postprocessing/UnrealBloomPass.js');
+  const { OutputPass } = await import('three/addons/postprocessing/OutputPass.js');
+  const { ShaderPass } = await import('three/addons/postprocessing/ShaderPass.js');
+  const { Pass } = await import('three/addons/postprocessing/Pass.js');
+  const { mergeGeometries } = await import('three/addons/utils/BufferGeometryUtils.js');
+  const { RGBELoader } = await import('three/addons/loaders/RGBELoader.js');
+  const { FBXLoader } = await import('three/addons/loaders/FBXLoader.js');
+  const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+  const { OBJLoader } = await import('three/addons/loaders/OBJLoader.js');
+  const { MTLLoader } = await import('three/addons/loaders/MTLLoader.js');
+  const SkeletonUtils = await import('three/addons/utils/SkeletonUtils.js');
+  window.THREE = Object.assign({}, T, { Sky, EffectComposer, RenderPass, UnrealBloomPass, OutputPass, ShaderPass, Pass, mergeGeometries, RGBELoader, FBXLoader, GLTFLoader, OBJLoader, MTLLoader, SkeletonUtils });
+  // 실사 나무 생성기 (download-assets.bat 으로 받음). 없으면 기존 나무를 쓴다
+  if (location.protocol !== 'file:') {
+    try { window.EZTree = await import('./vendor/ez-tree.es.js'); } catch (e) { console.info('[veg] vendor/ez-tree.es.js 없음 — 기존 나무 사용'); }
+  }
+  loadFill.style.width = '15%';
+  const files = ['core', 'assets', 'vegetation', 'world', 'effects', 'character', 'soldiers', 'gunlib', 'gunmodels', 'weapons', 'throwables', 'actor', 'player', 'bots', 'game', 'ui', 'main'];
+  for (let i = 0; i < files.length; i++) {
+    loadText.textContent = '스크립트 불러오는 중... (' + files[i] + ')';
+    await new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'js/' + files[i] + '.js';
+      s.onload = res;
+      s.onerror = () => rej(new Error(files[i] + '.js 를 불러올 수 없습니다'));
+      document.body.appendChild(s);
+    });
+    loadFill.style.width = (15 + (i + 1) / files.length * 15) + '%';
+  }
+  await window.G.boot();
+} catch (e) {
+  console.error(e);
+  loadText.textContent = '오류: ' + e.message + ' — 인터넷 연결(three.js CDN)을 확인하세요.';
+  loadText.style.color = '#ff6b6b';
+}
+</script>
+</body>
+</html>

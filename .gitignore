@@ -1,0 +1,7 @@
+# 원본 에셋(대용량 TGA·4k HDRI)은 download-assets.bat 으로 받는다
+assets/_src/
+_backup/
+node_modules/
+*.zip
+Thumbs.db
+.DS_Store
