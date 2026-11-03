@@ -3,6 +3,12 @@
 'use strict';
 const THREE = window.THREE, G = window.G, U = G.U;
 
+// 화면 깜빡임 방지: 반짝이는 표면(조준경 렌즈 등)의 반사광이 너무 밝으면 HDR 버퍼가 넘쳐서(Inf/NaN)
+// 블룸이 화면 전체로 번지며 번쩍인다. 모든 기본 재질의 출력값을 안전한 범위로 묶는다.
+THREE.ShaderChunk.dithering_fragment = THREE.ShaderChunk.dithering_fragment +
+  '\n#ifndef LZ_SAFE_OUT\n#define LZ_SAFE_OUT\n#endif\n' +
+  'gl_FragColor.rgb = any(isnan(gl_FragColor.rgb)) ? vec3(0.0) : clamp(gl_FragColor.rgb, 0.0, 48.0);\n';
+
 class ViewmodelPass extends THREE.Pass {
   constructor(scene, camera) { super(); this.scene = scene; this.camera = camera; this.needsSwap = false; }
   render(renderer, writeBuffer, readBuffer) {

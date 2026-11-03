@@ -93,13 +93,13 @@ function mats() {
   MM.sleeve = new THREE.MeshStandardMaterial({ color: acu ? 0xffffff : 0x4a5236, roughness: 0.95, map: acu ? acuCamo() : null });
   MM.brass = std(0xc9a040, 1, 0.3);
   MM.shell = std(0xa82222, 0.2, 0.5);
-  MM.lens = new THREE.MeshStandardMaterial({ color: 0x6fa0c8, metalness: 0.4, roughness: 0.05, transparent: true, opacity: 0.16, depthWrite: false });
-  MM.lensDark = new THREE.MeshStandardMaterial({ color: 0x1a3550, metalness: 0.9, roughness: 0.08, transparent: true, opacity: 0.85, envMapIntensity: 1.2 });
+  MM.lens = new THREE.MeshStandardMaterial({ color: 0x6fa0c8, metalness: 0.4, roughness: 0.35, transparent: true, opacity: 0.16, depthWrite: false });
+  MM.lensDark = new THREE.MeshStandardMaterial({ color: 0x1a3550, metalness: 0.9, roughness: 0.3, transparent: true, opacity: 0.85, envMapIntensity: 1.2 });
   MM.dot = new THREE.MeshBasicMaterial({ color: new THREE.Color(6, 0.25, 0.15) });
   MM.fiber = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.6, 3, 0.8) });
   MM.olive = std(0x4f5a2e, 0.3, 0.55);
   MM.gray = std(0x8d9296, 0.4, 0.45);
-  MM.bottle = new THREE.MeshStandardMaterial({ color: 0x5a3a12, metalness: 0.1, roughness: 0.08, transparent: true, opacity: 0.75 });
+  MM.bottle = new THREE.MeshStandardMaterial({ color: 0x5a3a12, metalness: 0.1, roughness: 0.3, transparent: true, opacity: 0.75 });
   MM.cloth = new THREE.MeshStandardMaterial({ color: 0xd8ccb0, roughness: 0.95 });
   MM.fire = new THREE.MeshBasicMaterial({ color: new THREE.Color(5, 2.2, 0.6), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
   return MM;
