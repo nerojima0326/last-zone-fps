@@ -266,23 +266,31 @@ html.mobile #startBtn { padding: 12px; font-size: 19px; }
 #touchUI .tb span { pointer-events: none; }
 #touchUI .tb.down { background: rgba(255,181,38,0.45); border-color: #ffd27a; }
 #touchUI .tb.on { background: rgba(255,181,38,0.6); border-color: #ffd27a; color: #111; text-shadow: none; }
-#touchUI .tb-fire { right: 70px; bottom: 110px; width: 160px; height: 160px; font-size: 28px; border-color: rgba(255,120,90,0.8); background: rgba(160,40,20,0.35); }
-#touchUI .tb-fire2 { left: 40px; top: 300px; width: 110px; height: 110px; font-size: 22px; border-color: rgba(255,120,90,0.8); background: rgba(160,40,20,0.3); }
-#touchUI .tb-ads { right: 262px; bottom: 50px; width: 110px; height: 110px; }
-#touchUI .tb-jump { right: 40px; bottom: 300px; width: 100px; height: 100px; }
-#touchUI .tb-crouch { right: 170px; bottom: 300px; width: 92px; height: 92px; }
-#touchUI .tb-reload { right: 268px; bottom: 190px; width: 92px; height: 92px; }
-#touchUI .tb-f { right: 400px; bottom: 250px; width: 100px; height: 100px; opacity: 0.45; }
+#touchUI .tb-fire { border-color: rgba(255,120,90,0.8); background: rgba(160,40,20,0.35); }
+#touchUI .tb-f { opacity: 0.45; }
 #touchUI .tb-f.lit { opacity: 1; border-color: #ffd27a; background: rgba(255,181,38,0.35); }
-#touchUI .tb-row { position: absolute; right: 30px; bottom: 430px; display: flex; gap: 12px; }
-#touchUI .tb-top { position: absolute; left: 240px; top: 30px; display: flex; gap: 12px; }
-#touchUI .tb.sm { position: relative; width: 74px; height: 74px; font-size: 16px; }
 #touchUI[data-st="air"] .tb:not(.tb-f):not([data-act="pause"]):not([data-key="KeyM"]) { display: none; }
 #touchUI[data-st="dead"] .tb:not(.tb-fire):not([data-act="pause"]) { display: none; }
-#touchUI[data-st="air"] .tb-f { right: 90px; bottom: 140px; width: 150px; height: 150px; font-size: 26px; }
-#tStick { position: absolute; width: 200px; height: 200px; margin: -100px 0 0 -100px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.35); background: rgba(10,14,20,0.25); left: 230px; top: 520px; opacity: 0.45; pointer-events: none; }
+#touchUI[data-st="air"] .tb-f { transform: scale(1.4); }
+#touchUI[data-st="air"] #tStick { opacity: 0.25; }
+#tStick { position: absolute; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4); background: rgba(10,14,20,0.25); opacity: 0.6; }
 #tStick.on { opacity: 1; }
-#tKnob { position: absolute; left: 50%; top: 50%; width: 88px; height: 88px; border-radius: 50%; background: rgba(255,255,255,0.55); transform: translate(-50%,-50%); }
+/* 버튼 위치 편집 */
+#touchUI.edit .tItem { display: flex !important; opacity: 0.9 !important; outline: 2px dashed rgba(255,255,255,0.55); outline-offset: 3px; transform: none !important; }
+#touchUI.edit #tStick { display: block !important; }
+#touchUI.edit .tItem.sel { outline: 3px solid #ffb526; box-shadow: 0 0 22px rgba(255,181,38,0.6); }
+html.touch-editing #pause, html.touch-editing #menu, html.touch-editing #hud { visibility: hidden; }
+#touchEditBar { display: none; position: fixed; left: 50%; top: 14px; transform: translateX(-50%); z-index: 40; background: rgba(8,12,18,0.88); border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; padding: 10px 14px; color: #fff; font-family: 'Noto Sans KR', sans-serif; align-items: center; gap: 16px; white-space: nowrap; }
+html.touch-editing #touchEditBar { display: flex; }
+#touchEditBar.bottom { top: auto; bottom: 14px; }
+#touchEditBar .teInfo { display: flex; flex-direction: column; gap: 2px; font-size: 15px; }
+#touchEditBar .teInfo span { color: #c9d3dc; font-size: 14px; }
+#touchEditBar .teBtns { display: flex; gap: 8px; }
+#touchEditBar button { font: 700 16px 'Noto Sans KR', sans-serif; color: #fff; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.25); border-radius: 8px; padding: 10px 14px; }
+#touchEditBar button.teDone { background: #ffb526; color: #111; border-color: #ffd27a; }
+.touch-only { display: none !important; }
+html.mobile .touch-only { display: block !important; }
+#tKnob { position: absolute; left: 50%; top: 50%; width: 88px; height: 88px; pointer-events: none; border-radius: 50%; background: rgba(255,255,255,0.55); transform: translate(-50%,-50%); }
 #tSprint { position: absolute; left: 50%; top: -42px; transform: translateX(-50%); font: 700 15px 'Noto Sans KR', sans-serif; color: #ffd27a; opacity: 0; text-shadow: 0 1px 3px #000; white-space: nowrap; }
 #tSprint.on { opacity: 1; }
 /* 버튼과 겹치지 않게 HUD 자리 옮기기 */
