@@ -28,10 +28,10 @@ button { font-family: inherit; cursor: pointer; border: 0; color: inherit; backg
 #loadText { font-size: 14px; color: var(--muted); letter-spacing: 1px; }
 
 /* ---------- menu ---------- */
-#menu { position: fixed; inset: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 0 6vw; }
+#menu { position: fixed; inset: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 0 calc(var(--vw, 1vw) * 6); }
 .menu-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(6,9,13,0.92) 0%, rgba(6,9,13,0.55) 45%, rgba(6,9,13,0.15) 70%, rgba(6,9,13,0.55) 100%); pointer-events: none; }
 .menu-left, .menu-right { position: relative; }
-.menu-left { width: 560px; max-width: 52vw; }
+.menu-left { width: 560px; max-width: calc(var(--vw, 1vw) * 52); }
 .tag { font-family: var(--num); letter-spacing: 6px; color: var(--muted); margin: 10px 0 34px 4px; font-size: 15px; }
 .section-title { font-size: 13px; color: var(--muted); letter-spacing: 3px; margin-bottom: 10px; }
 .modes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
@@ -193,7 +193,7 @@ kbd { font-family: var(--num); font-weight: 600; font-size: 12px; background: rg
 
 #bigmapWrap { position: absolute; inset: 0; background: rgba(0,0,0,0.55); display: none; align-items: center; justify-content: center; flex-direction: column; gap: 8px; }
 #bigmapWrap.on { display: flex; }
-#bigmap { width: min(86vh, 86vw); height: min(86vh, 86vw); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; box-shadow: 0 10px 60px rgba(0,0,0,0.6); }
+#bigmap { width: min(calc(var(--vh, 1vh) * 86), calc(var(--vw, 1vw) * 86)); height: min(calc(var(--vh, 1vh) * 86), calc(var(--vw, 1vw) * 86)); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; box-shadow: 0 10px 60px rgba(0,0,0,0.6); }
 .bigmap-hint { font-size: 12px; color: var(--muted); }
 
 /* ---------- pause / results ---------- */
@@ -216,7 +216,7 @@ kbd { font-family: var(--num); font-weight: 600; font-size: 12px; background: rg
 .res-btns { display: flex; gap: 10px; }
 .res-btns button { flex: 1; }
 .opt > span .hint { display: block; font-size: 11px; color: var(--muted); }
-.menu-left { max-height: 100vh; overflow-y: auto; padding: 18px 4px 18px 0; scrollbar-width: none; }
+.menu-left { max-height: calc(var(--vh, 1vh) * 100); overflow-y: auto; padding: 18px 4px 18px 0; scrollbar-width: none; }
 .menu-left::-webkit-scrollbar { display: none; }
 @media (max-height: 860px) {
   .logo.big { font-size: 56px; letter-spacing: 7px; }
@@ -236,7 +236,7 @@ kbd { font-family: var(--num); font-weight: 600; font-size: 12px; background: rg
 #fpsBox { position: fixed; left: 10px; top: 8px; z-index: 40; font-family: var(--num); font-size: 13px; font-weight: 600; color: #b8f5a0; background: rgba(0,0,0,0.45); padding: 2px 8px; border-radius: 4px; pointer-events: none; text-shadow: 0 1px 2px #000; }
 #fpsBox.warn { color: #ffd27a; }
 #fpsBox.bad { color: #ff8a80; }
-#errorBox { position: fixed; left: 10px; bottom: 10px; max-width: 50vw; z-index: 99; background: rgba(120,0,0,0.85); color: #fff; font: 12px monospace; padding: 8px 10px; border-radius: 6px; white-space: pre-wrap; }
+#errorBox { position: fixed; left: 10px; bottom: 10px; max-width: calc(var(--vw, 1vw) * 50); z-index: 99; background: rgba(120,0,0,0.85); color: #fff; font: 12px monospace; padding: 8px 10px; border-radius: 6px; white-space: pre-wrap; }
 
 /* ---- 배율 조준경 ---- */
 #scopeOverlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; display: none; }
@@ -245,11 +245,16 @@ kbd { font-family: var(--num); font-weight: 600; font-size: 12px; background: rg
 #breathBar.lock i { background: #ff7b6b; }
 #breathBar span { position: absolute; top: 9px; left: 0; right: 0; text-align: center; font: 600 11px Rajdhani, sans-serif; letter-spacing: 1px; color: rgba(255,255,255,0.7); text-shadow: 0 1px 2px #000; }
 
-/* ---- 휴대폰 ---- */
-#rotateHint { display: none; position: fixed; inset: 0; z-index: 100; background: #06090d; color: #fff; font-size: 64px; font-weight: 700; align-items: center; justify-content: center; text-align: center; padding: 80px; }
-@media (orientation: portrait) and (pointer: coarse) { #rotateHint { display: flex; } }
-@media (max-height: 760px) and (pointer: coarse) {
-  .menu-right { display: none; }
-  #menu { justify-content: center; }
-  .menu-left { width: 640px; max-width: 90vw; }
-}
+/* ---- 휴대폰: index.html 의 스크립트가 body 를 가상 PC 화면(높이 720)으로 만들어
+   실제 화면에 맞게 축소하고, 세로로 들고 있으면 90° 돌려서 항상 가로로 보여준다 ---- */
+html.mobile, html.mobile body { overflow: hidden; touch-action: manipulation; overscroll-behavior: none; -webkit-text-size-adjust: 100%; }
+html.mobile body { position: fixed; left: 0; top: 0; transform-origin: 0 0; }
+html.mobile .menu-right { display: none; }
+html.mobile #menu { justify-content: center; }
+html.mobile .menu-left { width: 640px; max-width: calc(var(--vw, 1vw) * 90); }
+html.mobile .logo.big { font-size: 56px; letter-spacing: 7px; }
+html.mobile .tag { margin: 6px 0 16px 4px; font-size: 13px; }
+html.mobile .mode { padding: 9px 8px 8px; }
+html.mobile .mode-note { margin: 8px 2px 12px; }
+html.mobile .opts { gap: 5px; margin-bottom: 14px; }
+html.mobile #startBtn { padding: 12px; font-size: 19px; }
