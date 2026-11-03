@@ -11,7 +11,9 @@ const V3 = THREE.Vector3;
 // model: 실사 모델 키 (gunmodels.js) — 없으면 gunlib.js 절차적 모델
 const ALL_SCOPES = ['reddot', 'holo', 'x2', 'x4', 'x8'];
 const BASE = { pellets: 1, head: 2.0, auto: false, action: 'semi', reloadType: 'mag', bloom: 0.006, bloomMax: 0.03, tracerLen: 7, tier: 1, scopes: [], falloff: [100, 0.85], adsTime: 0.17 };
-const W = o => Object.assign({}, BASE, o);
+// 장전 속도 배율 (1.25 = 표의 장전 시간보다 25% 빠르게). 산탄 장전의 시작·끝 동작에도 쓴다
+const RELOAD_SPEED = G.RELOAD_SPEED = 1.25;
+const W = o => { const d = Object.assign({}, BASE, o); d.reload = +(d.reload / RELOAD_SPEED).toFixed(3); return d; };
 G.WEAPONS = {
   // ---- 소총 ----
   ar7: W({ key: 'ar7', name: 'AR-7 돌격소총', short: 'AR-7', cls: 'rifle', model: 'rifle', ammo: '556', dmg: 24, head: 2.2, rpm: 680, auto: true, action: 'auto', mag: 30, reload: 2.25,

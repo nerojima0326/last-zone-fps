@@ -337,8 +337,9 @@ const P = G.Player = {
   },
   // 산탄 장전 단계별 시간
   phaseDur(R, def) {
-    if (R.phase === 'start') return R.kind === 'break' ? 0.5 : 0.35;
-    if (R.phase === 'end') return R.kind === 'break' ? 0.4 : (def.action === 'pump' && R.empty ? 0.62 : 0.3);
+    const k = 1 / (G.RELOAD_SPEED || 1);
+    if (R.phase === 'start') return (R.kind === 'break' ? 0.5 : 0.35) * k;
+    if (R.phase === 'end') return (R.kind === 'break' ? 0.4 : (def.action === 'pump' && R.empty ? 0.62 : 0.3)) * k;
     return def.reload;
   },
   reloadLogic(dt) {
@@ -358,7 +359,7 @@ const P = G.Player = {
     } else {
       const pd = this.phaseDur(R, def);
       if (R.phase === 'start') {
-        if (R.kind === 'break' && !R.ej && R.t > 0.28) { R.ej = true; G.Audio.click('bolt'); for (let i = inst.mag; i < def.mag; i++) this.ejectShell(true); }
+        if (R.kind === 'break' && !R.ej && R.t > 0.28 / (G.RELOAD_SPEED || 1)) { R.ej = true; G.Audio.click('bolt'); for (let i = inst.mag; i < def.mag; i++) this.ejectShell(true); }
         if (R.t > pd) { R.phase = 'load'; R.t = 0; R.shellT = 0; }
       } else if (R.phase === 'load') {
         R.shellT += dt;
@@ -369,8 +370,8 @@ const P = G.Player = {
           if (inst.mag >= def.mag || a.ammo[def.ammo] <= 0) { R.phase = 'end'; R.t = 0; }
         }
       } else if (R.phase === 'end') {
-        if (def.action === 'pump' && R.empty && !R.pumped && R.t > 0.12) { R.pumped = true; this.pumpT = 0.05; }
-        if (R.kind === 'break' && !R.closed && R.t > 0.22) { R.closed = true; G.Audio.click('magin'); }
+        if (def.action === 'pump' && R.empty && !R.pumped && R.t > 0.12 / (G.RELOAD_SPEED || 1)) { R.pumped = true; this.pumpT = 0.05; }
+        if (R.kind === 'break' && !R.closed && R.t > 0.22 / (G.RELOAD_SPEED || 1)) { R.closed = true; G.Audio.click('magin'); }
         if (R.t > pd) this.reload = null;
       }
     }
