@@ -2,29 +2,89 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1" id="vp">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="screen-orientation" content="landscape">
+<meta name="x5-orientation" content="landscape">
+<meta name="theme-color" content="#06090d">
 <script>
-// 휴대폰·태블릿: 화면을 PC 해상도(높이 720 이상)로 보고 통째로 축소해서 보여준다
+// 휴대폰·태블릿: body 를 가상 PC 화면(높이 720 기준)으로 만들고 실제 화면에 맞게 축소한다.
+// 세로로 들고 있으면 화면을 90° 돌려 항상 가로로 보이게 하고, 첫 터치 때 전체화면 + 가로 고정을 시도한다.
 (function () {
-  var vp = document.getElementById('vp');
-  function fit() {
-    var sw = window.screen.width, sh = window.screen.height;
-    var landscape = (window.orientation !== undefined ? Math.abs(window.orientation) === 90 : sw > sh);
-    var W = landscape ? Math.max(sw, sh) : Math.min(sw, sh), H = landscape ? Math.min(sw, sh) : Math.max(sw, sh);
-    if (Math.min(sw, sh) >= 760) { vp.setAttribute('content', 'width=device-width, initial-scale=1'); return; }
-    var target = Math.ceil(Math.max(1280, 720 * W / H));
-    vp.setAttribute('content', 'width=' + target + ', user-scalable=no');
+  var ua = navigator.userAgent || '';
+  var touch = (navigator.maxTouchPoints || 0) > 0 || ('ontouchstart' in window);
+  var mobileUA = /Android|iPhone|iPad|iPod|Mobile|SamsungBrowser|Silk|Kindle/i.test(ua) || (/Macintosh/.test(ua) && touch);
+  if (!touch || !mobileUA) return;
+  var root = document.documentElement;
+  root.classList.add('mobile');
+  var de = document.documentElement;
+  function realSize() {
+    var vv = window.visualViewport;
+    var w = de.clientWidth || (vv && vv.width) || screen.width;
+    var h = de.clientHeight || (vv && vv.height) || screen.height;
+    return [w, h];
   }
-  fit();
-  window.addEventListener('orientationchange', function () { setTimeout(fit, 150); });
-  window.addEventListener('resize', fit);
+  var VW = 1280, VH = 720;
+  function fit() {
+    var r = realSize(), w = r[0], h = r[1];
+    if (!w || !h) return;
+    var portrait = h > w;
+    var L = Math.max(w, h), S = Math.min(w, h), aspect = L / S;
+    if (aspect >= 16 / 9) { VH = 720; VW = Math.round(720 * aspect); }
+    else { VW = 1280; VH = Math.round(1280 / aspect); }
+    var s = L / VW;
+    var b = document.body;
+    if (!b) return;
+    b.style.width = VW + 'px'; b.style.height = VH + 'px';
+    b.style.transform = portrait
+      ? 'translate(' + w + 'px,0) rotate(90deg) scale(' + s + ')'
+      : 'scale(' + s + ')';
+    root.classList.toggle('portrait', portrait);
+    root.style.setProperty('--vw', (VW / 100) + 'px');
+    root.style.setProperty('--vh', (VH / 100) + 'px');
+    window.__stageScale = s; window.__stageRot = portrait;
+  }
+  // 게임(렌더러·HUD)은 innerWidth/innerHeight 로 화면 크기를 보므로 가상 화면 크기를 돌려준다
+  try {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, get: function () { return VW; } });
+    Object.defineProperty(window, 'innerHeight', { configurable: true, get: function () { return VH; } });
+  } catch (e) { /* 무시 */ }
+  var last = '';
+  function refit() {
+    var r = realSize(), key = r[0] + 'x' + r[1];
+    if (key === last) return;
+    last = key; fit();
+    window.dispatchEvent(new Event('resize'));
+  }
+  window.__refitStage = refit;
+  document.addEventListener('DOMContentLoaded', function () { last = ''; refit(); });
+  window.addEventListener('orientationchange', function () { setTimeout(refit, 100); setTimeout(refit, 500); });
+  window.addEventListener('resize', function () { var r = realSize(); if (r[0] + 'x' + r[1] !== last) refit(); });
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', function () { setTimeout(refit, 50); });
+  setInterval(refit, 1000);
+  // 첫 터치: 전체화면 + 가로 고정 (안드로이드 크롬 등 지원 브라우저)
+  function goLandscape() {
+    var el = document.documentElement;
+    var req = el.requestFullscreen || el.webkitRequestFullscreen;
+    var p;
+    try { if (req && !document.fullscreenElement && !document.webkitFullscreenElement) p = req.call(el, { navigationUI: 'hide' }); } catch (e) { }
+    var lock = function () {
+      try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(function () { }); } catch (e) { }
+      setTimeout(refit, 300);
+    };
+    if (p && p.then) p.then(lock, lock); else lock();
+  }
+  window.__goLandscape = goLandscape;
+  document.addEventListener('touchend', goLandscape, { passive: true });
+  document.addEventListener('click', goLandscape);
 })();
 </script>
 <title>LAST ZONE — 배틀로얄 FPS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=3">
 <script type="importmap">
 {
   "imports": {
@@ -36,7 +96,6 @@
 </head>
 <body>
 <div id="app"></div>
-<div id="rotateHint">📱 화면을 가로로 돌려 주세요</div>
 
 <!-- ============ LOADING ============ -->
 <div id="loading">
@@ -225,7 +284,7 @@ try {
     loadText.textContent = '스크립트 불러오는 중... (' + files[i] + ')';
     await new Promise((res, rej) => {
       const s = document.createElement('script');
-      s.src = 'js/' + files[i] + '.js';
+      s.src = 'js/' + files[i] + '.js?v=3';
       s.onload = res;
       s.onerror = () => rej(new Error(files[i] + '.js 를 불러올 수 없습니다'));
       document.body.appendChild(s);
