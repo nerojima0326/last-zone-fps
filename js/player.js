@@ -308,7 +308,7 @@ const P = G.Player = {
     const rv = def.recoilV * (this.ads > 0.5 ? 0.7 : 1) * (a.crouch ? 0.82 : 1) * U.rand(0.85, 1.15);
     a.pitch = Math.min(1.45, a.pitch + rv); this.recoilAcc += rv;
     a.yaw += def.recoilH * U.rand(-1, 1.25);
-    this.camKick += def.kick * 0.012;
+    this.camKick += def.kick * 0.016;
     this.bloom = Math.min(def.bloomMax, this.bloom + def.bloom);
     G.VM.fireKick(def.kick);
     G.FX.light(_m, 0xffaa55, 22, 0.06, 12);

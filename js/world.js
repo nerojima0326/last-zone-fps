@@ -1397,7 +1397,7 @@ const W = G.World = {
     const wt = new Uint8Array(TS * TS * 4);
     const nrm = new THREE.Vector3();
     const mix = (a, b, t, o) => { o[0] = a[0] + (b[0] - a[0]) * t; o[1] = a[1] + (b[1] - a[1]) * t; o[2] = a[2] + (b[2] - a[2]) * t; return o; };
-    const grassA = [70, 104, 42], grassB = [104, 130, 54], dry = [150, 140, 82], dirt = [112, 92, 66], sand = [200, 184, 140], rock = [112, 110, 104], seabed = [96, 104, 88];
+    const grassA = [58, 77, 38], grassB = [82, 96, 48], dry = [138, 126, 76], litter = [72, 68, 44], dirt = [112, 92, 66], sand = [200, 184, 140], rock = [112, 110, 104], seabed = [96, 104, 88];
     const c = [0, 0, 0];
     for (let py = 0; py < TS; py++) {
       const z = (py + 0.5) / TS * SIZE - HALF;
@@ -1410,7 +1410,10 @@ const W = G.World = {
         const n2 = nz.noise2(x * 0.0045 + 40, z * 0.0045);
         const n3 = nz.noise2(x * 0.03 - 9, z * 0.03 + 3);
         mix(grassA, grassB, n1 * 0.5 + 0.5, c);
-        mix(c, dry, U.smoothstep(0.1, 0.8, n2) * 0.65, c);
+        mix(c, dry, U.smoothstep(0.1, 0.8, n2) * 0.6, c);
+        // 숲 바닥: 낙엽·그늘로 어둡고 갈색
+        const forest = U.smoothstep(0.5, 0.72, nz.fbm(x * 0.006 + 300, z * 0.006 - 120, 3) * 0.5 + 0.5);
+        mix(c, litter, forest * 0.55, c);
         const dirtW = U.smoothstep(0.45, 0.75, n3 * 0.6 + n1 * 0.4);
         mix(c, dirt, dirtW * 0.8, c);
         const sandW = wl > 0.05 ? U.smoothstep(1.6, 0.5, hw) * 0.85 : U.smoothstep(2.8, 1.2, hw);
@@ -1433,7 +1436,7 @@ const W = G.World = {
         md[i + 3] = 255;
         // 풀 마스크
         if ((px & 1) === 0 && (py & 1) === 0) {
-          const g = (1 - sandW) * (1 - rockW) * (1 - dirtW * 0.9) * (hw > 0.8 ? 1 : 0);
+          const g = (1 - sandW) * (1 - rockW) * (1 - dirtW * 0.9) * (1 - forest * 0.45) * (hw > 0.8 ? 1 : 0);
           const k = ((py >> 1) * MS + (px >> 1)) * 4;
           kd[k] = kd[k + 1] = kd[k + 2] = U.clamp(g * 255, 0, 255); kd[k + 3] = 255;
         }
@@ -1583,7 +1586,7 @@ const W = G.World = {
       tSandD: { value: A.tex.sand.map }, tSandN: { value: A.tex.sand.normal }, tRockD: { value: A.tex.rock.map }, tRockN: { value: A.tex.rock.normal },
       tAsphD: { value: A.tex.asphalt.map }, tAsphN: { value: A.tex.asphalt.normal },
       // 원래 색 지도의 레이어별 기준색 (색 지도 / 기준색 = 넓은 범위 색 변화)
-      uRefG: { value: lin(87, 117, 48) }, uRefD: { value: lin(118, 100, 76) }, uRefS: { value: lin(200, 184, 140) },
+      uRefG: { value: lin(75, 95, 42) }, uRefD: { value: lin(118, 100, 76) }, uRefS: { value: lin(200, 184, 140) },
       uRefR: { value: lin(112, 110, 104) }, uRefA: { value: lin(105, 101, 95) },
       // 사진 텍스처 평균색으로 나눠 밝기를 맞춘 뒤 이 색을 곱한다
       uMeanG: { value: A.tex.grass.mean }, uMeanD: { value: A.tex.dirt.mean }, uMeanS: { value: A.tex.sand.mean },
@@ -1712,8 +1715,8 @@ const W = G.World = {
     if (this.tod === tod && this.envRT) return; // 같은 시간대면 환경맵 재생성(끊김) 생략
     this.tod = tod;
     const P = tod === 'sunset'
-      ? { elev: 6, az: 250, turb: 8, ray: 2.6, mie: 0.006, sunC: 0xffb27a, sunI: 2.6, hemiS: 0x9eb4d8, hemiG: 0x5a4030, hemiI: 0.75, fog: 0xc9a58e, fogD: 0.0017, exp: 0.62, cloud: 0xffc8a8 }
-      : { elev: 38, az: 145, turb: 5, ray: 1.4, mie: 0.004, sunC: 0xfff2e0, sunI: 3.1, hemiS: 0xcfe3ff, hemiG: 0x6a5a45, hemiI: 1.05, fog: 0xb7cde0, fogD: 0.0014, exp: 0.6, cloud: 0xffffff };
+      ? { elev: 6, az: 250, turb: 8, ray: 2.6, mie: 0.006, sunC: 0xffa868, sunI: 2.7, hemiS: 0x9eb4d8, hemiG: 0x5a4030, hemiI: 0.75, fog: 0xc9a58e, fogD: 0.002, exp: 0.62, cloud: 0xffc8a8 }
+      : { elev: 38, az: 145, turb: 5, ray: 1.4, mie: 0.004, sunC: 0xffeed8, sunI: 3.2, hemiS: 0xc8dcff, hemiG: 0x5a4c38, hemiI: 1.0, fog: 0xb7cde0, fogD: 0.0017, exp: 0.6, cloud: 0xffffff };
     const phi = THREE.MathUtils.degToRad(90 - P.elev), theta = THREE.MathUtils.degToRad(P.az);
     this.sunDir.setFromSphericalCoords(1, phi, theta);
     // 실사 HDRI 하늘이 있으면 태양 방향·안개 색을 사진 하늘에 맞춘다
@@ -1751,7 +1754,7 @@ const W = G.World = {
     this.scene.environment = this.envRT.texture;
     if (G.vmScene) G.vmScene.environment = this.envRT.texture;
     pm.dispose();
-    if (this.grass) { this.grass.material.uniforms.uFogColor.value.copy(this.fogColor); this.grass.material.uniforms.uFogD.value = P.fogD; }
+    this.syncGrassLight();
     if (G.FX) G.FX.setFog(this.fogColor, P.fogD);
   },
 
@@ -1844,8 +1847,8 @@ const W = G.World = {
     };
     const inTown = (x, z, pad) => this.towns.some(t => Math.hypot(x - t.x, z - t.z) < t.r + pad);
     const onBridge = (x, z) => this.bridges.some(b => Math.hypot(x - b.x, z - b.z) < b.half + 6);
-    const MAXT = Math.round(2600 * MK * MK * 1.35), MAXR = Math.round(700 * MK * MK), MAXB = Math.round(2200 * MK * MK);
-    for (let i = 0; i < 30000 * MK * MK; i++) {
+    const MAXT = Math.round(2600 * MK * MK * 2.1), MAXR = Math.round(900 * MK * MK), MAXB = Math.round(2200 * MK * MK * 1.9);
+    for (let i = 0; i < 52000 * MK * MK; i++) {
       const x = (r() - 0.5) * (SIZE - 40), z = (r() - 0.5) * (SIZE - 40);
       const h = this.heightAt(x, z), wl = this.waterAt(x, z), hw = h - wl;
       if (hw < 1.5) continue;
@@ -1854,7 +1857,7 @@ const W = G.World = {
       this.normalAt(x, z, nrm);
       const kind = r();
       if (kind < 0.5) {
-        if (hw < 2.6 || nrm.y < 0.78 || r() > U.smoothstep(0.42, 0.66, forest) * 0.92 + 0.015) continue;
+        if (hw < 2.6 || nrm.y < 0.78 || r() > U.smoothstep(0.38, 0.64, forest) * 0.94 + 0.03) continue;
         if (inTown(x, z, 6) || this.roadDist(x, z) < 6 || blocked(x, z, 3) || onBridge(x, z)) continue;
         if (list.pine.length + list.oak.length > MAXT) continue;
         (h > 32 || r() < 0.5 ? list.pine : list.oak).push([x, h, z]);
@@ -1863,7 +1866,7 @@ const W = G.World = {
         if (this.roadDist(x, z) < 5 || blocked(x, z, 2) || inTown(x, z, 0)) continue;
         list.rock.push([x, h, z]);
       } else {
-        if (hw < 2.0 || list.bush.length > MAXB || r() > U.smoothstep(0.3, 0.6, forest) + 0.1) continue;
+        if (hw < 2.0 || list.bush.length > MAXB || r() > U.smoothstep(0.28, 0.58, forest) + 0.14) continue;
         if (this.roadDist(x, z) < 4.5 || blocked(x, z, 1.5)) continue;
         list.bush.push([x, h, z]);
       }
@@ -1922,29 +1925,30 @@ const W = G.World = {
     if (G.Veg) G.Veg.setQuality(quality);
     if (this.grass) { this.scene.remove(this.grass); this.grass.geometry.dispose(); this.grass.material.dispose(); this.grass = null; }
     if (quality === 'low') return;
-    const count = quality === 'high' ? 34000 : 16000, PS = quality === 'high' ? 70 : 54;
-    // 풀잎 3장 묶음 (2마디)
+    const count = quality === 'high' ? 40000 : 16000, PS = quality === 'high' ? 74 : 56;
+    // 가는 풀잎 4장 묶음 (3마디, 휘어짐) — aT: 높이 비율, 잎 번호(색 변화)
     const blade = [];
-    const segs = 2;
-    for (let b = 0; b < 3; b++) {
-      const ang = b * Math.PI / 3 + Math.random() * 0.4, ox = (Math.random() - 0.5) * 0.25, oz = (Math.random() - 0.5) * 0.25;
-      const ca = Math.cos(ang), sa = Math.sin(ang), hgt = 0.32 + Math.random() * 0.24, wid = 0.055;
+    const segs = 3, rr = U.mulberry32(5150);
+    for (let b = 0; b < 4; b++) {
+      const ang = b * Math.PI * 2 / 4 + rr() * 0.9, ox = (rr() - 0.5) * 0.3, oz = (rr() - 0.5) * 0.3;
+      const ca = Math.cos(ang), sa = Math.sin(ang), hgt = 0.26 + rr() * 0.3, wid = 0.022 + rr() * 0.012;
+      const bend = 0.12 + rr() * 0.22, bdir = rr() * 6.28, bx = Math.cos(bdir), bz = Math.sin(bdir);
       const pts = [];
-      for (let s = 0; s <= segs; s++) {
-        const t = s / segs, w = wid * (1 - t * 0.85);
-        const lean = t * t * 0.18;
-        pts.push([[-w * ca + ox + lean * sa, t * hgt, -w * sa + oz - lean * ca], [w * ca + ox + lean * sa, t * hgt, w * sa + oz - lean * ca], t]);
+      for (let s2 = 0; s2 <= segs; s2++) {
+        const t = s2 / segs, w = wid * (1 - t * 0.92);
+        const lean = t * t * bend;
+        pts.push([[-w * ca + ox + lean * bx, t * hgt * (1 - t * bend * 0.3), -w * sa + oz + lean * bz], [w * ca + ox + lean * bx, t * hgt * (1 - t * bend * 0.3), w * sa + oz + lean * bz], t, b / 3]);
       }
-      for (let s = 0; s < segs; s++) {
-        const [a0, a1, ta] = pts[s], [b0, b1, tb] = pts[s + 1];
-        blade.push([a0, ta], [a1, ta], [b0, tb], [a1, ta], [b1, tb], [b0, tb]);
+      for (let s2 = 0; s2 < segs; s2++) {
+        const [a0, a1, ta, bb] = pts[s2], [b0, b1, tb] = pts[s2 + 1];
+        blade.push([a0, ta, bb], [a1, ta, bb], [b0, tb, bb], [a1, ta, bb], [b1, tb, bb], [b0, tb, bb]);
       }
     }
-    const base = new Float32Array(blade.length * 3), hAttr = new Float32Array(blade.length);
-    blade.forEach(([p, t], i) => { base[i * 3] = p[0]; base[i * 3 + 1] = p[1]; base[i * 3 + 2] = p[2]; hAttr[i] = t; });
+    const base = new Float32Array(blade.length * 3), hAttr = new Float32Array(blade.length * 2);
+    blade.forEach(([p, t, bb], i) => { base[i * 3] = p[0]; base[i * 3 + 1] = p[1]; base[i * 3 + 2] = p[2]; hAttr[i * 2] = t; hAttr[i * 2 + 1] = bb; });
     const geo = new THREE.InstancedBufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(base, 3));
-    geo.setAttribute('aT', new THREE.BufferAttribute(hAttr, 1));
+    geo.setAttribute('aT', new THREE.BufferAttribute(hAttr, 2));
     const off = new Float32Array(count * 4);
     for (let i = 0; i < count; i++) { off[i * 4] = Math.random() * PS; off[i * 4 + 1] = Math.random() * PS; off[i * 4 + 2] = Math.random(); off[i * 4 + 3] = Math.random(); }
     geo.setAttribute('aOff', new THREE.InstancedBufferAttribute(off, 4));
@@ -1957,42 +1961,63 @@ const W = G.World = {
         uCenter: { value: new THREE.Vector3() }, uPS: { value: PS }, uTime: { value: 0 },
         uHeight: { value: this.heightTex }, uMask: { value: maskTex }, uMap: { value: SIZE }, uRes: { value: RES },
         uFogColor: { value: this.fogColor ? this.fogColor.clone() : new THREE.Color(0xb7cde0) }, uFogD: { value: this.fogD || 0.0014 },
-        uColA: { value: new THREE.Color(0x46702a) }, uColB: { value: new THREE.Color(0x86a046) }, uLight: { value: 1.6 }
+        // 선형 색: 뿌리 쪽 / 잎끝 / 마른 풀
+        uColA: { value: new THREE.Color(0.042, 0.068, 0.017) }, uColB: { value: new THREE.Color(0.12, 0.175, 0.036) }, uColDry: { value: new THREE.Color(0.16, 0.15, 0.065) },
+        uSunDir: { value: this.sunDir.clone() }, uSunCol: { value: new THREE.Color(3, 2.9, 2.7) }, uAmb: { value: new THREE.Color(0.9, 1.0, 1.15) }
       },
       vertexShader: `
         uniform vec3 uCenter; uniform float uPS; uniform float uTime; uniform sampler2D uHeight; uniform sampler2D uMask;
-        uniform float uMap; uniform float uRes; uniform vec3 uColA; uniform vec3 uColB;
-        attribute vec4 aOff; attribute float aT;
-        varying vec3 vCol; varying float vT; varying float vDepth;
+        uniform float uMap; uniform float uRes; uniform vec3 uColA; uniform vec3 uColB; uniform vec3 uColDry;
+        attribute vec4 aOff; attribute vec2 aT;
+        varying vec3 vCol; varying float vT; varying float vDepth; varying vec3 vWorld; varying float vFlower;
         float getH(vec2 wp) {
           vec2 g = clamp((wp + uMap * 0.5) / uMap * uRes, vec2(0.0), vec2(uRes));
           return texture2D(uHeight, (g + 0.5) / (uRes + 1.0)).r;
         }
+        float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+        float vnoise(vec2 p) { vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+          return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y); }
         void main() {
           vec2 base = uCenter.xz - uPS * 0.5;
           vec2 wp = base + mod(aOff.xy - base, uPS);
           float dc = length(wp - uCenter.xz);
           float mask = texture2D(uMask, (wp + uMap * 0.5) / uMap).r;
-          float fade = 1.0 - smoothstep(uPS * 0.3, uPS * 0.5, dc);
-          float s = (0.6 + aOff.z * 0.6) * smoothstep(0.3, 0.75, mask) * fade;
+          float fade = 1.0 - smoothstep(uPS * 0.32, uPS * 0.5, dc);
+          // 군데군데 키 큰 풀밭과 짧은 풀밭
+          float patchN = vnoise(wp * 0.07);
+          float tall = 0.75 + patchN * 0.55;
+          float s = (0.6 + aOff.z * 0.55) * tall * smoothstep(0.25, 0.7, mask) * fade;
+          float flower = 0.0;
           float rot = aOff.w * 6.2831;
           vec3 p = position;
           p.xz = mat2(cos(rot), -sin(rot), sin(rot), cos(rot)) * p.xz;
           p *= s;
-          float w = sin(uTime * 1.6 + wp.x * 0.19 + wp.y * 0.13) * 0.6 + sin(uTime * 3.1 + wp.x * 0.7 + wp.y * 0.4) * 0.25;
-          float k = aT * aT * s;
-          p.x += w * 0.22 * k; p.z += w * 0.12 * k;
-          vec3 world = vec3(wp.x, getH(wp) - 0.05, wp.y) + p;
+          if (flower > 0.5) p.y *= 1.15;
+          // 바람: 큰 물결 + 잔떨림
+          float gust = sin(uTime * 0.9 + wp.x * 0.05 + wp.y * 0.035) * 0.5 + 0.5;
+          float w = sin(uTime * 1.7 + wp.x * 0.19 + wp.y * 0.13) * (0.4 + gust * 0.6) + sin(uTime * 3.4 + wp.x * 0.7 + wp.y * 0.4 + aT.y * 3.0) * 0.18;
+          float k = aT.x * aT.x * s;
+          p.x += w * 0.2 * k; p.z += w * 0.11 * k;
+          vec3 world = vec3(wp.x, getH(wp) - 0.04, wp.y) + p;
           vec4 mv = viewMatrix * vec4(world, 1.0);
           gl_Position = projectionMatrix * mv;
-          vCol = mix(uColA, uColB, aOff.z * 0.8 + mask * 0.2);
-          vT = aT; vDepth = -mv.z;
+          float dry = smoothstep(0.6, 0.92, vnoise(wp * 0.021 + 7.0)) * 0.45 + aOff.z * 0.08;
+          vCol = mix(mix(uColA, uColB, aT.x * 0.85 + aT.y * 0.15), mix(uColDry * 0.5, uColDry, aT.x), dry * (0.4 + aT.x * 0.6));
+          vCol *= 0.85 + hash(aOff.xy) * 0.3;
+          vT = aT.x; vDepth = -mv.z; vWorld = world; vFlower = flower * (1.0 + floor(aOff.w * 3.0));
         }`,
       fragmentShader: `
-        uniform vec3 uFogColor; uniform float uFogD; uniform float uLight;
-        varying vec3 vCol; varying float vT; varying float vDepth;
+        uniform vec3 uFogColor; uniform float uFogD; uniform vec3 uSunDir; uniform vec3 uSunCol; uniform vec3 uAmb;
+        varying vec3 vCol; varying float vT; varying float vDepth; varying vec3 vWorld; varying float vFlower;
         void main() {
-          vec3 c = vCol * mix(0.32, 1.15, vT) * uLight;
+          vec3 alb = vCol;
+          // 꽃: 잎끝 마디만 꽃잎 색 (흰색·노랑·보라)
+          if (vFlower > 0.5 && vT > 0.7) alb = vFlower < 1.5 ? vec3(0.8, 0.78, 0.7) : vFlower < 2.5 ? vec3(0.85, 0.6, 0.06) : vec3(0.35, 0.16, 0.6);
+          float ao = mix(0.55, 1.0, smoothstep(0.0, 0.8, vT));
+          float sunUp = clamp(uSunDir.y * 1.4 + 0.25, 0.2, 1.0);
+          vec3 V = normalize(vWorld - cameraPosition);
+          float back = pow(max(dot(V, uSunDir), 0.0), 5.0) * vT;         // 해를 등지고 비치는 잎
+          vec3 c = alb * (uSunCol * sunUp * (0.55 + 0.45 * vT) + uAmb) * ao + alb * uSunCol * back * 0.9;
           float f = 1.0 - exp(-uFogD * uFogD * vDepth * vDepth);
           c = mix(c, uFogColor, f);
           gl_FragColor = vec4(c, 1.0);
@@ -2003,6 +2028,17 @@ const W = G.World = {
     mesh.frustumCulled = false;
     this.grass = mesh;
     this.scene.add(mesh);
+    this.syncGrassLight();
+  },
+  // 풀 셰이더 조명을 해·하늘에 맞춘다
+  syncGrassLight() {
+    if (!this.grass) return;
+    const u = this.grass.material.uniforms;
+    u.uSunDir.value.copy(this.sunDir);
+    u.uSunCol.value.copy(this.sun.color).multiplyScalar(this.sun.intensity * 0.62);
+    u.uAmb.value.copy(this.hemi.color).multiplyScalar(this.hemi.intensity * 0.75);
+    if (this.fogColor) u.uFogColor.value.copy(this.fogColor);
+    u.uFogD.value = this.fogD || 0.0014;
   },
 
   /* -------------------------------------------------------------- */
@@ -2134,6 +2170,7 @@ const W = G.World = {
     if (this.lodT <= 0 && this.lod.length) { this.lodT = 0.2; this.updateLOD(camPos); }
     if (this.windTime) this.windTime.value = this.time;
     if (G.Veg) G.Veg.update(dt, camPos);
+    if (G.Ambient) G.Ambient.update(dt, camPos, this);
     if (this.grass) {
       const u = this.grass.material.uniforms;
       u.uCenter.value.copy(camPos); u.uTime.value = this.time;
