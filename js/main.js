@@ -20,13 +20,18 @@ class ViewmodelPass extends THREE.Pass {
     renderer.autoClear = ac;
   }
 }
+// 색보정 (선형 HDR, 톤매핑 전): 그림자는 살짝 차갑게, 밝은 곳은 따뜻하게, 대비 약간, 채도 살짝 낮춤
 const GradeShader = {
-  uniforms: { tDiffuse: { value: null }, uVig: { value: 0.9 }, uSat: { value: 1.08 }, uKnock: { value: 0 } },
+  uniforms: { tDiffuse: { value: null }, uVig: { value: 0.95 }, uSat: { value: 0.97 }, uKnock: { value: 0 }, uCon: { value: 1.07 },
+    uShadow: { value: new THREE.Vector3(0.93, 0.98, 1.07) }, uHigh: { value: new THREE.Vector3(1.05, 1.0, 0.93) } },
   vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-  fragmentShader: `uniform sampler2D tDiffuse; uniform float uVig; uniform float uSat; uniform float uKnock; varying vec2 vUv;
+  fragmentShader: `uniform sampler2D tDiffuse; uniform float uVig; uniform float uSat; uniform float uKnock; uniform float uCon; uniform vec3 uShadow; uniform vec3 uHigh; varying vec2 vUv;
     void main(){
       vec4 c = texture2D(tDiffuse, vUv);
       float l = dot(c.rgb, vec3(0.2126, 0.7152, 0.0722));
+      c.rgb *= mix(uShadow, uHigh, smoothstep(0.02, 0.7, l));
+      c.rgb = 0.18 * pow(max(c.rgb, vec3(0.0)) / 0.18, vec3(uCon));
+      l = dot(c.rgb, vec3(0.2126, 0.7152, 0.0722));
       c.rgb = mix(vec3(l), c.rgb, uSat * (1.0 - uKnock * 0.8));
       c.rgb = mix(c.rgb, c.rgb * vec3(1.15, 0.7, 0.7), uKnock * 0.5);
       vec2 d = vUv - 0.5;

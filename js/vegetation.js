@@ -25,7 +25,7 @@ const VARIANTS = {
 };
 // 품질별 실제 메시로 그리는 반경 (그 밖은 임포스터)
 // budget: 실제 메시로 그릴 최대 그루 수 (숲 한가운데서는 반경을 줄여 성능 유지)
-const RANGE = { low: { tree: 70, bush: 35, tb: 200, bb: 220 }, medium: { tree: 100, bush: 50, tb: 330, bb: 380 }, high: { tree: 130, bush: 65, tb: 480, bb: 560 } };
+const RANGE = { low: { tree: 70, bush: 35, tb: 200, bb: 220 }, medium: { tree: 100, bush: 50, tb: 330, bb: 380 }, high: { tree: 125, bush: 62, tb: 400, bb: 500 } };
 
 const _v = new THREE.Vector3(), _box = new THREE.Box3();
 
