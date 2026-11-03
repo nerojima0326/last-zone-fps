@@ -2,7 +2,24 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" id="vp">
+<script>
+// 휴대폰·태블릿: 화면을 PC 해상도(높이 720 이상)로 보고 통째로 축소해서 보여준다
+(function () {
+  var vp = document.getElementById('vp');
+  function fit() {
+    var sw = window.screen.width, sh = window.screen.height;
+    var landscape = (window.orientation !== undefined ? Math.abs(window.orientation) === 90 : sw > sh);
+    var W = landscape ? Math.max(sw, sh) : Math.min(sw, sh), H = landscape ? Math.min(sw, sh) : Math.max(sw, sh);
+    if (Math.min(sw, sh) >= 760) { vp.setAttribute('content', 'width=device-width, initial-scale=1'); return; }
+    var target = Math.ceil(Math.max(1280, 720 * W / H));
+    vp.setAttribute('content', 'width=' + target + ', user-scalable=no');
+  }
+  fit();
+  window.addEventListener('orientationchange', function () { setTimeout(fit, 150); });
+  window.addEventListener('resize', fit);
+})();
+</script>
 <title>LAST ZONE — 배틀로얄 FPS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,6 +36,7 @@
 </head>
 <body>
 <div id="app"></div>
+<div id="rotateHint">📱 화면을 가로로 돌려 주세요</div>
 
 <!-- ============ LOADING ============ -->
 <div id="loading">
