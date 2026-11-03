@@ -258,3 +258,35 @@ html.mobile .mode { padding: 9px 8px 8px; }
 html.mobile .mode-note { margin: 8px 2px 12px; }
 html.mobile .opts { gap: 5px; margin-bottom: 14px; }
 html.mobile #startBtn { padding: 12px; font-size: 19px; }
+
+/* ---- 휴대폰 터치 조작 (js/touch.js) ---- */
+#touchUI { display: none; position: fixed; inset: 0; z-index: 15; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+#touchUI.show { display: block; }
+#touchUI .tb { position: absolute; border-radius: 50%; border: 2px solid rgba(255,255,255,0.45); background: rgba(10,14,20,0.38); color: #fff; font: 700 20px 'Noto Sans KR', sans-serif; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.1; padding: 0; text-shadow: 0 1px 3px #000; -webkit-tap-highlight-color: transparent; }
+#touchUI .tb span { pointer-events: none; }
+#touchUI .tb.down { background: rgba(255,181,38,0.45); border-color: #ffd27a; }
+#touchUI .tb.on { background: rgba(255,181,38,0.6); border-color: #ffd27a; color: #111; text-shadow: none; }
+#touchUI .tb-fire { right: 70px; bottom: 110px; width: 160px; height: 160px; font-size: 28px; border-color: rgba(255,120,90,0.8); background: rgba(160,40,20,0.35); }
+#touchUI .tb-fire2 { left: 40px; top: 300px; width: 110px; height: 110px; font-size: 22px; border-color: rgba(255,120,90,0.8); background: rgba(160,40,20,0.3); }
+#touchUI .tb-ads { right: 262px; bottom: 50px; width: 110px; height: 110px; }
+#touchUI .tb-jump { right: 40px; bottom: 300px; width: 100px; height: 100px; }
+#touchUI .tb-crouch { right: 170px; bottom: 300px; width: 92px; height: 92px; }
+#touchUI .tb-reload { right: 268px; bottom: 190px; width: 92px; height: 92px; }
+#touchUI .tb-f { right: 400px; bottom: 250px; width: 100px; height: 100px; opacity: 0.45; }
+#touchUI .tb-f.lit { opacity: 1; border-color: #ffd27a; background: rgba(255,181,38,0.35); }
+#touchUI .tb-row { position: absolute; right: 30px; bottom: 430px; display: flex; gap: 12px; }
+#touchUI .tb-top { position: absolute; left: 240px; top: 30px; display: flex; gap: 12px; }
+#touchUI .tb.sm { position: relative; width: 74px; height: 74px; font-size: 16px; }
+#touchUI[data-st="air"] .tb:not(.tb-f):not([data-act="pause"]):not([data-key="KeyM"]) { display: none; }
+#touchUI[data-st="dead"] .tb:not(.tb-fire):not([data-act="pause"]) { display: none; }
+#touchUI[data-st="air"] .tb-f { right: 90px; bottom: 140px; width: 150px; height: 150px; font-size: 26px; }
+#tStick { position: absolute; width: 200px; height: 200px; margin: -100px 0 0 -100px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.35); background: rgba(10,14,20,0.25); left: 230px; top: 520px; opacity: 0.45; pointer-events: none; }
+#tStick.on { opacity: 1; }
+#tKnob { position: absolute; left: 50%; top: 50%; width: 88px; height: 88px; border-radius: 50%; background: rgba(255,255,255,0.55); transform: translate(-50%,-50%); }
+#tSprint { position: absolute; left: 50%; top: -42px; transform: translateX(-50%); font: 700 15px 'Noto Sans KR', sans-serif; color: #ffd27a; opacity: 0; text-shadow: 0 1px 3px #000; white-space: nowrap; }
+#tSprint.on { opacity: 1; }
+/* 버튼과 겹치지 않게 HUD 자리 옮기기 */
+html.mobile #mapWrap { right: auto; bottom: auto; left: 22px; top: 40px; width: 200px; }
+html.mobile #teamPanel { bottom: auto; top: 300px; }
+html.mobile #weaponPanel { right: auto; left: 50%; bottom: 112px; transform: translateX(-50%); text-align: center; }
+html.mobile #weaponPanel #slots { justify-content: center; }

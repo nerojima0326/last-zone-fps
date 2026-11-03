@@ -15,7 +15,7 @@
   var ua = navigator.userAgent || '';
   var touch = (navigator.maxTouchPoints || 0) > 0 || ('ontouchstart' in window);
   var mobileUA = /Android|iPhone|iPad|iPod|Mobile|SamsungBrowser|Silk|Kindle/i.test(ua) || (/Macintosh/.test(ua) && touch);
-  if (!touch || !mobileUA) return;
+  if (!/[?&]touch=1/.test(location.search) && (!touch || !mobileUA)) return;
   var root = document.documentElement;
   root.classList.add('mobile');
   var de = document.documentElement;
@@ -84,7 +84,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=3">
+<link rel="stylesheet" href="css/style.css?v=4">
 <script type="importmap">
 {
   "imports": {
@@ -279,12 +279,12 @@ try {
     try { window.EZTree = await import('./vendor/ez-tree.es.js'); } catch (e) { console.info('[veg] vendor/ez-tree.es.js 없음 — 기존 나무 사용'); }
   }
   loadFill.style.width = '15%';
-  const files = ['core', 'assets', 'vegetation', 'world', 'effects', 'character', 'soldiers', 'gunlib', 'gunmodels', 'weapons', 'throwables', 'actor', 'player', 'bots', 'game', 'ui', 'main'];
+  const files = ['core', 'assets', 'vegetation', 'world', 'effects', 'character', 'soldiers', 'gunlib', 'gunmodels', 'weapons', 'throwables', 'actor', 'player', 'bots', 'game', 'ui', 'main', 'touch'];
   for (let i = 0; i < files.length; i++) {
     loadText.textContent = '스크립트 불러오는 중... (' + files[i] + ')';
     await new Promise((res, rej) => {
       const s = document.createElement('script');
-      s.src = 'js/' + files[i] + '.js?v=3';
+      s.src = 'js/' + files[i] + '.js?v=4';
       s.onload = res;
       s.onerror = () => rej(new Error(files[i] + '.js 를 불러올 수 없습니다'));
       document.body.appendChild(s);
