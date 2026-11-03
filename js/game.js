@@ -120,26 +120,8 @@ const Game = G.Game = {
 
   /* ------------ 수송기 ------------ */
   buildPlaneMesh() {
-    const g = new THREE.Group();
-    const body = new THREE.MeshStandardMaterial({ color: 0x7d858a, metalness: 0.5, roughness: 0.45 });
-    const dark = new THREE.MeshStandardMaterial({ color: 0x2a2e33, metalness: 0.5, roughness: 0.5 });
-    const glass = new THREE.MeshStandardMaterial({ color: 0x1a2632, metalness: 0.8, roughness: 0.1 });
-    const add = (geo, m, x, y, z, rx, ry, rz) => { const mesh = new THREE.Mesh(geo, m); mesh.position.set(x, y, z); mesh.rotation.set(rx || 0, ry || 0, rz || 0); mesh.castShadow = true; g.add(mesh); return mesh; };
-    add(new THREE.CylinderGeometry(2.4, 2.4, 24, 18), body, 0, 0, 0, Math.PI / 2);
-    add(new THREE.SphereGeometry(2.4, 18, 12, 0, Math.PI * 2, 0, Math.PI / 2), body, 0, 0, -12, -Math.PI / 2);
-    add(new THREE.CylinderGeometry(2.4, 0.9, 9, 18), body, 0, 0.8, 16.5, Math.PI / 2 + 0.12);
-    add(new THREE.BoxGeometry(34, 0.45, 4.6), body, 0, 1.6, -1);
-    add(new THREE.BoxGeometry(12, 0.3, 2.8), body, 0, 2.2, 19.5);
-    add(new THREE.BoxGeometry(0.4, 6, 3.6), body, 0, 4.6, 19.5, 0.25);
-    add(new THREE.BoxGeometry(3.4, 1.0, 0.5), glass, 0, 1.2, -13.4, -0.5);
-    this.props = [];
-    for (const x of [-11, -5.5, 5.5, 11]) {
-      add(new THREE.CylinderGeometry(0.85, 0.75, 4.2, 12), dark, x, 1.1, -2.6, Math.PI / 2);
-      const p = add(new THREE.BoxGeometry(5.2, 0.35, 0.12), dark, x, 1.1, -4.8);
-      this.props.push(p);
-    }
-    for (let i = 0; i < 8; i++) add(new THREE.BoxGeometry(0.1, 0.7, 0.9), glass, 2.38, 0.6, -8 + i * 2.2);
-    for (let i = 0; i < 8; i++) add(new THREE.BoxGeometry(0.1, 0.7, 0.9), glass, -2.38, 0.6, -8 + i * 2.2);
+    const g = G.buildPlane();
+    this.props = g.userData.props;
     return g;
   },
   setupPlane() {
@@ -191,6 +173,7 @@ const Game = G.Game = {
     p.pos.copy(p.start).addScaledVector(p.dir, p.speed * p.t).setY(p.alt);
     p.mesh.position.copy(p.pos);
     for (const pr of this.props) pr.rotation.z += dt * 40;
+    if (p.mesh.userData.update) p.mesh.userData.update(dt);
     const traveled = p.speed * p.t;
     if (!p.done) {
       const canJump = this.planeCanJump();
