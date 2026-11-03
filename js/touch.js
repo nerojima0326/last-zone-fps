@@ -160,6 +160,8 @@
   let wasShown = false;
   function tick() {
     requestAnimationFrame(tick);
+    // 게임 중인데 조작 상태가 꺼져 있으면 (일시정지 제외) 바로 켠다
+    if (G.Game && G.Game.state === 'playing' && !G.paused && !I.locked) I.lock();
     const playing = G.Game && G.Game.state === 'playing' && !G.paused && I.locked;
     if (playing !== wasShown) { ui.classList.toggle('show', playing); if (!playing) releaseAll(); wasShown = playing; }
     if (!playing) return;
