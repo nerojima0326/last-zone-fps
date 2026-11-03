@@ -86,7 +86,7 @@ const Game = G.Game = {
     for (const a of this.actors) if (a.model) a.model.dispose();
     this.actors = []; this.teams = [];
     for (const it of this.loot) if (it.mesh) G.scene.remove(it.mesh);
-    this.loot = [];
+    this.loot = []; this.lootCells = new Map(); this.lootVis = [];
     if (this.plane) { G.scene.remove(this.plane.mesh); this.plane = null; }
     if (this.zone && this.zone.mesh) { G.scene.remove(this.zone.mesh); }
     this.zone = null;
@@ -308,24 +308,17 @@ const Game = G.Game = {
     return 'bandage';
   },
   spawnLoot() {
+    // 전리품은 건물 안에만 놓인다. 자리마다 반드시 1개, 40% 확률로 1개 더
     const W = G.World;
+    const put = (s, k, spread) => this.addLoot(k, LOOT_AMOUNT[k] || 1, _v.set(s.x + U.rand(-spread, spread), s.y, s.z + U.rand(-spread, spread)));
     for (const s of W.lootSpots) {
-      if (Math.random() > 0.78) continue;
-      const k = this.rollKind();
-      this.addLoot(k, LOOT_AMOUNT[k] || 1, _v.set(s.x + U.rand(-0.3, 0.3), s.y, s.z + U.rand(-0.3, 0.3)));
-      if (G.WEAPONS[k] && G.WEAPONS[k].cls && Math.random() < 0.6) {
-        this.addLoot('ammo_' + G.WEAPONS[k].ammo, LOOT_AMOUNT['ammo_' + G.WEAPONS[k].ammo], _v.set(s.x + U.rand(-0.8, 0.8), s.y, s.z + U.rand(-0.8, 0.8)));
+      const n = Math.random() < 0.4 ? 2 : 1;
+      for (let i = 0; i < n; i++) {
+        const k = this.rollKind();
+        put(s, k, 0.35);
+        const def = G.WEAPONS[k];
+        if (def && def.cls && Math.random() < 0.85) put(s, 'ammo_' + def.ammo, 0.6);
       }
-    }
-    // 마을 주변 야외
-    for (let i = 0; i < 140 * this.mapK * this.mapK; i++) {
-      const t = U.pick(W.towns), a = Math.random() * 6.28, r = Math.random() * (t.r + 25);
-      const x = t.x + Math.cos(a) * r, z = t.z + Math.sin(a) * r;
-      const y = W.ground(x, z, 200, 0.2, 0);
-      if (W.heightAt(x, z) - W.waterAt(x, z) < 1) continue;
-      if (y - W.heightAt(x, z) > 0.3) continue;
-      const k = this.rollKind();
-      this.addLoot(k, LOOT_AMOUNT[k] || 1, _v.set(x, y, z));
     }
   },
   addLoot(kind, amount, pos, extra) {
@@ -335,7 +328,7 @@ const Game = G.Game = {
     mesh.visible = false;
     // 움직이지 않으므로 행렬을 한 번만 계산
     mesh.updateMatrixWorld(true);
-    mesh.traverse(o => { o.matrixAutoUpdate = false; });
+    mesh.traverse(o => { o.matrixAutoUpdate = false; o.castShadow = false; });
     G.scene.add(mesh);
     const it = { kind, amount, pos: pos.clone(), mesh, taken: false, claim: null };
     const def = G.WEAPONS[kind];
@@ -348,6 +341,11 @@ const Game = G.Game = {
     }
     if (extra) Object.assign(it, extra);
     this.loot.push(it);
+    // 20m 격자에 등록 (주변 전리품만 빠르게 찾기)
+    const ck = this.lootKey(Math.floor(pos.x / 20), Math.floor(pos.z / 20));
+    let cell = (this.lootCells || (this.lootCells = new Map())).get(ck);
+    if (!cell) this.lootCells.set(ck, cell = []);
+    cell.push(it);
     return it;
   },
   lootLabel(it) {
@@ -357,18 +355,32 @@ const Game = G.Game = {
     if (it.kind.startsWith('ammo_') || it.kind === 'bandage' || ((G.THROW_NAMES[it.kind]) && it.amount > 1)) s += ' x' + it.amount;
     return s + ' 줍기';
   },
+  lootKey(ix, iz) { return (ix + 500) * 1000 + (iz + 500); },
+  // (x, z) 주변 r 안의 격자 칸에 든 전리품마다 fn (가져간 것은 칸에서 정리)
+  lootAround(x, z, r, fn) {
+    if (!this.lootCells) return;
+    const x0 = Math.floor((x - r) / 20), x1 = Math.floor((x + r) / 20), z0 = Math.floor((z - r) / 20), z1 = Math.floor((z + r) / 20);
+    for (let iz = z0; iz <= z1; iz++) for (let ix = x0; ix <= x1; ix++) {
+      const cell = this.lootCells.get(this.lootKey(ix, iz));
+      if (!cell) continue;
+      for (let i = 0; i < cell.length; i++) {
+        const it = cell[i];
+        if (it.taken) { cell[i] = cell[cell.length - 1]; cell.pop(); i--; continue; }
+        fn(it);
+      }
+    }
+  },
   lootNear(eye, fwd) {
     let best = null, bs = -1;
-    for (const it of this.loot) {
-      if (it.taken) continue;
+    this.lootAround(eye.x, eye.z, 3, (it) => {
       const dx = it.pos.x - eye.x, dy = it.pos.y + 0.15 - eye.y, dz = it.pos.z - eye.z;
       const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
-      if (d > 2.7) continue;
+      if (d > 2.7) return;
       const dot = (dx * fwd.x + dy * fwd.y + dz * fwd.z) / d;
-      if (dot < 0.55 && d > 1.4) continue;
+      if (dot < 0.55 && d > 1.4) return;
       const s = dot - d * 0.12;
       if (s > bs) { bs = s; best = it; }
-    }
+    });
     return best;
   },
   pickup(a, it) {
@@ -399,14 +411,23 @@ const Game = G.Game = {
     this.lootT = 0.25;
     const glow = this.glowList || (this.glowList = []);
     glow.length = 0;
-    for (let i = 0; i < this.loot.length; i++) {
-      const it = this.loot[i];
-      if (it.taken) { this.loot[i] = this.loot[this.loot.length - 1]; this.loot.pop(); i--; continue; }
-      const dx = it.pos.x - c.x, dz = it.pos.z - c.z, d2 = dx * dx + dz * dz;
-      const vis = d2 < 55 * 55;
-      if (it.mesh.visible !== vis) it.mesh.visible = vis;
-      if (d2 < 28 * 28 && glow.length < 40) glow.push(it);
+    // 전리품은 모두 건물 안이라 가까이에서만 보이면 된다 (배율 조준 중에는 더 멀리)
+    const R = G.lodZoom > 1 ? 70 : 40;
+    const prev = this.lootVis, next = [];
+    for (const it of prev) it._v = false;
+    if (c.y - G.World.heightAt(c.x, c.z) < 60) {
+      this.lootAround(c.x, c.z, R, (it) => {
+        const dx = it.pos.x - c.x, dz = it.pos.z - c.z, d2 = dx * dx + dz * dz;
+        if (d2 >= R * R) return;
+        it._v = true; next.push(it);
+        if (!it.mesh.visible) it.mesh.visible = true;
+        if (d2 < 28 * 28 && glow.length < 40) glow.push(it);
+      });
     }
+    for (const it of prev) if (!it._v && it.mesh.visible) it.mesh.visible = false;
+    this.lootVis = next;
+    // 가져간 전리품은 목록에서 가끔 정리
+    if ((this.lootClean = (this.lootClean || 0) + 1) % 40 === 0) this.loot = this.loot.filter(it => !it.taken);
   },
 
   /* ------------ 피해 / 처치 ------------ */

@@ -211,7 +211,8 @@ function warmup() {
   const shown = [];
   const show = o => { if (o && !o.visible) { o.visible = true; shown.push(o); } };
   const temp = [];
-  for (const it of G.Game.loot) show(it.mesh);
+  const seenK = new Set();
+  for (const it of G.Game.loot) { if (seenK.has(it.kind)) continue; seenK.add(it.kind); show(it.mesh); }
   for (const a of G.Game.actors) { const m = a.model; show(m.root); show(m.lodMesh); show(m.helmetMesh); }
   const m0 = G.Game.actors[0].model;
   m0.showChute(true); m0.showChute(false); show(m0.chute);

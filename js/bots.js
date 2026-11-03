@@ -260,14 +260,14 @@ class Bot {
   findLoot() {
     const a = this.a;
     let best = null, bd = a.hasGun() ? 40 : 90;
-    for (const it of G.Game.loot) {
-      if (it.taken || (it.claim && it.claim !== a && it.claim.alive)) continue;
-      if (Math.abs(it.pos.y - a.pos.y) > 1.6) continue;
+    G.Game.lootAround(a.pos.x, a.pos.z, bd, (it) => {
+      if (it.claim && it.claim !== a && it.claim.alive) return;
+      if (Math.abs(it.pos.y - a.pos.y) > 1.6) return;
       const d = Math.abs(it.pos.x - a.pos.x) + Math.abs(it.pos.z - a.pos.z);
-      if (d >= bd || it.failed === a) continue;
-      if (!this.needs(it)) continue;
+      if (d >= bd || it.failed === a) return;
+      if (!this.needs(it)) return;
       bd = d; best = it;
-    }
+    });
     return best;
   }
 

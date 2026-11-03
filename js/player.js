@@ -34,6 +34,7 @@ const P = G.Player = {
   update(dt) {
     const a = this.a;
     this.time += dt;
+    G.lodZoom = 1;
     if (!a.alive) { this.updateSpectate(dt); this.updateFlash(dt); return; }
     if (a.state === 'plane') this.updatePlane(dt);
     else if (a.state === 'freefall' || a.state === 'chute') this.updateDrop(dt);
@@ -348,9 +349,14 @@ const P = G.Player = {
     R.t += dt;
     if (R.kind === 'mag' || R.kind === 'revolver') {
       const p = R.t / R.dur;
-      if (R.s === 0 && p > 0.15) { R.s = 1; G.Audio.click(R.kind === 'revolver' ? 'bolt' : 'magout'); }
-      if (R.s === 1 && p > 0.62) { R.s = 2; G.Audio.click('magin'); }
-      if (R.s === 2 && p > (R.kind === 'revolver' ? 0.76 : 0.85)) { R.s = 3; if (R.empty || R.kind === 'revolver') G.Audio.click('bolt'); }
+      // 소리는 손 동작 시각(뷰모델 키)에 맞춘다
+      const vm = G.VM.models[inst.id], T = R.kind === 'mag' && vm && vm.keys && vm.keys.T;
+      const tOut = T ? (R.empty ? T.drop : (T.tacGrab || T.drop) + 0.05) : 0.15;
+      const tIn = T ? (R.empty ? T.seat : (T.tacSeat || T.seat)) : 0.62;
+      const tBolt = T ? (T.slap || T.chargeRel || T.slide || 0.85) : (R.kind === 'revolver' ? 0.76 : 0.85);
+      if (R.s === 0 && p > tOut) { R.s = 1; G.Audio.click(R.kind === 'revolver' ? 'bolt' : 'magout'); }
+      if (R.s === 1 && p > tIn) { R.s = 2; G.Audio.click('magin'); }
+      if (R.s === 2 && p > tBolt) { R.s = 3; if (R.empty || R.kind === 'revolver') G.Audio.click('bolt'); }
       if (p >= 1) {
         const n = Math.min(def.mag - inst.mag, a.ammo[def.ammo]);
         inst.mag += n; a.ammo[def.ammo] -= n;
@@ -527,10 +533,14 @@ const P = G.Player = {
     const bob = a.onGround ? Math.sin(this.stepPhase * 2) * 0.022 * U.clamp(a.hspeed / 5, 0, 1.3) * (1 - this.ads * 0.8) : 0;
     const sh = G.FX.shakeAmt;
     cam.position.set(a.pos.x + (Math.random() - 0.5) * sh * 0.06, this.camY + bob - this.landDip * 0.12 + (Math.random() - 0.5) * sh * 0.06, a.pos.z + (Math.random() - 0.5) * sh * 0.06);
-    cam.rotation.set(a.pitch + this.camKick + (Math.random() - 0.5) * sh * 0.02, a.yaw + (Math.random() - 0.5) * sh * 0.02, (Math.random() - 0.5) * sh * 0.015, 'YXZ');
+    // 재장전 중 몸의 움직임에 따라 시야도 살짝 흔들린다 (G.VM.cam*)
+    const VMc = G.VM;
+    cam.rotation.set(a.pitch + this.camKick + VMc.camRX + (Math.random() - 0.5) * sh * 0.02, a.yaw + VMc.camRY + (Math.random() - 0.5) * sh * 0.02, VMc.camRZ + (Math.random() - 0.5) * sh * 0.015, 'YXZ');
     const inst = a.weapons[a.cur], def = inst ? G.WEAPONS[inst.id] : G.WEAPONS[a.cur];
     const scope = inst ? (inst.scope || def.baseSight || null) : null;
     const zoom = scope ? G.SCOPES[scope].zoom : 1;
+    // 배율 조준 중에는 먼 건물도 상세 모델로 (창문 너머가 보이게)
+    G.lodZoom = zoom > 1 && this.ads > 0.6 ? Math.pow(zoom, 0.85) : 1;
     let adsFov = def && def.adsFov ? def.adsFov : BASE_FOV;
     if (zoom > 1) adsFov = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(BASE_FOV / 2)) / zoom));
     const fov = U.lerp(BASE_FOV, adsFov, this.ads) + (this.sprinting ? 4 : 0);
