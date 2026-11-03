@@ -244,3 +244,12 @@ kbd { font-family: var(--num); font-weight: 600; font-size: 12px; background: rg
 #breathBar i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, #8fd3ff, #e8f6ff); border-radius: 3px; }
 #breathBar.lock i { background: #ff7b6b; }
 #breathBar span { position: absolute; top: 9px; left: 0; right: 0; text-align: center; font: 600 11px Rajdhani, sans-serif; letter-spacing: 1px; color: rgba(255,255,255,0.7); text-shadow: 0 1px 2px #000; }
+
+/* ---- 휴대폰 ---- */
+#rotateHint { display: none; position: fixed; inset: 0; z-index: 100; background: #06090d; color: #fff; font-size: 64px; font-weight: 700; align-items: center; justify-content: center; text-align: center; padding: 80px; }
+@media (orientation: portrait) and (pointer: coarse) { #rotateHint { display: flex; } }
+@media (max-height: 760px) and (pointer: coarse) {
+  .menu-right { display: none; }
+  #menu { justify-content: center; }
+  .menu-left { width: 640px; max-width: 90vw; }
+}
