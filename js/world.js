@@ -9,6 +9,12 @@ const GCELL = 10, GN = Math.ceil(SIZE / GCELL);
 const TS = 1536; // 지형 색상 텍스처 해상도
 const MK = HALF / 500; // 예전 맵 대비 배율
 const NC = { nc: true };
+// 건물 LOD: 청크 크기와 종류별 단계 (b: 가까이 상세 + 멀리 대역, n: 가까이만, 그 외: 항상)
+const LOD_CH = 125;
+const LOD_KIND = { house1: 'b', house2: 'b', apt: 'b', shop: 'b', warehouse: 'b', barracks: 'b', barn: 'b', cabin: 'b', shed: 'b', car: 'n', sandbags: 'n' };
+const LOD_NEAR = 190, LOD_CAR = 320, LOD_IN = 75;
+const LOD_N = Math.ceil(SIZE / LOD_CH);
+const LOD_CODE = { b: 1, i: 2, n: 3, f: 4 };
 
 const TOWN_DEFS = [
   { name: '중앙 시가지', x: 0, z: 20, r: 100, type: 'city' },
@@ -78,7 +84,7 @@ const W = G.World = {
   SIZE, HALF, RES, WATER: 0,
   heights: null, noise: null, rnd: null,
   towns: [], roads: [], footprints: [], boxes: [], grid: null, stamp: 1,
-  lootSpots: [], parts: {}, mats: {}, hit: null,
+  lootSpots: [], parts: {}, proxyParts: [], lod: [], cur: null, inFurn: false, mats: {}, hit: null,
   splatCanvas: null, maskCanvas: null, mapCanvas: null,
   grass: null, time: 0,
 
@@ -531,6 +537,28 @@ const W = G.World = {
     M.dark = std({ roughness: 0.6, metalness: 0.4 });
     M.paint = std({ roughness: 0.32, metalness: 0.45 });
     M.glass = std({ roughness: 0.08, metalness: 0.6 });
+    M.proxy = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92, metalness: 0 });
+    // 거리별 표시 단계: 청크 상태 텍스처 (0 가구까지, 1 상세, 2 상세 아님·자동차 보임, 3 대역만)
+    this.lodData = new Uint8Array(LOD_N * LOD_N);
+    this.lodTex = new THREE.DataTexture(this.lodData, LOD_N, LOD_N, THREE.RedIntegerFormat, THREE.UnsignedByteType);
+    this.lodTex.internalFormat = 'R8UI';
+    this.lodTex.needsUpdate = true;
+    const lodU = { value: this.lodTex };
+    for (const k in M) {
+      const m = M[k];
+      m.onBeforeCompile = (sh) => {
+        sh.uniforms.uLodTex = lodU;
+        sh.vertexShader = sh.vertexShader
+          .replace('#include <common>', '#include <common>\nattribute vec3 lodk;\nuniform highp usampler2D uLodTex;')
+          .replace('#include <project_vertex>', `#include <project_vertex>
+            if (lodk.z > 0.5) {
+              uint st = texelFetch(uLodTex, ivec2(lodk.xy), 0).r;
+              bool vis = lodk.z < 1.5 ? st <= 1u : lodk.z < 2.5 ? st == 0u : lodk.z < 3.5 ? st <= 2u : st >= 2u;
+              if (!vis) gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
+            }`);
+      };
+      m.customProgramCacheKey = () => 'lod';
+    }
     // 실사 텍스처 (있으면): 원래 절차적 텍스처의 평균색 쪽으로 일부 보정해 기존 색 배합(정점 색)을 살린다
     const A = G.Assets;
     if (A && A.enabled) {
@@ -549,6 +577,14 @@ const W = G.World = {
     for (let i = 0; i < n; i++) { col[i * 3] = color.r; col[i * 3 + 1] = color.g; col[i * 3 + 2] = color.b; }
     geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
     if (geo.attributes.uv1) geo.deleteAttribute('uv1');
+    // 거리별 표시 단계(LOD): 정점마다 [건물 청크 x, z, 종류] — 셰이더가 청크 상태를 보고 숨긴다
+    const B = this.cur, lk = new Float32Array(n * 3);
+    if (B) {
+      const tag = this.inFurn ? 'i' : B.tag, cx = Math.floor((B.x + HALF) / LOD_CH), cz = Math.floor((B.z + HALF) / LOD_CH), kd = LOD_CODE[tag];
+      for (let i = 0; i < n; i++) { lk[i * 3] = cx; lk[i * 3 + 1] = cz; lk[i * 3 + 2] = kd; }
+      if (B.tag === 'b' && !this.inFurn) B.geos.push({ geo, mat, color });
+    }
+    geo.setAttribute('lodk', new THREE.BufferAttribute(lk, 3));
     const key = Math.floor((wx + HALF) / 250) + ',' + Math.floor((wz + HALF) / 250) + '|' + mat;
     (this.parts[key] || (this.parts[key] = [])).push(geo);
   },
@@ -572,6 +608,58 @@ const W = G.World = {
       this.scene.add(mesh);
     }
     this.parts = {};
+    // 멀리서 보이는 건물 대역: 재질 평균색 × 정점 색, 섬 전체를 한 번에 그린다
+    const mean = {};
+    const meanOf = (m) => {
+      if (mean[m]) return mean[m];
+      const M = this.mats[m], c = new THREE.Color(1, 1, 1);
+      try { if (M.map && M.map.image && G.Assets) c.copy(G.Assets.meanColor(M.map.image)); } catch (e) { /* 무시 */ }
+      if (M.color) c.multiply(M.color);
+      return (mean[m] = c);
+    };
+    const geos = [];
+    for (const e of this.proxyParts) {
+      const g = e.geo;
+      for (const a of Object.keys(g.attributes)) if (a !== 'position' && a !== 'normal') g.deleteAttribute(a);
+      const n = g.attributes.position.count, col = new Float32Array(n * 3), lk = new Float32Array(n * 3), mc = meanOf(e.mat);
+      const r = e.color.r * mc.r, gg = e.color.g * mc.g, b = e.color.b * mc.b;
+      for (let i = 0; i < n; i++) { col[i * 3] = r; col[i * 3 + 1] = gg; col[i * 3 + 2] = b; lk[i * 3] = e.cx; lk[i * 3 + 1] = e.cz; lk[i * 3 + 2] = LOD_CODE.f; }
+      g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+      g.setAttribute('lodk', new THREE.BufferAttribute(lk, 3));
+      geos.push(g);
+    }
+    this.proxyParts = [];
+    const pg = geos.length && THREE.mergeGeometries(geos, false);
+    if (pg) {
+      const mesh = new THREE.Mesh(pg, this.mats.proxy);
+      mesh.matrixAutoUpdate = false; mesh.receiveShadow = true;
+      this.scene.add(mesh);
+    }
+    // 청크 목록 (상태는 lodTex 에 기록)
+    this.lod = [];
+    for (let iz = 0; iz < LOD_N; iz++) for (let ix = 0; ix < LOD_N; ix++)
+      this.lod.push({ i: iz * LOD_N + ix, x0: ix * LOD_CH - HALF, z0: iz * LOD_CH - HALF, x1: (ix + 1) * LOD_CH - HALF, z1: (iz + 1) * LOD_CH - HALF, st: -1 });
+    this.lodT = 0;
+  },
+  // 카메라 거리에 따라 청크별로 상세/대역/가구/자동차 표시를 바꾼다
+  updateLOD(camPos, force) {
+    let changed = false;
+    const hy = Math.max(0, camPos.y - this.heightAt(camPos.x, camPos.z) - 30);
+    for (const c of this.lod) {
+      const dx = Math.max(c.x0 - camPos.x, 0, camPos.x - c.x1), dz = Math.max(c.z0 - camPos.z, 0, camPos.z - c.z1);
+      const d = Math.sqrt(dx * dx + dz * dz + hy * hy) / (this.lodZoom || 1);
+      // 단계: 0 가구까지, 1 상세, 2 상세(자동차 숨김), 3 대역 (경계에서 깜빡이지 않게 여유를 둔다)
+      const pad = c.st < 0 ? 0 : 12;
+      let st = 3;
+      if (d < LOD_IN + (c.st <= 0 ? pad : -pad)) st = 0;
+      else if (d < LOD_NEAR + (c.st <= 1 ? pad : -pad)) st = 1;
+      else if (d < LOD_CAR + (c.st <= 2 ? pad : -pad)) st = 2;
+      if (st === c.st && !force) continue;
+      c.st = st;
+      this.lodData[c.i] = st;
+      changed = true;
+    }
+    if (changed) this.lodTex.needsUpdate = true;
   },
   boxGeom(w, h, d, tile) {
     const g = new THREE.BoxGeometry(w, h, d).toNonIndexed();
@@ -681,6 +769,11 @@ const W = G.World = {
   door(c, w) { w = w || 1.3; return { a: c - w / 2, b: c + w / 2, y0: 0, y1: 2.3 }; },
   win(c, w, y0, y1) { w = w || 1.4; return { a: c - w / 2, b: c + w / 2, y0: y0 === undefined ? 1.0 : y0, y1: y1 || 2.2, win: true }; },
   furniture(b, x0, z0, x1, z1, y) {
+    this.inFurn = true;
+    this.furnitureBody(b, x0, z0, x1, z1, y);
+    this.inFurn = false;
+  },
+  furnitureBody(b, x0, z0, x1, z1, y) {
     const r = this.rnd, wood = C(U.pick([0x8a6a4a, 0x6b4f35, 0xa08060, 0x5a4636]));
     const k = Math.floor(r() * 4);
     if (k === 0) { // 테이블
@@ -714,7 +807,7 @@ const W = G.World = {
       this.furniture(b, -Wd / 2 + T, -D / 2 + T, px - 0.07, D / 2 - T, 0);
       this.furniture(b, px + 0.07, -D / 2 + T, Wd / 2 - T, D / 2 - T, 0);
       this.loot(b, -Wd / 4, 0.05, 0.3); this.loot(b, Wd / 4 + 0.6, 0.05, -0.4);
-      if (this.rnd() < 0.5) this.loot(b, -Wd / 4 - 1.2, 0.05, -D / 4);
+      this.loot(b, -Wd / 4 - 1.2, 0.05, -D / 4); this.loot(b, Wd / 4 + 0.4, 0.05, D / 4);
     } else {
       this.loot(b, 0, 0.05, 0);
     }
@@ -786,8 +879,9 @@ const W = G.World = {
       const rx0 = strips[1][1] + 0.3;
       this.furniture(b, rx0, -D / 2 + T, Wd / 2 - T, D / 2 - T, y0);
       this.loot(b, Wd / 4, y0 + 0.05, -D / 4 + 0.3);
-      if (this.rnd() < 0.7) this.loot(b, (rx0 + Wd / 2) / 2 - 1, y0 + 0.05, D / 4);
-      if (f > 0 && this.rnd() < 0.6) this.loot(b, -Wd / 2 + 1.0, y0 + 0.05, -D / 2 + 1.0);
+      this.loot(b, (rx0 + Wd / 2) / 2 - 1, y0 + 0.05, D / 4);
+      if (f > 0) this.loot(b, -Wd / 2 + 1.0, y0 + 0.05, -D / 2 + 1.0);
+      this.loot(b, Wd / 2 - 1.2, y0 + 0.05, D / 2 - 1.3);
     }
     this.steps(b, Wd / 4, D / 2);
   },
@@ -884,7 +978,6 @@ const W = G.World = {
       const z0 = S / 2 + (n - 1 - k) * run;
       this.boxMM(b, -0.6, -0.4, z0, 0.6, (k + 1) * rise, z0 + run, 'wood', wood);
     }
-    this.loot(b, 0, P + 0.25, -0.5);
   },
   container(b, lx, ly, lz, r, color, open) {
     const c = this.sub(b, lx, ly, lz, r);
@@ -905,14 +998,12 @@ const W = G.World = {
     this.container(b, -1.5, 0, 0.6, 0, col(), r() < 0.5);
     if (r() < 0.6) this.container(b, -1.5, 2.6, -2.2, 0, col(), false);
     if (r() < 0.7) this.container(b, 3.0, 0, 1.5, 1, col(), r() < 0.5);
-    if (r() < 0.5) this.loot(b, 2.5, 0.05, -3);
   },
   sandbags(b) {
     const r = this.rnd;
     this.box(b, 0, 0.5, 1.5, 3.2, 1.0, 0.8, 'sandbag', C(0xffffff));
     this.box(b, -1.9, 0.5, 0.2, 0.8, 1.0, 2.0, 'sandbag', C(0xf0f0f0));
     if (r() < 0.6) this.box(b, 1.9, 0.5, 0.2, 0.8, 1.0, 2.0, 'sandbag', C(0xf0f0f0));
-    if (r() < 0.5) this.loot(b, 0, 0.05, 0);
   },
   silo(b) {
     this.cyl(b, 0, 0, 0, 2.6, 2.6, 11, 18, 'metal', C(0xb8bcc0), true);
@@ -952,7 +1043,7 @@ const W = G.World = {
     this.wallZ(b, -D / 2 + T, D / 2 - T, -Wd / 2 + T / 2, T, 0, H, [this.win(0, 0.8, 1.2, 1.9)], 'wood', wc);
     this.wallZ(b, -D / 2 + T, D / 2 - T, Wd / 2 - T / 2, T, 0, H, [], 'wood', wc);
     this.boxMM(b, -Wd / 2 - 0.3, H, -D / 2 - 0.3, Wd / 2 + 0.3, H + 0.15, D / 2 + 0.3, 'metal', C(0x6a5a4a));
-    this.loot(b, 0, 0.05, -0.5);
+    this.loot(b, 0, 0.05, -0.5); this.loot(b, 1.4, 0.05, 0.6);
   },
   car(b, lx, lz, r) {
     const c = this.sub(b, lx, 0, lz, r);
@@ -967,7 +1058,6 @@ const W = G.World = {
       g.rotateX(Math.PI / 2); g.translate(sx, 0.36, sz);
       this.geo(c, g, 'dark', dark, sx, sz);
     }
-    if (this.rnd() < 0.35) { const p = this.tf(c, 0, 1.6); this.lootSpots.push({ x: p[0], y: this.heightAt(p[0], p[1]) + 0.05, z: p[1] }); }
   },
   ruins(b) {
     const r = this.rnd, col = C(U.pick([0xb8b0a0, 0xa09888, 0xc0b8a8]));
@@ -977,7 +1067,6 @@ const W = G.World = {
     this.boxMM(b, -L / 2, -0.5, 0.15, -L / 2 + 0.3, 0.6 + r() * 1.8, 0.15 + 2 + r() * 3, m, m === 'brick' ? C(0xffffff) : col);
     if (r() < 0.6) this.boxMM(b, L / 2 - 2.5, -0.5, 2.5, L / 2, 1.1, 2.8, m, m === 'brick' ? C(0xffffff) : col);
     for (let i = 0; i < 3; i++) { const s = 0.3 + r() * 0.5; this.box(b, (r() - 0.5) * L, s / 2 - 0.1, 1 + r() * 2, s, s, s, 'concrete', col, NC); }
-    if (r() < 0.6) this.loot(b, 0, 0.05, 1.2);
   },
   // 통나무 산장 (숲·산)
   cabin(b) {
@@ -997,7 +1086,7 @@ const W = G.World = {
     for (const x of [-Wd / 2 + 0.2, Wd / 2 - 0.2]) this.boxMM(b, x - 0.08, 0.08, D / 2 + 1.42, x + 0.08, H, D / 2 + 1.58, 'wood', C(0x5a3e28), NC);
     this.boxMM(b, -Wd / 2, H - 0.1, D / 2, Wd / 2, H + 0.05, D / 2 + 1.7, 'wood', C(0x5a4030), NC);
     this.furniture(b, -Wd / 2 + T, -D / 2 + T, Wd / 2 - T, D / 2 - T, 0);
-    this.loot(b, -1.5, 0.05, -1.2); if (this.rnd() < 0.6) this.loot(b, 1.8, 0.05, 1.0);
+    this.loot(b, -1.5, 0.05, -1.2); this.loot(b, 1.8, 0.05, 1.0); this.loot(b, 0.2, 0.05, 2.2);
   },
   // 강 위 다리 (도로가 강을 건너는 곳)
   genBridges() {
@@ -1079,6 +1168,7 @@ const W = G.World = {
     if (this.bridges && this.bridges.some(br => Math.hypot(cx - br.x, cz - br.z) < br.half + Math.max(hw, hd) + 4)) return false;
     if (opts && opts.maxSlope !== undefined && mx - mn > opts.maxSlope) return false;
     this.footprints.push({ minX: cx - hw, maxX: cx + hw, minZ: cz - hd, maxZ: cz + hd, kind });
+    this.cur = LOD_KIND[kind] ? { x: cx, z: cz, tag: LOD_KIND[kind], geos: [] } : null;
     let fy = mx + 0.12;
     const noFound = ['car', 'sandbags', 'hay', 'ruins', 'containers', 'tower'];
     if (!noFound.includes(kind)) {
@@ -1108,7 +1198,39 @@ const W = G.World = {
       case 'ruins': this.ruins(b); break;
       case 'cabin': this.cabin(b); break;
     }
+    if (this.cur && this.cur.tag === 'b') this.makeProxy(this.cur);
+    this.cur = null;
     return true;
+  },
+  // 멀리서 볼 건물 대역: 벽은 상자 하나, 지붕은 원래 지붕. 재질 하나로 합쳐 청크당 1회 그린다
+  makeProxy(B) {
+    const bb = new THREE.Box3(), gb = new THREE.Box3();
+    let roofY = Infinity, best = null, bestA = -1;
+    const area = {};
+    const roofs = [];
+    for (const e of B.geos) {
+      if (!e.geo.boundingBox) e.geo.computeBoundingBox();
+      gb.copy(e.geo.boundingBox);
+      if (e.mat === 'roof') { roofs.push(e); roofY = Math.min(roofY, gb.min.y); continue; }
+      if (e.mat === 'glass' || e.mat === 'dark') continue;
+      bb.union(gb);
+      if (e.mat === 'floor') continue;
+      const sx = gb.max.x - gb.min.x, sy = gb.max.y - gb.min.y, sz = gb.max.z - gb.min.z;
+      const k = e.mat + '#' + e.color.getHexString();
+      area[k] = (area[k] || 0) + sy * (sx + sz);
+      if (area[k] > bestA) { bestA = area[k]; best = e; }
+    }
+    if (bb.isEmpty() || !best) return;
+    const top = roofs.length ? Math.min(roofY + 0.05, bb.max.y) : bb.max.y;
+    const w = bb.max.x - bb.min.x, d = bb.max.z - bb.min.z, h = top - bb.min.y;
+    const cx = Math.floor((B.x + HALF) / LOD_CH), cz = Math.floor((B.z + HALF) / LOD_CH);
+    const list = this.proxyParts;
+    if (h > 0.2) {
+      const g = new THREE.BoxGeometry(w - 0.1, h, d - 0.1).toNonIndexed();
+      g.translate((bb.min.x + bb.max.x) / 2, bb.min.y + h / 2, (bb.min.z + bb.max.z) / 2);
+      list.push({ geo: g, mat: best.mat, color: best.color, cx, cz });
+    }
+    for (const e of roofs) list.push({ geo: e.geo.clone(), mat: 'roof', color: e.color, cx, cz });
   },
   genTowns() {
     const r = this.rnd;
@@ -1165,7 +1287,7 @@ const W = G.World = {
       }
     };
     // 외딴 농가 무리 (집 + 헛간 + 창고)
-    for (let n = 0; n < 14; n++) {
+    for (let n = 0; n < 24; n++) {
       for (let i = 0; i < 60; i++) {
         const x = (r() - 0.5) * 760 * MK, z = (r() - 0.5) * 760 * MK;
         if (Math.hypot(x, z) > 400 * MK || inTown(x, z, 60)) continue;
@@ -1177,10 +1299,31 @@ const W = G.World = {
         break;
       }
     }
-    tryWild('house1', 34, 1.0, 30);
-    tryWild('shed', 26, 0.8, 25);
-    tryWild('house2', 14, 0.8, 30);
-    tryWild('cabin', 30, 1.6, 20, 12, 120);
+    // 작은 마을(집 3~6채)을 마을 사이 빈 땅에 고르게 흩뿌린다: 섬을 격자로 나눠 칸마다 한 번씩 시도
+    const cells = 9, cs = 820 * MK / cells;
+    for (let gz = 0; gz < cells; gz++) for (let gx = 0; gx < cells; gx++) {
+      if (r() < 0.12) continue;
+      for (let i = 0; i < 40; i++) {
+        const x = (gx + 0.15 + r() * 0.7) * cs - 410 * MK, z = (gz + 0.15 + r() * 0.7) * cs - 410 * MK;
+        if (Math.hypot(x, z) > 410 * MK || inTown(x, z, 55)) continue;
+        const h = this.heightAt(x, z); if (h < 3 || h > 90) continue;
+        const kinds = ['house1', r() < 0.5 ? 'house2' : 'house1', 'shed', r() < 0.6 ? 'house1' : 'cabin', r() < 0.5 ? 'house2' : 'shed', 'house1'];
+        const want = 3 + Math.floor(r() * 4);
+        let n = 0;
+        for (let k = 0; k < kinds.length && n < want; k++) {
+          for (let j = 0; j < 10; j++) {
+            const a = r() * 6.28, d = n === 0 ? 0 : 13 + r() * 18;
+            const hx = x + Math.cos(a) * d, hz = z + Math.sin(a) * d;
+            if (this.place(kinds[k], hx, hz, Math.floor(r() * 4), { maxSlope: 1.6, margin: 4 })) { if (n === 0) this.wildHouses.push({ x: hx, z: hz, kind: kinds[k] }); n++; break; }
+          }
+        }
+        if (n > 0) break;
+      }
+    }
+    tryWild('house1', 90, 1.2, 28);
+    tryWild('shed', 40, 0.8, 25);
+    tryWild('house2', 45, 1.0, 28);
+    tryWild('cabin', 55, 1.8, 20, 12, 120);
     tryWild('ruins', 40, 2.5, 20);
     tryWild('tower', 12, 1.5, 20);
     tryWild('sandbags', 20, 2.0, 15);
@@ -1985,6 +2128,10 @@ const W = G.World = {
 
   update(dt, camPos, cam) {
     this.time += dt;
+    this.lodT = (this.lodT || 0) - dt;
+    const lz = G.lodZoom || 1;
+    if (lz !== this.lodZoom) { this.lodZoom = lz; this.lodT = 0; }
+    if (this.lodT <= 0 && this.lod.length) { this.lodT = 0.2; this.updateLOD(camPos); }
     if (this.windTime) this.windTime.value = this.time;
     if (G.Veg) G.Veg.update(dt, camPos);
     if (this.grass) {

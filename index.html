@@ -11,7 +11,7 @@
 <script>
 // 새 버전이 올라왔는데 휴대폰이 예전 페이지를 기억하고 있으면 새로 불러온다
 (function () {
-  var BUILD = '7';
+  var BUILD = '9';
   try {
     fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (v) {
       v = (v || '').trim();
@@ -96,7 +96,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=7">
+<link rel="stylesheet" href="css/style.css?v=9">
 <script type="importmap">
 {
   "imports": {
@@ -145,6 +145,7 @@
     </div>
 
     <button id="startBtn">게임 시작</button>
+    <button id="touchLayoutBtn2" class="ghost touch-only" style="margin-top:10px;width:100%;padding:12px;border-radius:10px;font-size:17px;font-weight:700;color:#fff;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18)">휴대폰 버튼 위치 바꾸기</button>
   </div>
 
   <div class="menu-right">
@@ -241,6 +242,7 @@
     <div class="logo">LAST<span>ZONE</span></div>
     <div class="ptitle">일시정지</div>
     <button id="resumeBtn">계속하기</button>
+    <button id="touchLayoutBtn" class="ghost touch-only">버튼 위치 바꾸기</button>
     <button id="quitBtn" class="ghost">메인 메뉴로</button>
   </div>
 </div>
@@ -296,7 +298,7 @@ try {
     loadText.textContent = '스크립트 불러오는 중... (' + files[i] + ')';
     await new Promise((res, rej) => {
       const s = document.createElement('script');
-      s.src = 'js/' + files[i] + '.js?v=7';
+      s.src = 'js/' + files[i] + '.js?v=9';
       s.onload = res;
       s.onerror = () => rej(new Error(files[i] + '.js 를 불러올 수 없습니다'));
       document.body.appendChild(s);
