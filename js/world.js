@@ -34,7 +34,9 @@ const TOWN_DEFS = [
   { name: '어촌', x: 270, z: 620, r: 42, type: 'harbor' },
   { name: '목장', x: 120, z: 260, r: 56, type: 'farm' },
   { name: '채석장', x: 470, z: -230, r: 50, type: 'quarry' },
-  { name: '남서 마을', x: -560, z: 300, r: 44, type: 'village' }
+  { name: '남서 마을', x: -560, z: 300, r: 44, type: 'village' },
+  // 훈련장 (평평하게 고른 사격장, 사격 방향 -z)
+  { name: '사격장', x: -70, z: 380, r: 72, type: 'range' }
 ];
 // 큰 산 (중심, 반지름, 높이)
 const MOUNTAINS = [
@@ -63,7 +65,8 @@ const TOWN_CONTENT = {
   plant: [['warehouse', 3], ['tank', 5], ['chimney', 2], ['containers', 4], ['house1', 2], ['car', 3]],
   depot: [['warehouse', 5], ['containers', 8], ['shed', 2], ['car', 4]],
   quarry: [['warehouse', 1], ['containers', 3], ['shed', 3], ['ruins', 3], ['tower', 1], ['car', 2]],
-  village: [['house1', 6], ['house2', 3], ['shed', 3], ['cabin', 1], ['car', 3]]
+  village: [['house1', 6], ['house2', 3], ['shed', 3], ['cabin', 1], ['car', 3]],
+  range: []
 };
 const FOOT = {
   house1: [10, 8], house2: [12, 10], apt: [14, 12], shop: [10, 9], warehouse: [24, 14], barracks: [16, 7],
@@ -324,7 +327,7 @@ const W = G.World = {
   },
   // 도로 연결망: 최소 신장 트리 + 가까운 이웃, 호수/바다/고산을 지나는 길은 뺀다
   genRoadNet() {
-    const T = this.towns, n = T.length;
+    const T = this.towns.filter(t => t.type !== 'range'), n = T.length;
     const dist = (a, b) => Math.hypot(T[a].x - T[b].x, T[a].z - T[b].z);
     const ok = (a, b) => {
       const A = T[a], B = T[b], L = dist(a, b);
@@ -1262,6 +1265,7 @@ const W = G.World = {
   genTowns() {
     const r = this.rnd;
     for (const t of this.towns) {
+      if (t.type === 'range') { this.buildRange(t); continue; }
       const content = TOWN_CONTENT[t.type];
       for (const [kind, count] of content) {
         let placed = 0;
@@ -1298,6 +1302,44 @@ const W = G.World = {
         this.fence(t.x - R, t.z - R, t.x - R, t.z + R);
       }
     }
+  },
+  // 사격장 고정 구조물: 사격대(지붕·벤치 테이블), 옆·뒤 흙벽, 표적 레일. 표적·총은 훈련 모드에서만 올린다
+  buildRange(t) {
+    const y = t.h, b = this.ctx(t.x, y, t.z, 0), FL = 46;           // 사격선 (사격장 중심 기준 +z 46m)
+    this.range = { x: t.x, z: t.z, y, line: t.z + FL, spawn: { x: t.x, z: t.z + FL + 3 } };
+    const conc = C(0xbdb8ae), wood = C(0x8a6a48), dark = C(0x3a3a38), metal = C(0x7d838a), bag = C(0xd8ccb0);
+    // 사격대 바닥·지붕·기둥
+    this.boxMM(b, -16, -0.4, FL, 16, 0.06, FL + 10, 'concrete', conc, NC);
+    for (const x of [-15.6, -5.2, 5.2, 15.6]) for (const z of [FL + 0.4, FL + 9.6]) this.boxMM(b, x - 0.15, 0, z - 0.15, x + 0.15, 3.4, z + 0.15, 'metal', metal);
+    this.boxMM(b, -16.4, 3.4, FL - 0.4, 16.4, 3.6, FL + 10.4, 'metal', C(0x5d6066), NC);
+    this.boxMM(b, -16.4, 3.0, FL + 10.2, 16.4, 3.4, FL + 10.4, 'metal', C(0x5d6066), NC);
+    // 벤치 테이블 4개 (사격선 바로 앞): 소총 · 산탄총 · 권총 · 조준경/투척
+    this.range.tables = [];
+    for (let i = 0; i < 4; i++) {
+      const x0 = -14 + i * 7.2, x1 = x0 + 5.6, z0 = FL + 0.6, z1 = FL + 1.6;
+      this.boxMM(b, x0, 0.86, z0, x1, 0.94, z1, 'wood', wood);
+      for (const [lx, lz] of [[x0 + 0.1, z0 + 0.1], [x1 - 0.1, z0 + 0.1], [x0 + 0.1, z1 - 0.1], [x1 - 0.1, z1 - 0.1]]) this.boxMM(b, lx - 0.05, 0.06, lz - 0.05, lx + 0.05, 0.86, lz + 0.05, 'wood', C(0x5a4632), NC);
+      this.boxMM(b, x0 + 0.1, 0.3, z0 + 0.1, x1 - 0.1, 0.34, z1 - 0.1, 'wood', C(0x6b5038), NC);
+      this.range.tables.push({ x0: t.x + x0, x1: t.x + x1, z: t.z + (z0 + z1) / 2, y: y + 0.94 });
+    }
+    // 흙벽 (뒤쪽 탄 받이, 양옆)
+    this.boxMM(b, -42, -1, -82, 42, 7.5, -75, 'sandbag', bag);
+    this.boxMM(b, -42, -1, -75, -38, 3.6, FL - 2, 'sandbag', bag);
+    this.boxMM(b, 38, -1, -75, 42, 3.6, FL - 2, 'sandbag', bag);
+    // 움직이는 표적 레일 (20m · 40m · 60m)
+    this.range.rails = [];
+    for (const d of [20, 40, 60]) {
+      const z = FL - d;
+      this.boxMM(b, -17, 0.02, z - 0.06, 17, 0.12, z + 0.06, 'metal', dark, NC);
+      this.boxMM(b, -17.4, 0, z - 0.5, -16.6, 1.0, z + 0.5, 'concrete', conc, NC);
+      this.boxMM(b, 16.6, 0, z - 0.5, 17.4, 1.0, z + 0.5, 'concrete', conc, NC);
+      this.range.rails.push({ z: t.z + z, d });
+    }
+    // 거리 표지 기둥 (숫자는 훈련 모드에서 붙인다)
+    for (const d of [10, 25, 50, 75, 100]) this.boxMM(b, -36.1, 0, FL - d - 0.1, -35.9, 1.8, FL - d + 0.1, 'wood', wood, NC);
+    // 나무·집이 들어오지 않게 영역 표시
+    this.footprints.push({ minX: t.x - 16, maxX: t.x + 16, minZ: t.z + FL, maxZ: t.z + FL + 10, kind: 'pad' });   // 사격대 바닥 (포장, 풀 없음)
+    this.footprints.push({ minX: t.x - 44, maxX: t.x + 44, minZ: t.z - 84, maxZ: t.z + FL + 12, kind: 'range' });
   },
   genWild() {
     const r = this.rnd;
@@ -1399,7 +1441,7 @@ const W = G.World = {
       if (nr && nr.d > 14 && nr.d < 260) addPath(h.x, h.z, nr.x, nr.z, 2.6);
     }
     // 오솔길: 마을과 마을 사이 도로가 없는 곳
-    const T = this.towns;
+    const T = this.towns.filter(t => t.type !== 'range');
     for (let i = 0; i < T.length; i++) for (let j = i + 1; j < T.length; j++) {
       const d = Math.hypot(T[i].x - T[j].x, T[i].z - T[j].z);
       if (d > 420 || d < 120) continue;
@@ -1472,8 +1514,9 @@ const W = G.World = {
     sctx.putImageData(simg, 0, 0); mctx.putImageData(mimg, 0, 0); kctx.putImageData(kimg, 0, 0);
     const s = TS / SIZE, ks = MS / SIZE;
     const toC = (x, sc) => (x + HALF) * sc;
-    // 마을 땅
+    // 마을 땅 (사격장은 풀밭 그대로)
     for (const t of this.towns) {
+      if (t.type === 'range') continue;
       for (const [ctx, sc, col] of [[sctx, s, 'rgba(132,118,96,'], [mctx, s, 'rgba(150,138,118,']]) {
         const g = ctx.createRadialGradient(toC(t.x, sc), toC(t.z, sc), 0, toC(t.x, sc), toC(t.z, sc), (t.r + 12) * sc);
         g.addColorStop(0, col + '0.75)'); g.addColorStop(0.7, col + '0.55)'); g.addColorStop(1, col + '0)');
@@ -1517,6 +1560,7 @@ const W = G.World = {
     // 건물 바닥
     const noPad = ['car', 'sandbags', 'hay', 'ruins', 'tower'];
     for (const f of this.footprints) {
+      if (f.kind === 'range') continue;   // 사격장 영역은 풀밭 그대로
       if (!noPad.includes(f.kind)) {
         sctx.fillStyle = 'rgba(150,146,138,0.95)';
         sctx.fillRect(toC(f.minX - 1, s), toC(f.minZ - 1, s), (f.maxX - f.minX + 2) * s, (f.maxZ - f.minZ + 2) * s);
@@ -1531,6 +1575,7 @@ const W = G.World = {
     const gray = () => { const cv = document.createElement('canvas'); cv.width = cv.height = TS; const x = cv.getContext('2d', { willReadFrequently: true }); x.fillStyle = '#000'; x.fillRect(0, 0, TS, TS); return x; };
     const tctx = gray(), pctx = gray();
     for (const t of this.towns) {
+      if (t.type === 'range') continue;
       const g = tctx.createRadialGradient(toC(t.x, s), toC(t.z, s), 0, toC(t.x, s), toC(t.z, s), (t.r + 12) * s);
       g.addColorStop(0, 'rgba(255,255,255,0.7)'); g.addColorStop(0.7, 'rgba(255,255,255,0.5)'); g.addColorStop(1, 'rgba(255,255,255,0)');
       tctx.fillStyle = g; tctx.beginPath(); tctx.arc(toC(t.x, s), toC(t.z, s), (t.r + 12) * s, 0, Math.PI * 2); tctx.fill();
@@ -1539,7 +1584,7 @@ const W = G.World = {
     drawRoads(tctx, s, '#fff', '#fff', null);
     drawRoads(pctx, s, '#000', '#fff', null);
     for (const f of this.footprints) {
-      if (noPad.includes(f.kind)) continue;
+      if (noPad.includes(f.kind) || f.kind === 'range') continue;
       pctx.fillStyle = 'rgba(255,255,255,0.85)';
       pctx.fillRect(toC(f.minX - 1, s), toC(f.minZ - 1, s), (f.maxX - f.minX + 2) * s, (f.maxZ - f.minZ + 2) * s);
     }

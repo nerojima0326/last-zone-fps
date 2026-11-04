@@ -302,3 +302,18 @@ html.mobile #weaponPanel #slots { justify-content: center; }
 /* 잠깐 뜨는 안내 */
 #toast { position: fixed; left: 50%; top: 90px; transform: translateX(-50%); z-index: 45; background: rgba(8,12,18,0.82); color: #ffd27a; font: 700 15px 'Noto Sans KR', sans-serif; padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(255,210,122,0.35); opacity: 0; transition: opacity 0.3s; pointer-events: none; }
 #toast.on { opacity: 1; }
+
+/* ---- 훈련장 ---- */
+#trainBtn { width: 100%; margin-top: 10px; padding: 12px; border-radius: 10px; font-size: 18px; font-weight: 800; letter-spacing: 3px; color: #fff; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,181,38,0.55); }
+#trainBtn small { font-size: 12px; letter-spacing: 0; font-weight: 500; color: var(--muted); margin-left: 8px; }
+#trainBtn:hover { background: rgba(255,181,38,0.18); }
+#hud.training #topRight, #hud.training #killfeed, #hud.training #zoneInfo { display: none; }
+#trainStats { position: absolute; left: 50%; top: 58px; transform: translateX(-50%); display: flex; gap: 14px; align-items: center; background: rgba(8,12,18,0.6); border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; padding: 6px 14px; font: 600 14px 'Noto Sans KR', sans-serif; color: #dfe6ec; white-space: nowrap; }
+#trainStats b { color: var(--accent); letter-spacing: 2px; }
+#trainStats i { font-style: normal; font-family: var(--num); font-size: 17px; color: #fff; }
+#trainStats.hidden { display: none; }
+#dmgNums { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+#dmgNums .dn { position: absolute; left: 0; top: 0; font: 800 26px var(--num); color: #fff; text-shadow: 0 0 3px #000, 0 2px 4px #000; will-change: transform, opacity; }
+#dmgNums .dn.head { color: #ffcf3a; font-size: 32px; }
+#dmgNums .dn.kill { color: #ff5a4a; }
+#dmgNums .dn.head.kill { color: #ff8a3a; }

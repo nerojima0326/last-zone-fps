@@ -300,6 +300,7 @@ const P = G.Player = {
     _r.set(1, 0, 0).applyQuaternion(cam.quaternion); _u.set(0, 1, 0).applyQuaternion(cam.quaternion);
     G.VM.muzzleWorld(cam, _m);
     const spread = this.currentSpread(def);
+    if (G.Game.training) G.Training.onShot();
     for (let k = 0; k < def.pellets; k++) {
       const rr = spread * Math.sqrt(Math.random()), th = Math.random() * Math.PI * 2;
       _d.copy(_f).addScaledVector(_r, Math.cos(th) * rr).addScaledVector(_u, Math.sin(th) * rr).normalize();
