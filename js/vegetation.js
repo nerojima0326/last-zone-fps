@@ -25,7 +25,8 @@ const VARIANTS = {
 };
 // 품질별 실제 메시로 그리는 반경 (그 밖은 임포스터)
 // budget: 실제 메시로 그릴 최대 그루 수 (숲 한가운데서는 반경을 줄여 성능 유지)
-const RANGE = { low: { tree: 70, bush: 35, tb: 200, bb: 220 }, medium: { tree: 100, bush: 50, tb: 330, bb: 380 }, high: { tree: 125, bush: 62, tb: 400, bb: 500 } };
+// minT/minB: 숲 한가운데서 예산을 넘을 때 줄일 수 있는 최소 반경
+const RANGE = { potato: { tree: 40, bush: 16, tb: 45, bb: 40, minT: 18, minB: 8 }, low: { tree: 58, bush: 24, tb: 90, bb: 90, minT: 26, minB: 10 }, medium: { tree: 95, bush: 45, tb: 280, bb: 320, minT: 45, minB: 25 }, high: { tree: 125, bush: 62, tb: 400, bb: 500, minT: 45, minB: 25 } };
 
 const _v = new THREE.Vector3(), _box = new THREE.Box3();
 
@@ -202,6 +203,9 @@ const Veg = G.Veg = {
 
   setQuality(q) {
     this.range = RANGE[q] || RANGE.high;
+    // 낮음·최저: 나무 그림자 생략 (그림자 패스에서 나무를 다시 그리는 비용이 크다)
+    this.treeShadow = q === 'medium' || q === 'high';
+    for (const v of this.variants) if (v.near) v.near.castShadow = v.nearLeaf.castShadow = v.kind !== 'bush' && this.treeShadow;
     this.uR.value = this.range.tree; this.uRB.value = this.range.bush;
     this.lastT = -1e9;
   },
@@ -225,8 +229,8 @@ const Veg = G.Veg = {
       return c;
     };
     let rt = this.range.tree, rb = this.range.bush;
-    const ct = count(false, rt + 8); if (ct > this.range.tb) rt = Math.max(45, rt * Math.sqrt(this.range.tb / ct));
-    const cb = count(true, rb + 8); if (cb > this.range.bb) rb = Math.max(25, rb * Math.sqrt(this.range.bb / cb));
+    const ct = count(false, rt + 8); if (ct > this.range.tb) rt = Math.max(this.range.minT || 45, rt * Math.sqrt(this.range.tb / ct));
+    const cb = count(true, rb + 8); if (cb > this.range.bb) rb = Math.max(this.range.minB || 25, rb * Math.sqrt(this.range.bb / cb));
     this.uR.value = rt; this.uRB.value = rb;
     for (const v of this.variants) {
       if (!v.near) continue;

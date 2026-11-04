@@ -585,7 +585,8 @@ const W = G.World = {
       if (B.tag === 'b' && !this.inFurn) B.geos.push({ geo, mat, color });
     }
     geo.setAttribute('lodk', new THREE.BufferAttribute(lk, 3));
-    const key = Math.floor((wx + HALF) / 250) + ',' + Math.floor((wz + HALF) / 250) + '|' + mat;
+    // 건물 조각은 따로 묶어 멀리 있는 청크는 통째로 숨긴다 (보이지 않는 정점 처리 비용 절약)
+    const key = Math.floor((wx + HALF) / 250) + ',' + Math.floor((wz + HALF) / 250) + '|' + mat + (B ? '|d' : '');
     (this.parts[key] || (this.parts[key] = [])).push(geo);
   },
   addCollider(x0, y0, z0, x1, y1, z1, mat) {
@@ -598,15 +599,22 @@ const W = G.World = {
     return b;
   },
   finalizeParts() {
+    this.bChunks = {};
     for (const key in this.parts) {
-      const mat = key.split('|')[1];
+      const ks = key.split('|'), mat = ks[1];
       const geo = THREE.mergeGeometries(this.parts[key], false);
       if (!geo) continue;
       const mesh = new THREE.Mesh(geo, this.mats[mat]);
       mesh.castShadow = true; mesh.receiveShadow = true;
       mesh.matrixAutoUpdate = false;
       this.scene.add(mesh);
+      if (ks[2] === 'd') {
+        const [ix, iz] = ks[0].split(',').map(Number);
+        const c = this.bChunks[ks[0]] || (this.bChunks[ks[0]] = { x0: ix * 250 - HALF, z0: iz * 250 - HALF, x1: (ix + 1) * 250 - HALF, z1: (iz + 1) * 250 - HALF, meshes: [], vis: true });
+        c.meshes.push(mesh);
+      }
     }
+    this.bChunks = Object.values(this.bChunks);
     this.parts = {};
     // 멀리서 보이는 건물 대역: 재질 평균색 × 정점 색, 섬 전체를 한 번에 그린다
     const mean = {};
@@ -641,13 +649,24 @@ const W = G.World = {
       this.lod.push({ i: iz * LOD_N + ix, x0: ix * LOD_CH - HALF, z0: iz * LOD_CH - HALF, x1: (ix + 1) * LOD_CH - HALF, z1: (iz + 1) * LOD_CH - HALF, st: -1 });
     this.lodT = 0;
   },
+  updateTerrainLOD(camPos) {
+    if (!this.terrainChunks) return;
+    const D = this.terrainLodDist, k = this.terrDist || 1, hy = Math.max(0, camPos.y - this.heightAt(camPos.x, camPos.z) - 20);
+    for (const c of this.terrainChunks) {
+      const dx = Math.max(c.x0 - camPos.x, 0, camPos.x - c.x1), dz = Math.max(c.z0 - camPos.z, 0, camPos.z - c.z1);
+      const d = Math.sqrt(dx * dx + dz * dz + hy * hy) / k;
+      let l = 0;
+      while (l < 4 && d > D[l] + (l < c.lod ? -10 : 10)) l++;
+      if (l !== c.lod) { c.lod = l; c.mesh.geometry = c.lods[l]; }
+    }
+  },
   // 카메라 거리에 따라 청크별로 상세/대역/가구/자동차 표시를 바꾼다
   updateLOD(camPos, force) {
     let changed = false;
     const hy = Math.max(0, camPos.y - this.heightAt(camPos.x, camPos.z) - 30);
     for (const c of this.lod) {
       const dx = Math.max(c.x0 - camPos.x, 0, camPos.x - c.x1), dz = Math.max(c.z0 - camPos.z, 0, camPos.z - c.z1);
-      const d = Math.sqrt(dx * dx + dz * dz + hy * hy) / (this.lodZoom || 1);
+      const d = Math.sqrt(dx * dx + dz * dz + hy * hy) / ((this.lodZoom || 1) * (this.lodDist || 1));
       // 단계: 0 가구까지, 1 상세, 2 상세(자동차 숨김), 3 대역 (경계에서 깜빡이지 않게 여유를 둔다)
       const pad = c.st < 0 ? 0 : 12;
       let st = 3;
@@ -660,6 +679,14 @@ const W = G.World = {
       changed = true;
     }
     if (changed) this.lodTex.needsUpdate = true;
+    // 상세 건물이 하나도 보이지 않을 만큼 먼 250m 청크는 메시째 끈다
+    // 저사양(상세 거리 배율 < 1)은 상세 거리 밖 자동차도 생략해 그리기 호출을 줄인다
+    const far = ((this.lodDist || 1) < 1 ? LOD_NEAR : LOD_CAR) * (this.lodDist || 1) * (this.lodZoom || 1) + 20;
+    for (const c of this.bChunks || []) {
+      const dx = Math.max(c.x0 - camPos.x, 0, camPos.x - c.x1), dz = Math.max(c.z0 - camPos.z, 0, camPos.z - c.z1);
+      const vis = Math.sqrt(dx * dx + dz * dz + hy * hy) < far;
+      if (vis !== c.vis) { c.vis = vis; for (const m of c.meshes) m.visible = vis; }
+    }
   },
   boxGeom(w, h, d, tile) {
     const g = new THREE.BoxGeometry(w, h, d).toNonIndexed();
@@ -1527,35 +1554,76 @@ const W = G.World = {
     wtex.wrapS = wtex.wrapT = THREE.ClampToEdgeWrapping; wtex.needsUpdate = true;
   },
   buildTerrainMesh() {
-    const pos = new Float32Array(N * N * 3), uv = new Float32Array(N * N * 2), uv1 = new Float32Array(N * N * 2);
+    // 지형을 64칸(200m) 청크로 나누고, 청크마다 해상도 5단계(1·2·4·8·16칸 간격)를 미리 만든다.
+    // 카메라에서 먼 청크일수록 성긴 단계를 쓰고(updateTerrainLOD), 단계가 다른 청크 사이 틈은 아래로 내린 '치마'로 가린다
+    const H = this.heights;
+    const nrm = new Float32Array(N * N * 3);
     for (let iz = 0; iz < N; iz++) for (let ix = 0; ix < N; ix++) {
-      const i = iz * N + ix, x = ix * CELL - HALF, z = iz * CELL - HALF;
-      pos[i * 3] = x; pos[i * 3 + 1] = this.heights[i]; pos[i * 3 + 2] = z;
-      uv[i * 2] = ix / RES; uv[i * 2 + 1] = iz / RES;
-      uv1[i * 2] = x / 4; uv1[i * 2 + 1] = z / 4;
+      const hl = H[iz * N + Math.max(0, ix - 1)], hr = H[iz * N + Math.min(RES, ix + 1)];
+      const hd = H[Math.max(0, iz - 1) * N + ix], hu = H[Math.min(RES, iz + 1) * N + ix];
+      let nx = hl - hr, ny = 2 * CELL, nz = hd - hu;
+      const l = Math.hypot(nx, ny, nz); nx /= l; ny /= l; nz /= l;
+      const i = (iz * N + ix) * 3; nrm[i] = nx; nrm[i + 1] = ny; nrm[i + 2] = nz;
     }
-    const idx = new Uint32Array(RES * RES * 6);
-    let k = 0;
-    for (let iz = 0; iz < RES; iz++) for (let ix = 0; ix < RES; ix++) {
-      const a = iz * N + ix, b = (iz + 1) * N + ix, c = (iz + 1) * N + ix + 1, d = iz * N + ix + 1;
-      idx[k++] = a; idx[k++] = b; idx[k++] = d;
-      idx[k++] = b; idx[k++] = c; idx[k++] = d;
-    }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
-    geo.setAttribute('uv1', new THREE.BufferAttribute(uv1, 2));
-    geo.setIndex(new THREE.BufferAttribute(idx, 1));
-    geo.computeVertexNormals();
+    const CH = 64, NCH = RES / CH, STEPS = [1, 2, 4, 8, 16];
+    const makeLod = (cx, cz, st) => {
+      const n = CH / st + 1, ix0 = cx * CH, iz0 = cz * CH;
+      const skirtN = 4 * (n - 1);
+      const vc = n * n + skirtN * 2;
+      const pos = new Float32Array(vc * 3), nor = new Float32Array(vc * 3), uv = new Float32Array(vc * 2), uv1 = new Float32Array(vc * 2);
+      let v = 0;
+      const put = (ix, iz, dy) => {
+        const gi = iz * N + ix, x = ix * CELL - HALF, z = iz * CELL - HALF;
+        pos[v * 3] = x; pos[v * 3 + 1] = H[gi] - dy; pos[v * 3 + 2] = z;
+        nor[v * 3] = nrm[gi * 3]; nor[v * 3 + 1] = nrm[gi * 3 + 1]; nor[v * 3 + 2] = nrm[gi * 3 + 2];
+        uv[v * 2] = ix / RES; uv[v * 2 + 1] = iz / RES; uv1[v * 2] = x / 4; uv1[v * 2 + 1] = z / 4;
+        return v++;
+      };
+      for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) put(ix0 + i * st, iz0 + j * st, 0);
+      const idx = [];
+      for (let j = 0; j < n - 1; j++) for (let i = 0; i < n - 1; i++) {
+        const a = j * n + i, b2 = (j + 1) * n + i, c = b2 + 1, d = a + 1;
+        idx.push(a, b2, d, b2, c, d);
+      }
+      // 치마: 가장자리를 따라 아래로 내린 띠 (앞뒤 양면)
+      const drop = 1.5 + st * 1.2;
+      const ring = [];
+      for (let i = 0; i < n - 1; i++) ring.push([i, 0]);
+      for (let j = 0; j < n - 1; j++) ring.push([n - 1, j]);
+      for (let i = n - 1; i > 0; i--) ring.push([i, n - 1]);
+      for (let j = n - 1; j > 0; j--) ring.push([0, j]);
+      const top = ring.map(([i, j]) => j * n + i), bot = ring.map(([i, j]) => put(ix0 + i * st, iz0 + j * st, drop));
+      for (let k = 0; k < ring.length; k++) {
+        const k2 = (k + 1) % ring.length, a = top[k], b2 = top[k2], c = bot[k2], d = bot[k];
+        idx.push(a, d, b2, b2, d, c, a, b2, d, b2, c, d);
+      }
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.BufferAttribute(pos.subarray(0, v * 3), 3));
+      g.setAttribute('normal', new THREE.BufferAttribute(nor.subarray(0, v * 3), 3));
+      g.setAttribute('uv', new THREE.BufferAttribute(uv.subarray(0, v * 2), 2));
+      g.setAttribute('uv1', new THREE.BufferAttribute(uv1.subarray(0, v * 2), 2));
+      g.setIndex(idx);
+      g.computeBoundingSphere();
+      return g;
+    };
     const splatTex = new THREE.CanvasTexture(this.splatCanvas);
     splatTex.flipY = false; splatTex.colorSpace = THREE.SRGBColorSpace; splatTex.anisotropy = 8;
     splatTex.wrapS = splatTex.wrapT = THREE.ClampToEdgeWrapping;
     const mat = this.terrainMaterial(splatTex) || this.terrainMaterialProc(splatTex);
-    const mesh = new THREE.Mesh(geo, mat);
-    mesh.receiveShadow = true;
-    mesh.matrixAutoUpdate = false;
-    this.scene.add(mesh);
-    this.terrain = mesh;
+    this.terrainChunks = [];
+    const grp = new THREE.Group();
+    for (let cz = 0; cz < NCH; cz++) for (let cx = 0; cx < NCH; cx++) {
+      const lods = STEPS.map(st => makeLod(cx, cz, st));
+      const mesh = new THREE.Mesh(lods[STEPS.length - 1], mat);
+      mesh.receiveShadow = true; mesh.matrixAutoUpdate = false;
+      grp.add(mesh);
+      this.terrainChunks.push({ mesh, lods, lod: STEPS.length - 1, x0: cx * CH * CELL - HALF, z0: cz * CH * CELL - HALF, x1: (cx + 1) * CH * CELL - HALF, z1: (cz + 1) * CH * CELL - HALF });
+    }
+    this.scene.add(grp);
+    this.terrain = grp;
+    this.terrainMat = mat;
+    // 단계 경계 거리 (품질에 따라 배율)
+    this.terrainLodDist = [140, 330, 650, 1000];
     const sea = new THREE.Mesh(new THREE.PlaneGeometry(8000, 8000).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x3a4a44, roughness: 1 }));
     sea.position.y = -15; sea.matrixAutoUpdate = false; sea.updateMatrix();
     this.scene.add(sea);
@@ -1756,6 +1824,7 @@ const W = G.World = {
     pm.dispose();
     this.syncGrassLight();
     if (G.FX) G.FX.setFog(this.fogColor, P.fogD);
+    if (this.fogK && this.fogK !== 1) this.setFogScale(this.fogK);
   },
 
   /* -------------------------------------------------------------- */
@@ -1924,7 +1993,7 @@ const W = G.World = {
   setupGrass(quality) {
     if (G.Veg) G.Veg.setQuality(quality);
     if (this.grass) { this.scene.remove(this.grass); this.grass.geometry.dispose(); this.grass.material.dispose(); this.grass = null; }
-    if (quality === 'low') return;
+    if (quality === 'low' || quality === 'potato') return;
     const count = quality === 'high' ? 40000 : 16000, PS = quality === 'high' ? 74 : 56;
     // 가는 풀잎 4장 묶음 (3마디, 휘어짐) — aT: 높이 비율, 잎 번호(색 변화)
     const blade = [];
@@ -2021,6 +2090,7 @@ const W = G.World = {
           float f = 1.0 - exp(-uFogD * uFogD * vDepth * vDepth);
           c = mix(c, uFogColor, f);
           gl_FragColor = vec4(c, 1.0);
+          #include <tonemapping_fragment>
           #include <colorspace_fragment>
         }`
     });
@@ -2030,6 +2100,13 @@ const W = G.World = {
     this.scene.add(mesh);
     this.syncGrassLight();
   },
+  // 안개 배율 (저사양 단계는 시야 거리를 줄이는 대신 안개를 짙게)
+  setFogScale(k) {
+    this.fogK = k;
+    if (this.scene.fog) this.scene.fog.density = (this.fogD || 0.0014) * k;
+    this.syncGrassLight();
+    if (G.FX && this.fogColor) G.FX.setFog(this.fogColor, (this.fogD || 0.0014) * k);
+  },
   // 풀 셰이더 조명을 해·하늘에 맞춘다
   syncGrassLight() {
     if (!this.grass) return;
@@ -2038,7 +2115,7 @@ const W = G.World = {
     u.uSunCol.value.copy(this.sun.color).multiplyScalar(this.sun.intensity * 0.62);
     u.uAmb.value.copy(this.hemi.color).multiplyScalar(this.hemi.intensity * 0.75);
     if (this.fogColor) u.uFogColor.value.copy(this.fogColor);
-    u.uFogD.value = this.fogD || 0.0014;
+    u.uFogD.value = (this.fogD || 0.0014) * (this.fogK || 1);
   },
 
   /* -------------------------------------------------------------- */
@@ -2168,6 +2245,7 @@ const W = G.World = {
     const lz = G.lodZoom || 1;
     if (lz !== this.lodZoom) { this.lodZoom = lz; this.lodT = 0; }
     if (this.lodT <= 0 && this.lod.length) { this.lodT = 0.2; this.updateLOD(camPos); }
+    this.updateTerrainLOD(camPos);
     if (this.windTime) this.windTime.value = this.time;
     if (G.Veg) G.Veg.update(dt, camPos);
     if (G.Ambient) G.Ambient.update(dt, camPos, this);

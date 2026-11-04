@@ -234,6 +234,8 @@ const Game = G.Game = {
           float wave = 0.5 + 0.5 * sin(vW.y * 0.08 - uTime * 1.2 + vUv.x * 40.0);
           float a = (0.16 + 0.1 * st + 0.08 * wave) * band + (1.0 - smoothstep(0.0, 0.03, h)) * 0.25;
           gl_FragColor = vec4(uColor * (0.8 + 0.4 * st), a);
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
         }`
     });
     const mesh = new THREE.Mesh(geo, mat);

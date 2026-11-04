@@ -39,12 +39,63 @@ const GradeShader = {
       gl_FragColor = c;
     }`
 };
-// 품질 프리셋: 해상도 배율 상한, MSAA, 그림자, 블룸, 풀
+// 품질 프리셋
+// dpr 해상도 배율 상한 · msaa · shadow 그림자 맵(0 = 끔) · range 그림자 범위 · bloom · post 후처리(끄면 화면에 바로 그림)
+// far 시야 거리 · fog 안개 배율 · lod 건물 상세 거리 배율 · terr 지형 상세 거리 배율 · shEvery 그림자 갱신 주기(프레임)
 const QUALITY = {
-  low:    { dpr: 0.8,  msaa: 0, shadow: 1024, range: 50, bloom: false },
-  medium: { dpr: 1.0,  msaa: 2, shadow: 2048, range: 65, bloom: true },
-  high:   { dpr: 1.25, msaa: 4, shadow: 2048, range: 75, bloom: true }
+  potato: { dpr: 0.6,  msaa: 0, shadow: 0,    range: 0,  bloom: false, post: false, far: 750,  fog: 1.45, lod: 0.6, terr: 0.5,  shEvery: 0 },
+  low:    { dpr: 0.75, msaa: 0, shadow: 1024, range: 42, bloom: false, post: false, far: 1100, fog: 1.2,  lod: 0.8, terr: 0.7,  shEvery: 3 },
+  medium: { dpr: 1.0,  msaa: 2, shadow: 2048, range: 62, bloom: true,  post: true,  far: 2200, fog: 1.0,  lod: 1,   terr: 1,    shEvery: 2 },
+  high:   { dpr: 1.25, msaa: 4, shadow: 2048, range: 75, bloom: true,  post: true,  far: 4000, fog: 1.0,  lod: 1,   terr: 1.25, shEvery: 2 }
 };
+const TIERS = ['potato', 'low', 'medium', 'high'];
+const TIER_NAME = { potato: '최저', low: '낮음', medium: '중간', high: '높음' };
+// '자동' 품질: 그래픽 카드로 시작 단계를 고르고, 게임 중 60fps 아래로 떨어지면 한 단계씩 낮춘다
+const Auto = { downN: 0, upT: 0, lastChange: -1e9, lastUp: -1e9, failed: {}, max: 3, start: 'high' };
+function guessTier() {
+  try { const s = localStorage.getItem('lz_auto_tier'); if (s && QUALITY[s]) return s; } catch (e) { /* 무시 */ }
+  let s = '';
+  try {
+    const gl = renderer.getContext(), ext = gl.getExtension('WEBGL_debug_renderer_info');
+    s = String(ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
+  } catch (e) { /* 무시 */ }
+  G.gpuName = s;
+  if (/swiftshader|llvmpipe|software|basic render|microsoft basic/i.test(s)) return 'potato';
+  if (document.documentElement.classList.contains('mobile')) return 'low';
+  if (/iris xe|arc\b|radeon\(tm\) graphics|vega \d|apple m\d|apple gpu/i.test(s)) return 'medium';
+  if (/intel|mali|adreno|powervr|vivante|videocore|hd graphics|uhd graphics/i.test(s)) return 'low';
+  return 'high';
+}
+function resolveQuality(opt) {
+  if (opt !== 'auto') return QUALITY[opt] ? opt : 'high';
+  if (!Auto.guessed) { Auto.guessed = true; Auto.start = guessTier(); Auto.max = Math.min(3, TIERS.indexOf(Auto.start) + 1); }
+  return Auto.tier || Auto.start;
+}
+function autoGovern(now, fps, drs) {
+  if (G.qualityMode !== 'auto') return;
+  const ti = TIERS.indexOf(G.quality);
+  const hz = 1000 / drs.refresh;
+  // 내려가기: 60fps 아래인데 해상도를 이미 최저로 낮췄거나, 아주 느릴 때
+  if (fps < 57 && (drs.scale <= drs.minScale + 0.01 || fps < 42)) Auto.downN++; else Auto.downN = Math.max(0, Auto.downN - 1);
+  if (ti > 0 && Auto.downN >= (fps < 42 ? 3 : 6) && now - Auto.lastChange > 3000) {
+    if (now - Auto.lastUp < 30000) Auto.failed[G.quality] = true;   // 방금 올렸다가 버티지 못하면 다시 올리지 않는다
+    Auto.downN = 0; Auto.upT = 0; Auto.lastChange = now;
+    setTier(TIERS[ti - 1]);
+    return;
+  }
+  // 올라가기: 해상도 100%로 화면 주사율을 꽉 채운 채 25초 버티면 한 단계 위를 시험
+  if (drs.scale >= 1 && fps >= Math.min(hz, drs.target) - 3) Auto.upT += 0.5; else Auto.upT = 0;
+  if (ti < Auto.max && Auto.upT >= 25 && now - Auto.lastChange > 20000 && !Auto.failed[TIERS[ti + 1]]) {
+    Auto.upT = 0; Auto.lastChange = Auto.lastUp = now;
+    setTier(TIERS[ti + 1]);
+  }
+}
+function setTier(q) {
+  Auto.tier = q;
+  try { localStorage.setItem('lz_auto_tier', q); } catch (e) { /* 무시 */ }
+  applyQuality(q);
+  if (G.UI && G.UI.toast) G.UI.toast('그래픽 자동 조절: ' + TIER_NAME[q]);
+}
 const MAX_PIXELS = 2560 * 1440;
 
 let renderer, scene, camera, composer, bloom, grade, last = 0, menuAng = 0, frameNo = 0;
@@ -63,7 +114,7 @@ const DRS = {
     if (!force && Math.abs(pr - this.applied) < 0.01) return;
     this.applied = pr;
     renderer.setPixelRatio(pr);
-    if (composer) composer.setPixelRatio(pr);
+    if (composer && usePost()) composer.setPixelRatio(pr);
   },
   frame(now, ms) {
     // 모니터 주사율 추정 (최근 프레임 간격의 하위 20%)
@@ -83,6 +134,7 @@ const DRS = {
     if (now - this.checkT < 500) return;
     this.checkT = now;
     const avg = this.acc / this.cnt; this.acc = 0; this.cnt = 0;
+    autoGovern(now, 1000 / avg, this);
     const goal = Math.max(1000 / this.target, this.refresh * 0.98);
     if (avg > goal * 1.1 && this.scale > this.minScale) {
       this.scale = Math.max(this.minScale, this.scale - (avg > goal * 1.5 ? 0.12 : 0.06));
@@ -126,7 +178,8 @@ G.boot = async function () {
   G.World.setTimeOfDay(G.UI.opts.tod || 'day');
   G.Player.sens = G.UI.opts.sens;
   DRS.target = G.UI.opts.fpsTarget || 120;
-  applyQuality(G.UI.opts.quality);
+  G.qualityMode = G.UI.opts.quality;
+  applyQuality(resolveQuality(G.UI.opts.quality));
   camera.position.set(450, 160, 450); camera.lookAt(0, 20, 0);
   progress(0.97, '셰이더 컴파일 중...');
   await new Promise(r => setTimeout(r, 30));
@@ -175,7 +228,7 @@ function setupComposer(samples) {
   composer.addPass(grade);
   composer.addPass(new THREE.OutputPass());
   composer.setSize(innerWidth, innerHeight);
-  G.renderNow = () => composer.render(0.016);
+  G.renderNow = () => renderFrame(0.016);
 }
 
 function basePixelRatio(q) {
@@ -188,27 +241,50 @@ function basePixelRatio(q) {
 function applyQuality(q) {
   if (!QUALITY[q]) q = 'high';
   const Q = QUALITY[q];
-  if (G.quality !== q || !composer) setupComposer(Q.msaa);
+  if (Q.post && (!composer || !QUALITY[G.quality] || QUALITY[G.quality].msaa !== Q.msaa || !QUALITY[G.quality].post)) setupComposer(Q.msaa);
+  if (!composer) setupComposer(0);
+  // 후처리를 끄는 단계에서는 composer 의 큰 렌더 타깃(HDR·MSAA·블룸)을 놓아 그래픽 메모리를 돌려준다
+  if (!Q.post) { composer.renderTarget1.dispose(); composer.renderTarget2.dispose(); for (const p of composer.passes) if (p.dispose) p.dispose(); }
   const sun = G.World.sun;
-  if (sun.shadow.mapSize.x !== Q.shadow) {
+  sun.castShadow = Q.shadow > 0;
+  if (Q.shadow > 0 && sun.shadow.mapSize.x !== Q.shadow) {
     sun.shadow.mapSize.set(Q.shadow, Q.shadow);
     if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; }
   }
-  const sc = sun.shadow.camera; sc.left = -Q.range; sc.right = Q.range; sc.top = Q.range; sc.bottom = -Q.range; sc.updateProjectionMatrix();
+  if (Q.range) { const sc = sun.shadow.camera; sc.left = -Q.range; sc.right = Q.range; sc.top = Q.range; sc.bottom = -Q.range; sc.updateProjectionMatrix(); }
   bloom.enabled = Q.bloom;
   G.World.setupGrass(q);
+  G.World.lodDist = Q.lod; G.World.terrDist = Q.terr; G.World.lodT = 0;
+  if (G.World.setFogScale) G.World.setFogScale(Q.fog);
+  camera.far = Q.far; camera.updateProjectionMatrix();
   G.quality = q;
+  DRS.minScale = q === 'potato' ? 0.5 : 0.55;
   DRS.reset(basePixelRatio(q));
   onResize();
   renderer.shadowMap.needsUpdate = true;
 }
+// 한 프레임 그리기: 후처리를 쓰면 composer, 아니면 화면에 바로 (본 장면 → 1인칭 총)
+function usePost() { const Q = QUALITY[G.quality]; return !Q || Q.post; }
+function renderFrame(dt) {
+  const Q = QUALITY[G.quality];
+  if (!Q || Q.post) { composer.render(dt); return; }
+  renderer.setRenderTarget(null);
+  renderer.autoClear = true;
+  renderer.render(scene, camera);
+  renderer.autoClear = false;
+  renderer.clearDepth();
+  renderer.render(G.vmScene, G.vmCamera);
+  renderer.autoClear = true;
+}
+G.__apply = (q) => applyQuality(q);
+G.qualityLabel = () => (G.qualityMode === 'auto' ? '자동·' : '') + (TIER_NAME[G.quality] || '');
 
 function onResize() {
   renderer.setSize(innerWidth, innerHeight);
   camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
   G.vmCamera.aspect = innerWidth / innerHeight; G.vmCamera.updateProjectionMatrix();
   if (G.quality) { DRS.base = basePixelRatio(G.quality); DRS.apply(true); }
-  if (composer) composer.setSize(innerWidth, innerHeight);
+  if (composer && usePost()) composer.setSize(innerWidth, innerHeight);
 }
 
 // 매치 시작 시 사용될 셰이더를 미리 컴파일해 첫 사용 시 끊김을 없앤다
@@ -239,7 +315,10 @@ G.startGame = function (opts) {
   document.getElementById('results').classList.add('hidden');
   G.Player.sens = opts.sens;
   DRS.target = opts.fpsTarget || 120;
-  if (G.quality !== opts.quality) applyQuality(opts.quality);
+  G.qualityMode = opts.quality;
+  const q = resolveQuality(opts.quality);
+  Auto.downN = 0; Auto.upT = 0; Auto.lastChange = performance.now();
+  if (G.quality !== q) applyQuality(q);
   else DRS.reset(basePixelRatio(G.quality));
   G.World.setTimeOfDay(opts.tod);
   G.Game.start(opts);
@@ -293,9 +372,10 @@ function frame(now) {
     console.error(e);
     showError(e.message + '\n' + (e.stack || '').split('\n').slice(1, 3).join('\n'));
   }
-  // 그림자 맵은 2프레임마다 갱신 (높은 주사율에서도 60Hz 이상 유지)
-  if (frameNo % 2 === 0 || ms > 14) renderer.shadowMap.needsUpdate = true;
-  composer.render(dt);
+  // 그림자 맵 갱신 주기: 중간·높음은 2프레임마다(느리면 매 프레임), 낮음은 3프레임마다, 최저는 그림자 없음
+  const se = (QUALITY[G.quality] || QUALITY.high).shEvery;
+  if (se && (frameNo % se === 0 || (se === 2 && ms > 14))) renderer.shadowMap.needsUpdate = true;
+  renderFrame(dt);
   G.Input.endFrame();
 }
 

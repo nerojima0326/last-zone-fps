@@ -14,10 +14,12 @@ const _v = new V3();
 const $ = id => document.getElementById(id);
 
 const UI = G.UI = {
-  opts: { size: 1, players: 40, diff: 'normal', loadout: 'rifle', tod: 'day', quality: 'high', sens: 1, name: 'Player', fpsTarget: 120, showFps: 'on' },
+  opts: { size: 1, players: 40, diff: 'normal', loadout: 'rifle', tod: 'day', quality: 'auto', sens: 1, name: 'Player', fpsTarget: 120, showFps: 'on', qv: 2 },
   feed: [], dmgDirs: [], hmT: 0, hurtV: 0, lowPulse: 0, centerT: 0, killT: 0, pickT: 0, mapOpen: false,
   init() {
     try { const s = JSON.parse(localStorage.getItem('lastzone_opts') || 'null'); if (s) Object.assign(this.opts, s); } catch (e) { /* 저장소 사용 불가 */ }
+    // 예전 기본값(높음)을 쓰던 사람은 한 번 '자동'으로 바꿔 준다
+    if (this.opts.qv !== 2) { this.opts.qv = 2; if (this.opts.quality === 'high') this.opts.quality = 'auto'; }
     this.fpsEl = $('fpsBox');
     this.fpsEl.classList.toggle('hidden', this.opts.showFps !== 'on');
     document.querySelectorAll('.ppl').forEach(p => { p.innerHTML = '<i></i>'.repeat(+p.dataset.n); });
@@ -89,11 +91,18 @@ const UI = G.UI = {
     if (!show) return;
     const hz = Math.round(1000 / refreshMs);
     const target = Math.min(this.opts.fpsTarget || 120, hz + 2);
-    let t = Math.round(fps) + ' FPS · 해상도 ' + Math.round(pr * 100) + '%';
+    let t = Math.round(fps) + ' FPS · 해상도 ' + Math.round(pr * 100) + '% · 그래픽 ' + (G.qualityLabel ? G.qualityLabel() : '');
     if (hz < (this.opts.fpsTarget || 120) - 5) t += ' · 모니터 ' + hz + 'Hz';
     this.fpsEl.textContent = t;
     this.fpsEl.className = fps >= target * 0.92 ? '' : fps >= target * 0.7 ? 'warn' : 'bad';
     this.fpsEl.classList.remove('hidden');
+  },
+  // 잠깐 떴다 사라지는 안내
+  toast(msg) {
+    let el = this.toastEl;
+    if (!el) { el = this.toastEl = document.createElement('div'); el.id = 'toast'; document.body.appendChild(el); }
+    el.textContent = msg; el.classList.add('on');
+    clearTimeout(this.toastTm); this.toastTm = setTimeout(() => el.classList.remove('on'), 2600);
   },
   showMenu() { $('menu').classList.remove('hidden'); $('hud').classList.add('hidden'); $('results').classList.add('hidden'); $('pause').classList.add('hidden'); },
   hideMenu() { $('menu').classList.add('hidden'); },
