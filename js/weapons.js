@@ -694,6 +694,7 @@ const Ballistics = G.Ballistics = {
   fire(owner, origin, dir, def, muzzle, tracer) {
     const p = { owner, team: owner.team, def, pos: origin.clone(), vel: dir.clone().multiplyScalar(def.vel * U.rand(0.97, 1.03)), dist: 0, tracer: null, voff: new V3(), whiz: false, start: origin.clone() };
     if (muzzle) p.voff.copy(muzzle).sub(origin);
+    if (G.Training && G.Training.active) p.shot = G.Training.shotId;
     if (tracer) p.tracer = G.FX.getTracer();
     this.list.push(p);
   },
@@ -744,6 +745,9 @@ const Ballistics = G.Ballistics = {
         const h = this.hitActor(a, p.pos, _d, best);
         if (h) { best = h.t; kind = 'actor'; target = a; head = h.head; }
       }
+      // 훈련장 표적
+      let th = null;
+      if (Game.training && G.Training.active) { th = G.Training.hitTest(p.pos, _d, best); if (th) { best = th.t; kind = 'target'; } }
       // 근접 비행음
       if (player && player.alive && !p.whiz && p.team !== player.team) {
         _h.set(player.pos.x, player.pos.y + 1.6, player.pos.z).sub(p.pos);
@@ -762,6 +766,11 @@ const Ballistics = G.Ballistics = {
         Game.damage(target, dmg, p.owner, def.key, head, _p, _d);
         G.FX.blood(_p, _d.x, _d.y, _d.z, head ? 10 : 6);
         G.Audio.impact(_p, 'flesh');
+        dead = true;
+      } else if (kind === 'target') {
+        const dist = p.start.distanceTo(_p), def = p.def;
+        const dmg = G.dmgAt(def, dist) * (th.head ? def.head : 1);
+        G.Training.onHit(th, dmg, _p, _d, p.shot);
         dead = true;
       } else if (kind === 'world') {
         G.FX.impact(_p, Wd.hit.normal, Wd.hit.mat);

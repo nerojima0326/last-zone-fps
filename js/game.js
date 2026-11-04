@@ -51,6 +51,7 @@ const Game = G.Game = {
   start(o) {
     this.cleanup();
     this.opts = o;
+    if (o.mode === 'training') return this.startTraining(o);
     this.diff = o.diff; this.teamSize = o.size; this.time = 0; this.ended = false;
     const names = U.shuffle(BOT_NAMES.slice());
     let ni = 0;
@@ -82,7 +83,36 @@ const Game = G.Game = {
     G.UI.startMatch();
     G.UI.center('수송기 탑승 완료', '원하는 지역 위에서 <b>F</b> 키로 뛰어내리세요', '', 5);
   },
+  // 훈련장: 플레이어 혼자, 수송기·자기장·전리품 없이 사격대 앞에서 시작
+  startTraining(o) {
+    this.training = true;
+    this.diff = o.diff; this.teamSize = 1; this.time = 0; this.ended = false;
+    const team = { id: 0, members: [], eliminated: false, rank: 0, kills: 0 };
+    this.teams.push(team);
+    const a = new G.Actor({ id: 0, name: o.name || 'Player', team: 0, idx: 0, isPlayer: true });
+    a.model = new G.CharacterModel({ band: null, helmet: false });
+    a.model.root.visible = false;
+    G.scene.add(a.model.root);
+    this.giveLoadout(a, 'all', true);
+    team.members.push(a); this.actors.push(a);
+    this.player = a;
+    G.Player.init(a);
+    const R = G.World.range;
+    a.state = 'ground'; a.onGround = true; a.vel.set(0, 0, 0);
+    a.pos.set(R.spawn.x, G.World.ground(R.spawn.x, R.spawn.z, R.y + 5, 0.3, 0.6), R.spawn.z);
+    a.yaw = 0; a.pitch = 0;
+    G.Player.onLand();
+    this.zone = null;
+    this.state = 'playing';
+    G.UI.startMatch();
+    document.getElementById('hud').classList.add('training');
+    G.Training.start();
+    G.UI.center('훈련장', '테이블의 총·조준경은 <b>F</b> 로 바꿔 들 수 있어요 · 탄약 무한', '', 6);
+  },
   cleanup() {
+    if (G.Training) G.Training.stop();
+    this.training = false;
+    const hud = document.getElementById('hud'); if (hud) hud.classList.remove('training');
     for (const a of this.actors) if (a.model) a.model.dispose();
     this.actors = []; this.teams = [];
     for (const it of this.loot) if (it.mesh) G.scene.remove(it.mesh);
@@ -146,7 +176,7 @@ const Game = G.Game = {
       let target = null;
       for (let i = 0; i < 30 && !target; i++) {
         let x, z;
-        if (Math.random() < 0.7) { const t = U.pick(W.towns); const a = Math.random() * 6.28, r = Math.random() * t.r; x = t.x + Math.cos(a) * r; z = t.z + Math.sin(a) * r; }
+        if (Math.random() < 0.7) { const t = U.pick(W.towns.filter(t => t.type !== 'range')); const a = Math.random() * 6.28, r = Math.random() * t.r; x = t.x + Math.cos(a) * r; z = t.z + Math.sin(a) * r; }
         else { x = U.rand(-380, 380) * K; z = U.rand(-380, 380) * K; }
         if (W.heightAt(x, z) - W.waterAt(x, z) < 2) continue;
         const rel = _v.set(x, 0, z).sub(start);
@@ -300,7 +330,7 @@ const Game = G.Game = {
     Z.mesh.position.set(Z.cur.x, 150, Z.cur.z);
     Z.mesh.scale.set(Math.max(0.5, Z.cur.r), 700, Math.max(0.5, Z.cur.r));
   },
-  inZone(p) { const Z = this.zone; return Math.hypot(p.x - Z.cur.x, p.z - Z.cur.z) <= Z.cur.r; },
+  inZone(p) { const Z = this.zone; if (!Z) return true; return Math.hypot(p.x - Z.cur.x, p.z - Z.cur.z) <= Z.cur.r; },
 
   /* ------------ 전리품 ------------ */
   rollKind() {
@@ -389,6 +419,7 @@ const Game = G.Game = {
     if (it.taken) return null;
     const res = a.pickup(it);
     if (it.taken) { G.scene.remove(it.mesh); }
+    if (this.training) { a._drop = null; if (it.taken && it.train) G.Training.respawn(it); }
     // 총을 바꿔 들었으면 원래 총을 그 자리에 내려놓는다
     if (a._drop) {
       const d = a._drop; a._drop = null;
@@ -423,7 +454,7 @@ const Game = G.Game = {
         if (d2 >= R * R) return;
         it._v = true; next.push(it);
         if (!it.mesh.visible) it.mesh.visible = true;
-        if (d2 < 28 * 28 && glow.length < 40) glow.push(it);
+        if (d2 < 28 * 28 && glow.length < 40 && !it.train) glow.push(it);
       });
     }
     for (const it of prev) if (!it._v && it.mesh.visible) it.mesh.visible = false;
@@ -435,6 +466,7 @@ const Game = G.Game = {
   /* ------------ 피해 / 처치 ------------ */
   damage(t, amount, attacker, weapon, head, point, dir) {
     if (!t.alive || this.state !== 'playing') return;
+    if (this.training && t === this.player) return;
     if (t.state !== 'ground' && weapon !== 'zone') return;
     if (attacker && attacker !== t && attacker.team === t.team) return;
     let dmg = amount;
@@ -571,6 +603,7 @@ const Game = G.Game = {
     G.Throwables.update(dt);
     if (this.zone) this.updateZone(dt);
     this.updateLoot(dt);
+    if (this.training) G.Training.update(dt);
   },
   syncModels(dt) {
     const cam = G.camera.position, P = G.Player;

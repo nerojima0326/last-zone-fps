@@ -54,6 +54,11 @@ const UI = G.UI = {
       try { localStorage.setItem('lastzone_opts', JSON.stringify(this.opts)); } catch (e) { /* 무시 */ }
       G.startGame(Object.assign({}, this.opts));
     });
+    $('trainBtn').addEventListener('click', () => {
+      this.opts.name = ($('optName').value || 'Player').trim().slice(0, 12) || 'Player';
+      try { localStorage.setItem('lastzone_opts', JSON.stringify(this.opts)); } catch (e) { /* 무시 */ }
+      G.startGame(Object.assign({}, this.opts, { mode: 'training' }));
+    });
     $('resumeBtn').addEventListener('click', () => G.resume());
     $('quitBtn').addEventListener('click', () => G.toMenu());
     $('againBtn').addEventListener('click', () => G.startGame(Object.assign({}, this.opts)));
