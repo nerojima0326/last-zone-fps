@@ -298,3 +298,7 @@ html.mobile #mapWrap { right: auto; bottom: auto; left: 22px; top: 40px; width: 
 html.mobile #teamPanel { bottom: auto; top: 300px; }
 html.mobile #weaponPanel { right: auto; left: 50%; bottom: 112px; transform: translateX(-50%); text-align: center; }
 html.mobile #weaponPanel #slots { justify-content: center; }
+
+/* 잠깐 뜨는 안내 */
+#toast { position: fixed; left: 50%; top: 90px; transform: translateX(-50%); z-index: 45; background: rgba(8,12,18,0.82); color: #ffd27a; font: 700 15px 'Noto Sans KR', sans-serif; padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(255,210,122,0.35); opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+#toast.on { opacity: 1; }

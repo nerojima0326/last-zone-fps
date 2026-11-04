@@ -78,6 +78,8 @@ const Amb = G.Ambient = {
           if (r > 0.25) discard;
           float a = (1.0 - r * 4.0) * vA * (0.12 + vBack * 1.1);
           gl_FragColor = vec4(uSunCol * a, 1.0);
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
         }`
     });
     const pts = this.motes = new THREE.Points(pg, pm);
@@ -112,7 +114,7 @@ const Amb = G.Ambient = {
     U2.uSun.value.copy(world.sunDir);
     U2.uSunCol.value.copy(world.sun.color).multiplyScalar(0.9);
     U2.uScale.value = innerHeight / 720;
-    this.motes.visible = G.quality !== 'low' && camPos.y - world.heightAt(camPos.x, camPos.z) < 30;
+    this.motes.visible = G.quality !== 'low' && G.quality !== 'potato' && camPos.y - world.heightAt(camPos.x, camPos.z) < 30;
   }
 };
 })();

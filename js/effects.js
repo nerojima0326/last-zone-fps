@@ -38,6 +38,8 @@ class Particles {
           if (additive > 0.5) a *= (1.0 - f); else col = mix(col, fogColor, f);
           if (a < 0.003) discard;
           gl_FragColor = vec4(col, a);
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
         }`,
       transparent: true, depthWrite: false, blending
     });
