@@ -201,7 +201,7 @@ function flashMesh(parent, pos, scale) {
 /* ------------------------------------------------------------------ */
 // 소매(어깨~손목)와 장갑 낀 손(손바닥·손가락 마디)을 뼈대 하나로 묶은 스키닝 메시.
 // 뼈: 어깨 → 팔꿈치 → 손목(손) → 손가락 3마디 ×4 + 엄지 3마디. 팔꿈치는 두 뼈에 나눠 실려 부드럽게 굽는다
-const WRIST = 0.052, HAND_S = 0.8;   // 손 크기 (총 모델 크기에 맞춤)
+const WRIST = 0.052, HAND_S = 0.93;   // 손 크기 (총 모델 크기에 맞춤)
 const BOLT_PALM = new V3(-0.6, 0.75, 0);            // 손바닥 중심(손 목표점) → 손목
 let ARM_M = null;
 function armMats() {
@@ -257,10 +257,10 @@ function piece(geo, mat4, bone, col, w2) {
   return g;
 }
 const FINGERS = [   // [x(엄지 쪽 +), 마디 길이 3개, 반지름]
-  [0.027, [0.042, 0.026, 0.021], 0.0098],
-  [0.009, [0.047, 0.029, 0.022], 0.0102],
-  [-0.009, [0.044, 0.027, 0.021], 0.0097],
-  [-0.027, [0.034, 0.021, 0.018], 0.0086]
+  [0.028, [0.042, 0.026, 0.021], 0.0108],
+  [0.0095, [0.047, 0.029, 0.022], 0.0112],
+  [-0.0095, [0.044, 0.027, 0.021], 0.0107],
+  [-0.028, [0.034, 0.021, 0.018], 0.0095]
 ];
 function armRig(parent, shoulder, hand, elbow, glove, slack, sideArg) {
   const AM = armMats();
@@ -292,9 +292,10 @@ function armRig(parent, shoulder, hand, elbow, glove, slack, sideArg) {
     const y0 = -0.06, y1 = a + bw - 0.012;
     for (let y = y0; y <= y1 + 1e-6; y += 0.012) ys.push(Math.min(y, y1));
     const rad = (y) => {
-      if (y < a) { const t = U.clamp(y / a, 0, 1); return 0.056 - 0.006 * t + 0.004 * Math.sin(t * Math.PI) - 0.009 * U.smoothstep(0.75, 1, t); }
+      // 군복 소매를 입은 성인 팔 굵기 (위팔 지름 약 14cm, 팔뚝 12cm, 손목 9.5cm)
+      if (y < a) { const t = U.clamp(y / a, 0, 1); return 0.072 - 0.006 * t + 0.006 * Math.sin(t * Math.PI) - 0.01 * U.smoothstep(0.72, 1, t); }
       const t = U.clamp((y - a) / bw, 0, 1);
-      return 0.042 + 0.006 * Math.sin(Math.min(1, t * 2.2) * Math.PI) - 0.008 * t + 0.006 * U.smoothstep(0.86, 0.97, t);   // 팔뚝 근육 → 손목 → 커프
+      return 0.058 + 0.009 * Math.sin(Math.min(1, t * 2.1) * Math.PI) - 0.013 * t + 0.006 * U.smoothstep(0.84, 0.97, t);   // 팔뚝 근육 → 손목 → 커프
     };
     const nz = G.Tex.tileNoise(64, 8, 2, 77 + (side > 0 ? 1 : 2));
     ys.forEach((y, i) => {
@@ -304,7 +305,7 @@ function armRig(parent, shoulder, hand, elbow, glove, slack, sideArg) {
         const nearE = Math.exp(-Math.pow((y - a) / 0.05, 2)), nearC = Math.exp(-Math.pow((y - (a + bw - 0.05)) / 0.04, 2));
         const wr = nz[(Math.floor(y * 220) & 63) * 64 + (j * 3 & 63)] - 0.5;
         const r = rad(y) * (1 + wr * (0.05 + 0.16 * nearE + 0.1 * nearC));
-        pos.push(Math.cos(th) * r, y, Math.sin(th) * r * 0.9);
+        pos.push(Math.cos(th) * r, y, Math.sin(th) * r * 0.93);
         uv.push(j / RS, y * 2.2);
         // 팔꿈치는 위·아래 뼈에 나눠 싣는다
         const f = U.smoothstep(a - 0.04, a + 0.04, y);
@@ -325,12 +326,12 @@ function armRig(parent, shoulder, hand, elbow, glove, slack, sideArg) {
   const M4 = new THREE.Matrix4(), T = (x, y, z) => new THREE.Matrix4().makeTranslation(x, y, z);
   const wM = W(bW), eM = W(bE);
   // 손목 커프 (팔뚝·손목 뼈 사이에 걸침)
-  gloveP.push(piece(new THREE.CylinderGeometry(0.037, 0.039, 0.05, 16, 3), eM.clone().multiply(T(0, bw - 0.004, 0)).multiply(new THREE.Matrix4().makeScale(1, 1, 0.82)), idx(bE), dark,
+  gloveP.push(piece(new THREE.CylinderGeometry(0.047, 0.05, 0.055, 18, 3), eM.clone().multiply(T(0, bw - 0.006, 0)).multiply(new THREE.Matrix4().makeScale(1, 1, 0.86)), idx(bE), dark,
     (y) => [idx(bW), U.smoothstep(a + bw - 0.02, a + bw + 0.02, y)]));
   // 손바닥 + 손등
-  gloveP.push(piece(roundBox(0.084, 0.098, 0.032, 0.012, 4), wM.clone().multiply(T(0, 0.047, 0)), idx(bW), gc));
-  gloveP.push(piece(roundBox(0.074, 0.03, 0.012, 0.005, 2), wM.clone().multiply(T(0, 0.078, -0.018)), idx(bW), pad));      // 손가락 마디 보호대
-  gloveP.push(piece(roundBox(0.05, 0.035, 0.008, 0.004, 2), wM.clone().multiply(T(0.004 * side, 0.03, -0.017)), idx(bW), dark));   // 손등 찍찍이
+  gloveP.push(piece(roundBox(0.088, 0.1, 0.038, 0.014, 4), wM.clone().multiply(T(0, 0.047, 0)), idx(bW), gc));
+  gloveP.push(piece(roundBox(0.074, 0.03, 0.012, 0.005, 2), wM.clone().multiply(T(0, 0.078, -0.021)), idx(bW), pad));      // 손가락 마디 보호대
+  gloveP.push(piece(roundBox(0.05, 0.035, 0.008, 0.004, 2), wM.clone().multiply(T(0.004 * side, 0.03, -0.02)), idx(bW), dark));   // 손등 찍찍이
   gloveP.push(piece(roundBox(0.035, 0.05, 0.02, 0.009, 3), wM.clone().multiply(T(0.026 * side, 0.03, 0.01)), idx(bW), gc));         // 엄지 두덩
   // 손가락 마디
   FINGERS.forEach(([fx, lens, r], k) => {
@@ -351,7 +352,7 @@ function armRig(parent, shoulder, hand, elbow, glove, slack, sideArg) {
   for (const m of [sm, gm]) { m.frustumCulled = false; m.userData.keep = true; grp.add(m); m.bind(sk, new THREE.Matrix4()); }
   parent.add(grp);
   const rig = { grp, side, bS, bE, bW, fing, thumbB: [t0, t1, t2], S: shoulder.clone(), a, b, bw, pole, rest: hand.clone(), tgt: hand.clone(), cur: hand.clone(), roll: 0,
-    curl: 0.9, curlT: 0.9, thumb: 0.7, thumbT: 0.7, trig: 0.9, trigT: 0.9, palmRef: null, axisY: hand.y + 0.05, inset: 0.012,
+    curl: 0.9, curlT: 0.9, thumb: 0.7, thumbT: 0.7, trig: 0.9, trigT: 0.9, palmRef: null, axisY: hand.y + 0.05, inset: side > 0 ? 0.017 : 0.014,
     aim: side > 0 ? new V3(-0.25, 0.3, -1).normalize() : new V3(0.9, 0.12, -0.42).normalize(), aimK: side > 0 ? 0.4 : 0.8, homeK: 0 };
   solveArm(rig, 1);
   return rig;
