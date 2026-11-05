@@ -23,6 +23,19 @@ await page.click('[data-slot=optic][data-value=holo]');
 await page.click('[data-slot=muzzle][data-value=suppressor]');
 await page.click('[data-slot=under][data-value=grip]');
 await page.click('[data-slot=side][data-value=laser]');
+await page.click('[data-slot=magazine][data-value=extendedQuick]');
+await page.click('[data-slot=stock][data-value=tactical]');
+const upgrades=await page.evaluate(()=>{
+ const a=G.Game.player,w=a.weapons.rifle,d=G.WEAPONS.ar7,A=G.Attachments,P=G.Player;
+ if(A.capacity(w,d)!==39||A.modifiers(w).reload!==.8)throw Error('extended quickdraw stats');
+ a.ammo[d.ammo]=100;w.mag=0;P.reload=null;P.sw=null;P.throwSt=null;P.startReload();
+ if(!P.reload)throw Error('extended reload did not start');let n=0;while(P.reload&&n++<1000)P.reloadLogic(1/60);
+ if(w.mag!==39||a.ammo[d.ammo]!==61)throw Error('extended reload capacity/conservation');
+ return {capacity:w.mag,reserve:a.ammo[d.ammo]};
+});console.log('Magazine upgrades',upgrades);
+await page.click('[data-slot=magazine][data-value=none]');
+const returned=await page.evaluate(()=>({mag:G.Game.player.weapons.rifle.mag,reserve:G.Game.player.ammo['556']}));
+if(returned.mag!==30||returned.reserve!==70)throw Error('magazine removal did not return excess ammunition');
 console.log('Attachment UI',await page.evaluate(()=>({selection:G.Game.player.weapons.rifle, assets:Object.keys(G.Attachments.models),groups:G.VM.models.ar7.accessories.children.length,paused:G.paused})));
 
 await page.keyboard.press('Tab');

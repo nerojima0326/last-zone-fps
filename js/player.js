@@ -206,7 +206,7 @@ const P = G.Player = {
     // 정조준 (볼트를 당기는 동안은 조준이 풀린다)
     const wantAds = I.rmb && isGun && !this.sw && !this.reload && !this.sprinting && a.cur !== 'throw' && this.cycleT < 0;
     const zoom = isGun ? this.zoomOf(inst, def) : 1;
-    this.ads = approach(this.ads, wantAds ? 1 : 0, dt / ((isGun ? def.adsTime : 0.17) + (zoom > 1 ? 0.06 : 0)));
+    this.ads = approach(this.ads, wantAds ? 1 : 0, dt / ((isGun ? def.adsTime * (G.Attachments?.modifiers(inst).ads || 1) : 0.17) + (zoom > 1 ? 0.06 : 0)));
     this.scopeView = zoom > 1 ? U.smoothstep(0.8, 1, this.ads) : 0;
     // 숨 참기 (배율 조준 중 Shift): 흔들림이 줄어든다
     const hold = zoom > 1 && this.ads > 0.8 && I.down('ShiftLeft') && !this.breathLock && this.breath > 0;
@@ -292,7 +292,8 @@ const P = G.Player = {
     if (!a.onGround) s += 0.06;
     if (a.crouch) s *= 0.8;
     const parts = a.weapons[a.cur]?.attachments || {};
-    if (parts.side === 'laser') s *= 1 - 0.1 * (1 - this.ads);
+    const mod=G.Attachments?.modifiers(a.weapons[a.cur]);
+    if(mod) s *= mod.spread * U.lerp(mod.hip, 1, this.ads);
     return s;
   },
   fire(def, inst, now) {
@@ -312,15 +313,16 @@ const P = G.Player = {
     }
     const parts = inst.attachments || {};
     const suppressed = parts.muzzle === 'suppressor';
-    const gripFactor = parts.under === 'grip' ? 0.9 : 1;
-    const rv = gripFactor * def.recoilV * (this.ads > 0.5 ? 0.7 : 1) * (a.crouch ? 0.82 : 1) * U.rand(0.85, 1.15);
+    const mod=G.Attachments?.modifiers(inst)||{v:1,h:1};
+    const rv = mod.v * def.recoilV * (this.ads > 0.5 ? 0.7 : 1) * (a.crouch ? 0.82 : 1) * U.rand(0.85, 1.15);
     a.pitch = Math.min(1.45, a.pitch + rv); this.recoilAcc += rv;
-    a.yaw += gripFactor * def.recoilH * U.rand(-1, 1.25);
+    a.yaw += mod.h * def.recoilH * U.rand(-1, 1.25);
     this.camKick += def.kick * (def.cls === 'shotgun' ? 0.019 : def.cls === 'pistol' ? 0.014 : 0.016);
     G.FX.shake(Math.min(0.12, def.kick * (suppressed ? 0.009 : 0.015)));
     this.bloom = Math.min(def.bloomMax, this.bloom + def.bloom);
-    G.VM.fireKick(def.kick, suppressed);
-    if (!suppressed) G.FX.light(_m, 0xffaa55, 22, 0.06, 12);
+    const hideFlash = suppressed || parts.muzzle === 'flash';
+    G.VM.fireKick(def.kick, hideFlash);
+    if (!hideFlash) G.FX.light(_m, 0xffaa55, 22, 0.06, 12);
     G.Audio.shot(inst.id, a.pos, true, suppressed);
     G.Game.onShot(a, def);
     if (def.action === 'pump') this.pumpT = 0;
@@ -338,14 +340,14 @@ const P = G.Player = {
   startReload() {
     const a = this.a, inst = a.weapons[a.cur], def = inst && G.WEAPONS[inst.id];
     if (!inst || !def || !def.pellets || this.reload || this.sw || this.throwSt) return;
-    if (inst.mag >= def.mag || a.ammo[def.ammo] <= 0) return;
+    if (inst.mag >= (G.Attachments?.capacity(inst,def) || def.mag) || a.ammo[def.ammo] <= 0) return;
     const empty = inst.mag === 0;
     if (def.reloadType === 'shell' || def.reloadType === 'break') {
       // 펌프·반자동 산탄총은 빈 총이면 먼저 배출구에 한 발을 넣어 약실을 채운다
       const st = G.Guns.rstyle(def.key);
       this.reload = { kind: def.reloadType, phase: 'start', t: 0, shellT: 0, empty, port: empty && (st.s === 'pump' || st.s === 'semi'), pair: st.s === 'pair' };
     }
-    else this.reload = { kind: def.reloadType, t: 0, dur: G.Guns.reloadDuration(inst.id,empty), s: 0, empty };
+    else this.reload = { kind: def.reloadType, t: 0, dur: G.Guns.reloadDuration(inst.id,empty) * (G.Attachments?.modifiers(inst).reload || 1), s: 0, empty };
     this.reload.weaponId=inst.id;
     this.cycleT = -1;
     this.cancelHeal();
@@ -372,7 +374,7 @@ const P = G.Player = {
       if (!R.sounds) R.sounds = G.Guns.reloadEvents(inst.id, R.empty);
       this.reloadSounds(R, p, R.sounds, 'mag');
       if (p >= 1) {
-        const n = Math.min(def.mag - inst.mag, a.ammo[def.ammo]);
+        const n = Math.min((G.Attachments?.capacity(inst,def) || def.mag) - inst.mag, a.ammo[def.ammo]);
         inst.mag += n; a.ammo[def.ammo] -= n;
         this.reload = null;
       }

@@ -226,7 +226,7 @@ const UI = G.UI = {
     } else {
       this.set('mag', el.mag, '-'); this.set('res', el.res, ''); this.set('wn', el.wname, '맨손'); this.set('fm', el.fmode, '');
     }
-    this.set('magc', el.mag, inst && inst.mag <= Math.ceil(def.mag * 0.25) ? 'low' : '', 'className');
+    this.set('magc', el.mag, inst && inst.mag <= Math.ceil((G.Attachments?.capacity(inst,def) || def.mag) * 0.25) ? 'low' : '', 'className');
     const tk = P.throwKind;
     const skey = a.cur + a.gunId('rifle') + a.gunId('shotgun') + a.gunId('pistol') + tk + a.throwables[tk] + (a.throwCount() ? 1 : 0);
     if (this.slotKey !== skey) {
