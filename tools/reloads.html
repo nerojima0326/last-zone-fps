@@ -38,7 +38,7 @@ input[type=range]{width:100%;accent-color:#dfbc76;margin:12px 0}#status{font-siz
 <p class="hint">모델이 없으면 절차적 모델을 사용합니다.<br><a href="index.html">게임으로 돌아가기</a></p>
 </aside>
 <section id="stage" aria-label="장전 애니메이션 미리보기">
-<div id="caption"><div class="badge">RELOAD STUDY / BUILD 20</div><div id="weaponName">LOADING</div><div id="styleName"></div></div>
+<div id="caption"><div class="badge">RELOAD STUDY / BUILD 22</div><div id="weaponName">LOADING</div><div id="styleName"></div></div>
 <div id="timebar"><label for="timeline">장전 진행 <span id="clock">0.00 / 0.00 s</span></label><input id="timeline" type="range" min="0" max="1" step="0.001" value="0" disabled><div class="hint" id="ammo">실제 탄 수와 재장전 단계를 표시합니다.</div></div>
 </section>
 </main>
@@ -50,11 +50,11 @@ import {FBXLoader} from 'three/addons/loaders/FBXLoader.js';
 import {MeshoptDecoder} from 'three/addons/libs/meshopt_decoder.module.js';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 window.THREE = {...T, mergeGeometries, GLTFLoader, FBXLoader, MeshoptDecoder};
-window.LZ_BUILD = '20';
+window.LZ_BUILD = '22';
 const $ = id => document.getElementById(id);
 try {
   for (const file of ['core','gunlib','gunmodels','weapons','weapon-audio','player']) await new Promise((resolve,reject) => {
-    const s=document.createElement('script'); s.src=`js/${file}.js?v=20`; s.onload=resolve; s.onerror=()=>reject(new Error(file+' 로드 실패')); document.body.appendChild(s);
+    const s=document.createElement('script'); s.src=`js/${file}.js?v=22`; s.onload=resolve; s.onerror=()=>reject(new Error(file+' 로드 실패')); document.body.appendChild(s);
   });
   const G=window.G, stage=$('stage'), renderer=new T.WebGLRenderer({antialias:true});
   renderer.setPixelRatio(Math.min(devicePixelRatio,1.5)); renderer.toneMapping=T.ACESFilmicToneMapping; renderer.toneMappingExposure=1;
