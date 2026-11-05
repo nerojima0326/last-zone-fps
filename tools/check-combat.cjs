@@ -27,6 +27,16 @@ console.log('Attachment UI',await page.evaluate(()=>({selection:G.Game.player.we
 
 await page.keyboard.press('Tab');
 await page.waitForSelector('#attachmentPanel[hidden]',{state:'attached'});
+const difficulty=await page.evaluate(()=>{
+ const previous=G.Game.diff,result={};
+ for(const level of ['easy','normal','hard']){
+  G.Game.diff=level;result[level]={enemy:new G.Bot({team:1}).d,ally:new G.Bot({team:0}).d};
+ }
+ G.Game.diff=previous;
+ if(!(result.easy.enemy.react>result.normal.enemy.react&&result.normal.enemy.react>result.hard.enemy.react))throw Error('difficulty reaction ordering');
+ if(!(result.easy.enemy.err>result.normal.enemy.err&&result.normal.enemy.err>result.hard.enemy.err))throw Error('difficulty accuracy ordering');
+ if(!(result.normal.ally.react<result.normal.enemy.react))throw Error('teammate strength');return result;
+});console.log('Difficulty profiles:',JSON.stringify(difficulty));
 const checks=await page.evaluate(()=>{
  const town=G.World.towns.find(t=>t.name==='북부 전초기지');if(!town)throw Error('new combat area missing');
  const ranges=[],saveNoise=G.Game.onNoise;G.Game.onNoise=(pos,r)=>ranges.push(r);const shooter=G.Game.player,inst=shooter.weapons.rifle;inst.attachments.muzzle=null;G.Game.onShot(shooter,G.WEAPONS.ar7);inst.attachments.muzzle='suppressor';G.Game.onShot(shooter,G.WEAPONS.ar7);G.Game.onNoise=saveNoise;if(!(ranges[1]<ranges[0]))throw Error('suppressor noise');
