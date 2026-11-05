@@ -32,6 +32,43 @@ const results=await page.evaluate(()=>{
  return out;
 });console.log('Animation cases:',results.length);
 assert.equal(errors.length,0,errors.join('\n'));
+const hands=await page.evaluate(()=>{
+ const fail=(ok,msg)=>{if(!ok)throw Error(msg)};let frames=0,vertices=0,maxError=0,maxAngle=0;
+ for(const id of G.GUN_IDS){
+  const m=G.VM.models[id];
+  for(const arm of [m.armL,m.armR])arm.grp.traverse(mesh=>{
+   if(!mesh.isSkinnedMesh)return;const w=mesh.geometry.attributes.skinWeight,ix=mesh.geometry.attributes.skinIndex;
+   for(let i=0;i<w.count;i++){
+    const weights=[w.getX(i),w.getY(i),w.getZ(i),w.getW(i)];
+    fail(weights.every(x=>x>=0&&x<=1)&&Math.abs(weights.reduce((a,b)=>a+b,0)-1)<1e-5,id+' normalized skin weights');
+    fail([ix.getX(i),ix.getY(i),ix.getZ(i),ix.getW(i)].every(x=>x<mesh.skeleton.bones.length),id+' valid skin bone');vertices++;
+   }
+  });
+  for(const mode of ['empty','tactical'])for(const dt of [1/120,1/30]){
+   const st=ReloadStudio;st.select(id,mode);st.pause();
+   const previous=[m.armL.handQ.clone(),m.armR.handQ.clone()];
+   for(let t=0;t<st.duration+dt;t+=dt){
+    st.advance(dt);
+    for(const [j,arm]of [m.armL,m.armR].entries()){
+     fail(arm.contactError<0.025,id+' '+mode+' contact gap '+arm.contactError);
+     fail(arm.wristAngle<Math.PI/2+0.09,id+' '+mode+' wrist angle '+arm.wristAngle*180/Math.PI);
+     fail(arm.handQ.angleTo(previous[j])<dt*10+0.001,id+' continuous wrist rotation');previous[j].copy(arm.handQ);
+     fail(arm.shoulderShift.length()<=0.09001,id+' limited shoulder reach');
+     fail(Math.abs(arm.bS.position.distanceTo(arm.bE.position)-arm.a)<1e-5,id+' upper arm does not stretch');
+     fail(Math.abs(arm.bE.position.distanceTo(arm.bW.position)-arm.bw)<1e-5,id+' forearm does not stretch');
+     fail(arm.thumbB[0].quaternion.angleTo(arm.thumbRest)<0.521,id+' thumb preserves opposition');
+     maxError=Math.max(maxError,arm.contactError);maxAngle=Math.max(maxAngle,arm.wristAngle);
+    }
+    if(m.holdObj){
+     const contact=m.keys.grab.clone().applyAxisAngle(new window.THREE.Vector3(1,0,0),m.holdObj.rotation.x).add(m.holdObj.position);
+     fail(contact.distanceTo(m.armL.contact)<1e-6,id+' carried magazine stays in hand');
+    }
+    frames++;
+   }
+  }
+ }
+ return{frames,vertices,maxContactErrorMm:maxError*1000,maxWristDegrees:maxAngle*180/Math.PI};
+});console.log('Hand rig:',JSON.stringify(hands));
 const logic=await page.evaluate(()=>{
  const P=G.Player, events=[]; let cases=0;
  G.Audio.click=type=>events.push(type);
@@ -57,6 +94,7 @@ if(process.env.SHOTS){
   await page.screenshot({path:path.join(process.env.SHOTS,id+'.png')});
  }
 }
-console.log('PASS: 30 real-asset animations, 240 poses, 360 ammo/sound cases; no page errors.');
+assert.equal(errors.length,0,errors.join('\n'));
+console.log('PASS: 30 real-asset animations, 240 poses, continuous hand rig checks, 360 ammo/sound cases; no page errors.');
 }catch(e){console.error(e.stack);process.exitCode=1}finally{await browser.close();server.close()}
 })();

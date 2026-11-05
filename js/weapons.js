@@ -201,7 +201,8 @@ function flashMesh(parent, pos, scale) {
 /* ------------------------------------------------------------------ */
 // 소매(어깨~손목)와 장갑 낀 손(손바닥·손가락 마디)을 뼈대 하나로 묶은 스키닝 메시.
 // 뼈: 어깨 → 팔꿈치 → 손목(손) → 손가락 3마디 ×4 + 엄지 3마디. 팔꿈치는 두 뼈에 나눠 실려 부드럽게 굽는다
-const WRIST = 0.052, HAND_S = 0.93;   // 손 크기 (총 모델 크기에 맞춤)
+const WRIST = 0.052, HAND_S = 0.93;
+const PALM_CONTACT = new V3(0, 0.046, 0.018); // IK 목표는 손바닥 표면의 접촉점
 const BOLT_PALM = new V3(-0.6, 0.75, 0);            // 손바닥 중심(손 목표점) → 손목
 let ARM_M = null;
 function armMats() {
@@ -221,7 +222,7 @@ function armMats() {
   const acu = G.Soldiers && G.Soldiers.ready;
   ARM_M = {
     sleeve: new THREE.MeshStandardMaterial({ color: M.sleeve.color, map: M.sleeve.map, roughness: 0.93, normalMap: fabricN, normalScale: new THREE.Vector2(0.9, 0.9) }),
-    glove: new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.72, metalness: 0.02, normalMap: leatherN, normalScale: new THREE.Vector2(0.5, 0.5) }),
+    glove: new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.82, metalness: 0.01, normalMap: leatherN, normalScale: new THREE.Vector2(0.28, 0.28) }),
     gc: acu ? [0.12, 0.105, 0.075] : [0.03, 0.03, 0.028]     // 장갑 색 (선형)
   };
   if (ARM_M.sleeve.map) { ARM_M.sleeve.map = ARM_M.sleeve.map.clone(); ARM_M.sleeve.map.repeat.set(2, 3); ARM_M.sleeve.map.needsUpdate = true; }
@@ -256,12 +257,67 @@ function piece(geo, mat4, bone, col, w2) {
   if (!g.attributes.uv) g.setAttribute('uv', new THREE.Float32BufferAttribute(new Float32Array(n * 2), 2));
   return g;
 }
-const FINGERS = [   // [x(엄지 쪽 +), 마디 길이 3개, 반지름]
-  [0.028, [0.042, 0.026, 0.021], 0.0108],
-  [0.0095, [0.047, 0.029, 0.022], 0.0112],
-  [-0.0095, [0.044, 0.027, 0.021], 0.0107],
-  [-0.028, [0.034, 0.021, 0.018], 0.0095]
+const FINGERS = [   // [x, 마디 길이, 반지름, 손바닥 위의 시작 높이]
+  [0.027, [0.035, 0.025, 0.020], 0.0095, 0.083],
+  [0.009, [0.039, 0.027, 0.021], 0.0100, 0.089],
+  [-0.010, [0.037, 0.025, 0.020], 0.0096, 0.085],
+  [-0.027, [0.029, 0.020, 0.017], 0.0083, 0.074]
 ];
+// 각 마디를 겹친 캡슐로 만들지 않고 연속 표면으로 잇는다. 관절 양쪽은 두 뼈에 부드럽게 걸친다.
+function fingerSkin(chain, lens, radius, bones, col) {
+  const ends = [0, lens[0], lens[0] + lens[1], lens.reduce((a, b) => a + b, 0)];
+  const rings = [-0.006, 0];
+  for (let i = 0; i < 3; i++) {
+    const lo = ends[i], hi = ends[i + 1];
+    rings.push(lo + 0.005, (lo + hi) / 2, hi - 0.005, hi);
+  }
+  rings.push(ends[3] + radius * 0.38);
+  const pos = [], uv = [], skin = [], weights = [], colors = [], indices = [], sides = 12;
+  const p = new V3(), bind = chain[0].matrixWorld;
+  rings.forEach((y, row) => {
+    const taper = 1 - U.clamp(y / ends[3], 0, 1) * 0.23;
+    const tip = row === rings.length - 1 ? 0.12 : row === rings.length - 2 ? 0.75 : 1;
+    let a = y < ends[1] ? 0 : y < ends[2] ? 1 : 2, b = a, f = 0;
+    for (let j = 1; j < 3; j++) if (Math.abs(y - ends[j]) <= 0.0051) {
+      a = j - 1; b = j; f = U.smoothstep(ends[j] - 0.005, ends[j] + 0.005, y);
+    }
+    for (let j = 0; j <= sides; j++) {
+      const angle = j / sides * Math.PI * 2, r = radius * taper * tip;
+      p.set(Math.cos(angle) * r, y, Math.sin(angle) * r * 0.88).applyMatrix4(bind);
+      pos.push(p.x, p.y, p.z); uv.push(j / sides, y * 12);
+      skin.push(bones.indexOf(chain[a]), bones.indexOf(chain[b]), 0, 0); weights.push(1 - f, f, 0, 0);
+      const shade = Math.sin(angle) < -0.4 ? 0.82 : 1;
+      colors.push(col[0] * shade, col[1] * shade, col[2] * shade);
+      if (row && j < sides) { const x = (row - 1) * (sides + 1) + j, z = x + sides + 1; indices.push(x, z, x + 1, x + 1, z, z + 1); }
+    }
+  });
+  p.set(0,ends[3]+radius*0.45,0).applyMatrix4(bind);const cap=pos.length/3;
+  pos.push(p.x,p.y,p.z);uv.push(0.5,1);skin.push(bones.indexOf(chain[2]),0,0,0);weights.push(1,0,0,0);colors.push(...col);
+  const last=(rings.length-1)*(sides+1);for(let j=0;j<sides;j++)indices.push(last+j,cap,last+j+1);
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  g.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(skin, 4));
+  g.setAttribute('skinWeight', new THREE.Float32BufferAttribute(weights, 4));
+  g.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+  g.setIndex(indices); g.computeVertexNormals(); return g.toNonIndexed();
+}
+function palmSkin() {
+  // 손목에서 손바닥·손등·손가락 뿌리로 넓어지는 타원 단면. 둥근 상자 같은 외곽을 없앤다.
+  const sections = [[-0.014,0.026,0.017],[0,0.028,0.017],[0.022,0.035,0.019],
+    [0.045,0.039,0.019],[0.068,0.039,0.016],[0.083,0.035,0.014],[0.094,0.027,0.009]];
+  const pos = [], uv = [], ix = [], N = 20;
+  sections.forEach(([y,w,d],i) => { for(let j=0;j<=N;j++) {
+    const t=j/N*Math.PI*2; pos.push(Math.cos(t)*w,y,Math.sin(t)*d);uv.push(j/N,y*8);
+    if(i&&j<N){const a=(i-1)*(N+1)+j,b=a+N+1;ix.push(a,b,a+1,a+1,b,b+1);}
+  }});
+  const bottom=pos.length/3;pos.push(0,sections[0][0],0);uv.push(0.5,0);
+  const top=pos.length/3;pos.push(0,sections[sections.length-1][0],0);uv.push(0.5,1);
+  const last=(sections.length-1)*(N+1);
+  for(let j=0;j<N;j++){ix.push(j,j+1,bottom,last+j,top,last+j+1);}
+  const g = new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(ix);g.computeVertexNormals();return g;
+}
 function armRig(parent, shoulder, hand, elbow, glove, slack, sideArg) {
   const AM = armMats();
   const side = sideArg || (hand.x - shoulder.x < 0 ? 1 : -1);   // 1 오른팔, -1 왼팔 (어깨가 손보다 바깥쪽)
@@ -275,13 +331,13 @@ function armRig(parent, shoulder, hand, elbow, glove, slack, sideArg) {
   grp.add(bS); grp.add(bE); grp.add(bW);
   const bones = [bS, bE, bW], fing = [];
   const mk = (parentB, pos, q) => { const bn = new THREE.Bone(); bn.position.copy(pos); if (q) bn.quaternion.copy(q); parentB.add(bn); bones.push(bn); return bn; };
-  for (const [fx, lens] of FINGERS) {
-    const b0 = mk(bW, new V3(fx * side, 0.094, 0.002)), b1 = mk(b0, new V3(0, lens[0], 0)), b2 = mk(b1, new V3(0, lens[1], 0));
+  for (const [fx, lens, radius, baseY] of FINGERS) {
+    const b0 = mk(bW, new V3(fx * side, baseY, 0.002)), b1 = mk(b0, new V3(0, lens[0], 0)), b2 = mk(b1, new V3(0, lens[1], 0));
     fing.push([b0, b1, b2]);
   }
   // 엄지: 손바닥 옆에서 비스듬히 앞·안쪽으로
-  const tq = new THREE.Quaternion().setFromRotationMatrix(basis(new V3(0.62 * side, 0.68, 0.38).normalize(), new V3(-0.75 * side, 0.1, 0.65)));
-  const t0 = mk(bW, new V3(0.03 * side, 0.026, 0.012), tq), t1 = mk(t0, new V3(0, 0.038, 0)), t2 = mk(t1, new V3(0, 0.03, 0));
+  const tq = new THREE.Quaternion().setFromRotationMatrix(basis(new V3(0.68 * side, 0.54, 0.32).normalize(), new V3(-0.38 * side, 0.05, 0.9)));
+  const t0 = mk(bW, new V3(0.027 * side, 0.026, 0.006), tq), t1 = mk(t0, new V3(0, 0.029, 0)), t2 = mk(t1, new V3(0, 0.025, 0));
   grp.updateMatrixWorld(true);
   const idx = bn => bones.indexOf(bn);
   const W = bn => bn.matrixWorld;
@@ -293,9 +349,9 @@ function armRig(parent, shoulder, hand, elbow, glove, slack, sideArg) {
     for (let y = y0; y <= y1 + 1e-6; y += 0.012) ys.push(Math.min(y, y1));
     const rad = (y) => {
       // 군복 소매를 입은 성인 팔 굵기 (위팔 지름 약 14cm, 팔뚝 12cm, 손목 9.5cm)
-      if (y < a) { const t = U.clamp(y / a, 0, 1); return 0.072 - 0.006 * t + 0.006 * Math.sin(t * Math.PI) - 0.01 * U.smoothstep(0.72, 1, t); }
+      if (y < a) { const t = U.clamp(y / a, 0, 1); return 0.061 - 0.005 * t + 0.005 * Math.sin(t * Math.PI) - 0.008 * U.smoothstep(0.72, 1, t); }
       const t = U.clamp((y - a) / bw, 0, 1);
-      return 0.058 + 0.009 * Math.sin(Math.min(1, t * 2.1) * Math.PI) - 0.013 * t + 0.006 * U.smoothstep(0.84, 0.97, t);   // 팔뚝 근육 → 손목 → 커프
+      return 0.05 + 0.007 * Math.sin(Math.min(1, t * 2.1) * Math.PI) - 0.014 * t + 0.003 * U.smoothstep(0.84, 0.97, t);
     };
     const nz = G.Tex.tileNoise(64, 8, 2, 77 + (side > 0 ? 1 : 2));
     ys.forEach((y, i) => {
@@ -326,34 +382,27 @@ function armRig(parent, shoulder, hand, elbow, glove, slack, sideArg) {
   const M4 = new THREE.Matrix4(), T = (x, y, z) => new THREE.Matrix4().makeTranslation(x, y, z);
   const wM = W(bW), eM = W(bE);
   // 손목 커프 (팔뚝·손목 뼈 사이에 걸침)
-  gloveP.push(piece(new THREE.CylinderGeometry(0.047, 0.05, 0.055, 18, 3), eM.clone().multiply(T(0, bw - 0.006, 0)).multiply(new THREE.Matrix4().makeScale(1, 1, 0.86)), idx(bE), dark,
-    (y) => [idx(bW), U.smoothstep(a + bw - 0.02, a + bw + 0.02, y)]));
+  gloveP.push(piece(new THREE.CylinderGeometry(0.040, 0.046, 0.045, 18, 3), eM.clone().multiply(T(0, bw - 0.006, 0)).multiply(new THREE.Matrix4().makeScale(1, 1, 0.86)), idx(bE), dark));
+  gloveP.push(piece(new THREE.SphereGeometry(1,12,8).scale(0.026,0.023,0.016),wM.clone().multiply(T(0,-0.004,0)),idx(bW),dark));
   // 손바닥 + 손등
-  gloveP.push(piece(roundBox(0.088, 0.1, 0.038, 0.014, 4), wM.clone().multiply(T(0, 0.047, 0)), idx(bW), gc));
-  gloveP.push(piece(roundBox(0.074, 0.03, 0.012, 0.005, 2), wM.clone().multiply(T(0, 0.078, -0.021)), idx(bW), pad));      // 손가락 마디 보호대
-  gloveP.push(piece(roundBox(0.05, 0.035, 0.008, 0.004, 2), wM.clone().multiply(T(0.004 * side, 0.03, -0.02)), idx(bW), dark));   // 손등 찍찍이
-  gloveP.push(piece(roundBox(0.035, 0.05, 0.02, 0.009, 3), wM.clone().multiply(T(0.026 * side, 0.03, 0.01)), idx(bW), gc));         // 엄지 두덩
+  gloveP.push(piece(palmSkin(), wM.clone(), idx(bW), gc));
+  gloveP.push(piece(roundBox(0.045, 0.029, 0.006, 0.003, 2), wM.clone().multiply(T(0, 0.031, -0.019)), idx(bW), dark));
+  gloveP.push(piece(new THREE.SphereGeometry(1,12,8).scale(0.018,0.028,0.014), wM.clone().multiply(T(0.024 * side, 0.032, 0.006)), idx(bW), gc));
   // 손가락 마디
-  FINGERS.forEach(([fx, lens, r], k) => {
-    const ch = fing[k];
-    for (let s = 0; s < 3; s++) {
-      const rr = r * (1 - s * 0.08), L = lens[s];
-      const cap = new THREE.CapsuleGeometry(rr, Math.max(0.002, L - rr * 0.6), 3, 8).translate(0, L / 2, 0);
-      gloveP.push(piece(cap, W(ch[s]).clone().multiply(new THREE.Matrix4().makeScale(1, 1, 0.92)), idx(ch[s]), s === 0 ? pad.map((v, i) => (v + gc[i]) / 2) : gc));
-    }
+  FINGERS.forEach(([fx, lens, r, y], k) => {
+    gloveP.push(fingerSkin(fing[k], lens, r, bones, gc));
+    gloveP.push(piece(roundBox(r*1.5,0.014,0.004,0.002,2),wM.clone().multiply(T(fx*side,y-0.006,-0.015)),idx(bW),pad));
   });
-  [[t0, 0.038, 0.0125], [t1, 0.03, 0.0115], [t2, 0.026, 0.0105]].forEach(([bn, L, r]) => {
-    const cap = new THREE.CapsuleGeometry(r, L - r * 0.5, 3, 8).translate(0, L / 2, 0);
-    gloveP.push(piece(cap, W(bn).clone(), idx(bn), gc));
-  });
+  gloveP.push(fingerSkin([t0,t1,t2],[0.029,0.025,0.021],0.0105,bones,gc));
   const gg = THREE.mergeGeometries(gloveP, false);
   const sk = new THREE.Skeleton(bones);
   const sm = new THREE.SkinnedMesh(sleeve[0], AM.sleeve), gm = new THREE.SkinnedMesh(gg, AM.glove);
   for (const m of [sm, gm]) { m.frustumCulled = false; m.userData.keep = true; grp.add(m); m.bind(sk, new THREE.Matrix4()); }
   parent.add(grp);
-  const rig = { grp, side, bS, bE, bW, fing, thumbB: [t0, t1, t2], S: shoulder.clone(), a, b, bw, pole, rest: hand.clone(), tgt: hand.clone(), cur: hand.clone(), roll: 0,
-    curl: 0.9, curlT: 0.9, thumb: 0.7, thumbT: 0.7, trig: 0.9, trigT: 0.9, palmRef: null, axisY: hand.y + 0.05, inset: side > 0 ? 0.017 : 0.014,
-    aim: side > 0 ? new V3(-0.25, 0.3, -1).normalize() : new V3(0.9, 0.12, -0.42).normalize(), aimK: side > 0 ? 0.4 : 0.8, homeK: 0 };
+  const rig = { grp, side, bS, bE, bW, fing, thumbB: [t0, t1, t2], S: shoulder.clone(), baseS: shoulder.clone(), shoulderShift: new V3(), a, b, bw, pole, rest: hand.clone(), tgt: hand.clone(), cur: hand.clone(), roll: 0,
+    curl: 0.9, curlT: 0.9, thumb: 0.7, thumbT: 0.7, trig: 0.9, trigT: 0.9, palmRef: null, fingerRef: null, palmTarget: new V3(), fingerTarget: new V3(), thumbRest: tq.clone(), handQ: new THREE.Quaternion(), handReady: false, anchorLocal: PALM_CONTACT.clone(), contact: hand.clone(), pinch: hand.clone(), contactError: 0, wristAngle: 0,
+    aim: side > 0 ? new V3(0,0.15,-1).normalize() : new V3(1,0,-0.08).normalize(), homeK: 0 };
+  rig.pole.set(side * 0.8, -0.55, 0.15).normalize();
   solveArm(rig, 1);
   return rig;
 }
@@ -367,52 +416,85 @@ function basis(y, zRef, out) {
   _bx.crossVectors(_by, _bz);
   return (out || new THREE.Matrix4()).makeBasis(_bx, _by, _bz);
 }
-const _D = new V3(), _E = new V3(), _H = new V3(), _P2 = new V3(), _F = new V3(), _Z = new V3(), _Wr = new V3(), _m4b = new THREE.Matrix4();
+const _D = new V3(), _E = new V3(), _P2 = new V3(), _F = new V3(), _Z = new V3(), _Wr = new V3(), _m4b = new THREE.Matrix4();
+const _handDir = new V3(), _contact = new V3(), _handQ = new THREE.Quaternion(), _bendQ = new THREE.Quaternion();
+const _previousHandQ = new THREE.Quaternion();
+const HAND_Y = new V3(0,1,0), HAND_Z = new V3(0,0,1), HAND_X = new V3(1,0,0);
+const _pinchRef=new V3(),_thumbTip=new V3();
+const MAX_WRIST = 82 * Math.PI / 180;
+function handShape(r) {
+  for(let i=0;i<4;i++) {
+    const c=U.clamp(i===0?r.trig:r.curl*(1+i*0.025),0,1),ch=r.fing[i];
+    ch[0].rotation.set(c*1.05,0,(1.5-i)*0.045*r.side*(1-c*0.8));
+    ch[1].rotation.x=c*1.24;ch[2].rotation.x=c*0.72;
+  }
+  const t=U.clamp(r.thumb,0,1),T=r.thumbB;
+  T[0].quaternion.copy(r.thumbRest).multiply(_bendQ.setFromAxisAngle(HAND_X,t*0.52));
+  T[1].rotation.x=t*0.68;T[2].rotation.x=t*0.48;
+  // 손목 좌표계에서 실제 엄지·검지 끝 사이를 구한다. 산탄과 슬라이드 집기는 이 점으로 맞춘다.
+  _pinchRef.set(0,FINGERS[0][1][2],0);_thumbTip.set(0,0.021,0);
+  for(let i=2;i>=0;i--){
+    _pinchRef.applyQuaternion(r.fing[0][i].quaternion).add(r.fing[0][i].position);
+    _thumbTip.applyQuaternion(T[i].quaternion).add(T[i].position);
+  }
+  _pinchRef.add(_thumbTip).multiplyScalar(0.5);
+}
 function solveArm(r, dt) {
-  const S = r.S, a = r.a, b = r.b;
-  // 손 모양은 부드럽게 바뀐다
-  const k = 1 - Math.exp(-(dt || 0.016) * 14);
+  const hadHand=r.handReady;_previousHandQ.copy(r.handQ);
+  const k = 1 - Math.exp(-(dt || 0.016) * 18);
   r.curl += (r.curlT - r.curl) * k; r.thumb += (r.thumbT - r.thumb) * k; r.trig += (r.trigT - r.trig) * k;
-  // 손바닥 방향: 오른손(손잡이)은 총 쪽(-x), 왼손은 총의 축을 향한다
-  const H0 = r.cur;
-  // 왼손이 총열 덮개(제자리) 근처면: 손바닥은 위로 받치고 손가락은 오른쪽으로 감싼다
-  const home = r.side < 0 ? 1 - U.smoothstep(0.03, 0.1, H0.distanceTo(r.rest)) : 0;
-  if (r.palmRef) _Z.copy(r.palmRef);
-  else if (r.side > 0) _Z.set(-1, 0.12, 0);
-  else {
-    _Z.set(-H0.x, r.axisY - H0.y, 0).normalize().add(_P2.set(0, 0, -0.15)).normalize();
-    _Z.lerp(_P2.set(0.22, 1, 0.05).normalize(), home);
+  handShape(r);
+  const pinch=(r.contactMode||'').startsWith('shell')||r.contactMode==='pinch';
+  if(!r.handReady)r.anchorLocal.copy(pinch?_pinchRef:PALM_CONTACT);
+  else r.anchorLocal.lerp(pinch?_pinchRef:PALM_CONTACT,1-Math.exp(-dt*26));
+  _Z.copy(r.palmRef || (r.side > 0 ? _contact.set(-1,0.06,0) : _contact.set(0,1,0))).normalize();
+  _handDir.copy(r.fingerRef || r.aim).normalize();
+  _handQ.setFromRotationMatrix(basis(_handDir, _Z, _m4b));
+  if(r.roll) _handQ.multiply(_bendQ.setFromAxisAngle(HAND_Y, U.clamp(r.roll,-0.4,0.4)));
+  if(!r.handReady) { r.handQ.copy(_handQ);r.handReady=true; }
+  else r.handQ.rotateTowards(_handQ,Math.min(r.handQ.angleTo(_handQ)*(1-Math.exp(-dt*24)),dt*9));
+  const a=r.a,b=r.bw;
+  _contact.copy(r.anchorLocal).multiplyScalar(HAND_S).applyQuaternion(_handQ);
+  _D.copy(r.reachRef || r.tgt).sub(_contact).sub(r.baseS);
+  const reach=_D.length(),extra=U.clamp(reach-(a+b-0.008),0,0.09);
+  if(reach>1e-6)_D.multiplyScalar(extra/reach);
+  r.shoulderShift.lerp(_D,1-Math.exp(-dt*20));r.S.copy(r.baseS).add(r.shoulderShift);
+  // 먼저 손바닥 표면에서 손목 위치를 역산한다. 팔뚝 방향으로 임의로 빼던 오프셋을 없앤다.
+  for(let pass=0;pass<2;pass++) {
+    _contact.copy(r.anchorLocal).multiplyScalar(HAND_S).applyQuaternion(r.handQ);
+    _Wr.copy(r.cur).sub(_contact);
+    _D.subVectors(_Wr,r.S);let L=_D.length();if(L<1e-6)return;_D.divideScalar(L);
+    L=U.clamp(L,Math.abs(a-b)+0.002,a+b-0.002);
+    _Wr.copy(r.S).addScaledVector(_D,L);
+    _P2.copy(r.pole).addScaledVector(_D,-r.pole.dot(_D));
+    if(_P2.lengthSq()<1e-6)_P2.set(r.side,0,0).addScaledVector(_D,-r.side*_D.x);
+    _P2.normalize();
+    const cosA=U.clamp((a*a+L*L-b*b)/(2*a*L),-1,1);
+    _E.copy(r.S).addScaledVector(_D,a*cosA).addScaledVector(_P2,a*Math.sqrt(Math.max(0,1-cosA*cosA)));
+    _F.subVectors(_Wr,_E).normalize();
+    // 손목이 팔뚝 뒤로 접히지 않게 제한한다. 보정된 방향으로 접촉점을 한 번 더 계산한다.
+    _handDir.copy(HAND_Y).applyQuaternion(r.handQ);
+    const angle=Math.acos(U.clamp(_F.dot(_handDir),-1,1));
+    if(pass===0 && angle>MAX_WRIST) {
+      _bendQ.setFromUnitVectors(_F,_handDir);_handQ.identity().slerp(_bendQ,MAX_WRIST/angle);
+      _handDir.copy(_F).applyQuaternion(_handQ);
+      _Z.copy(HAND_Z).applyQuaternion(r.handQ);
+      r.handQ.setFromRotationMatrix(basis(_handDir,_Z,_m4b));
+      if(hadHand){_handQ.copy(r.handQ);r.handQ.copy(_previousHandQ).rotateTowards(_handQ,dt*10);}
+    }
   }
-  _Z.normalize();
-  r.homeK = home;
-  // 손바닥이 물체에 파묻히지 않게 조금 띄운다 (왼손은 제자리에서 총열 덮개 아래로)
-  _H.copy(H0).addScaledVector(_Z, -(r.inset + 0.012 * home));
-  _D.subVectors(_H, S);
-  let L = _D.length(); if (L < 1e-5) return;
-  _D.divideScalar(L);
-  L = U.clamp(L, Math.abs(a - b) + 1e-3, a + b - 1e-3);
-  const cosA = (a * a + L * L - b * b) / (2 * a * L), sinA = Math.sqrt(Math.max(0, 1 - cosA * cosA));
-  _P2.copy(r.pole).addScaledVector(_D, -r.pole.dot(_D)).normalize();
-  _E.copy(S).addScaledVector(_D, a * cosA).addScaledVector(_P2, a * sinA);
-  _H.copy(S).addScaledVector(_D, L);
-  _F.subVectors(_H, _E).normalize();                  // 팔뚝 방향
-  _Wr.copy(_H).addScaledVector(_F, -WRIST * HAND_S);
-  // 뼈 배치 (위팔: 팔꿈치 쪽 방향을 Z 기준으로 비틀림 고정)
-  r.bS.position.copy(S); r.bS.quaternion.setFromRotationMatrix(basis(_D.subVectors(_E, S), _P2, _m4b));
-  r.bE.position.copy(_E); r.bE.quaternion.setFromRotationMatrix(basis(_F, _P2.lerp(_Z, 0.6), _m4b));
-  // 손: 손가락은 팔뚝 방향과 총 앞쪽 사이 (손목이 꺾여 총을 감싼다), 손바닥은 _Z
-  const aimK = r.aimK * (r.side < 0 ? 0.5 + 0.5 * r.homeK : 1);
-  _D.copy(_F).multiplyScalar(1 - aimK).addScaledVector(r.aim, aimK).addScaledVector(_Z, 0.12).normalize();
-  r.bW.position.copy(_Wr); r.bW.quaternion.setFromRotationMatrix(basis(_D, _Z, _m4b)); r.bW.scale.setScalar(HAND_S);
-  if (r.roll) r.bW.rotateY(r.roll);
-  // 손가락 굽힘 (검지는 방아쇠용으로 따로)
-  for (let i = 0; i < 4; i++) {
-    const c = i === 0 ? r.trig : r.curl * (1 + i * 0.04), ch = r.fing[i];
-    ch[0].rotation.set(c * 1.32, 0, (1.5 - i) * 0.05 * r.side * (1 - c * 0.6));
-    ch[1].rotation.x = c * 1.55; ch[2].rotation.x = c * 1.05;
-  }
-  const t = r.thumb, T = r.thumbB;
-  T[0].rotation.x = t * 0.5; T[1].rotation.x = t * 0.75; T[2].rotation.x = t * 0.6;
+  _Z.copy(HAND_Z).applyQuaternion(r.handQ);
+  r.bS.position.copy(r.S);r.bS.quaternion.setFromRotationMatrix(basis(_D.subVectors(_E,r.S),_P2,_m4b));
+  r.bE.position.copy(_E);r.bE.quaternion.setFromRotationMatrix(basis(_F,_Z,_m4b));
+  r.bW.position.copy(_Wr);r.bW.quaternion.copy(r.handQ);r.bW.scale.setScalar(HAND_S);
+  _contact.copy(r.anchorLocal).multiplyScalar(HAND_S).applyQuaternion(r.handQ).add(_Wr);
+  r.contact.copy(_contact);r.contactError=_contact.distanceTo(r.cur);
+  r.wristAngle=Math.acos(U.clamp(_F.dot(_handDir.copy(HAND_Y).applyQuaternion(r.handQ)),-1,1));
+  r.pinch.copy(_pinchRef).multiplyScalar(HAND_S).applyQuaternion(r.handQ).add(_Wr);
+}
+function handPose(arm, name, normal, fingers, curl, thumb, index) {
+  arm.contactMode=name;arm.palmRef=arm.palmTarget.set(...normal);arm.fingerRef=arm.fingerTarget.set(...fingers);
+  if(curl!==undefined)arm.curlT=curl;if(thumb!==undefined)arm.thumbT=thumb;if(index!==undefined)arm.trigT=index;
 }
 /* ------------------------------------------------------------------ */
 /* 총 모델 데이터                                                       */
@@ -453,7 +535,7 @@ const RSTYLE = {
   g18: { s: 'overhand', roll: -0.42, yaw: 0.32, pitch: 0.06, px: -0.07, py: 0.05, pz: -0.06, chRoll: 0.3, chYaw: -0.1, chPitch: 0.12, chZ: -0.03, chY: 0.02 },
   m1911: { s: 'slingshot', roll: -0.28, yaw: 0.26, pitch: 0.1, px: -0.06, py: 0.05, pz: -0.06, chRoll: -0.15, chYaw: 0.08, chPitch: 0.2, chZ: -0.01, chY: 0.0 },
   de7: { s: 'heavy', roll: -0.62, yaw: 0.34, pitch: 0.08, px: -0.04, py: 0.04, pz: -0.09, heavy: 0.02, chRoll: 0.25, chYaw: -0.1, chPitch: 0.12, chZ: -0.03 },
-  s12: { s: 'pump', eject: [0.016, 0.072, -0.13] },
+  s12: { s: 'pump', eject: [0.016, 0.072, -0.13], portDuration: 1.35, portClose: 0.82 },
   m1014: { s: 'semi', eject: [0.024, 0.044, -0.065], release: [0.0, -0.016, -0.036] },
   db2: { s: 'pair' },
   r45: { s: 'revolver' }
@@ -516,7 +598,7 @@ const Guns = G.Guns = {
       list = [[0.16, 'open'], [0.28, 'shell'], [0.6, 'magin'], [0.765, 'close']];
     } else if (phase === 'start') {
       list = def.reloadType === 'break' ? [[0.4, 'open'], [0.52, 'shell']]
-        : port ? [[0.14, 'open'], [0.47, 'shell'], [st.s === 'semi' ? 0.63 : 0.68, 'close']] : [];
+        : port ? [[0.14, 'open'], [0.47, 'shell'], [st.portClose || (st.s === 'semi' ? 0.63 : 0.68), 'close']] : [];
     } else if (phase === 'load') list = [[def.reloadType === 'break' ? 0.58 : st.s === 'semi' ? 0.48 : 0.55, 'shell']];
     else list = def.reloadType === 'break' ? [[0.3, 'close']] : [];
     return list.filter(e => Number.isFinite(e[0]) && e[0] >= 0 && e[0] <= 1).sort((a, b) => a[0] - b[0]);
@@ -671,12 +753,17 @@ const Guns = G.Guns = {
     if (o.parts.pump) K.pumpOff = F.clone().sub(o.rest.pump);
     if (o.parts.barrel) K.barrelOff = F.clone().sub(o.rest.barrel);
     if (o.parts.charge && o.charge) K.chGrabSemi = v(o.charge, 0.004, 0.022, 0.002);
+    if(o.parts.bolt){
+      const knob=o.charge?o.charge.clone().sub(o.rest.bolt):new V3(0.06,-0.02,0);
+      K.boltReach=knob.applyAxisAngle(new V3(0,0,1),1.15).add(o.rest.bolt).add(new V3(0.018,-0.004,0.012));
+    }
   },
   rifleKeys(o, K, v) {
     const st = K.st, S = st.s, F = o.fore, mr = o.rest.mag, md = o.magDir, k = o.s / 1.54;
     const Hm = mr.clone().addScaledVector(md, 0.1 * k).add(new V3(st.hx || -0.032, 0, 0));       // 탄창을 쥔 손
     const g = K.grab = Hm.clone().sub(mr);
     const box = o.magBox || new THREE.Box3(new V3(-0.01, -0.1, -0.03), new V3(0.01, 0, 0.03));
+    Hm.x=mr.x+box.min.x-0.0015;K.grab.copy(Hm).sub(mr);
     const L = K.lug = new V3(0, box.max.y, box.min.z + 0.004);                                     // 앞턱
     const gp = (a, dy) => gripOf(magAt(mr, L, a, dy, new V3()), g, a, new V3());
     const belt = v(Hm, -0.13, -0.52, 0.2), belt2 = v(Hm, -0.19, -0.46, 0.1);                      // 허리 탄입대
@@ -763,6 +850,7 @@ const Guns = G.Guns = {
   pistolKeys(o, K, v) {
     const st = K.st, S = st.s, F = o.fore, mr = o.rest.mag, md = o.magDir, k = o.s / 1.05;
     const Hm = mr.clone().addScaledVector(md, 0.045).add(new V3(-0.004, 0, 0.004));
+    if(o.magBox)Hm.x=mr.x+o.magBox.min.x-0.0015;
     K.grab = Hm.clone().sub(mr); K.lug = new V3();
     const Hin = Hm.clone().addScaledVector(md, 0.1), Hap = Hm.clone().addScaledVector(md, 0.05);
     const heavy = S === 'heavy';
@@ -1205,11 +1293,15 @@ const VM = G.VM = {
       this.camRZ = 0.018 * this.camE * (1 - a) + S.rz[0] * 0.25;
       // 팔 IK (손은 부드럽게 따라간다)
       const k = m.snap ? 1 : 1 - Math.exp(-dt * 30);
-      for (const arm of [m.armL, m.armR]) { arm.cur.lerp(arm.tgt, k); solveArm(arm, dt); }
+      for (const arm of [m.armL, m.armR]) {
+        if(m.snap){arm.handReady=false;arm.shoulderShift.set(0,0,0);arm.curl=arm.curlT;arm.thumb=arm.thumbT;arm.trig=arm.trigT;}
+        const follow=k+(1-k)*(arm.contactLock || 0);
+        arm.cur.lerp(arm.tgt, follow); solveArm(arm, dt);
+      }
       m.snap = false;
       // 손에 든 물건(탄창·산탄)은 실제 손 위치를 따라간다
-      if (m.holdObj) { const h = m.holdObj; h.position.copy(m.armL.cur).sub(_c.copy(m.keys.grab).applyAxisAngle(AXX, h.rotation.x)); }
-      if (m.shell && m.shell.visible) { m.shell.position.copy(m.armL.cur).add(_c.set(0.014, 0.022, -0.012)); if (m.shellOff1) m.shell.position.add(m.shellOff1); }
+      if (m.holdObj) { const h = m.holdObj; h.position.copy(m.armL.contact).sub(_c.copy(m.keys.grab).applyAxisAngle(AXX, h.rotation.x)); }
+      if (m.shell && m.shell.visible) { m.shell.position.copy(m.armL.pinch); if (m.shellOff1) m.shell.position.add(m.shellOff1); }
       if (m.shell2 && m.shell2.visible) m.shell2.position.copy(m.shell.position).add(m.shellOff2);
     }
     // 투척
@@ -1248,9 +1340,14 @@ const VM = G.VM = {
     if (m.mag2) { m.mag2.visible = false; m.mag2.rotation.set(0, 0, 0); }
     m.holdObj = null;
     m.armR.tgt.copy(m.grip); m.armR.roll = 0; m.armL.roll = 0;
+    m.armR.reachRef=null;m.armL.reachRef=null;
+    m.armR.contactLock=1;m.armL.contactLock=1;
     // 손 모양 기본값: 오른손은 손잡이를 감싸고 검지는 쏠 때·조준할 때만 방아쇠에
-    m.armR.curlT = 0.93; m.armR.thumbT = 0.8; m.armR.trigT = (this.kick > 0.004 || s.ads > 0.5) ? 0.7 : 0.3; m.armR.palmRef = null;
-    m.armL.curlT = 0.82; m.armL.thumbT = 0.45; m.armL.trigT = 0.78; m.armL.palmRef = null;
+    m.armR.curlT = 0.9; m.armR.thumbT = 0.65; m.armR.trigT = this.kick > 0.004 ? 0.7 : 0.12;
+    m.armL.curlT = 0.76; m.armL.thumbT = 0.45; m.armL.trigT = 0.7;
+    handPose(m.armR,'grip',[-1,0.06,0],[0,0.15,-1]);
+    if(m.cls==='pistol')handPose(m.armL,'support',[1,0.1,0],[0,0.25,-1]);
+    else handPose(m.armL,'support',[0,1,0.05],[1,0,-0.08]);
     m.armL.tgt.copy(m.fore);
     // 조준경 표시
     const sc = s.scope;
@@ -1281,6 +1378,7 @@ const VM = G.VM = {
       else if (rl.type === 'revolver') this.animRevolver(m, rl);
       else if (rl.type === 'shell') this.animShell(m, rl);
       else if (rl.type === 'break') this.animBreak(m, rl);
+      this.handContacts(m, rl);
       this.reloadAccent(m, rl);
     } else if (P.barrel) {
       m.armL.tgt.copy(P.barrel.position).add(K.barrelOff);
@@ -1289,6 +1387,46 @@ const VM = G.VM = {
   },
   // 지나간 순간 (이번 프레임에 a 를 넘었나)
   passed(a, p) { return this.pv < a && p >= a; },
+  handContacts(m, rl) {
+    const L=m.armL,K=m.keys,st=K.st;
+    if(rl.type==='mag') {
+      const p=rl.p,S=rl.empty?K.E:K.Tac;if(!S)return;const T=S.T;
+      const old=T.grab!==undefined&&p>=T.grab-0.025&&p<T.release;
+      const fresh=p>=T.newMag-0.025&&p<T.seat+0.055;
+      if(old||fresh){
+        const object=old?m.parts.mag:m.mag2,a=object?object.rotation.x:0;
+        handPose(L,'magazine',[1,0,0],[0,Math.sin(a),-Math.cos(a)],0.66,0.65,0.58);
+        const touch=old?T.grab:T.hook!==undefined?T.hook:T.seat;
+        L.contactLock=ss((p-touch+0.04)/0.04);
+      }else if(p>0.04&&p<T.seat){handPose(L,'reach',[0.8,0,-0.2],[0,-0.75,-0.65],0.24,0.28,0.2);L.contactLock=0;}
+      if(rl.empty&&T.chA!==undefined&&p>T.chA-0.075&&p<T.chRel+0.035){
+        const over=st.s==='saiga'||(st.s==='drum'&&m.charge&&m.charge.x>0);
+        handPose(L,'handle',over?[0,-1,0]:[m.charge&&m.charge.x>0?-1:1,0,0],over?[1,0,-0.1]:[0,0.2,-1],0.78,0.6,0.72);
+        L.reachRef=K.chGrab;
+        L.contactLock=ss((p-T.chA+0.035)/0.035);
+      }
+      if(rl.empty&&T.slap&&p>T.slap-0.075&&p<T.slap+0.04)handPose(L,'press',[1,0,0],[0,1,-0.1],0.12,0.18,0.12);
+      if(rl.empty&&T.slideA!==undefined&&p>T.slideA-0.075&&p<T.slideRel+0.035){
+        const pinch=st.s==='slingshot';
+        handPose(L,pinch?'pinch':'slide',pinch?[1,0,0]:[0,-1,0],pinch?[0,0.85,-0.5]:[1,0,-0.1],pinch?0.55:0.8,0.72,pinch?0.38:0.75);
+        L.reachRef=K.slideGrab;
+        L.contactLock=ss((p-T.slideA+0.035)/0.035);
+      }
+      if(rl.empty&&T.boltA!==undefined&&p>T.boltA-0.09&&p<T.boltB){m.armR.reachRef=K.boltReach;m.armR.contactMode='bolt';}
+      if(rl.empty&&T.slide&&p>T.slide-0.07&&p<T.slide+0.045)handPose(L,'press',[1,0,0],[0,0.7,-0.7],0.4,0.65,0.3);
+      if(T.taps&&p>T.seat&&p<T.taps[T.taps.length-1]+0.035)handPose(L,'press',[0,1,0],[0.2,0,1],0.12,0.18,0.12);
+    }else if(rl.type==='revolver'){
+      if(rl.p>0.12&&rl.p<0.83)handPose(L,rl.p<0.36?'cylinder':'loader',[1,0,0],[0,0.2,-1],0.57,0.66,0.45);
+    }else{
+      const c=rl.shellP,port=rl.phase==='start'&&rl.port&&rl.pp>0.24&&rl.pp<(st.s==='pump'?0.5:0.54);
+      const pair=rl.type==='break',normal=pair?[1,0,0]:[0,1,0],fingers=pair?[0,-0.1,-1]:[0.3,0,1];
+      if(rl.phase==='load')handPose(L,c<0.65?'shell':'shellReach',normal,fingers,c<0.65?0.46:0.25,c<0.65?0.75:0.4,c<0.65?0.3:0.2);
+      else if(port)handPose(L,'shell',[1,0,0],[0,0.1,1],0.46,0.75,0.3);
+      else if(rl.phase==='start'&&rl.port&&st.s==='pump'&&rl.pp>0.14&&rl.pp<0.24)handPose(L,'shellReach',normal,fingers,0.25,0.4,0.2);
+      else if(rl.phase==='start'&&(!rl.port||rl.pp>(st.s==='pump'?0.82:0.72)))handPose(L,'shellReach',normal,fingers,0.25,0.4,0.2);
+      else if(rl.phase==='start'&&rl.port&&st.s==='semi'&&rl.pp<0.2)handPose(L,'handle',[0,-1,0],[1,0,0],0.78,0.6,0.72);
+    }
+  },
   // 총의 접촉점은 그대로 두고 어깨·손목이 먼저 움직였다가 늦게 따라오는 작은 무게감을 더한다.
   reloadAccent(m, rl) {
     const f = Guns.reloadFeel(m.id);
@@ -1515,7 +1653,7 @@ const VM = G.VM = {
     let e = 1, bob = 0, port = 0;
     if (rl.phase === 'start') {
       if (rl.port && K.eject) { port = this.portLoad(m, rl.pp, semi, F); e = ss((rl.pp - 0.7) / 0.3); }
-      else { e = ss(rl.pp); m.armL.tgt.copy(F).lerp(K.below, ss((rl.pp - 0.1) / 0.9)); }
+      else { e = ss(rl.pp); m.armL.tgt.copy(F).lerp(K.down, ss((rl.pp - 0.1) / 0.9)); }
     } else if (rl.phase === 'load') {
       // 탄입대에서 한 발 → 엄지로 장전구에 밀어 넣고 → 다시 아래로 (매번 조금씩 다르게)
       const c = rl.shellP, j = this.shellJit || (this.shellJit = new V3());
@@ -1529,7 +1667,7 @@ const VM = G.VM = {
       m.armL.curlT = c < a2 ? 0.55 : 0.7; m.armL.thumbT = c < a2 ? 0.65 : 0.3; m.armL.trigT = m.armL.curlT;
       bob = Math.sin(c * Math.PI * 2) * (semi ? 0.006 : 0.004);
     } else { // end
-      m.armL.tgt.copy(K.below).lerp(F, ss(rl.pp / 0.35));
+      m.armL.tgt.copy(K.down).lerp(F, ss(rl.pp));
       e = 1 - ss((rl.pp - 0.3) / 0.7);
       if (this.passed(0.3, rl.pp)) this.bump(-0.15, -0.06, 0, 0.2);
     }
@@ -1542,14 +1680,14 @@ const VM = G.VM = {
     let keys;
     if (!semi && P.pump) {
       // 펌프를 젖혀 열고 → 배출구에 한 발 → 펌프를 밀어 닫는다 (펌프를 잡은 동안 손은 펌프를 따라간다)
-      const tr = 0.072 * m.s / 1.1, back = seg(pp, 0.02, 0.14) * (1 - seg(pp, 0.6, 0.68));
+      const tr = 0.072 * m.s / 1.1, back = seg(pp, 0.02, 0.14) * (1 - seg(pp, 0.72, 0.82));
       P.pump.position.z = R.pump.z + tr * back;
       const onPump = _a.copy(P.pump.position).add(K.pumpOff), backHand = R.pump.clone().add(K.pumpOff).add(_o.set(0, 0, tr));
-      if (pp < 0.14 || (pp >= 0.58 && pp < 0.68)) m.armL.tgt.copy(onPump);
-      else if (pp < 0.58) track([[0.14, backHand], [0.24, K.belt], [0.3, K.belt.clone().add(_o.set(0.01, 0.05, -0.02))], [0.4, K.ejectAbove], [0.47, K.ejectIn], [0.5, K.ejectAbove], [0.58, backHand]], pp, m.armL.tgt);
-      else track([[0.68, F], [1, K.below]], pp, m.armL.tgt);
+      if (pp < 0.14 || (pp >= 0.72 && pp < 0.82)) m.armL.tgt.copy(onPump);
+      else if (pp < 0.72) track([[0.14, backHand], [0.24, K.belt], [0.3, K.belt.clone().add(_o.set(0.01, 0.05, -0.02))], [0.4, K.ejectAbove], [0.47, K.ejectIn], [0.5, K.ejectAbove], [0.72, backHand]], pp, m.armL.tgt);
+      else track([[0.82, F], [1, K.down]], pp, m.armL.tgt);
       if (this.passed(0.14, pp)) this.bump(-0.25, -0.05, 0.12, 0.1);
-      if (this.passed(0.68, pp)) this.bump(0.6, 0.12, -0.25, -0.15);
+      if (this.passed(0.82, pp)) this.bump(0.6, 0.12, -0.25, -0.15);
       m.armL.curlT = pp > 0.2 && pp < 0.5 ? 0.6 : 0.85;
     } else {
       // 노리쇠 손잡이를 젖혀 고정 → 배출구에 한 발 → 멈치 버튼을 눌러 노리쇠를 닫는다
@@ -1557,7 +1695,7 @@ const VM = G.VM = {
       if (P.charge) P.charge.position.z = R.charge.z + tr * seg(pp, 0.07, 0.13) * (1 - seg(pp, 0.62, 0.64));
       track([[0, F], [0.04, g.clone().add(_o.set(-0.045, 0.065, 0.02))], [0.07, g], [0.13, g.clone().add(_o.set(0, 0, tr))], [0.16, g.clone().add(_o.set(-0.02, 0.04, tr))],
         [0.26, K.belt], [0.31, K.belt.clone().add(_o.set(-0.02, 0.04, -0.02))], [0.4, K.ejectAbove], [0.47, K.ejectIn], [0.5, K.ejectAbove],
-        [0.58, rel.clone().add(_o.set(-0.02, -0.04, 0.02))], [0.61, rel.clone().add(_o.set(-0.008, -0.014, 0))], [0.63, rel.clone().add(_o.set(-0.008, -0.004, 0))], [0.66, rel.clone().add(_o.set(-0.02, -0.03, 0.02))], [1, K.below]], pp, m.armL.tgt);
+        [0.58, rel.clone().add(_o.set(-0.02, -0.04, 0.02))], [0.61, rel.clone().add(_o.set(-0.008, -0.014, 0))], [0.63, rel.clone().add(_o.set(-0.008, -0.004, 0))], [0.66, rel.clone().add(_o.set(-0.02, -0.03, 0.02))], [1, K.down]], pp, m.armL.tgt);
       if (this.passed(0.13, pp)) this.bump(-0.3, -0.05, 0.15, 0.15);
       if (this.passed(0.63, pp)) this.bump(0.7, 0.14, -0.3, -0.2);
       m.armL.curlT = (pp > 0.05 && pp < 0.15) ? 0.9 : (pp > 0.58 && pp < 0.65) ? 0.35 : pp > 0.24 && pp < 0.5 ? 0.6 : 0.85;
@@ -1594,7 +1732,7 @@ const VM = G.VM = {
       if (c < 0.4) { m.armL.tgt.copy(down).lerp(entry, sm(c / 0.4)); this.shellInHand(m, true, 0, axis, two); }
       else if (c < 0.6) { m.armL.tgt.copy(entry).lerp(into, sm((c - 0.4) / 0.2)); this.shellInHand(m, true, 0, axis, two); }
       else m.armL.tgt.copy(into).lerp(down, sm((c - 0.6) / 0.4));
-    } else m.armL.tgt.copy(below).lerp(foreOn, seg(rl.pp, 0, 0.3));
+    } else m.armL.tgt.copy(down).lerp(foreOn, seg(rl.pp, 0, 0.85));
     POSE.rz -= 0.25 * e; POSE.rx += 0.22 * e + 0.32 * flick; POSE.ry += 0.1 * e; POSE.x -= 0.05 * e; POSE.y += 0.08 * e + 0.03 * flick; POSE.z += 0.02 * e;
   },
   shellInHand(m, on, roll, axis, two) {
