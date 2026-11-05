@@ -332,7 +332,11 @@ const P = G.Player = {
     if (!inst || !def || !def.pellets || this.reload || this.sw || this.throwSt) return;
     if (inst.mag >= def.mag || a.ammo[def.ammo] <= 0) return;
     const empty = inst.mag === 0;
-    if (def.reloadType === 'shell' || def.reloadType === 'break') this.reload = { kind: def.reloadType, phase: 'start', t: 0, shellT: 0, empty };
+    if (def.reloadType === 'shell' || def.reloadType === 'break') {
+      // 펌프·반자동 산탄총은 빈 총이면 먼저 배출구에 한 발을 넣어 약실을 채운다
+      const st = G.Guns.rstyle(def.key);
+      this.reload = { kind: def.reloadType, phase: 'start', t: 0, shellT: 0, empty, port: empty && (st.s === 'pump' || st.s === 'semi'), pair: st.s === 'pair' };
+    }
     else this.reload = { kind: def.reloadType, t: 0, dur: def.reload, s: 0, empty };
     this.cycleT = -1;
     this.cancelHeal();
@@ -340,8 +344,8 @@ const P = G.Player = {
   // 산탄 장전 단계별 시간
   phaseDur(R, def) {
     const k = 1 / (G.RELOAD_SPEED || 1);
-    if (R.phase === 'start') return (R.kind === 'break' ? 0.5 : 0.35) * k;
-    if (R.phase === 'end') return (R.kind === 'break' ? 0.4 : (def.action === 'pump' && R.empty ? 0.62 : 0.3)) * k;
+    if (R.phase === 'start') return (R.kind === 'break' ? 0.5 : R.port ? 0.95 : 0.35) * k;
+    if (R.phase === 'end') return (R.kind === 'break' ? 0.42 : (def.action === 'pump' && R.empty && !R.port ? 0.62 : 0.3)) * k;
     return def.reload;
   },
   reloadLogic(dt) {
@@ -351,10 +355,9 @@ const P = G.Player = {
     if (R.kind === 'mag' || R.kind === 'revolver') {
       const p = R.t / R.dur;
       // 소리는 손 동작 시각(뷰모델 키)에 맞춘다
-      const vm = G.VM.models[inst.id], T = R.kind === 'mag' && vm && vm.keys && vm.keys.T;
-      const tOut = T ? (R.empty ? T.drop : (T.tacGrab || T.drop) + 0.05) : 0.15;
-      const tIn = T ? (R.empty ? T.seat : (T.tacSeat || T.seat)) : 0.62;
-      const tBolt = T ? (T.slap || T.chargeRel || T.slide || 0.85) : (R.kind === 'revolver' ? 0.76 : 0.85);
+      const vm = G.VM.models[inst.id], S = R.kind === 'mag' && vm && vm.keys && (R.empty ? vm.keys.E : vm.keys.Tac);
+      const tOut = S ? S.snd.out : 0.15, tIn = S ? S.snd.in : 0.62;
+      const tBolt = S ? S.snd.bolt : (R.kind === 'revolver' ? 0.76 : 0.85);
       if (R.s === 0 && p > tOut) { R.s = 1; G.Audio.click(R.kind === 'revolver' ? 'bolt' : 'magout'); }
       if (R.s === 1 && p > tIn) { R.s = 2; G.Audio.click('magin'); }
       if (R.s === 2 && p > tBolt) { R.s = 3; if (R.empty || R.kind === 'revolver') G.Audio.click('bolt'); }
@@ -365,19 +368,27 @@ const P = G.Player = {
       }
     } else {
       const pd = this.phaseDur(R, def);
+      // 한 번에 넣을 탄 수 (더블배럴은 두 발이 비면 두 발을 한꺼번에)
+      const cycle = () => { R.per = R.pair && def.mag - inst.mag >= 2 && a.ammo[def.ammo] >= 2 ? 2 : 1; R.cyc = def.reload * (R.per === 2 ? 1.3 : 1); };
       if (R.phase === 'start') {
         if (R.kind === 'break' && !R.ej && R.t > 0.28 / (G.RELOAD_SPEED || 1)) { R.ej = true; G.Audio.click('bolt'); for (let i = inst.mag; i < def.mag; i++) this.ejectShell(true); }
-        if (R.t > pd) { R.phase = 'load'; R.t = 0; R.shellT = 0; }
+        if (R.port) {
+          // 배출구 장전: 한 발 떨어뜨리고 → 펌프를 밀거나 노리쇠 멈치를 눌러 닫는다
+          if (!R.sndP && R.t > pd * 0.47) { R.sndP = true; G.Audio.click('shell'); }
+          if (!R.ported && R.t > pd * 0.66) { R.ported = true; G.Audio.click('bolt'); if (a.ammo[def.ammo] > 0) { inst.mag++; a.ammo[def.ammo]--; } }
+        }
+        if (R.t > pd) { R.t = 0; R.shellT = 0; if (inst.mag >= def.mag || a.ammo[def.ammo] <= 0) R.phase = 'end'; else { R.phase = 'load'; cycle(); } }
       } else if (R.phase === 'load') {
         R.shellT += dt;
-        if (!R.snd && R.shellT >= def.reload * 0.55) { R.snd = true; G.Audio.click('shell'); }
-        if (R.shellT >= def.reload) {
+        if (!R.snd && R.shellT >= R.cyc * 0.55) { R.snd = true; G.Audio.click('shell'); }
+        if (R.shellT >= R.cyc) {
           R.shellT = 0; R.snd = false;
-          inst.mag++; a.ammo[def.ammo]--;
-          if (inst.mag >= def.mag || a.ammo[def.ammo] <= 0) { R.phase = 'end'; R.t = 0; }
+          const n = Math.min(R.per, def.mag - inst.mag, a.ammo[def.ammo]);
+          inst.mag += n; a.ammo[def.ammo] -= n;
+          if (inst.mag >= def.mag || a.ammo[def.ammo] <= 0) { R.phase = 'end'; R.t = 0; } else cycle();
         }
       } else if (R.phase === 'end') {
-        if (def.action === 'pump' && R.empty && !R.pumped && R.t > 0.12 / (G.RELOAD_SPEED || 1)) { R.pumped = true; this.pumpT = 0.05; }
+        if (def.action === 'pump' && R.empty && !R.port && !R.pumped && R.t > 0.12 / (G.RELOAD_SPEED || 1)) { R.pumped = true; this.pumpT = 0.05; }
         if (R.kind === 'break' && !R.closed && R.t > 0.22 / (G.RELOAD_SPEED || 1)) { R.closed = true; G.Audio.click('magin'); }
         if (R.t > pd) this.reload = null;
       }
@@ -564,7 +575,8 @@ const P = G.Player = {
     if (R && def) {
       rl = this._rl; rl.type = R.kind; rl.empty = R.empty;
       if (R.kind === 'mag' || R.kind === 'revolver') { rl.p = R.t / R.dur; rl.phase = null; rl.shellP = -1; }
-      else { rl.phase = R.phase; rl.pp = R.phase === 'load' ? 0 : U.clamp(R.t / this.phaseDur(R, def), 0, 1); rl.shellP = R.phase === 'load' ? R.shellT / def.reload : -1; }
+      else { rl.phase = R.phase; rl.pp = R.phase === 'load' ? 0 : U.clamp(R.t / this.phaseDur(R, def), 0, 1); rl.shellP = R.phase === 'load' ? R.shellT / (R.cyc || def.reload) : -1; }
+      rl.port = !!R.port; rl.per = R.per || 1;
     }
     G.VM.update(dt, {
       ads: this.ads, sprint: this.sprinting && a.hspeed > 3, crouch: a.crouch,
