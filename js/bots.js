@@ -167,7 +167,7 @@ class Bot {
     // 무기 재장전 (비전투)
     const inst = a.weapons[a.cur];
     const idef = inst && G.WEAPONS[inst.id];
-    if (!combat && inst && this.reloadT <= 0 && inst.mag < idef.mag * 0.5 && a.ammo[idef.ammo] > 0) this.startReload();
+    if (!combat && inst && this.reloadT <= 0 && inst.mag < (G.Attachments?.capacity(inst,idef) || idef.mag) * 0.5 && a.ammo[idef.ammo] > 0) this.startReload();
     // 자기장
     const zc = Z.next || Z.cur;
     const dz = Math.hypot(a.pos.x - zc.x, a.pos.z - zc.z);
@@ -472,7 +472,7 @@ class Bot {
     this.aimOff.y += def.recoilV * Math.max(dist, 5) * 0.55;
     this.aimOff.x += (Math.random() - 0.5) * def.recoilH * dist;
     const suppressed = inst.attachments?.muzzle === 'suppressor';
-    if (!suppressed) {
+    if (!suppressed && inst.attachments?.muzzle !== 'flash') {
       G.FX.muzzle(_m, _d.x, _d.y, _d.z, def.cls === 'shotgun');
       if (G.camera.position.distanceTo(_m) < 80) G.FX.light(_m, 0xffaa55, 14, 0.05, 10);
     }
@@ -482,15 +482,15 @@ class Bot {
   }
   startReload() {
     const a = this.a, inst = a.weapons[a.cur], def = inst && G.WEAPONS[inst.id];
-    if (!inst || this.reloadT > 0 || a.ammo[def.ammo] <= 0 || inst.mag >= def.mag) return;
-    this.reloadT = (def.reloadType === 'shell' || def.reloadType === 'break' ? Math.min(3.4, 0.8 + (def.mag - inst.mag) * def.reload) : def.reload * 1.1) * G.Guns.reloadFactor(inst.mag===0);
+    if (!inst || this.reloadT > 0 || a.ammo[def.ammo] <= 0 || inst.mag >= (G.Attachments?.capacity(inst,def) || def.mag)) return;
+    this.reloadT = (def.reloadType === 'shell' || def.reloadType === 'break' ? Math.min(3.4, 0.8 + (def.mag - inst.mag) * def.reload) : def.reload * 1.1 * (G.Attachments?.modifiers(inst).reload || 1)) * G.Guns.reloadFactor(inst.mag===0);
     this.reloadW = a.cur;
   }
   finishReload() {
     const a = this.a, k = this.reloadW, inst = a.weapons[k];
     if (!inst) return;
     const def = G.WEAPONS[inst.id];
-    const n = Math.min(def.mag - inst.mag, a.ammo[def.ammo]);
+    const n = Math.min((G.Attachments?.capacity(inst,def) || def.mag) - inst.mag, a.ammo[def.ammo]);
     inst.mag += n; a.ammo[def.ammo] -= n;
   }
   throwAt(kind, target) {
