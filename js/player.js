@@ -350,7 +350,7 @@ const P = G.Player = {
   // 산탄 장전 단계별 시간
   phaseDur(R, def) {
     const k = 1 / (G.RELOAD_SPEED || 1);
-    if (R.phase === 'start') return (R.kind === 'break' ? 0.5 : R.port ? 0.95 : 0.35) * k;
+    if (R.phase === 'start') return (R.kind === 'break' ? 0.5 : R.port ? (G.Guns.rstyle(def.key).portDuration || 0.95) : 0.35) * k;
     if (R.phase === 'end') return (R.kind === 'break' ? 0.42 : (def.action === 'pump' && R.empty && !R.port ? 0.62 : 0.3)) * k;
     return def.reload;
   },
@@ -378,7 +378,8 @@ const P = G.Player = {
         if (R.kind === 'break' && !R.ej && R.t >= pd * 0.52) { R.ej = true; for (let i = inst.mag; i < def.mag; i++) this.ejectShell(true); }
         if (R.port) {
           // 배출구 장전: 한 발 떨어뜨리고 → 펌프를 밀거나 노리쇠 멈치를 눌러 닫는다
-          if (!R.ported && R.t >= pd * (G.Guns.rstyle(inst.id).s === 'semi' ? 0.63 : 0.68)) { R.ported = true; if (a.ammo[def.ammo] > 0) { inst.mag++; a.ammo[def.ammo]--; } }
+          const style=G.Guns.rstyle(inst.id),close=style.portClose || (style.s==='semi'?0.63:0.68);
+          if (!R.ported && R.t >= pd * close) { R.ported = true; if (a.ammo[def.ammo] > 0) { inst.mag++; a.ammo[def.ammo]--; } }
         }
         if (R.t > pd) { R.t = 0; R.shellT = 0; if (inst.mag >= def.mag || a.ammo[def.ammo] <= 0) R.phase = 'end'; else { R.phase = 'load'; cycle(); } }
       } else if (R.phase === 'load') {
