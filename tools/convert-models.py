@@ -1,7 +1,6 @@
 """다운로드한 원본(assets/_src)을 게임용으로 변환한다.
 - Rocketbox 군인: 2K TGA 텍스처 4장 -> 아틀라스 JPG 1장, FBX 복사 -> assets/char/<이름>/
 - M4A1 소총: FBX + PBR PNG -> 1K JPG (diff / nor / arm)      -> assets/models/rifle/
-- 반자동 산탄총: OBJ 복사                                       -> assets/models/shotgun/
 사용법: python tools/convert-models.py <assets/_src 경로> <assets 출력 경로>
 필요: Pillow, numpy
 """
@@ -66,12 +65,3 @@ if os.path.exists(z):
     arm = np.stack([np.full_like(r, 255), r, m], -1)
     save_jpg(Image.fromarray(arm), os.path.join(out, 'm4a1_arm.jpg'), 1024, 92)
     print('rifle', sorted(os.listdir(out)))
-
-# 반자동 산탄총 (OBJ)
-z = os.path.join(SRC, 'guns', 'semiauto_shotgun.zip')
-if os.path.exists(z):
-    zf = zipfile.ZipFile(z)
-    out = os.path.join(OUT, 'models', 'shotgun')
-    os.makedirs(out, exist_ok=True)
-    open(os.path.join(out, 'shotgun.obj'), 'wb').write(zf.read('myShotgun.obj'))
-    print('shotgun', sorted(os.listdir(out)))
