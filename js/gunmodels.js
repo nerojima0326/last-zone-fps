@@ -1,9 +1,12 @@
-// gunmodels.js — 실사 총기 모델 (무료 에셋)
-//  소총: M4A1 (3DModelsCC0 / OpenGameArt, CC0)   권총: Service Pistol (Poly Haven, CC0)
-//  산탄총: Semi-Auto Shotgun (crookedmouth / OpenGameArt, CC0)
-// 모델을 '총 공간'(m 단위, 총구 -Z, 위 +Y)으로 정규화한 뒤 gunlib.js 의 절차적 총과 같은 형식
-// (부품별 지오메트리 + 손·조준선·레일 기준점)으로 내보낸다 → weapons.js 가 1인칭/3인칭/전리품에 쓴다.
-// 파일이 없으면 절차적 총이 그대로 쓰인다.
+// gunmodels.js — 총기 3D 모델
+//  · AR-7: M4A1 (3DModelsCC0, CC0, FBX)   · P-92: Service Pistol (Poly Haven, CC0, glTF)
+//  · 나머지 13종: assets/models/guns/<id>.glb — tools/guns 로 만든 게임용 GLB
+//      실사 CC0 (3DModelsCC0 팩): KA-47(AK-47) · KR-98(Sniper) · S-12(펌프 산탄총)
+//      직접 설계: SC-17 · MK-14 · M-1014 · DB-2 · SA-12 · AA-12 · G-18 · M-1911 · DE-7 · R-45
+//    GLB 는 이미 '총 공간'(원점 = 방아쇠, 총구 -Z, 위 +Y, m)이고 메시 userData.part = 부품,
+//    재질 이름 = 재질 키, 루트 userData.lz = 손·조준선·레일 기준점을 담고 있다.
+// 모두 gunlib.js 의 절차적 총과 같은 형식(부품별 지오메트리 + 기준점)으로 내보낸다 → weapons.js 가 1인칭/3인칭/전리품에 쓴다.
+// 파일이 없으면(file:// 등) 절차적 총이 그대로 쓰인다.
 (function () {
 'use strict';
 const THREE = window.THREE, G = window.G;
@@ -11,7 +14,9 @@ const V3 = THREE.Vector3;
 const BLANK = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 
 // 1인칭에서 방아쇠→총구 길이를 맞출 기준 (실사 모델 크기 보정)
-const VMLEN = { rifle: 0.86, shotgun: 0.74, pistol: 0.145 };
+const VMLEN = { rifle: 0.86, pistol: 0.145 };
+// 게임용 GLB (tools/guns/run.cjs build 로 생성)
+const GLB_IDS = ['ka47', 'sc17', 'mk14', 'kr98', 's12', 'm1014', 'db2', 'sa12', 'aa12', 'g18', 'm1911', 'de7', 'r45'];
 // 3인칭(손에 든 총·전리품) 방아쇠 위치
 const TPREF = { rifle: new V3(0, -0.035, 0.02), shotgun: new V3(0, -0.03, 0.0), pistol: new V3(0, -0.01, -0.01) };
 
@@ -55,14 +60,18 @@ const GM = G.GunModels = {
       }
       this.setup('pistol', grp, mat, n => /slide/.test(n) ? 'slide' : /magazine/.test(n) ? 'mag' : 'body', 'trigger', 'slide', 1);
     })().catch(e => console.info('[guns] 권총 모델 없음', e.message)));
-    if (THREE.OBJLoader) tasks.push((async () => {
-      const obj = await new THREE.OBJLoader().loadAsync('assets/models/shotgun/shotgun.obj');
-      const mat = new THREE.MeshStandardMaterial({ name: 'shotgun', color: 0x2c2d30, metalness: 0.62, roughness: 0.42, envMapIntensity: 0.8 });
-      // 방아쇠: 뒤끝에서 0.126m, 윗면에서 0.095m / 앞손잡이(포엔드) 중심: 방아쇠에서 0.455m 앞 (측면 실측)
-      this.setup('shotgun', obj, mat, () => 'body', null, null, 0.001, { fromRear: 0.126, fromTop: 0.095, fore: 0.455, foreY: 0.038 });
-    })().catch(e => console.info('[guns] 산탄총 모델 없음', e.message)));
+    // 게임용 GLB 13종
+    if (THREE.GLTFLoader) {
+      const gl = new THREE.GLTFLoader();
+      if (THREE.MeshoptDecoder) gl.setMeshoptDecoder(THREE.MeshoptDecoder);
+      const v = (window.LZ_BUILD || '');
+      for (const id of GLB_IDS) tasks.push(gl.loadAsync('assets/models/guns/' + id + '.glb' + (v ? '?v=' + v : '')).then(g => this.fromGLB(id, g)).catch(e => console.info('[guns] ' + id + ' 모델 없음', e.message)));
+    }
     await Promise.all(tasks);
-    for (const k in this.guns) { const m = this.guns[k].mat; for (const t of [m.map, m.normalMap, m.roughnessMap]) if (t) renderer.initTexture(t); }
+    for (const k in this.guns) {
+      const D = this.guns[k], list = D.mats ? Object.values(D.mats) : [D.mat];
+      for (const m of list) for (const t of [m.map, m.normalMap, m.roughnessMap]) if (t) renderer.initTexture(t);
+    }
     console.info('[guns] 실사 총기: ' + (Object.keys(this.guns).join(', ') || '없음'));
   },
 
@@ -153,15 +162,6 @@ const GM = G.GunModels = {
       D.sight = null;                                            // 기본 조준경(레드닷) 일체형
       D.rail = { y: rail, z: trig.z - 0.052, on: 'body' };
       D.fore = trig.clone().add(new V3(-0.008, 0.019, -0.286));
-    } else if (type === 'shotgun') {
-      const fore = new V3(0, trig.y + hint.foreY, trig.z - hint.fore);
-      // 포엔드(앞손잡이) 부분을 따로 떼어 펌프로 움직인다
-      this.splitPump(D, fore, muzzle.y);
-      D.pivots.pump = fore.clone();
-      D.fore = fore.clone().add(new V3(-0.005, -0.012, 0));
-      D.port = new V3(0, portY < 1e8 ? portY : trig.y + 0.01, trig.z - 0.1);
-      D.sight = { y: rear + 0.006, z: trig.z - 0.12 };
-      D.rail = { y: rear - 0.003, z: trig.z - 0.06, on: 'body' };
     } else if (type === 'pistol') {
       const mb = bb('mag'), sb = bb('slide');
       if (mb) D.pivots.mag = new V3(0, mb.min.y, mb.max.z - (mb.max.z - mb.min.z) * 0.5);
@@ -175,37 +175,45 @@ const GM = G.GunModels = {
     if (!D.magDir) D.magDir = new V3(0, -1, 0);
   },
 
-  // 산탄총 포엔드 삼각형을 'pump' 부품으로 분리
-  splitPump(D, fore, barrelY) {
-    const g = D.parts.body, p = g.attributes.position, n = p.count / 3;
-    const keepA = [], pumpA = [];
-    const attrs = Object.keys(g.attributes);
-    for (let t = 0; t < n; t++) {
-      let cz = 0, cy = 0, cx = 0;
-      for (let k = 0; k < 3; k++) { cz += p.getZ(t * 3 + k); cy += p.getY(t * 3 + k); cx += p.getX(t * 3 + k); }
-      cz /= 3; cy /= 3; cx /= 3;
-      const inPump = cz > fore.z - 0.11 && cz < fore.z + 0.1 && cy < barrelY - 0.012 && cy > fore.y - 0.05;
-      (inPump ? pumpA : keepA).push(t);
-    }
-    if (pumpA.length < 20 || pumpA.length > n * 0.5) return;
-    const build = (tris) => {
-      const ng = new THREE.BufferGeometry();
-      for (const a of attrs) {
-        const src = g.attributes[a], sz = src.itemSize, arr = new Float32Array(tris.length * 3 * sz);
-        tris.forEach((t, i) => { for (let k = 0; k < 3 * sz; k++) arr[i * 3 * sz + k] = src.array[t * 3 * sz + k]; });
-        ng.setAttribute(a, new THREE.BufferAttribute(arr, sz));
+  // 게임용 GLB → 부품·재질별 지오메트리 (양자화된 속성을 float 로 풀고, 노드 변환을 적용)
+  fromGLB(id, gltf) {
+    const root = gltf.scene;
+    root.updateMatrixWorld(true);
+    let meta = null;
+    root.traverse(o => { if (o.userData && o.userData.lz) meta = o.userData.lz; });
+    if (!meta) throw new Error('메타데이터 없음');
+    const parts = {}, mats = {};
+    root.traverse(o => {
+      if (!o.isMesh) return;
+      const part = o.userData.part || 'body', mk = o.material.name || 'm';
+      const g = unpack(o.geometry).applyMatrix4(o.matrixWorld);
+      const P = parts[part] || (parts[part] = {});
+      P[mk] = P[mk] ? THREE.mergeGeometries([P[mk], g], false) : g;
+      if (!mats[mk]) { const m = o.material; m.envMapIntensity = 0.8; m.side = THREE.FrontSide; mats[mk] = m; }
+    });
+    for (const k in parts) for (const mk in parts[k]) parts[k][mk].computeBoundingBox();
+    const v = a => a ? new V3(a[0], a[1], a[2]) : null;
+    const piv = {};
+    for (const k in meta.pivots || {}) piv[k] = v(meta.pivots[k]);
+    const extra = {};
+    for (const k in meta.extra || {}) extra[k] = meta.extra[k];
+    this.guns[id] = {
+      glb: true, type: id, cls: meta.cls, mats,
+      data: {
+        id, real: true, parts, mats, pivots: piv, trigger: new V3(0, 0, 0), muzzle: v(meta.muzzle),
+        sight: meta.sight ? { y: meta.sight[0], z: meta.sight[1] } : null,
+        rail: meta.rail ? { y: meta.rail[0], z: meta.rail[1], on: meta.rail[2] || 'body' } : null,
+        fore: v(meta.fore), port: v(meta.port), charge: v(meta.charge), slideTop: v(meta.slideTop),
+        magDir: v(meta.magDir || [0, -1, 0]).normalize(), ironDist: meta.ironDist || 0, extra
       }
-      ng.computeBoundingBox();
-      return ng;
     };
-    D.parts.body = build(keepA); D.parts.pump = build(pumpA);
-    g.dispose();
   },
 
-  // gunlib 와 같은 형식의 데이터 (부품 → { real: geo })
+  // gunlib 와 같은 형식의 데이터 (부품 → { 재질키: geo })
   data(type) {
     const D = this.guns[type];
     if (!D) return null;
+    if (D.glb) return D.data;
     if (D._data) return D._data;
     const parts = {};
     for (const k in D.parts) parts[k] = { real: D.parts[k] };
@@ -216,19 +224,69 @@ const GM = G.GunModels = {
     });
   },
 
-  // 3인칭·전리품용: 실제 크기, 하나로 병합된 Mesh
-  tpMesh(type) {
+  // 3인칭·전리품용: 실제 크기, 방아쇠를 TPREF 로
+  //  full = 전리품(가까이서 보는 것): 재질 그대로 / 아니면 재질이 여럿인 모델은 정점 색 하나로 구워 그리기 호출 1번
+  tpMesh(type, full) {
     const D = this.guns[type];
-    if (!D._tp) {
-      const list = Object.values(D.parts);
-      D._tp = THREE.mergeGeometries(list, false);
-      D._tp.translate(TPREF[type].x - D.trigger.x, TPREF[type].y - D.trigger.y, TPREF[type].z - D.trigger.z);
-      D._tp.computeBoundingSphere();
+    if (!D.glb) {
+      if (!D._tp) {
+        const list = Object.values(D.parts);
+        D._tp = THREE.mergeGeometries(list, false);
+        D._tp.translate(TPREF[type].x - D.trigger.x, TPREF[type].y - D.trigger.y, TPREF[type].z - D.trigger.z);
+        D._tp.computeBoundingSphere();
+      }
+      const m = new THREE.Mesh(D._tp, D.mat);
+      m.castShadow = true;
+      return m;
     }
-    const m = new THREE.Mesh(D._tp, D.mat);
+    const ref = TPREF[D.cls], keys = Object.keys(D.mats);
+    const bake = !full && keys.length > 2;
+    const key = bake ? '_tpBake' : '_tpFull';
+    if (!D[key]) {
+      const byMat = {};
+      for (const p in D.data.parts) for (const mk in D.data.parts[p]) (byMat[mk] || (byMat[mk] = [])).push(D.data.parts[p][mk]);
+      const order = Object.keys(byMat), geos = [];
+      for (const mk of order) {
+        let g = byMat[mk].length === 1 ? byMat[mk][0].clone() : THREE.mergeGeometries(byMat[mk], false);
+        if (g.index) g = g.toNonIndexed();
+        if (bake) {
+          const c = bakeColor(D.mats[mk]), n = g.attributes.position.count, col = new Float32Array(n * 3);
+          for (let i = 0; i < n; i++) { col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b; }
+          g.deleteAttribute('uv');
+          g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+        }
+        geos.push(g);
+      }
+      const geo = THREE.mergeGeometries(geos, !bake);
+      geo.translate(ref.x, ref.y, ref.z);
+      geo.computeBoundingSphere();
+      D[key] = { geo, mats: bake ? G.GunLib.tpMat() : (order.length === 1 ? D.mats[order[0]] : order.map(k => D.mats[k])) };
+    }
+    const m = new THREE.Mesh(D[key].geo, D[key].mats);
     m.castShadow = true;
     return m;
   }
 };
+
+// 양자화(정수) 속성 → float, uv 없으면 0 으로 채움 (병합할 때 속성이 같아야 한다)
+function unpack(src) {
+  const g = new THREE.BufferGeometry();
+  for (const k of ['position', 'normal', 'uv']) {
+    const a = src.attributes[k];
+    const n = src.attributes.position.count, s = k === 'uv' ? 2 : 3, arr = new Float32Array(n * s);
+    if (a) for (let i = 0; i < n; i++) { arr[i * s] = a.getX(i); arr[i * s + 1] = a.getY(i); if (s === 3) arr[i * s + 2] = a.getZ(i); }
+    g.setAttribute(k, new THREE.BufferAttribute(arr, s));
+  }
+  if (src.index) g.setIndex(new THREE.BufferAttribute(new Uint32Array(src.index.array), 1));
+  if (!src.attributes.normal) g.computeVertexNormals();
+  return g;
+}
+// 3인칭용 정점 색: 재질 색 (나뭇결 등 텍스처 재질은 대표 색)
+const _bc = new THREE.Color();
+function bakeColor(m) {
+  if (/wood/i.test(m.name)) return _bc.setHex(0x5e3a1e);
+  if (m.name === 'cased') return _bc.setHex(0x6f6a72);
+  return _bc.copy(m.color);
+}
 
 })();

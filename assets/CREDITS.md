@@ -28,7 +28,10 @@
 |---|---|---|---|
 | 군인 캐릭터 3종 | Military_Male_01 · Military_Male_03 · Military_Female_01 | [Microsoft Rocketbox](https://github.com/microsoft/Microsoft-Rocketbox) | MIT (`char/LICENSE-Rocketbox.md`) |
 | AR-7 소총 | M4A1 Assault Rifle (원작 3DModelsCC0, nisu 재배포) | [OpenGameArt](https://opengameart.org/content/m4a1-assault-rifle) | CC0 |
-| S-12 산탄총 | Semi-Auto Shotgun with Magazine (crookedmouth) | [OpenGameArt](https://opengameart.org/content/semi-auto-shotgun-with-magazine) | CC0 (CC-BY-SA 3.0과 이중 라이선스 중 CC0 선택) |
+| KA-47 소총 | AK-47 (3DModelsCC0 "Free CC0 Guns & Explosives Pack", GLB 변환본) | [GitHub (BoQsc)](https://github.com/BoQsc/cc0-guns-explosives-pack-glb) | CC0 |
+| KR-98 저격소총 | Sniper Rifle (같은 팩, 일체형 조준경은 빼고 가늠자 추가) | [GitHub (BoQsc)](https://github.com/BoQsc/cc0-guns-explosives-pack-glb) | CC0 |
+| S-12 산탄총 | Shotgun (같은 팩, 펌프액션) | [GitHub (BoQsc)](https://github.com/BoQsc/cc0-guns-explosives-pack-glb) | CC0 |
+| SC-17 · MK-14 · M-1014 · DB-2 · SA-12 · AA-12 · G-18 · M-1911 · DE-7 · R-45 | 이 게임용으로 직접 설계한 모델 (`tools/guns/designs.js`) | — | 이 저장소의 일부 |
 | P-92 권총 | Service Pistol (Mateusz Sadek) | [Poly Haven](https://polyhaven.com/a/service_pistol) | CC0 |
 | 나무 · 덤불 | EZ-Tree 생성기 (Daniel Greenheck, 나무껍질·잎 텍스처 포함) | [GitHub](https://github.com/dgreenheck/ez-tree) | MIT (`vendor/ez-tree.LICENSE.txt`) |
 
@@ -38,5 +41,6 @@ MIT 라이선스 에셋은 게임을 배포할 때 위 라이선스 파일(저�
 
 - `tex/`, `hdri/*_1k.hdr`, `models/pistol/`, `_src/`, `vendor/ez-tree.es.js` 는 `download-assets.bat` 으로 받습니다.
 - `hdri/*_bg.jpg` 는 `_src/` 의 4k HDRI를 `tools/make-sky.py` 로 변환한 하늘 배경입니다.
-- `char/`(군인 아틀라스 텍스처), `models/rifle/`, `models/shotgun/` 은 `_src/` 원본을 `tools/convert-models.py` 로 변환한 결과입니다.
+- `char/`(군인 아틀라스 텍스처), `models/rifle/` 은 `_src/` 원본을 `tools/convert-models.py` 로 변환한 결과입니다.
+- `models/guns/*.glb` 는 `tools/guns/run.cjs build` 로 만든 결과입니다 (실사 3종은 위 팩 원본을 정규화·1K 텍스처, 나머지는 직접 설계). 자세한 방법은 `tools/guns/README.md`.
 - `_src/` 는 변환에만 쓰이므로 (약 300MB) 지워도 게임에는 영향이 없습니다.

@@ -11,7 +11,7 @@
 <body>
 <div id="log"></div>
 <script type="module">
-// 개발용 모델 뷰어: tools/viewer.html?m=rifle | shotgun | pistol | char:Military_Male_03
+// 개발용 모델 뷰어: tools/viewer.html?m=rifle | pistol | char:Military_Male_03  (나머지 총은 tools/guns/build.html)
 import * as THREE from 'three';
 import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -53,9 +53,6 @@ if (m === 'rifle') {
   const arm = tex('../assets/models/rifle/m4a1_arm.jpg');
   const mat = new THREE.MeshStandardMaterial({ map: tex('../assets/models/rifle/m4a1_diff.jpg', true), normalMap: tex('../assets/models/rifle/m4a1_nor.jpg'), roughnessMap: arm, metalnessMap: arm, roughness: 1, metalness: 1 });
   root.traverse(o => { if (o.isMesh) { info.origMats = (Array.isArray(o.material) ? o.material : [o.material]).map(x => x.name); o.material = mat; } });
-} else if (m === 'shotgun') {
-  root = await new OBJLoader().loadAsync('../assets/models/shotgun/shotgun.obj');
-  root.traverse(o => { if (o.isMesh) { info.origMats = (Array.isArray(o.material) ? o.material : [o.material]).map(x => x.name); o.material = new THREE.MeshStandardMaterial({ color: 0x333333, metalness: 0.6, roughness: 0.45 }); } });
 } else if (m === 'pistol') {
   root = (await new GLTFLoader().loadAsync('../assets/models/pistol/service_pistol_1k.gltf')).scene;
 } else if (m.startsWith('char:')) {

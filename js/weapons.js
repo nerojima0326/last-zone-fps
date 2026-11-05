@@ -34,7 +34,7 @@ G.WEAPONS = {
   kr98: W({ key: 'kr98', name: 'KR-98 저격소총', short: 'KR-98', cls: 'rifle', ammo: '762', dmg: 85, head: 2.5, rpm: 55, action: 'bolt', cycle: 0.95, mag: 5, reload: 3.1,
     spread: 0.06, ads: 0.0004, move: 0.06, bloom: 0, bloomMax: 0, recoilV: 0.05, recoilH: 0.01, vel: 920, adsFov: 42, kick: 1.6, range: 1100, falloff: [350, 0.9], tracerLen: 12, sound: 'sniper', tier: 4, scopes: ALL_SCOPES, adsTime: 0.24 }),
   // ---- 산탄총 ----
-  s12: W({ key: 's12', name: 'S-12 펌프 샷건', short: 'S-12', cls: 'shotgun', model: 'shotgun', ammo: '12g', dmg: 15, head: 1.5, rpm: 72, action: 'pump', mag: 6, reloadType: 'shell', reload: 0.55,
+  s12: W({ key: 's12', name: 'S-12 펌프 샷건', short: 'S-12', cls: 'shotgun', ammo: '12g', dmg: 15, head: 1.5, rpm: 72, action: 'pump', mag: 6, reloadType: 'shell', reload: 0.55,
     spread: 0.068, ads: 0.05, move: 0.02, bloom: 0, bloomMax: 0, recoilV: 0.065, recoilH: 0.018, vel: 420, adsFov: 62, kick: 1.7, pellets: 9, range: 130, falloff: [6, 30], tracerLen: 4, sound: 'shotgun', tier: 2, scopes: ['reddot', 'holo', 'x2'] }),
   m1014: W({ key: 'm1014', name: 'M-1014 반자동 샷건', short: 'M-1014', cls: 'shotgun', ammo: '12g', dmg: 13, head: 1.5, rpm: 220, mag: 7, reloadType: 'shell', reload: 0.5,
     spread: 0.074, ads: 0.055, move: 0.02, bloom: 0.01, bloomMax: 0.02, recoilV: 0.055, recoilH: 0.016, vel: 420, adsFov: 62, kick: 1.4, pellets: 9, range: 120, falloff: [6, 28], tracerLen: 4, sound: 'shotgun', tier: 3, scopes: ['reddot', 'holo', 'x2'] }),
@@ -432,9 +432,11 @@ const CLS = {
 // 조준경별 1인칭 눈 거리
 const SCOPE_ADS = { reddot: 0.34, holo: 0.32, x2: 0.24, x4: 0.2, x8: 0.17 };
 
+// 총 모델 데이터: 실사/게임용 GLB 모델(gunmodels.js)이 있으면 그것, 없으면 절차적 총(gunlib.js)
+function modelKey(id) { const def = G.WEAPONS[id]; return def.model || id; }
 function gunData(id) {
-  const def = G.WEAPONS[id];
-  if (def.model && G.GunModels && G.GunModels.has(def.model)) return G.GunModels.data(def.model);
+  const k = modelKey(id);
+  if (G.GunModels && G.GunModels.has(k)) return G.GunModels.data(k);
   return G.GunLib.data(id);
 }
 
@@ -482,7 +484,7 @@ const Guns = G.Guns = {
         const pa = D.parts.body[mk].attributes.position;
         for (let i = 0; i < pa.count; i++) { const y = pa.getY(i), z = pa.getZ(i); if (y > D.sight.y - 0.022 && z > D.sight.z && z - D.sight.z > back) back = z - D.sight.z; }
       }
-      const dist = Math.max(C.adsDist, back * s + 0.1);
+      const dist = D.ironDist || Math.max(C.adsDist, back * s + 0.1);
       o.iron = { sight: sp, ads: new V3(0, 0, -dist).sub(sp) };
     } else {
       const sp = new V3(0, o.muzzle.y + 0.05, at.z - 0.1);
@@ -658,10 +660,11 @@ const Guns = G.Guns = {
     return geo;
   },
   // 3인칭 손에 든 총 (id 별)
-  tpModel(type) {
+  tpModel(type, full) {
     const def = G.WEAPONS[type];
     if (def && def.cls) {
-      if (def.model && G.GunModels && G.GunModels.has(def.model)) return G.GunModels.tpMesh(def.model);
+      const k = modelKey(type);
+      if (G.GunModels && G.GunModels.has(k)) return G.GunModels.tpMesh(k, full);
       const m = new THREE.Mesh(G.GunLib.tpGeo(type, G.GunModels.TPREF[def.cls]), G.GunLib.tpMat());
       m.castShadow = true;
       return m;
@@ -672,7 +675,9 @@ const Guns = G.Guns = {
     const g = new THREE.Group();
     const def = G.WEAPONS[kind];
     if (def && def.cls) {
-      const m = this.tpModel(kind); m.rotation.set(0, 0, Math.PI / 2); m.position.y = 0.04; m.scale.setScalar(def.cls === 'pistol' ? 1.6 : 1.15); g.add(m);
+      // 전리품은 가까이서 보므로 재질 그대로 (낮은 품질에서는 정점 색 하나)
+      const full = G.Game.training || (G.quality !== 'low' && G.quality !== 'potato');
+      const m = this.tpModel(kind, full); m.rotation.set(0, 0, Math.PI / 2); m.position.y = 0.04; m.scale.setScalar(def.cls === 'pistol' ? 1.6 : 1.15); g.add(m);
     } else if (kind.startsWith('scope_')) {
       const m = new THREE.Mesh(G.GunLib.scopeItemGeo(kind.slice(6)), G.GunLib.tpMat()); m.scale.setScalar(2.4); m.position.y = 0.02; g.add(m);
     } else if (G.THROW_NAMES[kind]) {

@@ -38,7 +38,6 @@ foreach ($m in @('diff', 'nor_gl', 'arm')) {
 # ---- 소총·산탄총 원본 (OpenGameArt, CC0) ----
 $oga = 'https://opengameart.org/sites/default/files'
 [void]$list.Add(@("$oga/m4a1_0.zip", 'assets\_src\guns\m4a1.zip'))
-[void]$list.Add(@("$oga/myShotgun.zip", 'assets\_src\guns\semiauto_shotgun.zip'))
 
 # ---- 군인 캐릭터 원본: Microsoft Rocketbox (MIT) ----
 $rb = 'https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Professions'

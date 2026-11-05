@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>LAST ZONE 총기 모델 제작</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #222; font: 13px system-ui, sans-serif; color: #eee; }
+  #view { position: fixed; inset: 0; }
+  #ui { position: fixed; left: 8px; top: 8px; background: rgba(0,0,0,.55); padding: 8px; border-radius: 6px; }
+  #ui button { margin: 1px; }
+  #info { position: fixed; left: 8px; bottom: 8px; max-width: 70vw; white-space: pre-wrap; font: 11px monospace; background: rgba(0,0,0,.5); padding: 6px; }
+  body.shot #ui, body.shot #info { display: none; }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<div id="view"></div>
+<div id="ui"><b>총기 모델</b> (빨강 총구 · 초록 왼손 · 하늘 장전손잡이 · 노랑 장전구 · 주황 부품 축 · 흰 조준선 · 파랑 레일)<div id="modes"></div><div id="list"></div></div>
+<div id="info"></div>
+<script type="module" src="build.js"></script>
+</body>
+</html>
