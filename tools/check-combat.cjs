@@ -17,6 +17,17 @@ console.log('Full game menu ready');
 await page.click('#trainBtn');
 await page.waitForFunction(()=>G.Game.training&&G.Game.state==='playing',null,{timeout:30000});
 await page.evaluate(()=>{const a=G.Game.player;a.cur='rifle';a.weapons.rifle={id:'ar7',mag:30};G.VM.set('ar7');G.Player.reload=null;G.Player.cycleT=-1;G.Player.pumpT=-1;});
+const lootChecks=await page.evaluate(()=>{
+ const a=G.Game.player,A=G.Attachments,table=G.World.range.attachmentTable,items=G.Training.items.filter(it=>it.kind.startsWith('att_'));
+ if(!table||items.length!==Object.keys(A.catalog()).length)throw Error('training attachment table missing items');
+ for(const kind of ['att_muzzle_suppressor','att_under_grip','att_side_laser','att_magazine_extendedQuick','att_stock_tactical','scope_holo']){
+  const it=G.Training.items.find(it=>it.kind===kind);if(!it||!G.Game.pickup(a,it))throw Error('could not pick up '+kind);
+ }
+ let rolled=0;for(let i=0;i<5000;i++)if(G.Game.rollKind().startsWith('att_'))rolled++;if(!rolled)throw Error('attachment loot never rolls');
+ const d=G.WEAPONS.ar7,w=a.weapons.rifle;if(A.change(a,w,'under','angled'))throw Error('equipped unowned item');
+ const clone=new G.Actor({id:998,team:0,isPlayer:true});clone.pickup({kind:'att_under_angled'});const box=clone.dropAll();if(!box.some(x=>x.kind==='att_under_angled'))throw Error('inventory death drop');
+ return {tableItems:items.length,rolled,bag:{...a.attachmentBag},scope:a.scopes.holo};
+});console.log('Training loot',lootChecks);
 await page.keyboard.press('Tab');
 await page.waitForSelector('#attachmentPanel:not([hidden])',{timeout:10000});
 await page.click('[data-slot=optic][data-value=holo]');
@@ -28,14 +39,20 @@ await page.click('[data-slot=stock][data-value=tactical]');
 const upgrades=await page.evaluate(()=>{
  const a=G.Game.player,w=a.weapons.rifle,d=G.WEAPONS.ar7,A=G.Attachments,P=G.Player;
  if(A.capacity(w,d)!==39||A.modifiers(w).reload!==.8)throw Error('extended quickdraw stats');
- a.ammo[d.ammo]=100;w.mag=0;P.reload=null;P.sw=null;P.throwSt=null;P.startReload();
+ G.Game.training=false;a.ammo[d.ammo]=100;w.mag=0;P.reload=null;P.sw=null;P.throwSt=null;P.startReload();
  if(!P.reload)throw Error('extended reload did not start');let n=0;while(P.reload&&n++<1000)P.reloadLogic(1/60);
  if(w.mag!==39||a.ammo[d.ammo]!==61)throw Error('extended reload capacity/conservation');
  return {capacity:w.mag,reserve:a.ammo[d.ammo]};
 });console.log('Magazine upgrades',upgrades);
 await page.click('[data-slot=magazine][data-value=none]');
+const bagCount=await page.evaluate(()=>G.Game.player.attachmentBag.att_magazine_extendedQuick);if(bagCount!==1)throw Error('removed attachment missing from bag');
+await page.click('[data-drop=att_magazine_extendedQuick]');
+if(await page.evaluate(()=>G.Game.player.attachmentBag.att_magazine_extendedQuick)!==0)throw Error('drop did not consume bag item');
+await page.click('[data-take]:has-text("대용량 퀵드로우")');
+if(await page.evaluate(()=>G.Game.player.attachmentBag.att_magazine_extendedQuick)!==1)throw Error('ground pickup did not restore bag item');
 const returned=await page.evaluate(()=>({mag:G.Game.player.weapons.rifle.mag,reserve:G.Game.player.ammo['556']}));
 if(returned.mag!==30||returned.reserve!==70)throw Error('magazine removal did not return excess ammunition');
+await page.evaluate(()=>{G.Game.training=true});
 console.log('Attachment UI',await page.evaluate(()=>({selection:G.Game.player.weapons.rifle, assets:Object.keys(G.Attachments.models),groups:G.VM.models.ar7.accessories.children.length,paused:G.paused})));
 
 await page.keyboard.press('Tab');

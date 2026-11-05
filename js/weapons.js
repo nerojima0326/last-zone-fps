@@ -1173,6 +1173,10 @@ const Guns = G.Guns = {
       // 전리품은 가까이서 보므로 재질 그대로 (낮은 품질에서는 정점 색 하나)
       const full = G.Game.training || (G.quality !== 'low' && G.quality !== 'potato');
       const m = this.tpModel(kind, full); m.rotation.set(0, 0, Math.PI / 2); m.position.y = 0.04; m.scale.setScalar(def.cls === 'pistol' ? 1.6 : 1.15); g.add(m);
+    } else if (kind.startsWith('att_') && G.Attachments) {
+      const info=G.Attachments.catalog()[kind],id=info?.slot==='under'?'grip':info?.slot==='side'?'laser':info?.slot==='muzzle'?'suppressor':null;
+      const m=id&&G.Attachments.make(id,1.5);
+      if(m){m.rotation.x=Math.PI/2;m.position.y=.07;g.add(m)}else{const mat=new THREE.MeshStandardMaterial({color:0x45514a,metalness:.4,roughness:.65});const m=new THREE.Mesh(new THREE.BoxGeometry(.16,.05,.09),mat);m.position.y=.025;g.add(m)}
     } else if (kind.startsWith('scope_')) {
       const m = new THREE.Mesh(G.GunLib.scopeItemGeo(kind.slice(6)), G.GunLib.tpMat()); m.scale.setScalar(2.4); m.position.y = 0.02; g.add(m);
     } else if (G.THROW_NAMES[kind]) {

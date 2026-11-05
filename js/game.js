@@ -27,11 +27,13 @@ const LOOT_TABLE = [
   ['scope_reddot', 3.5], ['scope_holo', 2.8], ['scope_x2', 2.6], ['scope_x4', 1.8], ['scope_x8', 0.9],
   ['frag', 7], ['smoke', 5], ['molotov', 5], ['flash', 5],
   ['bandage', 9], ['medkit', 4], ['vest', 4], ['helmet', 5]];
+for(const [k,v] of Object.entries(G.Attachments.catalog())) LOOT_TABLE.push([k,1.8]);
 const LOOT_AMOUNT = { ammo_556: 30, ammo_762: 30, ammo_9mm: 30, ammo_45: 24, ammo_12g: 10, bandage: 2 };
 const LOOT_NAMES = { frag: '수류탄', smoke: '연막탄', molotov: '화염병', flash: '섬광탄', bandage: '붕대', medkit: '구급상자', vest: '방탄조끼', helmet: '헬멧' };
 for (const k of G.GUN_IDS) LOOT_NAMES[k] = G.WEAPONS[k].name;
 for (const t in G.AMMO_NAMES) LOOT_NAMES['ammo_' + t] = G.AMMO_NAMES[t] + ' 탄약';
 for (const t in G.SCOPES) LOOT_NAMES['scope_' + t] = G.SCOPES[t].name;
+for(const [k,v] of Object.entries(G.Attachments.catalog())) LOOT_NAMES[k]=v.name;
 const WEAPON_LABEL = { fists: '주먹', frag: '수류탄', molotov: '화염병', zone: '자기장', fall: '낙하', bleed: '출혈' };
 for (const k of G.GUN_IDS) WEAPON_LABEL[k] = G.WEAPONS[k].short;
 // 봇이 처음 받는 총: 같은 종류 안에서 낮은 등급일수록 자주

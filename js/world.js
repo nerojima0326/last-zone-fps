@@ -1324,6 +1324,11 @@ const W = G.World = {
       this.boxMM(b, x0 + 0.1, 0.3, z0 + 0.1, x1 - 0.1, 0.34, z1 - 0.1, 'wood', C(0x6b5038), NC);
       this.range.tables.push({ x0: t.x + x0, x1: t.x + x1, z: t.z + (z0 + z1) / 2, y: y + 0.94 });
     }
+    // 부착물 전용 테이블: 기존 사격대 뒤쪽, 두 줄로 정돈한다.
+    const ax0=-6,ax1=6,az0=FL+6.2,az1=FL+8.2;
+    this.boxMM(b,ax0,.86,az0,ax1,.94,az1,'wood',wood);
+    for(const x of [ax0+.12,ax1-.12])for(const z of [az0+.12,az1-.12])this.boxMM(b,x-.05,.06,z-.05,x+.05,.86,z+.05,'wood',C(0x5a4632),NC);
+    this.range.attachmentTable={x0:t.x+ax0,x1:t.x+ax1,z0:t.z+az0,z1:t.z+az1,y:y+.94};
     // 흙벽 (뒤쪽 탄 받이, 양옆)
     this.boxMM(b, -42, -1, -82, 42, 7.5, -75, 'sandbag', bag);
     this.boxMM(b, -42, -1, -75, -38, 3.6, FL - 2, 'sandbag', bag);
