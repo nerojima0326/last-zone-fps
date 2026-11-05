@@ -5,16 +5,23 @@ const THREE = window.THREE, G = window.G, U = G.U;
 const V3 = THREE.Vector3;
 
 const DIFF = {
-  easy:   { react: 0.9, err: 1.7, track: 1.5, vis: 95,  rate: 0.65, burst: [2, 4], pause: [0.45, 0.9], nade: 0.12, turn: 3.5, head: 0.05 },
-  normal: { react: 0.5, err: 1.1, track: 2.3, vis: 125, rate: 0.85, burst: [3, 6], pause: [0.3, 0.65], nade: 0.28, turn: 5,   head: 0.15 },
+  easy:   { react: 1.35, err: 2.5, track: 0.85, vis: 75, rate: 0.48, burst: [2, 3], pause: [0.75, 1.35], nade: 0.05, turn: 2.8, head: 0.02 },
+  normal: { react: 0.85, err: 1.65, track: 1.45, vis: 105, rate: 0.68, burst: [2, 4], pause: [0.48, 0.95], nade: 0.14, turn: 3.8, head: 0.07 },
   hard:   { react: 0.28, err: 0.7, track: 3.3, vis: 150, rate: 1.0, burst: [4, 8], pause: [0.2, 0.45], nade: 0.45, turn: 7,  head: 0.3 }
+};
+// Teammates retain their previous effectiveness when enemy difficulty is reduced.
+const ALLY_DIFF = {
+  easy: { react: 0.9, err: 1.7, track: 1.5, vis: 95, rate: 0.65, burst: [2,4], pause: [0.45,0.9], nade: 0.12, turn: 3.5, head: 0.05 },
+  normal: { react: 0.5, err: 1.1, track: 2.3, vis: 125, rate: 0.85, burst: [3,6], pause: [0.3,0.65], nade: 0.28, turn: 5, head: 0.15 },
+  hard: DIFF.hard
 };
 const _e = new V3(), _c = new V3(), _d = new V3(), _w = new V3(), _a = new V3(), _f = new V3(), _r = new V3(), _m = new V3(), _p = new V3(), _l = new V3();
 
 class Bot {
   constructor(a) {
     this.a = a;
-    this.d = DIFF[G.Game.diff] || DIFF.normal;
+    const profiles = a.team === 0 ? ALLY_DIFF : DIFF;
+    this.d = profiles[G.Game.diff] || profiles.normal;
     this.target = null; this.visible = false; this.lostT = 99; this.lastSeen = new V3(); this.hasLast = false;
     this.aimOff = new V3(); this.reactT = 0;
     this.goal = null; this.goalType = ''; this.goalT = 0; this.lootItem = null;
