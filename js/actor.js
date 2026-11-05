@@ -44,7 +44,7 @@ class Actor {
   }
   // 조준경이 없는 총에 가방의 가장 좋은 호환 조준경을 끼운다
   autoScope(cls) {
-    const w = this.weapons[cls]; if (!w || w.scope) return false;
+    const w = this.weapons[cls]; if (!w || w.scope || w.iron) return false;
     const def = G.WEAPONS[w.id];
     for (let i = G.SCOPE_ORDER.length - 1; i >= 0; i--) {
       const t = G.SCOPE_ORDER[i];
@@ -73,7 +73,7 @@ class Actor {
       const cur = this.weapons[W.cls];
       const mag = it.mag !== undefined ? it.mag : W.mag;
       if (!cur) {
-        this.weapons[W.cls] = { id: k, mag, scope: it.scope || null };
+        this.weapons[W.cls] = { id: k, mag, scope: it.scope || null, iron: !!it.iron, attachments: { ...it.attachments } };
         if (!it.scope) this.autoScope(W.cls);
         res = W.name;
       } else if (cur.id === k || (fromCrate && W.tier <= G.WEAPONS[cur.id].tier)) {
@@ -87,8 +87,8 @@ class Actor {
         res = got.join(', ');
       } else {
         // 다른 총: 들고 있던 총을 내려놓고 바꾼다
-        this._drop = { kind: cur.id, mag: cur.mag, scope: cur.scope };
-        this.weapons[W.cls] = { id: k, mag, scope: it.scope || null };
+        this._drop = { kind: cur.id, mag: cur.mag, scope: cur.scope, iron: !!cur.iron, attachments: { ...cur.attachments } };
+        this.weapons[W.cls] = { id: k, mag, scope: it.scope || null, iron: !!it.iron, attachments: { ...it.attachments } };
         if (!it.scope) this.autoScope(W.cls);
         res = W.name;
       }
@@ -131,7 +131,7 @@ class Actor {
   // 사망 시 상자에 담을 아이템
   dropAll() {
     const items = [];
-    for (const k of ['rifle', 'shotgun', 'pistol']) if (this.weapons[k]) items.push({ kind: this.weapons[k].id, mag: this.weapons[k].mag, scope: this.weapons[k].scope, amount: 1 });
+    for (const k of ['rifle', 'shotgun', 'pistol']) if (this.weapons[k]) items.push({ kind: this.weapons[k].id, mag: this.weapons[k].mag, scope: this.weapons[k].scope, iron: !!this.weapons[k].iron, attachments: { ...this.weapons[k].attachments }, amount: 1 });
     for (const t in this.scopes) for (let i = 0; i < this.scopes[t]; i++) items.push({ kind: 'scope_' + t, amount: 1 });
     for (const t in this.ammo) if (this.ammo[t] > 0) items.push({ kind: 'ammo_' + t, amount: this.ammo[t] });
     for (const k in this.throwables) if (this.throwables[k] > 0) items.push({ kind: k, amount: this.throwables[k] });

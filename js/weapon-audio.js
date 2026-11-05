@@ -62,11 +62,11 @@ const W=G.WeaponAudio={
   source.start(t,offset,duration);source.stop(t+seconds+.01);
   return true;
  },
- fire(a,id,pos,own){
+ fire(a,id,pos,own,suppressed=false){
   const p=P[id],bank=this.manifest?.shots[id];if(!p||!bank||!this.buffers[bank.path])return false;
   const sp=a.spatial(own?null:pos,28);if(sp.g<.02||(!own&&!a._budget()))return true;
   const key=id+(own?':own':':world'),seq=this.sequence[key]||0;this.sequence[key]=seq+1;
-  this.play(a,bank,bank.cues[seq%bank.cues.length],sp,{gain:p[5]*(own?1.2:1),cut:19000,wet:own?.16:.45,own});
+  this.play(a,bank,bank.cues[seq%bank.cues.length],sp,{gain:p[5]*(own?1.2:1)*(suppressed?.45:1),cut:suppressed?4500:19000,wet:own?.16:.45,own});
   // A quiet physical action behind the report, rather than a synthetic pitch sweep.
   if(own)this.foley(a,id,'dry',.032,.12);
   return true;

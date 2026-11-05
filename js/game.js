@@ -425,7 +425,7 @@ const Game = G.Game = {
       const d = a._drop; a._drop = null;
       const W = G.World, x = it.pos.x + U.rand(-0.4, 0.4), z = it.pos.z + U.rand(-0.4, 0.4);
       const y = W.ground(x, z, it.pos.y + 0.5, 0.2, 0.6);
-      this.addLoot(d.kind, 1, _w.set(x, y, z), { mag: d.mag, scope: d.scope || null }).mesh.visible = true;
+      this.addLoot(d.kind, 1, _w.set(x, y, z), { mag: d.mag, scope: d.scope || null, iron: !!d.iron, attachments: { ...d.attachments } }).mesh.visible = true;
     }
     return res;
   },

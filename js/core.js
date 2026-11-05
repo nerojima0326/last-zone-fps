@@ -323,14 +323,14 @@ const A = G.Audio = {
   },
   ok() { return !!this.ctx && this.ctx.state === 'running'; },
 
-  shot(kind, pos, own) {
+  shot(kind, pos, own, suppressed = false) {
     if (!this.ok()) return;
-    if(G.WeaponAudio&&G.WeaponAudio.fire(this,kind,pos,own))return;
+    if(G.WeaponAudio&&G.WeaponAudio.fire(this,kind,pos,own,suppressed))return;
     kind=G.WEAPONS?.[kind]?.sound||kind;
     const cfg = SHOT[kind]; if (!cfg) return;
     const sp = this.spatial(own ? null : pos, 28);
     if (sp.g < 0.02 || (!own && !this._budget())) return;
-    const t = this.ctx.currentTime, o = this.out(sp, cfg.vol * (own ? 0.9 : 1));
+    const t = this.ctx.currentTime, o = this.out(sp, cfg.vol * (own ? 0.9 : 1) * (suppressed ? 0.45 : 1));
     this.noise(o, t, { dur: cfg.crack, a: 1.0, hp: 500, lp: cfg.lp });
     this.noise(o, t, { dur: cfg.body, a: 0.7, lp: 1600, lp1: 300 });
     this.tone(o, t, { type: 'sine', f0: cfg.f0, f1: 38, a: cfg.thump, dur: cfg.td });

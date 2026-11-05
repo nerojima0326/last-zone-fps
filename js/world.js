@@ -102,6 +102,7 @@ const W = G.World = {
     if (G.Assets) await G.Assets.load(renderer, progress);
     if (G.Soldiers) { progress(0.31, '군인 모델 불러오는 중...'); await G.Soldiers.load(renderer); }
     if (G.GunModels) { progress(0.315, '총기 모델 불러오는 중...'); await G.GunModels.load(renderer); }
+    if (G.Attachments) await G.Attachments.load();
     progress(0.32, '지형 생성 중...');
     await tick();
     this.genHeights();
