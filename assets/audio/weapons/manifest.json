@@ -1,0 +1,508 @@
+{
+  "sourceArchiveSha256": "cc1ab5a99a0a365105c7c5dd783f4b0b1fe90938114d3ceec53856bfe005f7d6",
+  "schema": 1,
+  "sampleRate": 44100,
+  "stride": 1.25,
+  "shots": {
+    "ar7": {
+      "path": "ar7.mp3",
+      "bytes": 30765,
+      "sha256": "8792935dc8e7a2100dd10eb5040f1308a63307164fe13d862140494e46a02777",
+      "cues": [
+        {
+          "offset": 0.0,
+          "duration": 0.85
+        },
+        {
+          "offset": 1.25,
+          "duration": 0.85
+        }
+      ],
+      "source": "AR-15/D_32P.wav",
+      "sourceSha256": "acee9d2106b68fe5956225a19d7aedf943d97793817f9bda9d486a2b74b0a812",
+      "sourceOnsets": [
+        0.694,
+        5.6339999999999995
+      ],
+      "filter": "asetrate=44100.0,aresample=44100,highpass=f=65,lowpass=f=15500,equalizer=f=125:t=o:w=1.5:g=1.5,acompressor=threshold=0.04:ratio=3:attack=0.1:release=100:makeup=3.5,alimiter=limit=0.75:level=false",
+      "peak": 0.8,
+      "rate": 1.0,
+      "bodyHz": 125,
+      "bodyDb": 1.5,
+      "lowpass": 15500
+    },
+    "ka47": {
+      "path": "ka47.mp3",
+      "bytes": 30765,
+      "sha256": "02b6890a0c1e34a0ad12f8cc5e92c838e51c2e52e2fa78b23fae31186d23bdb4",
+      "cues": [
+        {
+          "offset": 0.0,
+          "duration": 0.9183673469387755
+        },
+        {
+          "offset": 1.25,
+          "duration": 0.9183673469387755
+        }
+      ],
+      "source": "AK-47/C_28P.wav",
+      "sourceSha256": "e0934c1d79192d2216db62fdf6ab57bf9d5d585267af367a1cfb21f0972a537d",
+      "sourceOnsets": [
+        0.604,
+        3.244
+      ],
+      "filter": "asetrate=43218.0,aresample=44100,highpass=f=65,lowpass=f=12500,equalizer=f=180:t=o:w=1.5:g=3.5,acompressor=threshold=0.04:ratio=3:attack=0.1:release=100:makeup=3.5,alimiter=limit=0.75:level=false",
+      "peak": 0.8,
+      "rate": 0.98,
+      "bodyHz": 180,
+      "bodyDb": 3.5,
+      "lowpass": 12500
+    },
+    "sc17": {
+      "path": "sc17.mp3",
+      "bytes": 30765,
+      "sha256": "c6cda775c2dd2d4b6ca625e8fe97f38449e94b7eca146f516ffe592cdfc1d69a",
+      "cues": [
+        {
+          "offset": 0.0,
+          "duration": 0.8333333333333334
+        },
+        {
+          "offset": 1.25,
+          "duration": 0.8333333333333334
+        }
+      ],
+      "source": "SKS/U_19P.wav",
+      "sourceSha256": "90078733c0821922073717a0a656919227ba381e794f70a43a35df9cb4f3a445",
+      "sourceOnsets": [
+        2.604,
+        8.004
+      ],
+      "filter": "asetrate=44982.0,aresample=44100,highpass=f=65,lowpass=f=14500,equalizer=f=155:t=o:w=1.5:g=2.0,acompressor=threshold=0.04:ratio=3:attack=0.1:release=100:makeup=3.5,alimiter=limit=0.75:level=false",
+      "peak": 0.8,
+      "rate": 1.02,
+      "bodyHz": 155,
+      "bodyDb": 2.0,
+      "lowpass": 14500
+    },
+    "mk14": {
+      "path": "mk14.mp3",
+      "bytes": 30765,
+      "sha256": "bbcc245637a7284cd9c425e3dbd181792e3f5dac8d4e4557255d143f4616343a",
+      "cues": [
+        {
+          "offset": 0.0,
+          "duration": 0.9793877551020408
+        },
+        {
+          "offset": 1.25,
+          "duration": 0.9793877551020408
+        }
+      ],
+      "source": "Marlin 336/I_22P.wav",
+      "sourceSha256": "88c2a543ae4df36975557d0715e46b33e3667853ae6bb6633016f5fb79ff17f1",
+      "sourceOnsets": [
+        0.734,
+        6.994
+      ],
+      "filter": "asetrate=42777.0,aresample=44100,highpass=f=65,lowpass=f=13500,equalizer=f=130:t=o:w=1.5:g=4.0,acompressor=threshold=0.04:ratio=3:attack=0.1:release=100:makeup=3.5,alimiter=limit=0.75:level=false",
+      "peak": 0.8,
+      "rate": 0.97,
+      "bodyHz": 130,
+      "bodyDb": 4.0,
+      "lowpass": 13500
+    },
+    "kr98": {
+      "path": "kr98.mp3",
+      "bytes": 30765,
+      "sha256": "def50567b6c70702edf98bce2014626d3cef04330fa5ee42358c07d43e64d11b",
+      "cues": [
+        {
+          "offset": 0.0,
+          "duration": 1.0937641723356009
+        },
+        {
+          "offset": 1.25,
+          "duration": 1.0937641723356009
+        }
+      ],
+      "source": "Tikka/W_29P.wav",
+      "sourceSha256": "b1ffe3c104391bf8ceb8337aa4d5a2ca47938fb88ccbd051cdd2b2e205d9e72b",
+      "sourceOnsets": [
+        0.564,
+        5.654
+      ],
+      "filter": "asetrate=42336.0,aresample=44100,highpass=f=65,lowpass=f=15000,equalizer=f=110:t=o:w=1.5:g=4.0,acompressor=threshold=0.04:ratio=3:attack=0.1:release=100:makeup=3.5,alimiter=limit=0.75:level=false",
+      "peak": 0.8,
+      "rate": 0.96,
+      "bodyHz": 110,
+      "bodyDb": 4.0,
+      "lowpass": 15000
+    },
+    "s12": {
+      "path": "s12.mp3",
+      "bytes": 30765,
+      "sha256": "e446d636f598a3615dbf09945aef5546a23678cf944c53233cb3b44aeba530b2",
+      "cues": [
+        {
+          "offset": 0.0,
+          "duration": 0.95
+        },
+        {
+          "offset": 1.25,
+          "duration": 0.95
+        }
+      ],
+      "source": "Model 12/K_22P.wav",
+      "sourceSha256": "ea19e9a0be4686054847a58b0a43f6be82fbe65345489f41aa02dbcf166d34d0",
+      "sourceOnsets": [
+        0.834,
+        7.434
+      ],
+      "filter": "asetrate=44100.0,aresample=44100,highpass=f=65,lowpass=f=10500,equalizer=f=100:t=o:w=1.5:g=3.0,acompressor=threshold=0.04:ratio=3:attack=0.1:release=100:makeup=3.5,alimiter=limit=0.75:level=false",
+      "peak": 0.8,
+      "rate": 1.0,
+      "bodyHz": 100,
+      "bodyDb": 3.0,
+      "lowpass": 10500
+    },
+    "m1014": {
+      "path": "m1014.mp3",
+      "bytes": 30765,
+      "sha256": "740f583188469555c26a6fa51ee69ffefc36954a75e12cea0369f4bb915ffaae",
+      "cues": [
+        {
+          "offset": 0.0,
+          "duration": 0.8252607709750567
+        },
+        {
+          "offset": 1.25,
+          "duration": 0.8252607709750567
+        }
+      ],
+      "source": "Nova/O_21P.wav",
+      "sourceSha256": "5661d0625e4634f19e6e316c13693b80c8e28cd9f716cf9c75c465153ae40815",
+      "sourceOnsets": [
+        0.424,
+        3.454
+      ],
+      "filter": "asetrate=45423.0,aresample=44100,highpass=f=65,lowpass=f=13000,equalizer=f=130:t=o:w=1.5:g=2.5,acompressor=threshold=0.04:ratio=3:attack=0.1:release=100:makeup=3.5,alimiter=limit=0.75:level=false",
+      "peak": 0.8,
+      "rate": 1.03,
+      "bodyHz": 130,
+      "bodyDb": 2.5,
+      "lowpass": 13000
+    },
+    "db2": {
+      "path": "db2.mp3",
+      "bytes": 30765,
+      "sha256": "90619a23ca86f26096061bb55686fa33fdd01cff0475df17a45095e945e80aa5",
+      "cues": [
+        {
+          "offset": 0.0,
+          "duration": 1.105283446712018
+        },
+        {
+          "offset": 1.25,
+          "duration": 1.105283446712018
+        }
+      ],
+      "source": "Mossberg/N_30P.wav",
+      "sourceSha256": "b5a28243e16f8cb10adfc5225d96e90f108d24393fcfffcaa6dcf203af03634a",
+      "sourceOnsets": [
+        1.684,
+        4.954
+      ],
+      "filter": "asetrate=41895.0,aresample=44100,highpass=f=65,lowpass=f=9500,equalizer=f=90:t=o:w=1.5:g=5.0,acompressor=threshold=0.04:ratio=3:attack=0.1:release=100:makeup=3.5,alimiter=limit=0.75:level=false",
+      "peak": 0.8,
+      "rate": 0.95,
+      "bodyHz": 90,
+      "bodyDb": 5.0,
+      "lowpass": 9500
+    },
+    "sa12": {
+      "path": "sa12.mp3",
+      "bytes": 30765,
+      "sha256": "af45a2603878f3b10fa458f8ce1e442e362ef9926d1dc665fd98d5c2200dad85",
+      "cues": [
+        {
+          "offset": 0.0,
+          "duration": 0.9278458049886621
+        },
+        {
+          "offset": 1.25,
+          "duration": 0.9278458049886621
+        }
+      ],
+      "source": "Nova/O_21P.wav",
+      "sourceSha256": "5661d0625e4634f19e6e316c13693b80c8e28cd9f716cf9c75c465153ae40815",
+      "sourceOnsets": [
+        0.424,
+        3.454
+      ],
+      "filter": "asetrate=42777.0,aresample=44100,highpass=f=65,lowpass=f=11000,equalizer=f=160:t=o:w=1.5:g=4.0,acompressor=threshold=0.04:ratio=3:attack=0.1:release=100:makeup=3.5,alimiter=limit=0.75:level=false",
+      "peak": 0.8,
+      "rate": 0.97,
+      "bodyHz": 160,
+      "bodyDb": 4.0,
+      "lowpass": 11000
+    },
+    "aa12": {
+      "path": "aa12.mp3",
+      "bytes": 30765,
+      "sha256": "a0ab33de613ece55a11a81c803e622ea7c43998b7e82265e083dc6dbcb2d67c7",
+      "cues": [
+        {
+          "offset": 0.0,
+          "duration": 0.721156462585034
+        },
+        {
+          "offset": 1.25,
+          "duration": 0.721156462585034
+        }
+      ],
+      "source": "Mossberg/N_30P.wav",
+      "sourceSha256": "b5a28243e16f8cb10adfc5225d96e90f108d24393fcfffcaa6dcf203af03634a",
+      "sourceOnsets": [
+        1.684,
+        4.954
+      ],
+      "filter": "asetrate=45864.0,aresample=44100,highpass=f=65,lowpass=f=12000,equalizer=f=145:t=o:w=1.5:g=2.0,acompressor=threshold=0.04:ratio=3:attack=0.1:release=100:makeup=3.5,alimiter=limit=0.75:level=false",
+      "peak": 0.8,
+      "rate": 1.04,
+      "bodyHz": 145,
+      "bodyDb": 2.0,
+      "lowpass": 12000
+    },
+    "p92": {
+      "path": "p92.mp3",
+      "bytes": 30765,
+      "sha256": "894c89ddd91ff87118533b91bcc1215086e72d26f40b2d1f60b9ea5c08a0612a",
+      "cues": [
+        {
+          "offset": 0.0,
+          "duration": 0.686281179138322
+        },
+        {
+          "offset": 1.25,
+          "duration": 0.686281179138322
+        }
+      ],
+      "source": "Walther PPQ/X_39P.wav",
+      "sourceSha256": "d679a3cd87eae2898d984159f83544392932e6b77526045b672e3aaa9c2dda9f",
+      "sourceOnsets": [
+        1.394,
+        6.434
+      ],
+      "filter": "asetrate=44982.0,aresample=44100,highpass=f=65,lowpass=f=16500,equalizer=f=220:t=o:w=1.5:g=-1.0,acompressor=threshold=0.04:ratio=3:attack=0.1:release=100:makeup=3.5,alimiter=limit=0.75:level=false",
+      "peak": 0.8,
+      "rate": 1.02,
+      "bodyHz": 220,
+      "bodyDb": -1.0,
+      "lowpass": 16500
+    },
+    "g18": {
+      "path": "g18.mp3",
+      "bytes": 30765,
+      "sha256": "041d9743af78730926ff71b4454373c9301a134266ba56277ce1cf21cd57eaec",
+      "cues": [
+        {
+          "offset": 0.0,
+          "duration": 0.5607482993197279
+        },
+        {
+          "offset": 1.25,
+          "duration": 0.5607482993197279
+        }
+      ],
+      "source": "Bersa/F_47P.wav",
+      "sourceSha256": "f800c86f9a724bd52f6fe844909adbb9ad3c50cac654908ee83bf15d1ad18ce3",
+      "sourceOnsets": [
+        0.324,
+        4.394
+      ],
+      "filter": "asetrate=47187.0,aresample=44100,highpass=f=65,lowpass=f=15500,equalizer=f=250:t=o:w=1.5:g=-2.0,acompressor=threshold=0.04:ratio=3:attack=0.1:release=100:makeup=3.5,alimiter=limit=0.75:level=false",
+      "peak": 0.8,
+      "rate": 1.07,
+      "bodyHz": 250,
+      "bodyDb": -2.0,
+      "lowpass": 15500
+    },
+    "m1911": {
+      "path": "m1911.mp3",
+      "bytes": 30765,
+      "sha256": "ccc4dc1be0e41d078aa695183adde456b4ffea2189b2e57219804fc07944e5b3",
+      "cues": [
+        {
+          "offset": 0.0,
+          "duration": 0.8
+        },
+        {
+          "offset": 1.25,
+          "duration": 0.8
+        }
+      ],
+      "source": "1911/A_42P.wav",
+      "sourceSha256": "8e84438e771c157155a6a1ff47a6a7a7d81b6f39b185d41e426c57337a82254a",
+      "sourceOnsets": [
+        0.9339999999999999,
+        4.994
+      ],
+      "filter": "asetrate=44100.0,aresample=44100,highpass=f=65,lowpass=f=12500,equalizer=f=170:t=o:w=1.5:g=1.5,acompressor=threshold=0.04:ratio=3:attack=0.1:release=100:makeup=3.5,alimiter=limit=0.75:level=false",
+      "peak": 0.8,
+      "rate": 1.0,
+      "bodyHz": 170,
+      "bodyDb": 1.5,
+      "lowpass": 12500
+    },
+    "de7": {
+      "path": "de7.mp3",
+      "bytes": 30765,
+      "sha256": "3494b34862b53c3c07b74a780980b51d4b8a86cf033a1310bac9b973499ecfdd",
+      "cues": [
+        {
+          "offset": 0.0,
+          "duration": 1.0869614512471655
+        },
+        {
+          "offset": 1.25,
+          "duration": 1.0869614512471655
+        }
+      ],
+      "source": "1911/A_42P.wav",
+      "sourceSha256": "8e84438e771c157155a6a1ff47a6a7a7d81b6f39b185d41e426c57337a82254a",
+      "sourceOnsets": [
+        0.9339999999999999,
+        4.994
+      ],
+      "filter": "asetrate=40572.0,aresample=44100,highpass=f=65,lowpass=f=14500,equalizer=f=110:t=o:w=1.5:g=5.0,acompressor=threshold=0.04:ratio=3:attack=0.1:release=100:makeup=3.5,alimiter=limit=0.75:level=false",
+      "peak": 0.8,
+      "rate": 0.92,
+      "bodyHz": 110,
+      "bodyDb": 5.0,
+      "lowpass": 14500
+    },
+    "r45": {
+      "path": "r45.mp3",
+      "bytes": 30765,
+      "sha256": "dd8e97781af782c4889a7c546025d68eb481358bd89fb856ef30d69383109d02",
+      "cues": [
+        {
+          "offset": 0.0,
+          "duration": 0.8763038548752834
+        },
+        {
+          "offset": 1.25,
+          "duration": 0.8763038548752834
+        }
+      ],
+      "source": "Smith & Wesson 642/V_27P.wav",
+      "sourceSha256": "dc9a11f7e6544139f38cadccf3373fed733f2e000caca1b2328575293838fc58",
+      "sourceOnsets": [
+        0.794,
+        6.204
+      ],
+      "filter": "asetrate=42777.0,aresample=44100,highpass=f=65,lowpass=f=14000,equalizer=f=185:t=o:w=1.5:g=3.0,acompressor=threshold=0.04:ratio=3:attack=0.1:release=100:makeup=3.5,alimiter=limit=0.75:level=false",
+      "peak": 0.8,
+      "rate": 0.97,
+      "bodyHz": 185,
+      "bodyDb": 3.0,
+      "lowpass": 14000
+    }
+  },
+  "foley": {
+    "path": "foley.mp3",
+    "bytes": 33899,
+    "sha256": "ee59b177667672bc4463af88abe2f53132b894de585b052ffd9cdb1725ebedd1",
+    "cues": {
+      "pistol-out": {
+        "offset": 0.0,
+        "duration": 0.19,
+        "source": "pistol-reload.wav",
+        "sourceStart": 0.11,
+        "sourceEnd": 0.3,
+        "sourceSha256": "685cac6a184e3cc3ec09a25b6ddb1d6feffd86d469778f339aa423d384035c50"
+      },
+      "pistol-in": {
+        "offset": 0.25,
+        "duration": 0.39,
+        "source": "pistol-reload.wav",
+        "sourceStart": 0.63,
+        "sourceEnd": 1.02,
+        "sourceSha256": "685cac6a184e3cc3ec09a25b6ddb1d6feffd86d469778f339aa423d384035c50"
+      },
+      "pistol-close": {
+        "offset": 0.7,
+        "duration": 0.21,
+        "source": "pistol-reload.wav",
+        "sourceStart": 1.24,
+        "sourceEnd": 1.45,
+        "sourceSha256": "685cac6a184e3cc3ec09a25b6ddb1d6feffd86d469778f339aa423d384035c50"
+      },
+      "rifle-out": {
+        "offset": 0.97,
+        "duration": 0.19,
+        "source": "rifle-reload.wav",
+        "sourceStart": 0.19,
+        "sourceEnd": 0.38,
+        "sourceSha256": "efb2d724d634eabe6ba8d3065686abca848bb7497d4d43a5e4aed5e5ea23016f"
+      },
+      "rifle-in": {
+        "offset": 1.22,
+        "duration": 0.16,
+        "source": "rifle-reload.wav",
+        "sourceStart": 0.99,
+        "sourceEnd": 1.15,
+        "sourceSha256": "efb2d724d634eabe6ba8d3065686abca848bb7497d4d43a5e4aed5e5ea23016f"
+      },
+      "rifle-close": {
+        "offset": 1.44,
+        "duration": 0.2,
+        "source": "rifle-reload.wav",
+        "sourceStart": 1.19,
+        "sourceEnd": 1.39,
+        "sourceSha256": "efb2d724d634eabe6ba8d3065686abca848bb7497d4d43a5e4aed5e5ea23016f"
+      },
+      "open": {
+        "offset": 1.7,
+        "duration": 0.15501133786848073,
+        "source": "pump.wav",
+        "sourceStart": 0.025,
+        "sourceEnd": 0.18,
+        "sourceSha256": "33e007321ba83301c861aef573f2c40b70bc62f8f24c0164877e6dd123e24371"
+      },
+      "close": {
+        "offset": 1.9150113378684808,
+        "duration": 0.20501133786848072,
+        "source": "pump.wav",
+        "sourceStart": 0.185,
+        "sourceEnd": 0.39,
+        "sourceSha256": "33e007321ba83301c861aef573f2c40b70bc62f8f24c0164877e6dd123e24371"
+      },
+      "shell": {
+        "offset": 2.1800226757369616,
+        "duration": 0.21,
+        "source": "rifle-reload.wav",
+        "sourceStart": 0.44,
+        "sourceEnd": 0.65,
+        "sourceSha256": "efb2d724d634eabe6ba8d3065686abca848bb7497d4d43a5e4aed5e5ea23016f"
+      },
+      "dry": {
+        "offset": 2.4500226757369616,
+        "duration": 0.03,
+        "source": "rifle-reload.wav",
+        "sourceStart": 0.26,
+        "sourceEnd": 0.29,
+        "sourceSha256": "efb2d724d634eabe6ba8d3065686abca848bb7497d4d43a5e4aed5e5ea23016f"
+      },
+      "cloth": {
+        "offset": 2.5400226757369615,
+        "duration": 0.15,
+        "source": "rifle-reload.wav",
+        "sourceStart": 0.42,
+        "sourceEnd": 0.57,
+        "sourceSha256": "efb2d724d634eabe6ba8d3065686abca848bb7497d4d43a5e4aed5e5ea23016f"
+      }
+    }
+  }
+}
