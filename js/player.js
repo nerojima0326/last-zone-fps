@@ -291,6 +291,8 @@ const P = G.Player = {
     s += U.clamp(a.hspeed / 4.6, 0, 1.5) * def.move * (1 - this.ads * 0.5);
     if (!a.onGround) s += 0.06;
     if (a.crouch) s *= 0.8;
+    const parts = a.weapons[a.cur]?.attachments || {};
+    if (parts.side === 'laser') s *= 1 - 0.1 * (1 - this.ads);
     return s;
   },
   fire(def, inst, now) {
@@ -308,14 +310,17 @@ const P = G.Player = {
       _d.copy(_f).addScaledVector(_r, Math.cos(th) * rr).addScaledVector(_u, Math.sin(th) * rr).normalize();
       G.Ballistics.fire(a, cam.position, _d, def, _m, def.pellets === 1 || k < 3);
     }
-    const rv = def.recoilV * (this.ads > 0.5 ? 0.7 : 1) * (a.crouch ? 0.82 : 1) * U.rand(0.85, 1.15);
+    const parts = inst.attachments || {};
+    const gripFactor = parts.under === 'grip' ? 0.9 : 1;
+    const rv = gripFactor * def.recoilV * (this.ads > 0.5 ? 0.7 : 1) * (a.crouch ? 0.82 : 1) * U.rand(0.85, 1.15);
     a.pitch = Math.min(1.45, a.pitch + rv); this.recoilAcc += rv;
-    a.yaw += def.recoilH * U.rand(-1, 1.25);
+    a.yaw += gripFactor * def.recoilH * U.rand(-1, 1.25);
     this.camKick += def.kick * 0.016;
     this.bloom = Math.min(def.bloomMax, this.bloom + def.bloom);
-    G.VM.fireKick(def.kick);
-    G.FX.light(_m, 0xffaa55, 22, 0.06, 12);
-    G.Audio.shot(inst.id, a.pos, true);
+    const suppressed = parts.muzzle === 'suppressor';
+    G.VM.fireKick(def.kick, suppressed);
+    if (!suppressed) G.FX.light(_m, 0xffaa55, 22, 0.06, 12);
+    G.Audio.shot(inst.id, a.pos, true, suppressed);
     G.Game.onShot(a, def);
     if (def.action === 'pump') this.pumpT = 0;
     else if (def.action === 'bolt') { if (inst.mag > 0) this.cycleT = 0; }
@@ -401,7 +406,7 @@ const P = G.Player = {
   },
   // 현재 총의 조준경 배율
   zoomOf(inst, def) {
-    const sc = inst.scope || def.baseSight;
+    const sc = G.Attachments ? G.Attachments.optic(inst,def) : (inst.scope || def.baseSight);
     return sc ? G.SCOPES[sc].zoom : 1;
   },
   // V: 가방의 조준경으로 바꿔 끼우기 (없음 → 가진 조준경 순서대로)
@@ -409,13 +414,11 @@ const P = G.Player = {
     const a = this.a, inst = a.weapons[a.cur];
     if (!inst || this.reload) return;
     const def = G.WEAPONS[inst.id];
-    const opts = [null].concat(G.SCOPE_ORDER.filter(t => def.scopes.includes(t) && t !== def.baseSight && (a.scopes[t] > 0 || inst.scope === t)));
+    const opts = [null].concat(G.SCOPE_ORDER.filter(t => def.scopes.includes(t) && t !== def.baseSight));
     if (opts.length <= 1) { G.UI.toast(def.scopes.length ? '장착할 수 있는 조준경이 없습니다' : '이 총에는 조준경을 달 수 없습니다'); return; }
     const i = opts.indexOf(inst.scope || null);
     const next = opts[(i + 1) % opts.length];
-    if (inst.scope) a.scopes[inst.scope]++;
-    if (next) a.scopes[next]--;
-    inst.scope = next;
+    inst.scope = next; inst.iron = false;
     G.Audio.click('switch');
     G.UI.toast(next ? G.SCOPES[next].name + ' 장착' : (def.baseSight ? G.SCOPES[def.baseSight].name + ' (기본)' : '가늠쇠 사용'));
   },
@@ -554,7 +557,8 @@ const P = G.Player = {
     const VMc = G.VM;
     cam.rotation.set(a.pitch + this.camKick + VMc.camRX + (Math.random() - 0.5) * sh * 0.02, a.yaw + VMc.camRY + (Math.random() - 0.5) * sh * 0.02, VMc.camRZ + (Math.random() - 0.5) * sh * 0.015, 'YXZ');
     const inst = a.weapons[a.cur], def = inst ? G.WEAPONS[inst.id] : G.WEAPONS[a.cur];
-    const scope = inst ? (inst.scope || def.baseSight || null) : null;
+    const scope = inst ? (G.Attachments ? G.Attachments.optic(inst,def) : (inst.scope || def.baseSight || null)) : null;
+    if(inst&&G.Attachments)G.Attachments.update(G.VM.models[inst.id],inst);
     const zoom = scope ? G.SCOPES[scope].zoom : 1;
     // 배율 조준 중에는 먼 건물도 상세 모델로 (창문 너머가 보이게)
     G.lodZoom = zoom > 1 && this.ads > 0.6 ? Math.pow(zoom, 0.85) : 1;

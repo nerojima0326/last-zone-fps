@@ -48,3 +48,7 @@ MIT 라이선스 에셋은 게임을 배포할 때 위 라이선스 파일(저�
 ## 총성 · 장전음 (v20)
 
 실제 총성은 The Free Firearm Sound Library(CC0), 기계 조작음은 SpringySpringo의 에어소프트 녹음(CC0)을 편집했다. 총기별 매핑·가공·출처는 [오디오 출처](audio/weapons/CREDITS.md)를 참고한다.
+
+## 조준경 · 총기 부착물 (v21)
+
+조준경과 부착물은 LonesomeDucky의 [Rifle Scope](https://opengameart.org/content/rifle-scope)와 Pichuliru의 [Flat Gun Attachments](https://pichuliru.itch.io/flat-gun-attachments)를 사용합니다. 모두 CC0이며, 모델별 출처와 가공 내용은 [부착물 출처](models/attachments/CREDITS.md)에 기록했습니다.

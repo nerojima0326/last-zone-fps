@@ -47,6 +47,7 @@
     { id: 'throw', name: '투척', html: '<span>투척</span>', act: 'key', key: 'KeyG', ax: 'r', x: 153, y: 253, d: 74, fs: 16 },
     { id: 'heal', name: '치료', html: '<span>치료</span>', act: 'key', key: 'KeyH', ax: 'r', x: 67, y: 253, d: 74, fs: 16 },
     { id: 'pause', name: '일시정지', html: '<span>Ⅱ</span>', act: 'pause', ax: 'l', x: 277, y: 67, d: 74, fs: 16 },
+    { id: 'attach', name: '부착물', html: '<span>부착물</span>', act: 'attachments', ax: 'l', x: 450, y: 67, d: 74, fs: 14 },
     { id: 'map', name: '지도', html: '<span>지도</span>', act: 'key', key: 'KeyM', ax: 'l', x: 363, y: 67, d: 74, fs: 16 }
   ];
   const BY = {};
@@ -212,6 +213,7 @@
         else if (act === 'key') press(rec.key);
         else if (act === 'wheel') I.wheel += 1;
         else if (act === 'pause') { I.unlock(); return; }
+        else if (act === 'attachments') { if (G.Attachments) G.Attachments.show(); return; }
         continue;
       }
       // 버튼·조이스틱이 아닌 곳: 화면을 끌어 시점 회전

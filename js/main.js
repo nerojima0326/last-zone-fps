@@ -175,6 +175,7 @@ G.boot = async function () {
   G.VM.init(G.vmScene);
 
   G.UI.init();
+  if(G.Attachments)G.Attachments.initUI();
   G.World.setTimeOfDay(G.UI.opts.tod || 'day');
   G.Player.sens = G.UI.opts.sens;
   DRS.target = G.UI.opts.fpsTarget || 120;
@@ -195,6 +196,7 @@ G.boot = async function () {
   });
   G.onLockChange = (locked) => {
     if (G.Game.state !== 'playing') return;
+    if(G.Attachments?.open){G.paused=true;G.UI.showPause(false);return;}
     if (!locked) { G.paused = true; G.UI.showPause(true); }
     else { G.paused = false; G.UI.showPause(false); }
   };

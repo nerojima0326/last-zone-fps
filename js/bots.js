@@ -439,9 +439,12 @@ class Bot {
     // 반동으로 조준 흔들림
     this.aimOff.y += def.recoilV * Math.max(dist, 5) * 0.55;
     this.aimOff.x += (Math.random() - 0.5) * def.recoilH * dist;
-    G.FX.muzzle(_m, _d.x, _d.y, _d.z, def.cls === 'shotgun');
-    if (G.camera.position.distanceTo(_m) < 80) G.FX.light(_m, 0xffaa55, 14, 0.05, 10);
-    G.Audio.shot(inst.id, a.pos, false);
+    const suppressed = inst.attachments?.muzzle === 'suppressor';
+    if (!suppressed) {
+      G.FX.muzzle(_m, _d.x, _d.y, _d.z, def.cls === 'shotgun');
+      if (G.camera.position.distanceTo(_m) < 80) G.FX.light(_m, 0xffaa55, 14, 0.05, 10);
+    }
+    G.Audio.shot(inst.id, a.pos, false, suppressed);
     G.Game.onShot(a, def);
     if (a.model) a.model.kick = 1;
   }

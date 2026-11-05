@@ -854,6 +854,7 @@ const Guns = G.Guns = {
         o.scopes[t] = { group: grp, sight: sp, ads: new V3(0, 0, -SCOPE_ADS[t]).sub(sp) };
       }
     }
+    if(G.Attachments)G.Attachments.install(o,def,D,P);
     // 장전용 산탄 (왼손에 들고 장전구에 밀어 넣는다)
     if (def.reloadType === 'shell' || def.reloadType === 'break') {
       const sh = o.shell = new THREE.Group(); root.add(sh); sh.visible = false;
@@ -1390,17 +1391,17 @@ const VM = G.VM = {
     const m = this.models.throw;
     for (const k in m.items) m.items[k].visible = k === kind;
   },
-  fireKick(amount) {
+  fireKick(amount, suppressed = false) {
     this.kickV += amount * 3.6;
     this.kickRoll = (Math.random() - 0.5) * amount * 0.09;
     // 총과 시야가 같이 튄다 (위로, 뒤로, 좌우 비틀림)
     const ia = 1 - this.adsT * 0.45;
     this.bump(amount * 0.55 * ia, amount * 0.05, amount * 0.12, (Math.random() - 0.5) * amount * 0.9 * ia, (Math.random() - 0.5) * amount * 0.35 * ia);
-    this.flashT = 0.045;
+    this.flashT = suppressed ? 0 : 0.045;
     this.slideT = 1;
     const m = this.models[this.cur];
-    if (m && m.flash) { m.flash.visible = true; m.flash.rotation.z = Math.random() * 6.28; const s = 0.8 + Math.random() * 0.5; m.flash.scale.set(s, s, s); }
-    this.flashLight.intensity = 6;
+    if (m && m.flash) { m.flash.visible = !suppressed; m.flash.rotation.z = Math.random() * 6.28; const s = 0.8 + Math.random() * 0.5; m.flash.scale.set(s, s, s); }
+    this.flashLight.intensity = suppressed ? 0 : 6;
     if (m && m.muzzle) this.flashLight.position.copy(m.muzzle).add(m.root.position);
   },
   // 재장전 충격 (속도로 더한다)

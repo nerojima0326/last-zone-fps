@@ -218,7 +218,7 @@ const UI = G.UI = {
       this.set('wn', el.wname, G.THROW_NAMES[k]); this.set('fm', el.fmode, '좌클릭 던지기 · 우클릭 굴리기');
     } else if (inst) {
       this.set('mag', el.mag, inst.mag); this.set('res', el.res, '/ ' + a.ammo[def.ammo]);
-      const sc = inst.scope || def.baseSight;
+      const sc = G.Attachments ? G.Attachments.optic(inst,def) : (inst.scope || def.baseSight);
       this.set('wn', el.wname, def.name + (sc ? ' · ' + G.SCOPES[sc].name : ''));
       const mode = def.auto ? (P.fireMode === 'auto' ? 'AUTO' : 'SINGLE') : ({ pump: 'PUMP', bolt: 'BOLT', break: 'DOUBLE' }[def.action] || 'SEMI');
       const spare = G.SCOPE_ORDER.some(t => a.scopes[t] > 0 && def.scopes.includes(t));
