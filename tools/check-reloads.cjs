@@ -75,6 +75,24 @@ const hands=await page.evaluate(()=>{
  }
  return{frames,vertices,maxContactErrorMm:maxError*1000,maxWristDegrees:maxAngle*180/Math.PI,maxForearmTurnDegrees:maxForearmTurn*180/Math.PI,maxElbowSpeed};
 });console.log('Hand rig:',JSON.stringify(hands));
+// Reloads should move the support shoulder and elbow while the hand works.
+// Check every gun and both reload modes, then verify the reload influence clears.
+const elbowMotion=await page.evaluate(()=>{
+ let cases=0,minShoulder=Infinity,minElbow=Infinity;
+ for(const id of G.GUN_IDS)for(const mode of ['empty','tactical']){
+  const st=ReloadStudio;st.select(id,mode);st.pause();
+  const arm=st.model.armL,start=arm.bE.position.clone();let shoulder=0,elbow=0;
+  for(let t=0;t<st.duration;t+=1/60){
+   st.advance(1/60);shoulder=Math.max(shoulder,arm.shoulderShift.length());
+   elbow=Math.max(elbow,arm.bE.position.distanceTo(start));
+  }
+  if(shoulder<0.01||elbow<0.04)throw Error(id+' '+mode+' reload shoulder or elbow is static');
+  for(let i=0;i<30;i++)st.advance(1/60);
+  if(arm.motionWeight!==0)throw Error(id+' reload shoulder influence remains after reload');
+  minShoulder=Math.min(minShoulder,shoulder);minElbow=Math.min(minElbow,elbow);cases++;
+ }
+ return {cases,minShoulderCm:minShoulder*100,minElbowCm:minElbow*100};
+});console.log('Reload shoulder and elbow movement:',JSON.stringify(elbowMotion));
 const seekChecks=await page.evaluate(()=>{
  let cases=0;
  for(const id of ['ar7','s12','db2','de7']){

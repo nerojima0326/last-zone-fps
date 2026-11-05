@@ -407,7 +407,7 @@ function armRig(parent, shoulder, hand, elbow, glove, slack, sideArg) {
   const sm = new THREE.SkinnedMesh(sleeve[0], AM.sleeve), gm = new THREE.SkinnedMesh(gg, AM.glove);
   for (const m of [sm, gm]) { m.frustumCulled = false; m.userData.keep = true; grp.add(m); m.bind(sk, new THREE.Matrix4()); }
   parent.add(grp);
-  const rig = { grp, side, bS, bE, bT, bD, bW, fing, thumbB: [t0, t1, t2], S: shoulder.clone(), baseS: shoulder.clone(), shoulderShift: new V3(), shoulderVelocity:new V3(), a, b, bw, pole, rest: hand.clone(), tgt: hand.clone(), cur: hand.clone(), roll: 0,
+  const rig = { grp, side, bS, bE, bT, bD, bW, fing, thumbB: [t0, t1, t2], S: shoulder.clone(), baseS: shoulder.clone(), shoulderShift: new V3(), shoulderVelocity:new V3(), motionDelta:new V3(), motionWeight:0, a, b, bw, pole, rest: hand.clone(), tgt: hand.clone(), cur: hand.clone(), roll: 0,
     bendDir:new V3(),bendAxis:new V3(0,1,0),bendReady:false,swivelVelocity:0,framesReady:false,upperQ:new THREE.Quaternion(),foreQ:new THREE.Quaternion(),foreTwist:0,foreTwistVelocity:0,
     curl: 0.9, curlT: 0.9, thumb: 0.7, thumbT: 0.7, trig: 0.9, trigT: 0.9, palmRef: null, fingerRef: null, palmTarget: new V3(), fingerTarget: new V3(), thumbRest: tq.clone(), handQ: new THREE.Quaternion(), handReady: false, anchorLocal: PALM_CONTACT.clone(), contact: hand.clone(), pinch: hand.clone(), contactError: 0, wristAngle: 0,
     aim: side > 0 ? new V3(0,0.15,-1).normalize() : new V3(1,0,-0.08).normalize(), homeK: 0 };
@@ -530,7 +530,8 @@ function clearElbow(r,axis,wrist,along,height,bend,dt,advance) {
   r.bendDir.copy(bend);r.bendAxis.copy(axis);
 }
 function elbowBend(r,axis,dt,advance,out) {
-  _poleTarget.copy(r.pole).addScaledVector(axis,-r.pole.dot(axis));
+  _poleTarget.copy(r.pole).addScaledVector(r.motionDelta, 1.5 * r.motionWeight);
+  _poleTarget.addScaledVector(axis,-_poleTarget.dot(axis));
   const strength=_poleTarget.length();
   if(!r.bendReady){
     out.copy(_poleTarget);if(out.lengthSq()<1e-6)out.set(r.side,0,0).addScaledVector(axis,-r.side*axis.x);
@@ -629,6 +630,13 @@ function solveArm(r, dt) {
   _D.copy(r.reachRef || r.tgt).sub(_contact).sub(r.baseS);
   const reach=_D.length(),extra=U.clamp(reach-(a+b-0.008),0,0.09);
   if(reach>1e-6)_D.multiplyScalar(extra/reach);
+  // During reload the shoulder participates in the reach: it is not a fixed
+  // hinge. Follow the hand conservatively while preserving the reach limit.
+  // The elbow pole follows the same displacement; collision avoidance still
+  // chooses a safe bend plane after this preferred direction is calculated.
+  r.motionDelta.subVectors(r.cur,r.rest);
+  _D.addScaledVector(r.motionDelta,0.24*r.motionWeight);
+  if(_D.length()>0.09)_D.setLength(0.09);
   dampShoulder(r,_D,dt);r.S.copy(r.baseS).add(r.shoulderShift);
   // 먼저 손바닥 표면에서 손목 위치를 역산한다. 팔뚝 방향으로 임의로 빼던 오프셋을 없앤다.
   for(let pass=0;pass<2;pass++) {
@@ -1492,6 +1500,7 @@ const VM = G.VM = {
       const k = m.snap ? 1 : 1 - Math.exp(-dt * 30);
       for (const arm of [m.armL, m.armR]) {
         if(m.snap){arm.handReady=false;arm.bendReady=false;arm.framesReady=false;arm.swivelVelocity=0;arm.foreTwist=0;arm.foreTwistVelocity=0;arm.shoulderShift.set(0,0,0);arm.shoulderVelocity.set(0,0,0);arm.curl=arm.curlT;arm.thumb=arm.thumbT;arm.trig=arm.trigT;}
+        arm.motionWeight=s.reload?1:0;
         const follow=k+(1-k)*(arm.contactLock || 0);
         arm.cur.lerp(arm.tgt, follow); solveArm(arm, dt);
       }
