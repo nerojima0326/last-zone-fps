@@ -29,7 +29,7 @@ input[type=range]{width:100%;accent-color:#dfbc76;margin:12px 0}#status{font-siz
 <label for="weapon">총기</label><select id="weapon" disabled></select>
 <label for="mode">장전 상태</label><select id="mode"><option value="empty">빈 탄창</option><option value="tactical">잔탄 있음</option></select>
 <label for="speed">재생 속도</label><select id="speed"><option value="1">1× 정상</option><option value="0.5">0.5× 슬로모션</option><option value="0.25">0.25× 자세 확인</option></select>
-<label for="view">카메라</label><select id="view"><option value="fp">1인칭</option><option value="arms">팔 전체</option><option value="side">왼쪽 측면</option><option value="front">앞쪽 사선</option><option value="leftHand">왼손 확대</option><option value="rightHand">오른손 확대</option></select>
+<label for="view">카메라</label><select id="view"><option value="fp">1인칭</option><option value="arms">팔 전체</option><option value="side">왼쪽 측면</option><option value="front">앞쪽 사선</option><option value="rightSide">오른쪽 측면</option><option value="top">위에서 보기</option><option value="leftHand">왼손 확대</option><option value="rightHand">오른손 확대</option></select>
 <button id="restart" class="primary" disabled>처음부터 장전</button>
 <div class="row"><button id="play" disabled>일시정지</button><button id="sound">소리 켜기</button></div>
 <div id="status" role="status">총기 모델을 준비하는 중…</div>
@@ -37,7 +37,7 @@ input[type=range]{width:100%;accent-color:#dfbc76;margin:12px 0}#status{font-siz
 <p class="hint">모델이 없으면 절차적 모델을 사용합니다.<br><a href="index.html">게임으로 돌아가기</a></p>
 </aside>
 <section id="stage" aria-label="장전 애니메이션 미리보기">
-<div id="caption"><div class="badge">RELOAD STUDY / BUILD 18</div><div id="weaponName">LOADING</div><div id="styleName"></div></div>
+<div id="caption"><div class="badge">RELOAD STUDY / BUILD 19</div><div id="weaponName">LOADING</div><div id="styleName"></div></div>
 <div id="timebar"><label for="timeline">장전 진행 <span id="clock">0.00 / 0.00 s</span></label><input id="timeline" type="range" min="0" max="1" step="0.001" value="0" disabled><div class="hint" id="ammo">실제 탄 수와 재장전 단계를 표시합니다.</div></div>
 </section>
 </main>
@@ -49,11 +49,11 @@ import {FBXLoader} from 'three/addons/loaders/FBXLoader.js';
 import {MeshoptDecoder} from 'three/addons/libs/meshopt_decoder.module.js';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 window.THREE = {...T, mergeGeometries, GLTFLoader, FBXLoader, MeshoptDecoder};
-window.LZ_BUILD = '18';
+window.LZ_BUILD = '19';
 const $ = id => document.getElementById(id);
 try {
   for (const file of ['core','gunlib','gunmodels','weapons','player']) await new Promise((resolve,reject) => {
-    const s=document.createElement('script'); s.src=`js/${file}.js?v=18`; s.onload=resolve; s.onerror=()=>reject(new Error(file+' 로드 실패')); document.body.appendChild(s);
+    const s=document.createElement('script'); s.src=`js/${file}.js?v=19`; s.onload=resolve; s.onerror=()=>reject(new Error(file+' 로드 실패')); document.body.appendChild(s);
   });
   const G=window.G, stage=$('stage'), renderer=new T.WebGLRenderer({antialias:true});
   renderer.setPixelRatio(Math.min(devicePixelRatio,1.5)); renderer.toneMapping=T.ACESFilmicToneMapping; renderer.toneMappingExposure=1;
@@ -106,6 +106,8 @@ try {
     if(renderer.domElement.width!==Math.round(w*renderer.getPixelRatio())||renderer.domElement.height!==Math.round(h*renderer.getPixelRatio()))renderer.setSize(w,h,false);
     camera.aspect=w/h;
     if($('view').value==='side'){camera.fov=48;camera.position.set(-1.4,0.05,-0.12);camera.lookAt(0,-0.16,-0.42)}
+    else if($('view').value==='rightSide'){camera.fov=48;camera.position.set(1.15,0.06,-0.1);camera.lookAt(0,-0.05,-0.35)}
+    else if($('view').value==='top'){camera.fov=48;camera.position.set(0,1.2,-0.15);camera.lookAt(0,-0.05,-0.35)}
     else if($('view').value==='front'){camera.fov=48;camera.position.set(-0.8,0.25,-1.35);camera.lookAt(0,-0.15,-0.35)}
     else if($('view').value==='arms'){
       const m=VM.models[id];m.root.updateMatrixWorld(true);

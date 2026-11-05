@@ -202,8 +202,8 @@ function flashMesh(parent, pos, scale) {
 // 소매(어깨~손목)와 장갑 낀 손(손바닥·손가락 마디)을 뼈대 하나로 묶은 스키닝 메시.
 // 뼈: 어깨 → 팔꿈치 → 손목(손) → 손가락 3마디 ×4 + 엄지 3마디. 팔꿈치는 두 뼈에 나눠 실려 부드럽게 굽는다
 const WRIST = 0.052, HAND_S = 0.93;
+const GRIP_CONTACT = new V3(0,0.067,0.029); // 손가락 뿌리와 엄지 두덩 사이의 손잡이 접촉
 const PALM_CONTACT = new V3(0, 0.046, 0.018); // IK 목표는 손바닥 표면의 접촉점
-const BOLT_PALM = new V3(-0.6, 0.75, 0);            // 손바닥 중심(손 목표점) → 손목
 let ARM_M = null;
 function armMats() {
   if (ARM_M) return ARM_M;
@@ -348,10 +348,10 @@ function armRig(parent, shoulder, hand, elbow, glove, slack, sideArg) {
     const y0 = -0.06, y1 = a + bw - 0.012;
     for (let y = y0; y <= y1 + 1e-6; y += 0.012) ys.push(Math.min(y, y1));
     const rad = (y) => {
-      // 군복 소매를 입은 성인 팔 굵기 (위팔 지름 약 14cm, 팔뚝 12cm, 손목 9.5cm)
-      if (y < a) { const t = U.clamp(y / a, 0, 1); return 0.061 - 0.005 * t + 0.005 * Math.sin(t * Math.PI) - 0.008 * U.smoothstep(0.72, 1, t); }
+      // 팔꿈치에서 손목으로 가늘어지는 소매. 커프는 손바닥보다 넓어지지 않는다.
+      if (y < a) { const t = U.clamp(y / a, 0, 1); return 0.055 - 0.004 * t + 0.004 * Math.sin(t * Math.PI) - 0.006 * U.smoothstep(0.72, 1, t); }
       const t = U.clamp((y - a) / bw, 0, 1);
-      return 0.05 + 0.007 * Math.sin(Math.min(1, t * 2.1) * Math.PI) - 0.014 * t + 0.003 * U.smoothstep(0.84, 0.97, t);
+      return 0.045 + 0.006 * Math.sin(Math.min(1, t * 2.1) * Math.PI) - 0.014 * t + 0.001 * U.smoothstep(0.84, 0.97, t);
     };
     const nz = G.Tex.tileNoise(64, 8, 2, 77 + (side > 0 ? 1 : 2));
     ys.forEach((y, i) => {
@@ -387,7 +387,7 @@ function armRig(parent, shoulder, hand, elbow, glove, slack, sideArg) {
   const M4 = new THREE.Matrix4(), T = (x, y, z) => new THREE.Matrix4().makeTranslation(x, y, z);
   const wM = W(bW), dM = W(bD);
   // 손목 커프 (팔뚝·손목 뼈 사이에 걸침)
-  gloveP.push(piece(new THREE.CylinderGeometry(0.040, 0.046, 0.045, 18, 3), dM.clone().multiply(T(0, -0.006, 0)).multiply(new THREE.Matrix4().makeScale(1, 1, 0.86)), idx(bD), dark));
+  gloveP.push(piece(new THREE.CylinderGeometry(0.032, 0.037, 0.037, 18, 3), dM.clone().multiply(T(0, -0.006, 0)).multiply(new THREE.Matrix4().makeScale(1, 1, 0.86)), idx(bD), dark));
   // 커프 안의 짧은 연결부는 아래팔 끝에서 손목으로 점진적으로 굽힌다.
   gloveP.push(piece(new THREE.CylinderGeometry(0.028,0.033,0.05,18,8),dM.clone().multiply(T(0,-0.003,0)),idx(bD),dark,
     y=>[idx(bW),U.smoothstep(a+bw-0.025,a+bw+0.022,y)]));
@@ -429,7 +429,7 @@ const _D = new V3(), _E = new V3(), _P2 = new V3(), _F = new V3(), _Z = new V3()
 const _handDir = new V3(), _contact = new V3(), _handQ = new THREE.Quaternion(), _bendQ = new THREE.Quaternion();
 const _previousHandQ = new THREE.Quaternion();
 const HAND_Y = new V3(0,1,0), HAND_Z = new V3(0,0,1), HAND_X = new V3(1,0,0);
-const _pinchRef=new V3(),_thumbTip=new V3();
+const _pinchRef=new V3(),_thumbTip=new V3(),_handleRef=new V3(),_fingerTip=new V3(),_indexRef=new V3();
 const MAX_WRIST = 82 * Math.PI / 180;
 const _poleTarget=new V3(),_poleCross=new V3(),_frameY=new V3(),_frameZ=new V3(),_frameTarget=new V3(),_transportQ=new THREE.Quaternion();
 function dampShoulder(r,target,dt) {
@@ -440,6 +440,94 @@ function dampShoulder(r,target,dt) {
     r.shoulderVelocity[axis]=(v-w*c*dt)*e;
   }
   if(r.shoulderShift.length()>0.09){r.shoulderShift.setLength(0.09);r.shoulderVelocity.multiplyScalar(0.5);}
+}
+// Receiver/stock envelopes are built once from the loaded body triangles, in VM space.
+// Y/Z cells preserve the receiver/stock outline instead of filling one large box.
+function armEnvelopes(gun) {
+  const cells=new Map(),step=0.025;
+  const clip=(poly,axis,value,sign)=>{
+    const out=[];
+    for(let i=0;i<poly.length;i++){
+      const a=poly[i],b=poly[(i+1)%poly.length],da=(a[axis]-value)*sign,db=(b[axis]-value)*sign;
+      if(da>=0)out.push(a);
+      if((da>=0)!==(db>=0))out.push(a.clone().lerp(b,da/(da-db)));
+    }return out;
+  };
+  for(const mesh of gun.children){
+    if(!mesh.isMesh)continue;
+    const g=mesh.geometry,p=g.attributes.position,ix=g.index,n=ix?ix.count:p.count;
+    for(let i=0;i<n;i+=3){
+      const tri=[0,1,2].map(j=>new V3().fromBufferAttribute(p,ix?ix.getX(i+j):i+j));
+      const z0=Math.floor(Math.min(...tri.map(v=>v.z))/step),z1=Math.floor(Math.max(...tri.map(v=>v.z))/step);
+      for(let z=z0;z<=z1;z++){
+        const slab=clip(clip(tri,'z',z*step,1),'z',(z+1)*step,-1);if(!slab.length)continue;
+        const y0=Math.floor(Math.min(...slab.map(v=>v.y))/step),y1=Math.floor(Math.max(...slab.map(v=>v.y))/step);
+        for(let y=y0;y<=y1;y++){
+          const poly=clip(clip(slab,'y',y*step,1),'y',(y+1)*step,-1);if(!poly.length)continue;
+          const key=z+','+y;let box=cells.get(key);if(!box){box=new THREE.Box3();cells.set(key,box);}
+          for(const v of poly)box.expandByPoint(v);
+        }
+      }
+    }
+  }
+  if(!cells.size)return [];
+  const boxes=Array.from(cells.values());
+  const zs=Array.from(cells.keys(),k=>+k.split(',')[0]),ys=Array.from(cells.keys(),k=>+k.split(',')[1]);
+  const zMin=Math.min(...zs),zMax=Math.max(...zs),yMin=Math.min(...ys),yMax=Math.max(...ys),rows=yMax-yMin+1;
+  const grid=new Array((zMax-zMin+1)*rows);
+  for(const [key,box]of cells){const [z,y]=key.split(',').map(Number);grid[(z-zMin)*rows+y-yMin]=box;}
+  Object.assign(boxes,{step,grid,zMin,zMax,yMin,yMax,rows});return boxes;
+}
+// Fit each asset's resting contact to its own surface; shared class anchors can
+// otherwise bury the cuff even before reloading. Fingers still wrap the grip.
+function fitWristContact(point,normal,fingers,anchor,side,boxes) {
+  const q=new THREE.Quaternion().setFromRotationMatrix(basis(new V3(...fingers),new V3(...normal)));
+  const offset=anchor.clone().multiplyScalar(HAND_S).applyQuaternion(q),wrist=new V3(),candidate=new V3(),best=point.clone();let score=Infinity;
+  for(let x=0;x<=6;x++)for(let y=0;y<=6;y++){
+    candidate.copy(point).add(new V3(side*x*0.005,-y*0.005,0));wrist.copy(candidate).sub(offset);
+    let overlap=0;for(const b of boxes)overlap=Math.max(overlap,0.037-b.distanceToPoint(wrist));
+    const cost=overlap*10+Math.hypot(x,y)*0.005;
+    if(cost<score){score=cost;best.copy(candidate);}
+  }return best;
+}
+const _clearPoint=new V3(),_clearE=new V3(),_clearBend=new V3();
+// Positive means cloth overlaps a solid envelope. The wrist/cuff is included.
+function armOverlap(r,elbow,wrist,samples=12,elbowOnly=false) {
+  let depth=0;
+  if(!r.obstacles?.length)return depth;
+  for(const [from,to,upper]of [[r.S,elbow,true],[elbow,wrist,false]])for(let j=0;j<=samples;j++){
+    const t=j/samples;if(elbowOnly&&!upper&&t>0.95)continue;const radius=upper?0.059-0.013*t:0.053-0.018*t;
+    _clearPoint.lerpVectors(from,to,t);
+    const {step,grid,zMin,zMax,yMin,yMax,rows}=r.obstacles;
+    const z0=Math.floor((_clearPoint.z-radius)/step),z1=Math.floor((_clearPoint.z+radius)/step),y0=Math.floor((_clearPoint.y-radius)/step),y1=Math.floor((_clearPoint.y+radius)/step);
+    for(let z=Math.max(zMin,z0);z<=Math.min(zMax,z1);z++)for(let y=Math.max(yMin,y0);y<=Math.min(yMax,y1);y++){
+      const b=grid[(z-zMin)*rows+y-yMin];if(!b)continue;
+      const dx=Math.max(b.min.x-_clearPoint.x,0,_clearPoint.x-b.max.x),dy=Math.max(b.min.y-_clearPoint.y,0,_clearPoint.y-b.max.y),dz=Math.max(b.min.z-_clearPoint.z,0,_clearPoint.z-b.max.z);
+      depth=Math.max(depth,radius-Math.hypot(dx,dy,dz));
+    }
+  }
+  return depth;
+}
+// Keep the elbow on the same outside corridor throughout approach, pull and regrip.
+// Search only around the previous bend; do not flip the IK plane to the other side.
+function clearElbow(r,axis,wrist,along,height,bend,dt,advance) {
+  if(!r.obstacles)return;
+  if(!advance)return;
+  _clearE.copy(r.S).addScaledVector(axis,along).addScaledVector(bend,height);
+  if(armOverlap(r,_clearE,wrist,12,true)<0.002)return;
+  let best=Infinity,bestAngle=0;
+  for(let i=-12;i<=12;i++){
+    const angle=i*Math.PI/24;
+    _clearBend.copy(bend).applyAxisAngle(axis,angle);
+    _clearE.copy(r.S).addScaledVector(axis,along).addScaledVector(_clearBend,height);
+    const overlap=armOverlap(r,_clearE,wrist,12,true);
+    const cost=overlap*150+Math.abs(angle)*0.015;
+    if(cost<best){best=cost;bestAngle=angle;}
+  }
+  // Choreography provides clearance in advance; this is a small residual correction.
+  if(advance)bestAngle=U.clamp(bestAngle,-dt*4,dt*4);else bestAngle=0;
+  bend.applyAxisAngle(axis,bestAngle).normalize();
+  r.bendDir.copy(bend);r.bendAxis.copy(axis);
 }
 function elbowBend(r,axis,dt,advance,out) {
   _poleTarget.copy(r.pole).addScaledVector(axis,-r.pole.dot(axis));
@@ -505,6 +593,14 @@ function handShape(r) {
     _thumbTip.applyQuaternion(T[i].quaternion).add(T[i].position);
   }
   _pinchRef.add(_thumbTip).multiplyScalar(0.5);
+  // A charging handle is hooked by the curled fingers, not buried in the palm.
+  _handleRef.set(0,0,0);
+  for(const k of [0,1,2]){
+    _fingerTip.set(0,FINGERS[k][1][2],0);
+    for(let i=2;i>=0;i--)_fingerTip.applyQuaternion(r.fing[k][i].quaternion).add(r.fing[k][i].position);
+    if(k===0)_indexRef.copy(_fingerTip);
+    _handleRef.addScaledVector(_fingerTip,1/3);
+  }
 }
 function solveArm(r, dt) {
   const hadHand=r.handReady;_previousHandQ.copy(r.handQ);
@@ -512,8 +608,16 @@ function solveArm(r, dt) {
   r.curl += (r.curlT - r.curl) * k; r.thumb += (r.thumbT - r.thumb) * k; r.trig += (r.trigT - r.trig) * k;
   handShape(r);
   const pinch=(r.contactMode||'').startsWith('shell')||r.contactMode==='pinch';
-  if(!r.handReady)r.anchorLocal.copy(pinch?_pinchRef:PALM_CONTACT);
-  else r.anchorLocal.lerp(pinch?_pinchRef:PALM_CONTACT,1-Math.exp(-dt*26));
+  let anchor=PALM_CONTACT;
+  if(pinch)anchor=_pinchRef;
+  else switch(r.contactMode){
+    case 'handle':case 'slide':case 'bolt':case 'loader':case 'cylinder':anchor=_handleRef;break;
+    case 'button':anchor=_indexRef;break;
+    case 'buttonThumb':anchor=_thumbTip;break;
+    case 'grip':anchor=GRIP_CONTACT;break;
+  }
+  if(!r.handReady)r.anchorLocal.copy(anchor);
+  else r.anchorLocal.lerp(anchor,1-Math.exp(-dt*26));
   _Z.copy(r.palmRef || (r.side > 0 ? _contact.set(-1,0.06,0) : _contact.set(0,1,0))).normalize();
   _handDir.copy(r.fingerRef || r.aim).normalize();
   _handQ.setFromRotationMatrix(basis(_handDir, _Z, _m4b));
@@ -535,7 +639,9 @@ function solveArm(r, dt) {
     _Wr.copy(r.S).addScaledVector(_D,L);
     elbowBend(r,_D,dt,pass===0,_P2);
     const cosA=U.clamp((a*a+L*L-b*b)/(2*a*L),-1,1);
-    _E.copy(r.S).addScaledVector(_D,a*cosA).addScaledVector(_P2,a*Math.sqrt(Math.max(0,1-cosA*cosA)));
+    const along=a*cosA,height=a*Math.sqrt(Math.max(0,1-cosA*cosA));
+    clearElbow(r,_D,_Wr,along,height,_P2,dt,pass===0);
+    _E.copy(r.S).addScaledVector(_D,along).addScaledVector(_P2,height);
     _F.subVectors(_Wr,_E).normalize();
     // 손목이 팔뚝 뒤로 접히지 않게 제한한다. 보정된 방향으로 접촉점을 한 번 더 계산한다.
     _handDir.copy(HAND_Y).applyQuaternion(r.handQ);
@@ -572,13 +678,13 @@ function handPose(arm, name, normal, fingers, curl, thumb, index) {
 // 슬롯별 1인칭 기준: 방아쇠 위치(at), 허리 사격 위치(hip), 오른손·왼손 휴식 자세
 const CLS = {
   rifle: { at: new V3(0, -0.03, 0.02), hip: new V3(0.165, -0.185, -0.47), scale: 1.54, adsDist: 0.32, flash: 0.22,
-    gripR: new V3(0.012, -0.085, 0.09), elbowR: new V3(0.11, -0.22, 0.33), shoulderR: new V3(0.24, -0.4, 0.6), gloveR: [0.065, 0.085, 0.1],
+    gripR: new V3(0.019, -0.13, 0.09), elbowR: new V3(0.11, -0.22, 0.33), shoulderR: new V3(0.24, -0.4, 0.6), gloveR: [0.065, 0.085, 0.1],
     elbowOffL: new V3(-0.158, -0.19, 0.26), shoulderOffL: new V3(-0.308, -0.36, 0.64), gloveL: [0.07, 0.06, 0.11] },
   shotgun: { at: new V3(0, -0.045, 0.02), hip: new V3(0.17, -0.19, -0.45), scale: 1.2, adsDist: 0.26, flash: 0.32,
-    gripR: new V3(0.012, -0.07, 0.1), elbowR: new V3(0.11, -0.21, 0.34), shoulderR: new V3(0.24, -0.4, 0.6), gloveR: [0.065, 0.085, 0.1],
+    gripR: new V3(0.019, -0.12, 0.1), elbowR: new V3(0.11, -0.21, 0.34), shoulderR: new V3(0.24, -0.4, 0.6), gloveR: [0.065, 0.085, 0.1],
     elbowOffL: new V3(-0.154, -0.178, 0.24), shoulderOffL: new V3(-0.314, -0.348, 0.6), gloveL: [0.07, 0.06, 0.12] },
   pistol: { at: new V3(0, -0.005, -0.03), hip: new V3(0.1, -0.125, -0.38), scale: 1.05, adsDist: 0.3, flash: 0.16,
-    gripR: new V3(0.004, -0.045, 0.03), elbowR: new V3(0.09, -0.19, 0.3), shoulderR: new V3(0.22, -0.38, 0.58), gloveR: [0.06, 0.09, 0.09],
+    gripR: new V3(0.012, -0.085, 0.03), elbowR: new V3(0.09, -0.19, 0.3), shoulderR: new V3(0.22, -0.38, 0.58), gloveR: [0.06, 0.09, 0.09],
     handL: new V3(-0.024, -0.06, 0.02), elbowL: new V3(-0.15, -0.2, 0.28), shoulderL: new V3(-0.3, -0.38, 0.58), gloveL: [0.055, 0.08, 0.09] }
 };
 // 조준경별 1인칭 눈 거리
@@ -673,6 +779,7 @@ const Guns = G.Guns = {
     else list = def.reloadType === 'break' ? [[0.3, 'close']] : [];
     return list.filter(e => Number.isFinite(e[0]) && e[0] >= 0 && e[0] <= 1).sort((a, b) => a[0] - b[0]);
   },
+  armOverlap,
   buildVM(id) {
     if (id === 'fists' || id === 'throw') return this.buildHands(id);
     const M = mats();
@@ -681,6 +788,8 @@ const Guns = G.Guns = {
     const P = v => v.clone().sub(D.trigger).multiplyScalar(s).add(at);   // 총 공간(m) → 뷰모델 공간
     const root = new THREE.Group(), gun = new THREE.Group(); root.add(gun);
     const o = { root, gun, parts: {}, rest: {}, id, def, cls, s, scopes: {}, real: !!D.real, toVM: P };
+    o.supportN=cls==='pistol'||id==='sa12'?[1,0.1,0]:[0,1,0.05];
+    o.supportF=cls==='pistol'?[0,0.25,-1]:id==='sa12'?[0,0.85,-0.5]:[1,0,-0.08];
     const matOf = k => D.real ? D.mats[k] : (M[k] || M.metal);
     // 부품: body 는 총에 고정, 나머지는 회전/이동 중심(pivot)을 원점으로 하는 그룹
     for (const part in D.parts) {
@@ -698,6 +807,7 @@ const Guns = G.Guns = {
         if (part === 'mag') { g.computeBoundingBox(); (o.magBox || (o.magBox = new THREE.Box3())).union(g.boundingBox); }
       }
     }
+    o.armObstacles=armEnvelopes(gun);
     // 리볼버: 탄(mag)은 실린더를 따라 움직인다
     if (o.parts.cyl && o.parts.mag) { o.parts.cyl.add(o.parts.mag); o.parts.mag.position.sub(o.parts.cyl.position); o.rest.mag = o.parts.mag.position.clone(); }
     // 기준점
@@ -749,18 +859,25 @@ const Guns = G.Guns = {
       if (def.reloadType === 'break') { const s2 = o.shell2 = sh.clone(); root.add(s2); s2.visible = false; }
     }
     // 팔
+    const grip=fitWristContact(C.gripR,[-1,0.06,0],[0,0.88,-0.48],GRIP_CONTACT,1,o.armObstacles);
     if (cls === 'pistol') {
-      o.armR = armRig(root, C.shoulderR, C.gripR, C.elbowR, C.gloveR, 1.08);
-      const fl = D.fore ? P(D.fore) : C.handL.clone();
+      o.armR = armRig(root, C.shoulderR, grip, C.elbowR, C.gloveR, 1.08);
+      const fl=fitWristContact(D.fore?P(D.fore):C.handL,[1,0.1,0],[0,0.25,-1],PALM_CONTACT,-1,o.armObstacles);
       o.armL = armRig(root, C.shoulderL.clone().add(fl).sub(C.handL), fl, C.elbowL.clone().add(fl).sub(C.handL), C.gloveL, 1.08);
       o.fore = fl;
     } else {
-      o.armR = armRig(root, C.shoulderR, C.gripR, C.elbowR, C.gloveR, 1.08);
-      const fl = P(D.fore);
+      o.armR = armRig(root, C.shoulderR, grip, C.elbowR, C.gloveR, 1.08);
+      const rawFore=P(D.fore);
+      if(id==='sa12'){
+        const cross=o.armObstacles.filter(b=>b.min.z<rawFore.z+0.015&&b.max.z>rawFore.z-0.015);
+        if(cross.length)rawFore.x=Math.min(...cross.map(b=>b.min.x))-0.002;
+      }
+      const fl=fitWristContact(rawFore,o.supportN,o.supportF,PALM_CONTACT,-1,o.armObstacles);
       o.armL = armRig(root, fl.clone().add(C.shoulderOffL), fl, fl.clone().add(C.elbowOffL), C.gloveL, 1.1);
       o.fore = fl;
     }
-    o.grip = C.gripR.clone();
+    o.grip = grip;
+    for(const arm of [o.armL,o.armR])arm.obstacles=o.armObstacles;
     this.makeKeys(o);
     mergeStatic(root);
     // 새 탄창 (헌 탄창이 빠지는 동안 손에 든 것) — 리볼버 제외
@@ -817,7 +934,11 @@ const Guns = G.Guns = {
         const ep = K.eject = o.toVM(new V3(...st.eject));
         K.ejectAbove = v(ep, 0.035, 0.05, 0.01); K.ejectIn = v(ep, 0.012, 0.012, 0.0);
         K.belt = v(p, -0.1, -0.34, 0.14);
-        if (st.release) K.release = o.toVM(new V3(...st.release));
+        if(st.release){
+          K.release=o.toVM(new V3(...st.release));
+          const nearby=o.armObstacles.filter(b=>b.min.z<K.release.z+0.025&&b.max.z>K.release.z-0.025);
+          K.release.x=Math.max(K.release.x,...nearby.map(b=>b.max.x))+0.004;
+        }
       }
     }
     if (o.parts.pump) K.pumpOff = F.clone().sub(o.rest.pump);
@@ -825,7 +946,7 @@ const Guns = G.Guns = {
     if (o.parts.charge && o.charge) K.chGrabSemi = v(o.charge, 0.004, 0.022, 0.002);
     if(o.parts.bolt){
       const knob=o.charge?o.charge.clone().sub(o.rest.bolt):new V3(0.06,-0.02,0);
-      K.boltReach=knob.applyAxisAngle(new V3(0,0,1),1.15).add(o.rest.bolt).add(new V3(0.018,-0.004,0.012));
+      K.boltReach=knob.applyAxisAngle(new V3(0,0,1),1.15).add(o.rest.bolt).add(new V3(0.004,0.002,0));
     }
   },
   rifleKeys(o, K, v) {
@@ -848,11 +969,13 @@ const Guns = G.Guns = {
     const ch = o.charge;
     const pull = (t, mode) => {
       let ap, Hc, off;
-      if (mode === 'under') { Hc = v(ch, 0.004, -0.016, 0.004); ap = v(ch, -0.012, -0.095, 0.045); off = v(Hc, 0.014, -0.03, 0.088); }
-      else if (mode === 'over') { Hc = v(ch, 0.002, 0.03, 0.0); ap = v(ch, -0.055, 0.095, 0.03); off = v(Hc, -0.014, 0.035, 0.09); }
-      else { Hc = v(ch, -0.012, 0.004, 0.0); ap = v(ch, -0.055, 0.0, -0.045); off = v(Hc, -0.065, 0.02, 0.1); }
-      K.chGrab = Hc;
-      return { k: [[t, ap], [t + 0.04, Hc], [t + 0.1, v(Hc, 0, 0, 0.082)], [t + 0.115, off]], T: { chA: t + 0.04, chB: t + 0.1, chRel: t + 0.103 } };
+      if (mode === 'under') { Hc = v(ch, 0.008, -0.008, 0.004); ap = v(ch, 0.065, -0.16, 0.035); off = v(Hc, 0.06, -0.1, 0.09); }
+      else if (mode === 'over') { Hc = v(ch, 0.002, 0.015, 0.0); ap = v(ch, -0.1, 0.16, 0.02); off = v(Hc, -0.025, 0.11, 0.09); }
+      else { Hc = v(ch, -0.012, 0.004, 0.0); ap = v(ch, -0.11, -0.015, 0.015); off = v(Hc, -0.11, 0.02, 0.1); }
+      K.chGrab = Hc;K.chMode=mode;
+      const outside=v(ch,-0.15,mode==='over'?0.17:mode==='under'?-0.18:-0.04,0.055);
+      const escape=mode==='under'?v(ch,-0.14,-0.19,0.09):v(ch,-0.17,mode==='over'?0.16:0.035,0.07);
+      return { k: [[t-0.015,outside],[t, ap], [t + 0.04, Hc], [t + 0.1, v(Hc, 0, 0, 0.075)], [t + 0.12, off],[t+0.15,escape]], T: { chA: t + 0.04, chB: t + 0.1, chRel: t + 0.103 } };
     };
     const slap = t => {
       const Hb = v(mr, -0.045, 0.045, 0.025);
@@ -868,18 +991,18 @@ const Guns = G.Guns = {
       const base = [[0, F], [0.07, v(F, -0.03, -0.08, 0.06)], [0.16, belt], [0.22, belt2], [0.3, Kn0], [0.345, Kn1], [0.36, v(Kn1, -0.004, -0.012, -0.004)]].concat(rockIn(null, 0.42, 0.53, 0.5));
       const T0 = { newMag: 0.16, knock: 0.345, hook: 0.42, seat: 0.53, rockIn: 0.5 };
       Tac = join(base, home(0.7, 0.82), { k: [], T: Object.assign({ endT: 0.84 }, T0) });
-      E = join(base, pull(0.62, side < 0 ? 'left' : 'under'), [[0.79, v(F, 0.0, -0.06, 0.06)], [0.9, F]], { k: [], T: Object.assign({ endE: 0.92 }, T0) });
+      E = join(base, pull(0.62, side < 0 ? 'left' : 'under'), [[0.79, v(F, -0.11, -0.06, 0.06)], [0.9, F]], { k: [], T: Object.assign({ endE: 0.92 }, T0) });
     } else if (S === 'saiga') {
       // 탄창을 움켜쥐고 앞으로 젖혀 빼서 던지고, 새 탄창을 젖혀 넣는다 (빈 총이면 위로 넘어가 장전 손잡이)
       const Ho = gp(0.55, 0.02);
       const base = [[0, F], [0.06, v(Hm, -0.02, -0.04, 0.03)], [0.1, Hm], [0.19, Ho], [0.25, v(Ho, -0.03, -0.08, 0.02)], [0.35, belt], [0.41, belt2]].concat(rockIn(0.45, 0.5, 0.62, 0.55));
       const T0 = { grab: 0.1, out: 0.19, release: 0.25, toss: true, rockOut: 0.55, newMag: 0.35, hook: 0.5, seat: 0.62, rockIn: 0.55 };
       Tac = join(base, home(0.76, 0.86), { k: [], T: Object.assign({ endT: 0.88 }, T0) });
-      E = join(base, pull(0.72, side < 0 ? 'left' : 'over'), [[0.9, v(F, -0.02, 0.04, 0.06)], [0.97, F]], { k: [], T: Object.assign({ endE: 0.98 }, T0) });
+      E = join(base, pull(0.72, side < 0 ? 'left' : 'over'), [[0.9, v(F, -0.11, -0.04, 0.06)], [0.97, F]], { k: [], T: Object.assign({ endE: 0.98 }, T0) });
     } else if (S === 'scar') {
       // 빈 총: 탄창은 저절로 떨어지고 가슴 탄입대에서 새 탄창 → 앞쪽 왼손 장전 손잡이를 낚아챈다
       E = join([[0, F], [0.07, v(Hm, -0.02, -0.04, 0.03)], [0.1, v(Hm, -0.03, -0.06, 0.04)], [0.2, chest], [0.26, chest2]], straight(0.32),
-        ch ? pull(0.56, side > 0 ? 'over' : 'left') : slap(0.56), [[0.78, v(F, -0.03, 0.02, 0.06)], [0.88, F]],
+        ch ? pull(0.56, side > 0 ? 'over' : 'left') : slap(0.56), [[0.78, v(F, -0.11, -0.04, 0.06)], [0.88, F]],
         { k: [], T: { drop: 0.1, newMag: 0.2, seat: 0.47, endE: 0.9 } });
       // 남은 탄창: 뽑아서 그대로 던지고 (스피드 리로드) 새 탄창
       Tac = join([[0, F], [0.07, v(Hm, -0.01, -0.03, 0.02)], [0.1, Hm], [0.12, Hm], [0.2, Hout], [0.24, v(Hout, -0.02, -0.06, 0.03)], [0.32, chest], [0.37, chest2]], straight(0.42), home(0.72, 0.84),
@@ -890,7 +1013,7 @@ const Guns = G.Guns = {
       Tac = join([[0, F], [0.06, v(Hm, -0.02, -0.04, 0.03)], [0.1, Hm], [0.19, Ho], [0.25, v(Ho, -0.03, -0.1, 0.03)], [0.34, belt], [0.4, belt2]], rockIn(0.43, 0.48, 0.6, 0.5), home(0.74, 0.86),
         { k: [], T: { grab: 0.1, out: 0.19, release: 0.34, rockOut: 0.5, newMag: 0.36, hook: 0.48, seat: 0.6, rockIn: 0.5, endT: 0.88 } });
       E = join([[0, F], [0.05, v(Hm, -0.02, -0.04, 0.03)], [0.08, Hm], [0.16, Ho], [0.21, v(Ho, -0.03, -0.1, 0.03)], [0.3, belt], [0.36, belt2]], rockIn(0.39, 0.44, 0.56, 0.5),
-        ch ? pull(0.66, side < 0 ? 'left' : 'under') : slap(0.66), [[0.84, v(F, 0.0, -0.05, 0.06)], [0.94, F]],
+        ch ? pull(0.66, side < 0 ? 'left' : 'under') : slap(0.66), [[0.84, v(F, -0.11, -0.05, 0.06)], [0.94, F]],
         { k: [], T: { grab: 0.08, out: 0.16, release: 0.21, toss: true, rockOut: 0.5, newMag: 0.3, hook: 0.44, seat: 0.56, rockIn: 0.5, endE: 0.95 } });
     } else if (S === 'drum') {
       // 무거운 드럼: 움켜쥐고 젖혀 빼서 떨어뜨림 → 아래에서 들어 올려 걸고 젖혀 끼운 뒤 손바닥으로 두 번 → (빈 총) 왼쪽 위 장전 손잡이
@@ -1369,6 +1492,7 @@ const VM = G.VM = {
         arm.cur.lerp(arm.tgt, follow); solveArm(arm, dt);
       }
       m.snap = false;
+      this.syncContactParts(m,s);
       // 손에 든 물건(탄창·산탄)은 실제 손 위치를 따라간다
       if (m.holdObj) { const h = m.holdObj; h.position.copy(m.armL.contact).sub(_c.copy(m.keys.grab).applyAxisAngle(AXX, h.rotation.x)); }
       if (m.shell && m.shell.visible) { m.shell.position.copy(m.armL.pinch); if (m.shellOff1) m.shell.position.add(m.shellOff1); }
@@ -1400,6 +1524,21 @@ const VM = G.VM = {
     this.flashLight.intensity = Math.max(0, this.flashLight.intensity - dt * 120);
   },
 
+  // Moving parts use this frame's solved contact, not the previous frame's hand.
+  syncContactParts(m,s) {
+    const r=s.reload;if(!r||!r.empty)return;
+    if(r.type==='shell'&&r.phase==='start'&&m.keys.st.s==='semi'&&r.pp>=0.16&&r.pp<0.26&&m.parts.charge){
+      m.parts.charge.position.z=m.rest.charge.z+U.clamp(m.armL.contact.z-m.keys.chGrabSemi.z,0,0.06);
+    }
+    if(r.type!=='mag'||!m.keys.E)return;
+    const T=m.keys.E.T,p=r.p,contact=m.armL.contact;
+    if(m.parts.charge&&T.chA!==undefined&&p>=T.chA&&p<T.chRel)
+      m.parts.charge.position.z=m.rest.charge.z+U.clamp(contact.z-m.keys.chGrab.z,0,0.075);
+    if(m.parts.slide&&T.slideA!==undefined&&p>=T.slideA&&p<T.slideRel){
+      const lock=0.035*m.s/1.05;
+      m.parts.slide.position.z=m.rest.slide.z+Math.max(lock,U.clamp(contact.z-m.keys.slideGrab.z,0,lock*1.35));
+    }
+  },
   // ---------------- 총 애니메이션 ----------------
   animGun(m, s, dt) {
     const P = m.parts, R = m.rest, K = m.keys, def = m.def;
@@ -1411,13 +1550,13 @@ const VM = G.VM = {
     m.holdObj = null;
     m.armR.tgt.copy(m.grip); m.armR.roll = 0; m.armL.roll = 0;
     m.armR.reachRef=null;m.armL.reachRef=null;
+    m.armL.pole.set(-0.8,-0.55,0.15).normalize();m.armR.pole.set(0.8,-0.55,0.15).normalize();
     m.armR.contactLock=1;m.armL.contactLock=1;
     // 손 모양 기본값: 오른손은 손잡이를 감싸고 검지는 쏠 때·조준할 때만 방아쇠에
     m.armR.curlT = 0.9; m.armR.thumbT = 0.65; m.armR.trigT = this.kick > 0.004 ? 0.7 : 0.12;
     m.armL.curlT = 0.76; m.armL.thumbT = 0.45; m.armL.trigT = 0.7;
-    handPose(m.armR,'grip',[-1,0.06,0],[0,0.15,-1]);
-    if(m.cls==='pistol')handPose(m.armL,'support',[1,0.1,0],[0,0.25,-1]);
-    else handPose(m.armL,'support',[0,1,0.05],[1,0,-0.08]);
+    handPose(m.armR,'grip',[-1,0.06,0],[0,0.88,-0.48]);
+    handPose(m.armL,'support',m.supportN,m.supportF);
     m.armL.tgt.copy(m.fore);
     // 조준경 표시
     const sc = s.scope;
@@ -1469,9 +1608,13 @@ const VM = G.VM = {
         const touch=old?T.grab:T.hook!==undefined?T.hook:T.seat;
         L.contactLock=ss((p-touch+0.04)/0.04);
       }else if(p>0.04&&p<T.seat){handPose(L,'reach',[0.8,0,-0.2],[0,-0.75,-0.65],0.24,0.28,0.2);L.contactLock=0;}
-      if(rl.empty&&T.chA!==undefined&&p>T.chA-0.075&&p<T.chRel+0.035){
-        const over=st.s==='saiga'||(st.s==='drum'&&m.charge&&m.charge.x>0);
-        handPose(L,'handle',over?[0,-1,0]:[m.charge&&m.charge.x>0?-1:1,0,0],over?[1,0,-0.1]:[0,0.2,-1],0.78,0.6,0.72);
+      if(rl.empty&&T.chA!==undefined){
+        const w=env(p,T.chA-0.12,T.chA-0.04,Math.min(0.97,T.chRel+0.12),1.001);
+        L.pole.lerp(_o.set(-0.95,K.chMode==='over'?0.05:-0.9,-0.55).normalize(),w).normalize();
+      }
+      if(rl.empty&&T.chA!==undefined&&p>T.chA-0.095&&p<T.chRel+0.02){
+        const over=K.chMode==='over';
+        handPose(L,'handle',over?[0,-1,0]:[m.charge&&m.charge.x>0?-1:1,0,0],over?[1,-0.35,-0.1]:K.chMode==='under'?[0,0.9,-0.35]:[0,0.45,-1],0.78,0.6,0.72);
         L.reachRef=K.chGrab;
         L.contactLock=ss((p-T.chA+0.035)/0.035);
       }
@@ -1479,11 +1622,11 @@ const VM = G.VM = {
       if(rl.empty&&T.slideA!==undefined&&p>T.slideA-0.075&&p<T.slideRel+0.035){
         const pinch=st.s==='slingshot';
         handPose(L,pinch?'pinch':'slide',pinch?[1,0,0]:[0,-1,0],pinch?[0,0.85,-0.5]:[1,0,-0.1],pinch?0.55:0.8,0.72,pinch?0.38:0.75);
-        L.reachRef=K.slideGrab;
+        L.reachRef=K.slideGrab;L.pole.set(-1,-0.25,-0.4).normalize();
         L.contactLock=ss((p-T.slideA+0.035)/0.035);
       }
-      if(rl.empty&&T.boltA!==undefined&&p>T.boltA-0.09&&p<T.boltB){m.armR.reachRef=K.boltReach;m.armR.contactMode='bolt';}
-      if(rl.empty&&T.slide&&p>T.slide-0.07&&p<T.slide+0.045)handPose(L,'press',[1,0,0],[0,0.7,-0.7],0.4,0.65,0.3);
+      if(rl.empty&&T.boltA!==undefined&&p>T.boltA-0.04&&p<T.boltB)m.armR.reachRef=K.boltReach;
+      if(rl.empty&&T.slide&&p>T.slide-0.07&&p<T.slide+0.055)handPose(L,'buttonThumb',[1,0,0],[0,0.85,-0.5],0.65,0.18,0.55);
       if(T.taps&&p>T.seat&&p<T.taps[T.taps.length-1]+0.035)handPose(L,'press',[0,1,0],[0.2,0,1],0.12,0.18,0.12);
     }else if(rl.type==='revolver'){
       if(rl.p>0.12&&rl.p<0.83)handPose(L,rl.p<0.36?'cylinder':'loader',[1,0,0],[0,0.2,-1],0.57,0.66,0.45);
@@ -1491,12 +1634,18 @@ const VM = G.VM = {
       const c=rl.shellP,port=rl.phase==='start'&&rl.port&&rl.pp>(st.s==='semi'?0.38:0.24)&&rl.pp<(st.s==='pump'?0.5:0.57);
       const pair=rl.type==='break',normal=pair?[1,0,0]:[0,1,0],fingers=pair?[0,-0.1,-1]:[0.3,0,1];
       if(rl.phase==='load')handPose(L,c<0.65?'shell':'shellReach',normal,fingers,c<0.65?0.46:0.25,c<0.65?0.75:0.4,c<0.65?0.3:0.2);
-      else if(port)handPose(L,'shell',[1,0,0],[0,0.1,1],0.46,0.75,0.3);
+      else if(port)handPose(L,'shell',[0,-1,0],[1,-0.2,0.1],0.46,0.75,0.3);
       else if(rl.phase==='start'&&rl.port&&st.s==='pump'&&rl.pp>0.14&&rl.pp<0.24)handPose(L,'shellReach',normal,fingers,0.25,0.4,0.2);
       else if(rl.phase==='start'&&(!rl.port||rl.pp>(st.s==='pump'?0.82:0.72)))handPose(L,'shellReach',normal,fingers,0.25,0.4,0.2);
-      else if(rl.phase==='start'&&rl.port&&st.s==='semi'&&rl.pp<0.25)handPose(L,'handle',[0,-1,0],[1,0,0],0.78,0.6,0.72);
+      else if(rl.phase==='start'&&rl.port&&st.s==='semi'&&rl.pp>0.07&&rl.pp<0.26){handPose(L,'handle',[0,-1,0],[-1,0,0],0.78,0.6,0.72);L.pole.set(-1,-0.9,-0.4).normalize();}
       else if(rl.phase==='start'&&rl.port&&st.s==='semi'&&rl.pp<0.38)handPose(L,'shellReach',normal,fingers,0.25,0.4,0.2);
-      if(rl.phase==='start'&&rl.port&&st.s==='semi'&&rl.pp>0.6&&rl.pp<0.75)handPose(L,'press',[1,0,0],[0,0.1,1],0.3,0.45,0.14);
+      if(rl.phase==='start'&&rl.port&&st.s==='semi'&&rl.pp>0.59&&rl.pp<0.77){handPose(L,'button',[-1,0,0],[0,0.95,-0.3],0.3,0.45,0.1);L.pole.set(-1,-1,-0.6).normalize();}
+      if(rl.phase==='start'&&rl.port&&st.s==='pump'&&rl.pp>0.5&&rl.pp<0.65)handPose(L,'shellReach',[0,-1,0],[1,-0.2,0.1],0.25,0.4,0.2);
+      if(rl.phase==='start'&&rl.port&&st.s==='semi'&&rl.pp>0.54&&rl.pp<0.59)handPose(L,'shellReach',[0,-1,0],[1,-0.2,0.1],0.25,0.4,0.2);
+      if(rl.phase==='start'&&rl.port&&rl.pp>(st.s==='semi'?0.32:0.2)&&rl.pp<(st.s==='semi'?0.59:0.65)){
+        handPose(L,port?'shell':'shellReach',[-1,0,0],[0,1,-0.2],port?0.46:0.25,port?0.75:0.4,port?0.3:0.2);
+        L.pole.set(-0.2,-1,-0.6).normalize();
+      }
       if(rl.phase==='load')L.contactLock=ss((c-0.22)/0.18)*(1-ss((c-0.62)/0.15));
       if(rl.phase==='start'&&rl.port){
         const p=rl.pp;
@@ -1532,7 +1681,7 @@ const VM = G.VM = {
     const T = mag && (rl.empty ? m.keys.E : m.keys.Tac);
     const free = !T || p < (T.T.newMag || 0.2) || p > T.T.seat + 0.08;
     if (free) m.armL.roll += f.wrist * reach;
-    m.armR.trigT = 0.12;
+    if(m.armR.contactMode!=='bolt')m.armR.trigT = 0.12;
   },
   // 헌 탄창: 저절로 떨어짐(drop) · 새 탄창에 맞아 앞으로 젖혀지며 떨어짐(knock) · 손에 쥐고 뽑기/젖혀 빼기(grab) → 탄입대에 넣기 또는 던지기(toss)
   oldMag(m, S, p) {
@@ -1772,7 +1921,7 @@ const VM = G.VM = {
       P.pump.position.z = R.pump.z + tr * back;
       const onPump = _a.copy(P.pump.position).add(K.pumpOff), backHand = R.pump.clone().add(K.pumpOff).add(_o.set(0, 0, tr));
       if (pp < 0.14 || (pp >= 0.72 && pp < 0.82)) m.armL.tgt.copy(onPump);
-      else if (pp < 0.72) track([[0.14, backHand], [0.24, K.belt], [0.3, K.belt.clone().add(_o.set(0.01, 0.05, -0.02))], [0.4, K.ejectAbove], [0.47, K.ejectIn], [0.5, K.ejectAbove], [0.72, backHand]], pp, m.armL.tgt);
+      else if (pp < 0.72) track([[0.14, backHand], [0.24, K.belt], [0.3, K.belt.clone().add(_o.set(0.01, 0.05, -0.02))], [0.4, K.ejectAbove], [0.47, K.ejectIn], [0.5, K.ejectAbove], [0.54,K.ejectAbove.clone().add(new V3(0.06,-0.16,0.05))], [0.6,backHand.clone().add(new V3(-0.15,-0.16,0.04))], [0.66,backHand.clone().add(new V3(-0.12,-0.04,0.02))], [0.72, backHand]], pp, m.armL.tgt);
       else track([[0.82, F], [1, K.down]], pp, m.armL.tgt);
       if (this.passed(0.14, pp)) this.bump(-0.25, -0.05, 0.12, 0.1);
       if (this.passed(0.82, pp)) this.bump(0.6, 0.12, -0.25, -0.15);
@@ -1781,9 +1930,9 @@ const VM = G.VM = {
       // 노리쇠 손잡이를 젖혀 고정 → 배출구에 한 발 → 멈치 버튼을 눌러 노리쇠를 닫는다
       const g = K.chGrabSemi || K.ejectAbove, tr = 0.06, rel = K.release || K.portIn;
       if (P.charge) P.charge.position.z = R.charge.z + tr * seg(pp, 0.16, 0.22) * (1 - seg(pp, 0.69, 0.71));
-      track([[0,F],[0.12,g.clone().add(_o.set(-0.045,0.065,0.02))],[0.16,g],[0.22,g.clone().add(_o.set(0,0,tr))],[0.25,g.clone().add(_o.set(-0.02,0.04,tr))],
+      track([[0,F],[0.08,g.clone().add(_o.set(-0.12,-0.14,0.025))],[0.12,g.clone().add(_o.set(0.06,-0.13,0.025))],[0.16,g],[0.22,g.clone().add(_o.set(0,0,tr))],[0.26,g.clone().add(_o.set(0.06,-0.12,tr))],
         [0.34,K.belt],[0.38,K.belt.clone().add(_o.set(-0.02,0.04,-0.02))],[0.48,K.ejectAbove],[0.54,K.ejectIn],[0.57,K.ejectAbove],
-        [0.65,rel.clone().add(_o.set(-0.02,-0.04,0.02))],[0.68,rel.clone().add(_o.set(-0.008,-0.014,0))],[0.7,rel.clone().add(_o.set(-0.008,-0.004,0))],[0.74,rel.clone().add(_o.set(-0.02,-0.03,0.02))],[1,K.down]],pp,m.armL.tgt);
+        [0.6,rel.clone().add(_o.set(0.12,-0.07,0.03))],[0.65,rel.clone().add(_o.set(0.07,-0.06,0.02))],[0.68,rel.clone().add(_o.set(0.006,-0.01,0))],[0.7,rel.clone().add(_o.set(0.002,-0.004,0))],[0.76,rel.clone().add(_o.set(0.1,-0.1,0.03))],[1,K.down]],pp,m.armL.tgt);
       if (this.passed(0.22, pp)) this.bump(-0.3, -0.05, 0.15, 0.15);
       if (this.passed(0.7, pp)) this.bump(0.7, 0.14, -0.3, -0.2);
       m.armL.curlT = (pp>0.14&&pp<0.25)?0.9:(pp>0.65&&pp<0.72)?0.35:pp>0.3&&pp<0.57?0.6:0.85;
@@ -1844,11 +1993,13 @@ const VM = G.VM = {
     bolt.rotation.z = lift; bolt.position.z = R.bolt.z + back;
     // 손잡이 끝 (볼트 그룹 로컬 → 뷰모델)
     if (!K.knob) K.knob = m.charge ? m.charge.clone().sub(R.bolt) : new V3(0.06, -0.02, 0);
-    _a.copy(K.knob).applyAxisAngle(_c.set(0, 0, 1), lift).add(bolt.position).add(_o.set(0.018, -0.004, 0.012));
-    m.armR.curlT = 0.55; m.armR.trigT = 0.5; m.armR.thumbT = 0.6; m.armR.palmRef = BOLT_PALM;
-    if (c < 0.12) m.armR.tgt.copy(m.grip).lerp(_a, sm(c / 0.12));
-    else if (c < 0.68) m.armR.tgt.copy(_a);
-    else m.armR.tgt.copy(_a).lerp(m.grip, seg(c, 0.68, 0.88));
+    _a.copy(K.knob).applyAxisAngle(_c.set(0, 0, 1), lift).add(bolt.position).add(_o.set(0.004,0.002,0));
+    handPose(m.armR,'bolt',[-0.9,-0.4,0],[0,0.5,-1],0.8,0.65,0.75);
+    m.armR.pole.set(1,-0.55,-0.25).normalize();
+    const knob=_a.clone(),outside=knob.clone().add(new V3(0.075,-0.025,0.035));
+    if(c<0.12)track([[0,m.grip],[0.055,outside],[0.12,knob]],c,m.armR.tgt);
+    else if(c<0.68)m.armR.tgt.copy(knob);
+    else track([[0.68,knob],[0.77,outside],[0.9,m.grip]],c,m.armR.tgt);
     const e = seg(c, 0, 0.12) * (1 - seg(c, 0.72, 1));
     POSE.rz += 0.14 * e; POSE.rx -= 0.03 * e; POSE.y -= 0.012 * e; POSE.z += 0.015 * e;
   }
