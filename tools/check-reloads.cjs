@@ -33,7 +33,7 @@ const results=await page.evaluate(()=>{
 });console.log('Animation cases:',results.length);
 assert.equal(errors.length,0,errors.join('\n'));
 const hands=await page.evaluate(()=>{
- const fail=(ok,msg)=>{if(!ok)throw Error(msg)};let frames=0,vertices=0,maxError=0,maxAngle=0;
+ const fail=(ok,msg)=>{if(!ok)throw Error(msg)};let frames=0,vertices=0,maxError=0,maxAngle=0,maxForearmTurn=0,maxElbowSpeed=0;
  for(const id of G.GUN_IDS){
   const m=G.VM.models[id];
   for(const arm of [m.armL,m.armR])arm.grp.traverse(mesh=>{
@@ -47,12 +47,18 @@ const hands=await page.evaluate(()=>{
   for(const mode of ['empty','tactical'])for(const dt of [1/120,1/30]){
    const st=ReloadStudio;st.select(id,mode);st.pause();
    const previous=[m.armL.handQ.clone(),m.armR.handQ.clone()];
+   const forearms=[m.armL,m.armR].map(a=>({q:a.bE.quaternion.clone(),elbow:a.bE.position.clone()}));
    for(let t=0;t<st.duration+dt;t+=dt){
     st.advance(dt);
     for(const [j,arm]of [m.armL,m.armR].entries()){
      fail(arm.contactError<0.025,id+' '+mode+' contact gap '+arm.contactError);
      fail(arm.wristAngle<Math.PI/2+0.09,id+' '+mode+' wrist angle '+arm.wristAngle*180/Math.PI);
      fail(arm.handQ.angleTo(previous[j])<dt*10+0.001,id+' continuous wrist rotation');previous[j].copy(arm.handQ);
+     const turn=arm.bE.quaternion.angleTo(forearms[j].q),speed=arm.bE.position.distanceTo(forearms[j].elbow)/dt;
+     fail(turn<24*dt+0.025,id+' forearm rotation pops');fail(speed<12,id+' elbow position pops');
+     forearms[j].q.copy(arm.bE.quaternion);forearms[j].elbow.copy(arm.bE.position);
+     fail(arm.bT&&arm.bD,id+' distributed forearm rig');
+     maxForearmTurn=Math.max(maxForearmTurn,turn);maxElbowSpeed=Math.max(maxElbowSpeed,speed);
      fail(arm.shoulderShift.length()<=0.09001,id+' limited shoulder reach');
      fail(Math.abs(arm.bS.position.distanceTo(arm.bE.position)-arm.a)<1e-5,id+' upper arm does not stretch');
      fail(Math.abs(arm.bE.position.distanceTo(arm.bW.position)-arm.bw)<1e-5,id+' forearm does not stretch');
@@ -67,8 +73,19 @@ const hands=await page.evaluate(()=>{
    }
   }
  }
- return{frames,vertices,maxContactErrorMm:maxError*1000,maxWristDegrees:maxAngle*180/Math.PI};
+ return{frames,vertices,maxContactErrorMm:maxError*1000,maxWristDegrees:maxAngle*180/Math.PI,maxForearmTurnDegrees:maxForearmTurn*180/Math.PI,maxElbowSpeed};
 });console.log('Hand rig:',JSON.stringify(hands));
+const seekChecks=await page.evaluate(()=>{
+ let cases=0;
+ for(const id of ['ar7','s12','db2','de7']){
+  const st=ReloadStudio;st.select(id);st.pause();st.seek(st.duration*0.62);
+  const arm=st.model.armL,pose=[arm.bE,arm.bT,arm.bD,arm.bW].map(b=>({p:b.position.clone(),q:b.quaternion.clone()}));
+  st.seek(st.duration*0.25);st.seek(st.duration*0.62);
+  [arm.bE,arm.bT,arm.bD,arm.bW].forEach((b,j)=>{
+   if(b.position.distanceTo(pose[j].p)>1e-7||b.quaternion.angleTo(pose[j].q)>1e-5)throw Error(id+' seek leaves stale arm state');
+  });cases++;
+ }return cases;
+});console.log('Repeatable arm seeks:',seekChecks);
 const logic=await page.evaluate(()=>{
  const P=G.Player, events=[]; let cases=0;
  G.Audio.click=type=>events.push(type);
