@@ -22,6 +22,7 @@ const TOWN_DEFS = [
   { name: '군사 기지', x: 560, z: 40, r: 72, type: 'military' },
   { name: '농장', x: -330, z: -250, r: 64, type: 'farm' },
   { name: '발전소', x: 400, z: 430, r: 66, type: 'plant' },
+  { name: '북부 전초기지', x: -15, z: -300, r: 55, type: 'military' },
   { name: '산장 마을', x: 120, z: -400, r: 46, type: 'village' },
   { name: '해변 마을', x: 60, z: 560, r: 52, type: 'village' },
   { name: '서쪽 마을', x: -560, z: 40, r: 50, type: 'village' },

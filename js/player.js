@@ -311,13 +311,14 @@ const P = G.Player = {
       G.Ballistics.fire(a, cam.position, _d, def, _m, def.pellets === 1 || k < 3);
     }
     const parts = inst.attachments || {};
+    const suppressed = parts.muzzle === 'suppressor';
     const gripFactor = parts.under === 'grip' ? 0.9 : 1;
     const rv = gripFactor * def.recoilV * (this.ads > 0.5 ? 0.7 : 1) * (a.crouch ? 0.82 : 1) * U.rand(0.85, 1.15);
     a.pitch = Math.min(1.45, a.pitch + rv); this.recoilAcc += rv;
     a.yaw += gripFactor * def.recoilH * U.rand(-1, 1.25);
-    this.camKick += def.kick * 0.016;
+    this.camKick += def.kick * (def.cls === 'shotgun' ? 0.019 : def.cls === 'pistol' ? 0.014 : 0.016);
+    G.FX.shake(Math.min(0.12, def.kick * (suppressed ? 0.009 : 0.015)));
     this.bloom = Math.min(def.bloomMax, this.bloom + def.bloom);
-    const suppressed = parts.muzzle === 'suppressor';
     G.VM.fireKick(def.kick, suppressed);
     if (!suppressed) G.FX.light(_m, 0xffaa55, 22, 0.06, 12);
     G.Audio.shot(inst.id, a.pos, true, suppressed);

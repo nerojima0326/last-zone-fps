@@ -20,7 +20,7 @@ class Bot {
     this.goal = null; this.goalType = ''; this.goalT = 0; this.lootItem = null;
     this.thinkT = Math.random() * 0.4; this.percT = Math.random() * 0.2;
     this.burstLeft = 0; this.burstPause = 0; this.nextFire = 0; this.reloadT = 0;
-    this.strafe = 1; this.strafeT = 0;
+    this.strafe = 1; this.strafeT = 0; this.coverPos = new V3(); this.coverT = 0; this.coverSearchT = 0;
     this.progT = 0; this.lastProg = new V3(); this.stuck = 0; this.detourT = 0; this.detourYaw = 0; this.avoidSide = Math.random() < 0.5 ? 1 : -1;
     this.nadeCD = U.rand(8, 20); this.healing = null; this.reviving = null; this.reviveT = 0;
     this.alertPos = new V3(); this.alertT = 0;
@@ -37,7 +37,7 @@ class Bot {
     if (a.state === 'plane') return;
     if (a.state === 'freefall' || a.state === 'chute') { this.updateDrop(dt); return; }
     a.blindT = Math.max(0, a.blindT - dt);
-    this.alertT -= dt; this.nadeCD -= dt;
+    this.alertT -= dt; this.nadeCD -= dt; this.coverT -= dt; this.coverSearchT -= dt;
     if (a.knocked) { this.updateKnocked(dt); return; }
     this.percT -= dt;
     if (this.percT <= 0) { this.percT = 0.16 + Math.random() * 0.08; this.perceive(); }
@@ -348,6 +348,26 @@ class Bot {
     if (ok('pistol')) return 'pistol';
     return 'fists';
   }
+  // Search nearby colliders for a reachable position screened from the target.
+  findCover(target) {
+    const a=this.a,W=G.World;let best=Infinity,point=null;
+    const nearby=[];W.queryBoxes(a.pos.x-13,a.pos.z-13,a.pos.x+13,a.pos.z+13,b=>nearby.push(b));
+    for(const b of nearby){
+      if(b.maxY-b.minY<0.7 || b.minY>a.pos.y+1.5)continue;
+      const cx=(b.minX+b.maxX)*0.5,cz=(b.minZ+b.maxZ)*0.5;
+      if(Math.hypot(cx-a.pos.x,cz-a.pos.z)>13)continue;
+      let dx=cx-target.pos.x,dz=cz-target.pos.z, len=Math.hypot(dx,dz);if(len<0.01)continue;dx/=len;dz/=len;
+      const radius=Math.abs(dx)*(b.maxX-b.minX)*0.5+Math.abs(dz)*(b.maxZ-b.minZ)*0.5+0.7;
+      const x=cx+dx*radius,z=cz+dz*radius,dist=Math.hypot(x-a.pos.x,z-a.pos.z);
+      if(dist>12||dist<0.4||dist>=best)continue;
+      const y=W.heightAt(x,z);if(Math.abs(y-a.pos.y)>1.2)continue;
+      if(W.rayBoxes(a.pos.x,a.pos.y+0.7,a.pos.z,(x-a.pos.x)/dist,0,(z-a.pos.z)/dist,dist-0.4,null)<Infinity)continue;
+      const tx=target.pos.x-x,tz=target.pos.z-z,td=Math.hypot(tx,tz);
+      if(W.rayBoxes(x,y+0.8,z,tx/td,0,tz/td,td-0.3,null)===Infinity)continue;
+      best=dist;point={x,y,z};
+    }
+    if(!point)return false;this.coverPos.set(point.x,point.y,point.z);this.coverT=2.2;return true;
+  }
   combat(dt, out) {
     const a = this.a, t = this.target, d = this.d, now = this.now;
     t.chest(_c);
@@ -409,7 +429,12 @@ class Bot {
     if (out.lengthSq() > 0) out.normalize().multiplyScalar(spd);
     if (this.strafe !== 0 && this.blocked(a.yaw - this.strafe * Math.PI / 2, 1.5)) { this.strafe = -this.strafe; }
     if (fwd !== 0 && this.blocked(a.yaw + (fwd > 0 ? 0 : Math.PI), 1.5)) out.addScaledVector(_f, -fwd * spd * 0.9);
-    if (this.reloadT > 0 || (inst && inst.mag === 0)) { out.addScaledVector(_f, -2); }
+    if (this.reloadT > 0 || (inst && inst.mag === 0)) {
+      if(this.coverSearchT<=0){this.coverSearchT=1.2;this.findCover(t)}
+      if(this.coverT>0){const dx=this.coverPos.x-a.pos.x,dz=this.coverPos.z-a.pos.z,cd=Math.hypot(dx,dz);
+        if(cd>0.9){out.set(dx/cd*4,0,dz/cd*4);a.crouch=false}else{out.set(0,0,0);a.crouch=true}
+      }else out.addScaledVector(_f,-2);
+    }
     if (G.Throwables.fireAt(a.pos, 0.5)) out.addScaledVector(_f, -5);
     return out.length();
   }
