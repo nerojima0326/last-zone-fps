@@ -459,6 +459,24 @@ const RSTYLE = {
   r45: { s: 'revolver' }
 };
 const rstyle = id => RSTYLE[id] || RSTYLE.ar7;
+// 무게·손목·복귀 리듬. 동작의 접촉점은 makeKeys, 몸의 선행/후행 움직임은 여기서 분리한다.
+const RFEEL = {
+  ar7:   { name: '짧은 확인 · 볼트 멈치', mass: 1, reach: -0.014, lift: 0.012, cant: -0.035, wrist: -0.12, finish: 0.032 },
+  ka47:  { name: '탄창으로 쳐내기 · 아래로 당기기', mass: 1.14, reach: 0.016, lift: -0.012, cant: 0.08, wrist: 0.25, finish: -0.045 },
+  sc17:  { name: '가슴 탄입대 · 왼쪽 손잡이', mass: 1.12, reach: -0.023, lift: 0.028, cant: -0.07, wrist: -0.2, finish: 0.045 },
+  mk14:  { name: '앞턱 걸기 · 묵직한 복귀', mass: 1.3, reach: 0.018, lift: 0.006, cant: 0.045, wrist: 0.16, finish: -0.035 },
+  kr98:  { name: '왼손 지지 · 오른손 볼트', mass: 1.22, reach: -0.01, lift: 0.018, cant: -0.025, wrist: -0.1, finish: 0.025 },
+  s12:   { name: '배출구 한 발 · 펌프 닫기', mass: 1.18, reach: -0.012, lift: 0.014, cant: 0.055, wrist: 0.18, finish: -0.04 },
+  m1014: { name: '노리쇠 고정 · 뒤집어 장전', mass: 1.1, reach: 0.016, lift: 0.02, cant: -0.075, wrist: -0.22, finish: 0.05 },
+  db2:   { name: '꺾기 · 두 발 · 손목 닫기', mass: 1.16, reach: -0.024, lift: -0.014, cant: 0.06, wrist: 0.2, finish: -0.065 },
+  sa12:  { name: '탄창 젖혀 빼기 · 위로 당기기', mass: 1.28, reach: -0.018, lift: -0.018, cant: -0.08, wrist: 0.28, finish: 0.04 },
+  aa12:  { name: '드럼 들어 올리기 · 두 번 두드리기', mass: 1.65, reach: 0.024, lift: -0.034, cant: -0.1, wrist: -0.18, finish: -0.055 },
+  p92:   { name: '탄창 보관 · 엄지 멈치', mass: 0.8, reach: -0.015, lift: 0.012, cant: 0.035, wrist: -0.12, finish: 0.025 },
+  g18:   { name: '빠른 교환 · 오버핸드', mass: 0.72, reach: 0.012, lift: 0.022, cant: -0.055, wrist: 0.25, finish: -0.035 },
+  m1911: { name: '낮은 탄입대 · 뒤끝 집기', mass: 0.94, reach: -0.022, lift: -0.008, cant: 0.065, wrist: -0.22, finish: 0.04 },
+  de7:   { name: '큰 탄창 밀기 · 무거운 슬라이드', mass: 1.35, reach: 0.02, lift: -0.022, cant: -0.085, wrist: 0.16, finish: -0.05 },
+  r45:   { name: '탄피 털기 · 스피드로더 · 닫기', mass: 1.02, reach: -0.016, lift: 0.016, cant: 0.085, wrist: 0.3, finish: 0.055 }
+};
 const AXX = new V3(1, 0, 0);
 // 탄창을 앞턱 L(탄창 축 기준) 을 축으로 a 만큼 젖히고 dy 만큼 내린 자세의 위치 (rest = 제자리)
 function magAt(rest, L, a, dy, out) { return out.copy(L).applyAxisAngle(AXX, a).negate().add(L).add(rest).add(_mv.set(0, -dy, 0)); }
@@ -476,6 +494,33 @@ function gunData(id) {
 
 const Guns = G.Guns = {
   mats, CLS, gunData, rstyle,
+  reloadFeel(id) { return RFEEL[id] || RFEEL.ar7; },
+  // 소리도 손·부품과 같은 정규화 시각을 사용한다. 한 프레임에 여러 사건을 지나도 모두 재생한다.
+  reloadEvents(id, empty, phase, port) {
+    const def = G.WEAPONS[id], m = G.VM.models[id], st = rstyle(id);
+    let list;
+    if (def.reloadType === 'mag') {
+      const S = m && m.keys && (empty ? m.keys.E : m.keys.Tac);
+      const t = S ? S.snd : { out: 0.15, in: 0.62, bolt: 0.85 };
+      list = [[t.out, 'magout'], [t.in, 'magin']];
+      if (S && S.T.taps) for (const tap of S.T.taps) list.push([tap, 'magin']);
+      if (empty) list.push([t.bolt, 'close']);
+      if (empty && S && S.T.chA !== undefined) list.push([S.T.chA, 'open']);
+      if (empty && S && S.T.slideA !== undefined) list.push([S.T.slideA, 'open']);
+      if (empty && S && S.T.boltA !== undefined) {
+        list = list.filter(e => e[1] !== 'close');
+        const T = S.T, span = T.boltB - T.boltA;
+        list.push([T.boltA + span * 0.24, 'open'], [T.boltA + span * 0.58, 'close']);
+      }
+    } else if (def.reloadType === 'revolver') {
+      list = [[0.16, 'open'], [0.28, 'shell'], [0.6, 'magin'], [0.765, 'close']];
+    } else if (phase === 'start') {
+      list = def.reloadType === 'break' ? [[0.4, 'open'], [0.52, 'shell']]
+        : port ? [[0.14, 'open'], [0.47, 'shell'], [st.s === 'semi' ? 0.63 : 0.68, 'close']] : [];
+    } else if (phase === 'load') list = [[def.reloadType === 'break' ? 0.58 : st.s === 'semi' ? 0.48 : 0.55, 'shell']];
+    else list = def.reloadType === 'break' ? [[0.3, 'close']] : [];
+    return list.filter(e => Number.isFinite(e[0]) && e[0] >= 0 && e[0] <= 1).sort((a, b) => a[0] - b[0]);
+  },
   buildVM(id) {
     if (id === 'fists' || id === 'throw') return this.buildHands(id);
     const M = mats();
@@ -720,19 +765,28 @@ const Guns = G.Guns = {
     const Hm = mr.clone().addScaledVector(md, 0.045).add(new V3(-0.004, 0, 0.004));
     K.grab = Hm.clone().sub(mr); K.lug = new V3();
     const Hin = Hm.clone().addScaledVector(md, 0.1), Hap = Hm.clone().addScaledVector(md, 0.05);
-    const belt = v(F, -0.1, -0.42, 0.16), belt2 = v(F, -0.15, -0.36, 0.06);
     const heavy = S === 'heavy';
-    // 헌 탄창은 떨어지고 왼손은 탄입대 → 새 탄창을 밀어 넣고 손바닥으로 툭
-    const q = heavy ? 0.94 : 1;   // 데저트 이글: 교체를 조금 서두르고 슬라이드를 무겁게
-    const base = [[0, F], [0.08, v(F, -0.03, -0.06, 0.04)], [0.26 * q, belt], [0.35 * q, belt2], [0.47 * q, Hin], [0.54 * q, Hap], [0.59 * q, Hm], [0.61 * q, v(Hm, 0, 0.016, 0)], [0.65 * q, Hm]];
-    const T0 = { drop: 0.1, newMag: 0.26 * q, seat: 0.59 * q };
+    // 권총도 같은 경로를 배속하지 않는다. 탄입대 위치, 삽입 전 멈춤, 타격·당김이 각각 다르다.
+    const rhythm = {
+      release:   { belt: [-0.09, -0.36, 0.12], take: 0.27, present: 0.47, seat: 0.59, rack: 0.74, home: 0.92 },
+      overhand:  { belt: [-0.14, -0.32, 0.06], take: 0.2, present: 0.37, seat: 0.5, rack: 0.63, home: 0.9 },
+      slingshot: { belt: [-0.07, -0.46, 0.18], take: 0.29, present: 0.46, seat: 0.57, rack: 0.7, home: 0.95 },
+      heavy:     { belt: [-0.16, -0.4, 0.2], take: 0.24, present: 0.4, seat: 0.55, rack: 0.68, home: 0.97 }
+    }[S];
+    const belt = v(F, ...rhythm.belt), belt2 = v(belt, -0.035, 0.055, -0.07);
+    const insertion = (present, seat) => [[present, Hin], [seat - 0.045, Hap], [seat, Hm],
+      [seat + 0.02, v(Hm, 0, heavy ? 0.022 : 0.014, 0)], [seat + 0.055, Hm]];
+    const base = [[0, F], [0.07, v(F, -0.03, -0.06, 0.04)], [rhythm.take, belt], [rhythm.take + 0.065, belt2]]
+      .concat(insertion(rhythm.present, rhythm.seat));
+    const T0 = { drop: S === 'overhand' ? 0.08 : 0.1, newMag: rhythm.take, seat: rhythm.seat };
     const St = o.slideTop || v(o.grip, 0, 0.1, -0.04);
     let tail, Te;
     if (S === 'overhand' || heavy) {
       // 손바닥을 슬라이드 위에 덮어 움켜쥐고 뒤로 당겼다 놓는다
-      const t = heavy ? 0.64 : 0.7, Hg = K.slideGrab = v(St, -0.002, 0.024, 0.012);
-      tail = [[t, v(St, -0.035, 0.075, 0.035)], [t + 0.04, Hg], [t + 0.1, v(Hg, 0, 0.004, 0.045 * k)], [t + 0.11, v(Hg, -0.012, 0.035, 0.06)], [t + 0.19, v(F, -0.02, 0.03, 0.03)], [1, F]];
-      Te = { slideA: t + 0.04, slideB: t + 0.1, slideRel: t + 0.103, endE: heavy ? 0.9 : 0.92 };
+      const t = rhythm.rack, pull = heavy ? 0.13 : 0.085, Hg = K.slideGrab = v(St, -0.002, 0.024, 0.012);
+      tail = [[t, v(St, -0.035, 0.075, 0.035)], [t + 0.035, Hg], [t + pull, v(Hg, 0, 0.004, 0.045 * k)],
+        [t + pull + 0.012, v(Hg, -0.012, 0.035, 0.06)], [rhythm.home - 0.035, v(F, -0.02, 0.03, 0.03)], [1, F]];
+      Te = { slideA: t + 0.035, slideB: t + pull, slideRel: t + pull + 0.004, endE: rhythm.home };
     } else if (S === 'slingshot') {
       // 슬라이드 뒤끝을 엄지·검지로 집어 얼굴 쪽으로 당겼다 놓는다
       const Hp = K.slideGrab = v(St, -0.004, -0.004, 0.05);
@@ -745,7 +799,14 @@ const Guns = G.Guns = {
       Te = { slide: 0.8, endE: 0.88 };
     }
     K.E = { k: base.concat(tail), T: Object.assign({}, T0, Te) };
-    K.Tac = { k: base.concat([[0.86, F], [1, F]]), T: Object.assign({ endT: 0.8 }, T0) };
+    // 잔탄이 있으면 왼손이 헌 탄창을 쥐어 보관한다. 슬라이드는 건드리지 않는다.
+    const Hout = Hm.clone().addScaledVector(md, heavy ? 0.16 : 0.12);
+    const grab = S === 'slingshot' ? 0.12 : 0.1, out = heavy ? 0.25 : 0.21;
+    const release = heavy ? 0.38 : S === 'overhand' ? 0.28 : 0.34;
+    const seat = heavy ? 0.69 : S === 'overhand' ? 0.57 : S === 'slingshot' ? 0.66 : 0.64;
+    K.Tac = { k: [[0, F], [grab - 0.035, v(Hm, -0.025, -0.025, 0.015)], [grab, Hm], [grab + 0.025, Hm],
+      [out, Hout], [release, belt], [release + 0.045, belt2]].concat(insertion(seat - 0.14, seat), [[seat + 0.14, F], [1, F]]),
+      T: { grab, out, release, newMag: release + 0.02, seat, endT: seat + 0.16 } };
   },
   throwModel(k, vm) {
     const M = mats();
@@ -1065,9 +1126,10 @@ const VM = G.VM = {
   },
   stepSprings(dt) {
     const S = this.spr, n = Math.max(1, Math.ceil(dt / 0.008)), h = dt / n;
+    const mass = this.reloadMass || 1;
     for (const k in S) {
       const c = S[k];
-      for (let i = 0; i < n; i++) { c[1] += (-260 * c[0] - 17 * c[1]) * h; c[0] += c[1] * h; }
+      for (let i = 0; i < n; i++) { c[1] += (-260 / mass * c[0] - 17 / Math.sqrt(mass) * c[1]) * h; c[0] += c[1] * h; }
     }
   },
   // 메인 카메라 기준 총구 월드 위치
@@ -1207,6 +1269,7 @@ const VM = G.VM = {
       P.slide.position.z = R.slide.z + Math.sin(this.slideT * Math.PI) * 0.03 * (s.empty ? 0 : 1) + (s.empty ? lockBack : 0);
     }
     const rl = s.reload;
+    this.reloadMass = rl ? Guns.reloadFeel(m.id).mass : 1;
     if (rl) {
       const cur = rl.type === 'mag' || rl.type === 'revolver' ? rl.p : rl.phase === 'load' ? rl.shellP : rl.pp;
       const key = rl.type + (rl.phase || '') + (rl.empty ? 'e' : '');
@@ -1218,6 +1281,7 @@ const VM = G.VM = {
       else if (rl.type === 'revolver') this.animRevolver(m, rl);
       else if (rl.type === 'shell') this.animShell(m, rl);
       else if (rl.type === 'break') this.animBreak(m, rl);
+      this.reloadAccent(m, rl);
     } else if (P.barrel) {
       m.armL.tgt.copy(P.barrel.position).add(K.barrelOff);
     }
@@ -1225,6 +1289,28 @@ const VM = G.VM = {
   },
   // 지나간 순간 (이번 프레임에 a 를 넘었나)
   passed(a, p) { return this.pv < a && p >= a; },
+  // 총의 접촉점은 그대로 두고 어깨·손목이 먼저 움직였다가 늦게 따라오는 작은 무게감을 더한다.
+  reloadAccent(m, rl) {
+    const f = Guns.reloadFeel(m.id);
+    const mag = rl.type === 'mag' || rl.type === 'revolver';
+    const p = mag ? rl.p : rl.phase === 'load' ? rl.shellP : rl.pp;
+    const lead = mag || rl.phase === 'start' ? env(p, 0, 0.055, 0.11, 0.2) : 0;
+    const reach = mag ? env(p, 0.12, 0.28, 0.44, 0.6)
+      : rl.phase === 'load' ? env(p, 0, 0.22, 0.55, 0.8) : 0;
+    const end = mag ? (rl.empty ? m.keys.E && m.keys.E.T.endE : m.keys.Tac && m.keys.Tac.T.endT) || 0.84 : 0.5;
+    const settle = Math.min(end, 0.86);
+    const home = mag || rl.phase === 'end' ? env(p, settle - 0.06, settle + 0.025, 0.96, 1) : 0;
+    POSE.x += f.reach * reach;
+    POSE.y += f.lift * reach - 0.01 * f.mass * lead;
+    POSE.z += 0.016 * f.mass * lead - 0.012 * home;
+    POSE.rx += 0.035 * lead + f.finish * home;
+    POSE.rz += f.cant * reach - f.cant * 0.45 * home;
+    // 물건을 쥐는 동안에는 손목을 비틀지 않고, 빈손으로 이동할 때만 방향을 바꾼다.
+    const T = mag && (rl.empty ? m.keys.E : m.keys.Tac);
+    const free = !T || p < (T.T.newMag || 0.2) || p > T.T.seat + 0.08;
+    if (free) m.armL.roll += f.wrist * reach;
+    m.armR.trigT = 0.12;
+  },
   // 헌 탄창: 저절로 떨어짐(drop) · 새 탄창에 맞아 앞으로 젖혀지며 떨어짐(knock) · 손에 쥐고 뽑기/젖혀 빼기(grab) → 탄입대에 넣기 또는 던지기(toss)
   oldMag(m, S, p) {
     const T = S.T, K = m.keys, mag = m.parts.mag, R = m.rest;
@@ -1375,7 +1461,7 @@ const VM = G.VM = {
     const e = env(p, 0, 0.1, end - 0.04, Math.min(1.001, end + 0.14));
     const look = env(p, T.seat - 0.18, T.seat - 0.06, T.seat, T.seat + 0.1);
     const chg = E && T.slideA !== undefined ? env(p, T.slideA - 0.1, T.slideA - 0.02, T.slideRel + 0.02, T.slideRel + 0.12) : 0;
-    const hv = st.heavy ? env(p, T.drop, T.newMag, T.seat, T.seat + 0.06) : 0;
+    const hv = st.heavy ? env(p, T.drop !== undefined ? T.drop : T.grab, T.newMag, T.seat, T.seat + 0.06) : 0;
     const ic = 1 - chg;
     POSE.rz += st.roll * e * ic + (st.chRoll || 0) * chg;
     POSE.ry += st.yaw * e * ic + 0.05 * look + (st.chYaw || 0) * chg;
