@@ -417,13 +417,13 @@ const P = G.Player = {
     const a = this.a, inst = a.weapons[a.cur];
     if (!inst || this.reload) return;
     const def = G.WEAPONS[inst.id];
-    const opts = [null].concat(G.SCOPE_ORDER.filter(t => def.scopes.includes(t) && t !== def.baseSight));
-    if (opts.length <= 1) { G.UI.toast(def.scopes.length ? '장착할 수 있는 조준경이 없습니다' : '이 총에는 조준경을 달 수 없습니다'); return; }
-    const i = opts.indexOf(inst.scope || null);
-    const next = opts[(i + 1) % opts.length];
-    inst.scope = next; inst.iron = false;
+    const opts = ['iron'].concat(G.SCOPE_ORDER.filter(t=>def.scopes.includes(t)&&(t===def.baseSight||a.scopes[t]>0||inst.scope===t)));
+    if(opts.length<=1){G.UI.toast('보유한 조준경이 없습니다');return;}
+    const current=inst.iron?'iron':(inst.scope||def.baseSight||'iron');
+    const next=opts[(opts.indexOf(current)+1)%opts.length];
+    if(!G.Attachments.change(a,inst,'optic',next))return;
     G.Audio.click('switch');
-    G.UI.toast(next ? G.SCOPES[next].name + ' 장착' : (def.baseSight ? G.SCOPES[def.baseSight].name + ' (기본)' : '가늠쇠 사용'));
+    G.UI.toast(next==='iron'?'가늠쇠 사용':G.SCOPES[next].name+' 장착');
   },
   doPunch() {
     const a = this.a;

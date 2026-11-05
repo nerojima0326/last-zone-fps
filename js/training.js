@@ -142,6 +142,9 @@ const T = G.Training = {
     const by = c => G.GUN_IDS.filter(id => G.WEAPONS[id].cls === c);
     row(tb[0], by('rifle')); row(tb[1], by('shotgun')); row(tb[2], by('pistol'));
     row(tb[3], Object.keys(G.SCOPES).map(s => 'scope_' + s).concat(['frag', 'smoke', 'molotov', 'flash']));
+    const at=W.range.attachmentTable,items=Object.keys(G.Attachments.catalog());
+    const cols=Math.ceil(items.length/2);
+    items.forEach((kind,i)=>{const x=at.x0+.4+(i%cols)*(at.x1-at.x0-.8)/Math.max(1,cols-1),z=at.z0+.5+Math.floor(i/cols)*.9;this.placeItem(kind,x,at.y,z,0)});
     // ---- 화면 ----
     this.ui();
     this.refill();
