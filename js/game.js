@@ -563,7 +563,8 @@ const Game = G.Game = {
   },
   onShot(shooter, def) {
     const range = def.key === 'kr98' || def.key === 'mk14' ? 200 : def.cls === 'rifle' ? 130 : def.cls === 'shotgun' ? 100 : 75;
-    this.onNoise(shooter.pos, range, shooter);
+    const suppressed = shooter.weapons[shooter.cur]?.attachments?.muzzle === 'suppressor';
+    this.onNoise(shooter.pos, range * (suppressed ? 0.48 : 1), shooter);
   },
   onNoise(pos, range, owner) {
     for (const a of this.actors) {
