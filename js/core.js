@@ -370,6 +370,8 @@ const A = G.Audio = {
     else if (type === 'magout') { this.noise(o, t, { dur: 0.05, a: 0.4, bp: 1200, q: 3 }); this.tone(o, t, { type: 'triangle', f0: 600, f1: 300, a: 0.15, dur: 0.06 }); }
     else if (type === 'magin') { this.noise(o, t, { dur: 0.04, a: 0.6, bp: 2200, q: 2 }); this.tone(o, t + 0.02, { type: 'square', f0: 900, f1: 500, a: 0.12, dur: 0.04 }); }
     else if (type === 'bolt') { this.noise(o, t, { dur: 0.05, a: 0.5, bp: 3000, q: 2 }); this.noise(o, t + 0.09, { dur: 0.06, a: 0.6, bp: 1800, q: 2 }); }
+    else if (type === 'open') { this.noise(o, t, { dur: 0.055, a: 0.4, bp: 2700, q: 2 }); this.tone(o, t, { type: 'triangle', f0: 720, f1: 420, a: 0.08, dur: 0.045 }); }
+    else if (type === 'close') { this.noise(o, t, { dur: 0.035, a: 0.65, bp: 1900, q: 2 }); this.tone(o, t, { type: 'square', f0: 850, f1: 380, a: 0.1, dur: 0.035 }); }
     else if (type === 'shell') { this.noise(o, t, { dur: 0.05, a: 0.35, bp: 1500, q: 2 }); this.tone(o, t + 0.03, { type: 'triangle', f0: 420, a: 0.15, dur: 0.05 }); }
     else if (type === 'pump') { this.noise(o, t, { dur: 0.08, a: 0.6, bp: 1100, q: 1.5 }); this.noise(o, t + 0.13, { dur: 0.07, a: 0.7, bp: 1600, q: 1.5 }); }
     else if (type === 'pin') { this.tone(o, t, { type: 'triangle', f0: 3200, a: 0.12, dur: 0.04 }); this.noise(o, t + 0.05, { dur: 0.05, a: 0.25, hp: 3000 }); }

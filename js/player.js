@@ -341,6 +341,12 @@ const P = G.Player = {
     this.cycleT = -1;
     this.cancelHeal();
   },
+  reloadSounds(R, p, events, key) {
+    if (R.soundKey !== key) { R.soundKey = key; R.soundIndex = 0; }
+    while (R.soundIndex < events.length && p >= events[R.soundIndex][0]) {
+      G.Audio.click(events[R.soundIndex][1]); R.soundIndex++;
+    }
+  },
   // 산탄 장전 단계별 시간
   phaseDur(R, def) {
     const k = 1 / (G.RELOAD_SPEED || 1);
@@ -354,13 +360,8 @@ const P = G.Player = {
     R.t += dt;
     if (R.kind === 'mag' || R.kind === 'revolver') {
       const p = R.t / R.dur;
-      // 소리는 손 동작 시각(뷰모델 키)에 맞춘다
-      const vm = G.VM.models[inst.id], S = R.kind === 'mag' && vm && vm.keys && (R.empty ? vm.keys.E : vm.keys.Tac);
-      const tOut = S ? S.snd.out : 0.15, tIn = S ? S.snd.in : 0.62;
-      const tBolt = S ? S.snd.bolt : (R.kind === 'revolver' ? 0.76 : 0.85);
-      if (R.s === 0 && p > tOut) { R.s = 1; G.Audio.click(R.kind === 'revolver' ? 'bolt' : 'magout'); }
-      if (R.s === 1 && p > tIn) { R.s = 2; G.Audio.click('magin'); }
-      if (R.s === 2 && p > tBolt) { R.s = 3; if (R.empty || R.kind === 'revolver') G.Audio.click('bolt'); }
+      if (!R.sounds) R.sounds = G.Guns.reloadEvents(inst.id, R.empty);
+      this.reloadSounds(R, p, R.sounds, 'mag');
       if (p >= 1) {
         const n = Math.min(def.mag - inst.mag, a.ammo[def.ammo]);
         inst.mag += n; a.ammo[def.ammo] -= n;
@@ -370,26 +371,26 @@ const P = G.Player = {
       const pd = this.phaseDur(R, def);
       // 한 번에 넣을 탄 수 (더블배럴은 두 발이 비면 두 발을 한꺼번에)
       const cycle = () => { R.per = R.pair && def.mag - inst.mag >= 2 && a.ammo[def.ammo] >= 2 ? 2 : 1; R.cyc = def.reload * (R.per === 2 ? 1.3 : 1); };
+      const phaseP = R.phase === 'load' ? (R.shellT + dt) / R.cyc : R.t / pd;
+      if (R.eventPhase !== R.phase) { R.eventPhase = R.phase; R.sounds = G.Guns.reloadEvents(inst.id, R.empty, R.phase, R.port); }
+      this.reloadSounds(R, phaseP, R.sounds, R.phase + ':' + (R.cycle || 0));
       if (R.phase === 'start') {
-        if (R.kind === 'break' && !R.ej && R.t > 0.28 / (G.RELOAD_SPEED || 1)) { R.ej = true; G.Audio.click('bolt'); for (let i = inst.mag; i < def.mag; i++) this.ejectShell(true); }
+        if (R.kind === 'break' && !R.ej && R.t >= pd * 0.52) { R.ej = true; for (let i = inst.mag; i < def.mag; i++) this.ejectShell(true); }
         if (R.port) {
           // 배출구 장전: 한 발 떨어뜨리고 → 펌프를 밀거나 노리쇠 멈치를 눌러 닫는다
-          if (!R.sndP && R.t > pd * 0.47) { R.sndP = true; G.Audio.click('shell'); }
-          if (!R.ported && R.t > pd * 0.66) { R.ported = true; G.Audio.click('bolt'); if (a.ammo[def.ammo] > 0) { inst.mag++; a.ammo[def.ammo]--; } }
+          if (!R.ported && R.t >= pd * (G.Guns.rstyle(inst.id).s === 'semi' ? 0.63 : 0.68)) { R.ported = true; if (a.ammo[def.ammo] > 0) { inst.mag++; a.ammo[def.ammo]--; } }
         }
         if (R.t > pd) { R.t = 0; R.shellT = 0; if (inst.mag >= def.mag || a.ammo[def.ammo] <= 0) R.phase = 'end'; else { R.phase = 'load'; cycle(); } }
       } else if (R.phase === 'load') {
         R.shellT += dt;
-        if (!R.snd && R.shellT >= R.cyc * 0.55) { R.snd = true; G.Audio.click('shell'); }
         if (R.shellT >= R.cyc) {
-          R.shellT = 0; R.snd = false;
+          R.shellT = 0; R.cycle = (R.cycle || 0) + 1;
           const n = Math.min(R.per, def.mag - inst.mag, a.ammo[def.ammo]);
           inst.mag += n; a.ammo[def.ammo] -= n;
           if (inst.mag >= def.mag || a.ammo[def.ammo] <= 0) { R.phase = 'end'; R.t = 0; } else cycle();
         }
       } else if (R.phase === 'end') {
         if (def.action === 'pump' && R.empty && !R.port && !R.pumped && R.t > 0.12 / (G.RELOAD_SPEED || 1)) { R.pumped = true; this.pumpT = 0.05; }
-        if (R.kind === 'break' && !R.closed && R.t > 0.22 / (G.RELOAD_SPEED || 1)) { R.closed = true; G.Audio.click('magin'); }
         if (R.t > pd) this.reload = null;
       }
     }
