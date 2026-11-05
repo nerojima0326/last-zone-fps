@@ -10,7 +10,7 @@ These are independently licensed recordings, not audio extracted from commercial
 - Original archive: https://opengameart.org/sites/default/files/Prepared%20SFX%20Library.7z
 - Licence: https://creativecommons.org/publicdomain/zero/1.0/
 
-The source library's `Prepared Master Sheet.csv` identifies each recording. `manifest.json` retains source filenames, SHA-256 hashes, crop onsets and mastering settings. Each game weapon uses two separately detected shot transients. We trim silence, fold to mono, retain the sharp attack, shape low-frequency body/high-frequency detail, leave headroom, fade only the boundaries and encode compact MP3 banks. Runtime playback alternates the two shots with slight variation.
+The source library's `Prepared Master Sheet.csv` identifies each recording. `manifest.json` retains source filenames, SHA-256 hashes, crop onsets and mastering settings. Each game weapon uses two separately detected shot transients. We trim silence, fold to mono, retain the sharp attack, shape low-frequency body/high-frequency detail, leave headroom, fade only the boundaries and encode compact MP3 banks. Runtime playback alternates the two shots with slight variation. Attack trim metadata skips the quiet lead-in before each report; shot playback no longer adds a separate mechanical click.
 
 | Game weapon | Representative source recording |
 |---|---|

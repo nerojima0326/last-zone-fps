@@ -299,6 +299,8 @@ const P = G.Player = {
   fire(def, inst, now) {
     const a = this.a, cam = G.camera;
     inst.mag--;
+    const parts = inst.attachments || {}, suppressed = parts.muzzle === 'suppressor';
+    G.Audio.shot(inst.id, a.pos, true, suppressed);
     this.nextFire = now + Math.max(60 / def.rpm, def.action === 'bolt' ? def.cycle : 0);
     this.lastShot = now;
     cam.getWorldDirection(_f);
@@ -311,8 +313,6 @@ const P = G.Player = {
       _d.copy(_f).addScaledVector(_r, Math.cos(th) * rr).addScaledVector(_u, Math.sin(th) * rr).normalize();
       G.Ballistics.fire(a, cam.position, _d, def, _m, def.pellets === 1 || k < 3);
     }
-    const parts = inst.attachments || {};
-    const suppressed = parts.muzzle === 'suppressor';
     const mod=G.Attachments?.modifiers(inst)||{v:1,h:1};
     const rv = mod.v * def.recoilV * (this.ads > 0.5 ? 0.7 : 1) * (a.crouch ? 0.82 : 1) * U.rand(0.85, 1.15);
     a.pitch = Math.min(1.45, a.pitch + rv); this.recoilAcc += rv;
@@ -323,7 +323,6 @@ const P = G.Player = {
     const hideFlash = suppressed || parts.muzzle === 'flash';
     G.VM.fireKick(def.kick, hideFlash);
     if (!hideFlash) G.FX.light(_m, 0xffaa55, 22, 0.06, 12);
-    G.Audio.shot(inst.id, a.pos, true, suppressed);
     G.Game.onShot(a, def);
     if (def.action === 'pump') this.pumpT = 0;
     else if (def.action === 'bolt') { if (inst.mag > 0) this.cycleT = 0; }

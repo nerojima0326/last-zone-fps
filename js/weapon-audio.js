@@ -39,7 +39,8 @@ const W=G.WeaponAudio={
  play(a,bank,cue,sp,options={}){
   const buffer=this.buffers[bank.path];if(!buffer||!cue)return false;
   const c=a.ctx,t=c.currentTime+(options.delay||0),rate=(options.rate||1)*(1+(Math.random()-.5)*this.variation);
-  const offset=cue.offset,duration=Math.min(cue.duration,buffer.duration-offset),seconds=duration/rate;
+  const trim=Math.max(0,Math.min(cue.attackTrim||0,cue.duration-.005));
+  const offset=cue.offset+trim,duration=Math.min(cue.duration-trim,buffer.duration-offset),seconds=duration/rate;
   if(!(duration>0))return false;
   // Bounded sample voices; remove every node when its source ends.
   if(this.voices.length>=64){
@@ -66,9 +67,7 @@ const W=G.WeaponAudio={
   const p=P[id],bank=this.manifest?.shots[id];if(!p||!bank||!this.buffers[bank.path])return false;
   const sp=a.spatial(own?null:pos,28);if(sp.g<.02||(!own&&!a._budget()))return true;
   const key=id+(own?':own':':world'),seq=this.sequence[key]||0;this.sequence[key]=seq+1;
-  this.play(a,bank,bank.cues[seq%bank.cues.length],sp,{gain:p[5]*(own?1.2:1)*(suppressed?.45:1),cut:suppressed?4500:19000,wet:own?.16:.45,own});
-  // A quiet physical action behind the report, rather than a synthetic pitch sweep.
-  if(own)this.foley(a,id,'dry',.032,.12);
+  this.play(a,bank,bank.cues[seq%bank.cues.length],sp,{gain:p[5]*(own?1.9:1.3)*(suppressed?.45:1),cut:suppressed?4500:19000,wet:own?.16:.45,own});
   return true;
  },
  foley(a,id,cue,delay=0,volume=1,rate=1){
