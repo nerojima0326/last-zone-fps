@@ -753,6 +753,9 @@ function gunData(id) {
 const Guns = G.Guns = {
   mats, CLS, gunData, rstyle,
   reloadFeel(id) { return RFEEL[id] || RFEEL.ar7; },
+  // Freeze the original empty state for the entire reload, including every shell cycle.
+  reloadFactor(empty) { return empty ? 1.35 : 1; },
+  reloadDuration(id,empty) { return G.WEAPONS[id].reload*this.reloadFactor(empty); },
   // 소리도 손·부품과 같은 정규화 시각을 사용한다. 한 프레임에 여러 사건을 지나도 모두 재생한다.
   reloadEvents(id, empty, phase, port) {
     const def = G.WEAPONS[id], m = G.VM.models[id], st = rstyle(id);

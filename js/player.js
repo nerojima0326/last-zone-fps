@@ -221,7 +221,8 @@ const P = G.Player = {
     if (this.pumpT >= 0) {
       const prev = this.pumpT;
       this.pumpT += dt;
-      if (prev < 0.12 && this.pumpT >= 0.12) G.Audio.click('pump');
+      if(prev<0.18&&this.pumpT>=0.18)G.Audio.click('open',inst?.id);
+      if(prev<0.50&&this.pumpT>=0.50)G.Audio.click('close',inst?.id);
       if (prev < 0.3 && this.pumpT >= 0.3) this.ejectShell(true);
       if (this.pumpT > 0.6) this.pumpT = -1;
     }
@@ -230,7 +231,8 @@ const P = G.Player = {
       const cyc = (isGun && def.cycle) || 0.9, c0 = this.cycleT / cyc;
       this.cycleT += dt;
       const c1 = this.cycleT / cyc;
-      if (c0 < 0.26 && c1 >= 0.26) G.Audio.click('bolt');
+      if(c0<0.24&&c1>=0.24)G.Audio.click('open',inst?.id);
+      if(c0<0.58&&c1>=0.58)G.Audio.click('close',inst?.id);
       if (c0 < 0.4 && c1 >= 0.4) this.ejectShell(false);
       if (c1 >= 1) this.cycleT = -1;
     }
@@ -243,7 +245,7 @@ const P = G.Player = {
         else if (R && R.kind === 'break' && inst.mag > 0 && R.phase === 'load') { R.phase = 'end'; R.t = 0; }
         if (!this.reload && now >= this.nextFire && this.cycleT < 0) {
           if (inst.mag > 0) this.fire(def, inst, now);
-          else if (I.lmbHit) { G.Audio.click('dry'); this.nextFire = now + 0.25; if (a.ammo[def.ammo] > 0) this.startReload(); }
+          else if (I.lmbHit) { G.Audio.click('dry',inst.id); this.nextFire = now + 0.25; if (a.ammo[def.ammo] > 0) this.startReload(); }
         }
       }
     }
@@ -270,7 +272,7 @@ const P = G.Player = {
     if (slot === 'throw') { if (a.throwCount() <= 0) return; if (a.throwables[this.throwKind] <= 0) this.cycleThrow(); }
     else if (slot !== 'fists' && !a.weapons[slot]) return;
     if ((this.sw ? this.sw.to : a.cur) === slot) return;
-    this.reload = null; this.cycleT = -1;
+    this.reload = null; this.cycleT = -1; this.pumpT = -1;
     this.sw = { t: this.sw && this.sw.t < 0.2 ? this.sw.t : 0, to: slot };
     G.Audio.click('switch');
   },
@@ -313,7 +315,7 @@ const P = G.Player = {
     this.bloom = Math.min(def.bloomMax, this.bloom + def.bloom);
     G.VM.fireKick(def.kick);
     G.FX.light(_m, 0xffaa55, 22, 0.06, 12);
-    G.Audio.shot(def.sound, a.pos, true);
+    G.Audio.shot(inst.id, a.pos, true);
     G.Game.onShot(a, def);
     if (def.action === 'pump') this.pumpT = 0;
     else if (def.action === 'bolt') { if (inst.mag > 0) this.cycleT = 0; }
@@ -337,22 +339,23 @@ const P = G.Player = {
       const st = G.Guns.rstyle(def.key);
       this.reload = { kind: def.reloadType, phase: 'start', t: 0, shellT: 0, empty, port: empty && (st.s === 'pump' || st.s === 'semi'), pair: st.s === 'pair' };
     }
-    else this.reload = { kind: def.reloadType, t: 0, dur: def.reload, s: 0, empty };
+    else this.reload = { kind: def.reloadType, t: 0, dur: G.Guns.reloadDuration(inst.id,empty), s: 0, empty };
+    this.reload.weaponId=inst.id;
     this.cycleT = -1;
     this.cancelHeal();
   },
   reloadSounds(R, p, events, key) {
     if (R.soundKey !== key) { R.soundKey = key; R.soundIndex = 0; }
     while (R.soundIndex < events.length && p >= events[R.soundIndex][0]) {
-      G.Audio.click(events[R.soundIndex][1]); R.soundIndex++;
+      G.Audio.click(events[R.soundIndex][1],R.weaponId); R.soundIndex++;
     }
   },
   // 산탄 장전 단계별 시간
   phaseDur(R, def) {
-    const k = 1 / (G.RELOAD_SPEED || 1);
+    const k = G.Guns.reloadFactor(R.empty) / (G.RELOAD_SPEED || 1);
     if (R.phase === 'start') return (R.kind === 'break' ? 0.5 : R.port ? (G.Guns.rstyle(def.key).portDuration || 0.95) : 0.35) * k;
     if (R.phase === 'end') return (R.kind === 'break' ? 0.42 : (def.action === 'pump' && R.empty && !R.port ? 0.62 : 0.3)) * k;
-    return def.reload;
+    return G.Guns.reloadDuration(def.key,R.empty);
   },
   reloadLogic(dt) {
     const a = this.a, inst = a.weapons[a.cur], def = inst && G.WEAPONS[inst.id], R = this.reload;
@@ -370,7 +373,7 @@ const P = G.Player = {
     } else {
       const pd = this.phaseDur(R, def);
       // 한 번에 넣을 탄 수 (더블배럴은 두 발이 비면 두 발을 한꺼번에)
-      const cycle = () => { R.per = R.pair && def.mag - inst.mag >= 2 && a.ammo[def.ammo] >= 2 ? 2 : 1; R.cyc = def.reload * (R.per === 2 ? 1.3 : 1); };
+      const cycle = () => { R.per = R.pair && def.mag - inst.mag >= 2 && a.ammo[def.ammo] >= 2 ? 2 : 1; R.cyc = G.Guns.reloadDuration(inst.id,R.empty) * (R.per === 2 ? 1.3 : 1); };
       const phaseP = R.phase === 'load' ? (R.shellT + dt) / R.cyc : R.t / pd;
       if (R.eventPhase !== R.phase) { R.eventPhase = R.phase; R.sounds = G.Guns.reloadEvents(inst.id, R.empty, R.phase, R.port); }
       this.reloadSounds(R, phaseP, R.sounds, R.phase + ':' + (R.cycle || 0));
@@ -391,7 +394,7 @@ const P = G.Player = {
           if (inst.mag >= def.mag || a.ammo[def.ammo] <= 0) { R.phase = 'end'; R.t = 0; } else cycle();
         }
       } else if (R.phase === 'end') {
-        if (def.action === 'pump' && R.empty && !R.port && !R.pumped && R.t > 0.12 / (G.RELOAD_SPEED || 1)) { R.pumped = true; this.pumpT = 0.05; }
+        if (def.action === 'pump' && R.empty && !R.port && !R.pumped && R.t > 0.12 * G.Guns.reloadFactor(R.empty) / (G.RELOAD_SPEED || 1)) { R.pumped = true; this.pumpT = 0.05; }
         if (R.t > pd) this.reload = null;
       }
     }

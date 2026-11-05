@@ -441,14 +441,14 @@ class Bot {
     this.aimOff.x += (Math.random() - 0.5) * def.recoilH * dist;
     G.FX.muzzle(_m, _d.x, _d.y, _d.z, def.cls === 'shotgun');
     if (G.camera.position.distanceTo(_m) < 80) G.FX.light(_m, 0xffaa55, 14, 0.05, 10);
-    G.Audio.shot(def.sound, a.pos, false);
+    G.Audio.shot(inst.id, a.pos, false);
     G.Game.onShot(a, def);
     if (a.model) a.model.kick = 1;
   }
   startReload() {
     const a = this.a, inst = a.weapons[a.cur], def = inst && G.WEAPONS[inst.id];
     if (!inst || this.reloadT > 0 || a.ammo[def.ammo] <= 0 || inst.mag >= def.mag) return;
-    this.reloadT = def.reloadType === 'shell' || def.reloadType === 'break' ? Math.min(3.4, 0.8 + (def.mag - inst.mag) * def.reload) : def.reload * 1.1;
+    this.reloadT = (def.reloadType === 'shell' || def.reloadType === 'break' ? Math.min(3.4, 0.8 + (def.mag - inst.mag) * def.reload) : def.reload * 1.1) * G.Guns.reloadFactor(inst.mag===0);
     this.reloadW = a.cur;
   }
   finishReload() {

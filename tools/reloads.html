@@ -32,12 +32,13 @@ input[type=range]{width:100%;accent-color:#dfbc76;margin:12px 0}#status{font-siz
 <label for="view">카메라</label><select id="view"><option value="fp">1인칭</option><option value="arms">팔 전체</option><option value="side">왼쪽 측면</option><option value="front">앞쪽 사선</option><option value="rightSide">오른쪽 측면</option><option value="top">위에서 보기</option><option value="leftHand">왼손 확대</option><option value="rightHand">오른손 확대</option></select>
 <button id="restart" class="primary" disabled>처음부터 장전</button>
 <div class="row"><button id="play" disabled>일시정지</button><button id="sound">소리 켜기</button></div>
+<button id="shotSound">발사음 듣기</button>
 <div id="status" role="status">총기 모델을 준비하는 중…</div>
 <p class="hint">타임라인을 움직이면 원하는 순간에서 멈춰 볼 수 있습니다. 사격·이동 없이 게임과 같은 손·부품·재장전 로직만 실행합니다.</p>
 <p class="hint">모델이 없으면 절차적 모델을 사용합니다.<br><a href="index.html">게임으로 돌아가기</a></p>
 </aside>
 <section id="stage" aria-label="장전 애니메이션 미리보기">
-<div id="caption"><div class="badge">RELOAD STUDY / BUILD 19</div><div id="weaponName">LOADING</div><div id="styleName"></div></div>
+<div id="caption"><div class="badge">RELOAD STUDY / BUILD 20</div><div id="weaponName">LOADING</div><div id="styleName"></div></div>
 <div id="timebar"><label for="timeline">장전 진행 <span id="clock">0.00 / 0.00 s</span></label><input id="timeline" type="range" min="0" max="1" step="0.001" value="0" disabled><div class="hint" id="ammo">실제 탄 수와 재장전 단계를 표시합니다.</div></div>
 </section>
 </main>
@@ -49,11 +50,11 @@ import {FBXLoader} from 'three/addons/loaders/FBXLoader.js';
 import {MeshoptDecoder} from 'three/addons/libs/meshopt_decoder.module.js';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 window.THREE = {...T, mergeGeometries, GLTFLoader, FBXLoader, MeshoptDecoder};
-window.LZ_BUILD = '19';
+window.LZ_BUILD = '20';
 const $ = id => document.getElementById(id);
 try {
-  for (const file of ['core','gunlib','gunmodels','weapons','player']) await new Promise((resolve,reject) => {
-    const s=document.createElement('script'); s.src=`js/${file}.js?v=19`; s.onload=resolve; s.onerror=()=>reject(new Error(file+' 로드 실패')); document.body.appendChild(s);
+  for (const file of ['core','gunlib','gunmodels','weapons','weapon-audio','player']) await new Promise((resolve,reject) => {
+    const s=document.createElement('script'); s.src=`js/${file}.js?v=20`; s.onload=resolve; s.onerror=()=>reject(new Error(file+' 로드 실패')); document.body.appendChild(s);
   });
   const G=window.G, stage=$('stage'), renderer=new T.WebGLRenderer({antialias:true});
   renderer.setPixelRatio(Math.min(devicePixelRatio,1.5)); renderer.toneMapping=T.ACESFilmicToneMapping; renderer.toneMappingExposure=1;
@@ -67,7 +68,7 @@ try {
   G.VM.init(scene);
   const P=G.Player, VM=G.VM, click=G.Audio.click.bind(G.Audio);
   let id='ar7', elapsed=0, duration=1, playing=true, wait=0, sound=false, seeking=false;
-  G.Audio.click=kind=>{if(sound&&!seeking)click(kind)};
+  G.Audio.click=(kind,weaponId)=>{if(sound&&!seeking)click(kind,weaponId)};
   P.ejectShell=()=>{}; // 독립 미리보기에는 월드가 없어 화면 밖으로 나가는 탄피는 생략한다.
   const state={ads:0,sprint:false,crouch:false,lookDX:0,lookDY:0,moving:0,phase:0,landDip:0,raise:1,pumpP:-1,cycleP:-1,scope:null,hideVM:false,throwP:-1,punchP:-1};
   for(const key of G.GUN_IDS){const o=document.createElement('option');o.value=key;o.textContent=G.WEAPONS[key].name;$('weapon').appendChild(o)}
@@ -127,7 +128,8 @@ try {
   $('restart').onclick=configure;
   $('play').onclick=()=>{playing=!playing;$('play').textContent=playing?'일시정지':'재생'};
   $('timeline').oninput=()=>{playing=false;$('play').textContent='재생';seek(Number($('timeline').value)*duration)};
-  $('sound').onclick=()=>{G.Audio.init();if(G.Audio.ctx)G.Audio.ctx.resume();sound=!sound;$('sound').textContent=sound?'소리 끄기':'소리 켜기'};
+  $('sound').onclick=async()=>{if(!sound){G.Audio.init();if(G.Audio.ctx){await G.Audio.ctx.resume();await G.WeaponAudio.load(G.Audio.ctx)}}sound=!sound;$('sound').textContent=sound?'소리 끄기':'소리 켜기'};
+  $('shotSound').onclick=async()=>{G.Audio.init();if(G.Audio.ctx){await G.Audio.ctx.resume();await G.WeaponAudio.load(G.Audio.ctx);G.Audio.shot(id,null,true)}};
   for(const name of ['weapon','restart','play','timeline'])$(name).disabled=false;
   configure();
   let previous=performance.now();

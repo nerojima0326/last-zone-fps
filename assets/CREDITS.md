@@ -44,3 +44,7 @@ MIT 라이선스 에셋은 게임을 배포할 때 위 라이선스 파일(저�
 - `char/`(군인 아틀라스 텍스처), `models/rifle/` 은 `_src/` 원본을 `tools/convert-models.py` 로 변환한 결과입니다.
 - `models/guns/*.glb` 는 `tools/guns/run.cjs build` 로 만든 결과입니다 (실사 3종은 위 팩 원본을 정규화·1K 텍스처, 나머지는 직접 설계). 자세한 방법은 `tools/guns/README.md`.
 - `_src/` 는 변환에만 쓰이므로 (약 300MB) 지워도 게임에는 영향이 없습니다.
+
+## 총성 · 장전음 (v20)
+
+실제 총성은 The Free Firearm Sound Library(CC0), 기계 조작음은 SpringySpringo의 에어소프트 녹음(CC0)을 편집했다. 총기별 매핑·가공·출처는 [오디오 출처](audio/weapons/CREDITS.md)를 참고한다.
