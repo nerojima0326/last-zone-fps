@@ -11,11 +11,13 @@
       "cues": [
         {
           "offset": 0.0,
-          "duration": 0.85
+          "duration": 0.85,
+          "attackTrim": 0.011973
         },
         {
           "offset": 1.25,
-          "duration": 0.85
+          "duration": 0.85,
+          "attackTrim": 0.015964
         }
       ],
       "source": "AR-15/D_32P.wav",
@@ -38,11 +40,13 @@
       "cues": [
         {
           "offset": 0.0,
-          "duration": 0.9183673469387755
+          "duration": 0.9183673469387755,
+          "attackTrim": 0.009977
         },
         {
           "offset": 1.25,
-          "duration": 0.9183673469387755
+          "duration": 0.9183673469387755,
+          "attackTrim": 0.015964
         }
       ],
       "source": "AK-47/C_28P.wav",
@@ -65,11 +69,13 @@
       "cues": [
         {
           "offset": 0.0,
-          "duration": 0.8333333333333334
+          "duration": 0.8333333333333334,
+          "attackTrim": 0.012971
         },
         {
           "offset": 1.25,
-          "duration": 0.8333333333333334
+          "duration": 0.8333333333333334,
+          "attackTrim": 0.013968
         }
       ],
       "source": "SKS/U_19P.wav",
@@ -92,11 +98,13 @@
       "cues": [
         {
           "offset": 0.0,
-          "duration": 0.9793877551020408
+          "duration": 0.9793877551020408,
+          "attackTrim": 0.00898
         },
         {
           "offset": 1.25,
-          "duration": 0.9793877551020408
+          "duration": 0.9793877551020408,
+          "attackTrim": 0.011973
         }
       ],
       "source": "Marlin 336/I_22P.wav",
@@ -119,11 +127,13 @@
       "cues": [
         {
           "offset": 0.0,
-          "duration": 1.0937641723356009
+          "duration": 1.0937641723356009,
+          "attackTrim": 0.015964
         },
         {
           "offset": 1.25,
-          "duration": 1.0937641723356009
+          "duration": 1.0937641723356009,
+          "attackTrim": 0.013968
         }
       ],
       "source": "Tikka/W_29P.wav",
@@ -146,11 +156,13 @@
       "cues": [
         {
           "offset": 0.0,
-          "duration": 0.95
+          "duration": 0.95,
+          "attackTrim": 0.010975
         },
         {
           "offset": 1.25,
-          "duration": 0.95
+          "duration": 0.95,
+          "attackTrim": 0.013968
         }
       ],
       "source": "Model 12/K_22P.wav",
@@ -173,11 +185,13 @@
       "cues": [
         {
           "offset": 0.0,
-          "duration": 0.8252607709750567
+          "duration": 0.8252607709750567,
+          "attackTrim": 0.00898
         },
         {
           "offset": 1.25,
-          "duration": 0.8252607709750567
+          "duration": 0.8252607709750567,
+          "attackTrim": 0.012971
         }
       ],
       "source": "Nova/O_21P.wav",
@@ -200,11 +214,13 @@
       "cues": [
         {
           "offset": 0.0,
-          "duration": 1.105283446712018
+          "duration": 1.105283446712018,
+          "attackTrim": 0.015964
         },
         {
           "offset": 1.25,
-          "duration": 1.105283446712018
+          "duration": 1.105283446712018,
+          "attackTrim": 0.009977
         }
       ],
       "source": "Mossberg/N_30P.wav",
@@ -227,11 +243,13 @@
       "cues": [
         {
           "offset": 0.0,
-          "duration": 0.9278458049886621
+          "duration": 0.9278458049886621,
+          "attackTrim": 0.009977
         },
         {
           "offset": 1.25,
-          "duration": 0.9278458049886621
+          "duration": 0.9278458049886621,
+          "attackTrim": 0.013968
         }
       ],
       "source": "Nova/O_21P.wav",
@@ -254,11 +272,13 @@
       "cues": [
         {
           "offset": 0.0,
-          "duration": 0.721156462585034
+          "duration": 0.721156462585034,
+          "attackTrim": 0.014966
         },
         {
           "offset": 1.25,
-          "duration": 0.721156462585034
+          "duration": 0.721156462585034,
+          "attackTrim": 0.00898
         }
       ],
       "source": "Mossberg/N_30P.wav",
@@ -281,11 +301,13 @@
       "cues": [
         {
           "offset": 0.0,
-          "duration": 0.686281179138322
+          "duration": 0.686281179138322,
+          "attackTrim": 0.014966
         },
         {
           "offset": 1.25,
-          "duration": 0.686281179138322
+          "duration": 0.686281179138322,
+          "attackTrim": 0.012971
         }
       ],
       "source": "Walther PPQ/X_39P.wav",
@@ -308,11 +330,13 @@
       "cues": [
         {
           "offset": 0.0,
-          "duration": 0.5607482993197279
+          "duration": 0.5607482993197279,
+          "attackTrim": 0.011973
         },
         {
           "offset": 1.25,
-          "duration": 0.5607482993197279
+          "duration": 0.5607482993197279,
+          "attackTrim": 0.016961
         }
       ],
       "source": "Bersa/F_47P.wav",
@@ -335,11 +359,13 @@
       "cues": [
         {
           "offset": 0.0,
-          "duration": 0.8
+          "duration": 0.8,
+          "attackTrim": 0.009977
         },
         {
           "offset": 1.25,
-          "duration": 0.8
+          "duration": 0.8,
+          "attackTrim": 0.009977
         }
       ],
       "source": "1911/A_42P.wav",
@@ -362,11 +388,13 @@
       "cues": [
         {
           "offset": 0.0,
-          "duration": 1.0869614512471655
+          "duration": 1.0869614512471655,
+          "attackTrim": 0.010975
         },
         {
           "offset": 1.25,
-          "duration": 1.0869614512471655
+          "duration": 1.0869614512471655,
+          "attackTrim": 0.010975
         }
       ],
       "source": "1911/A_42P.wav",
@@ -389,11 +417,13 @@
       "cues": [
         {
           "offset": 0.0,
-          "duration": 0.8763038548752834
+          "duration": 0.8763038548752834,
+          "attackTrim": 0.013968
         },
         {
           "offset": 1.25,
-          "duration": 0.8763038548752834
+          "duration": 0.8763038548752834,
+          "attackTrim": 0.017959
         }
       ],
       "source": "Smith & Wesson 642/V_27P.wav",

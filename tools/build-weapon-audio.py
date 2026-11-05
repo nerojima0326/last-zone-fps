@@ -52,7 +52,11 @@ for key,(source,rate,body,bass,lp,duration) in SHOTS.items():
   clip=x[round(t*SR):round((t+duration)*SR)];clip=clip*(.72/max(float(np.max(np.abs(clip))),1e-8))
   chain=f'asetrate={SR*rate},aresample={SR},highpass=f=65,lowpass=f={lp},equalizer=f={body}:t=o:w=1.5:g={bass},acompressor=threshold=0.04:ratio=3:attack=0.1:release=100:makeup=3.5,alimiter=limit=0.75:level=false'
   clip=fade(filter_pcm(clip,chain));clip*=.80/max(float(np.max(np.abs(clip))),1e-8);assert len(clip)<STRIDE*SR
-  pos=round(i*STRIDE*SR);bank[pos:pos+len(clip)]=clip;cues.append({'offset':i*STRIDE,'duration':len(clip)/SR})
+  pos=round(i*STRIDE*SR);bank[pos:pos+len(clip)]=clip
+  # Remove pre-attack noise at playback while retaining 2 ms before the transient.
+  window=max(1,round(SR*.001));section=clip[:round(SR*.09)];env=np.max(np.abs(section[:len(section)//window*window].reshape(-1,window)),axis=1)
+  hits=np.flatnonzero(env>env.max()*.18);trim=max(0,(int(hits[0])-2)*window/SR) if len(hits) else 0
+  cues.append({'offset':i*STRIDE,'duration':len(clip)/SR,'attackTrim':round(trim,6)})
  manifest['shots'][key]={**encode(bank,key+'.mp3'),'cues':cues,'source':source,'sourceSha256':hashlib.sha256(path.read_bytes()).hexdigest(),'sourceOnsets':times,'filter':chain,'peak':.80,'rate':rate,'bodyHz':body,'bodyDb':bass,'lowpass':lp}
 foley={
  'pistol-out':('pistol-reload.wav',.11,.30),'pistol-in':('pistol-reload.wav',.63,1.02),'pistol-close':('pistol-reload.wav',1.24,1.45),

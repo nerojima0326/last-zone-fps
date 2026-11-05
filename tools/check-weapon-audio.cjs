@@ -62,9 +62,11 @@ const audio=await page.evaluate(async timing=>{
   else if(kind==='far'){bus.spatial=G.Audio.spatial.bind(G.Audio);W.fire(bus,id,{x:120,y:0,z:0},false)}
   else W.fire(bus,id,null,true);
   const b=await c.startRendering(),data=b.getChannelData(0),stats=energy(data);
+  if(kind==='shot'){const start=data.findIndex(v=>Math.abs(v)>.025);if(start<0||start/44100>.025)throw Error(id+' delayed shot attack: '+start/44100)}
   if(!Number.isFinite(stats.rms)||stats.active<500||stats.peak>1.001)throw Error(id+' '+kind+' silent, invalid, or clipped '+JSON.stringify(stats));
   return {...stats,hash:fingerprint(data)};
  }
+ const originalFoley=W.foley;let extraClick=0;W.foley=()=>{extraClick++};await render('ar7','shot');W.foley=originalFoley;if(extraClick)throw Error('extra click layered on gunshot');
  for(const id of G.GUN_IDS){const shot=await render(id,'shot'),reload=await render(id,'reload');output.push({id,shot,reload})}
  for(const row of output)if(row.reload.peak>=row.shot.peak*.65)throw Error(row.id+' handling masks the gun report');
  for(const kind of ['shot','reload'])if(new Set(output.map(r=>r[kind].hash)).size!==15)throw Error('weapon '+kind+' audio is shared');
