@@ -1,74 +1,145 @@
-"""Build compact browser banks from the credited CC0 originals (requires ffmpeg, numpy).
-Usage: python tools/build-weapon-audio.py /path/to/lz-audio-sources
-The source folder contains extracted/Prepared SFX Library plus the three foley WAVs.
-"""
-import json,sys,subprocess,hashlib
-from pathlib import Path
+# Free Firearm Sound Library(CC0) 마스터 트랙 → 게임용 총소리·조작음 뱅크
+# 실총 녹음 → 게임 사운드 뱅크. 사용: python3 tools/build-weapon-audio.py <FreeFirearmsSFXLibrary 클론> assets/audio/weapons
+# 원본: https://github.com/buddingmonkey/FreeFirearmsSFXLibrary (Master Tracks, CC0). ffmpeg·numpy 필요.
+import sys, os, json, glob, subprocess, hashlib
 import numpy as np
-SRC=Path(sys.argv[1]); OUT=Path(__file__).resolve().parents[1]/'assets/audio/weapons';OUT.mkdir(parents=True,exist_ok=True)
-SR=44100; STRIDE=1.25
-# Fictional weapons: representative recordings, not a claim of exact model/calibre capture.
-SHOTS={
- 'ar7':('AR-15/D_32P.wav',1.00,125,1.5,15500,.85),
- 'ka47':('AK-47/C_28P.wav',.98,180,3.5,12500,.90),
- 'sc17':('SKS/U_19P.wav',1.02,155,2.0,14500,.85),
- 'mk14':('Marlin 336/I_22P.wav',.97,130,4.0,13500,.95),
- 'kr98':('Tikka/W_29P.wav',.96,110,4.0,15000,1.05),
- 's12':('Model 12/K_22P.wav',1.00,100,3.0,10500,.95),
- 'm1014':('Nova/O_21P.wav',1.03,130,2.5,13000,.85),
- 'db2':('Mossberg/N_30P.wav',.95,90,5.0,9500,1.05),
- 'sa12':('Nova/O_21P.wav',.97,160,4.0,11000,.90),
- 'aa12':('Mossberg/N_30P.wav',1.04,145,2.0,12000,.75),
- 'p92':('Walther PPQ/X_39P.wav',1.02,220,-1.0,16500,.70),
- 'g18':('Bersa/F_47P.wav',1.07,250,-2.0,15500,.60),
- 'm1911':('1911/A_42P.wav',1.00,170,1.5,12500,.80),
- 'de7':('1911/A_42P.wav',.92,110,5.0,14500,1.00),
- 'r45':('Smith & Wesson 642/V_27P.wav',.97,185,3.0,14000,.85),
+sys.path.insert(0, os.path.dirname(__file__))
+# 게임 총 → Free Firearm Sound Library 마스터 트랙 (CC0)
+SHOTS = {  # own(뒤에서 = 쏘는 사람 시점) 2개, near 1, far 1, rate
+ 'ar7':  (['D_27','D_29'], 'D_31', 'D_25', 1.0),
+ 'ka47': (['C_39','C_42'], 'C_25', 'C_17', 1.0),
+ 'sc17': (['B_17','B_18'], 'B_23', 'B_21', 1.04),
+ 'mk14': (['E_20','E_23'], 'E_22', 'E_17', 1.0),
+ 'kr98': (['M_20','M_22'], 'M_19', 'M_23', 1.0),
+ 's12':  (['O_18','O_20'], 'O_19', 'O_15', 1.0),
+ 'm1014':(['K_19','K_21'], 'K_20', 'K_16', 1.0),
+ 'db2':  (['N_27','N_29'], 'N_28', 'N_24', 0.97),
+ 'sa12': (['H_18','H_20'], 'H_19', 'H_15', 1.0),
+ 'aa12': (['H_20','H_18'], 'H_21', 'H_17', 1.06),
+ 'p92':  (['F_44','F_45'], 'F_46', 'F_42', 1.0),
+ 'g18':  (['G_26','G_32'], 'G_25', 'G_13', 1.0),
+ 'm1911':(['A_35','A_36'], 'A_41', 'A_39', 1.0),
+ 'de7':  (['L_20','L_22'], 'L_21', 'L_17', 0.97),
+ 'r45':  (['V_24','V_26'], 'V_25', 'V_21', 1.0),
 }
-def decode(p):
- return np.frombuffer(subprocess.check_output(['ffmpeg','-v','error','-i',str(p),'-ac','1','-ar',str(SR),'-f','f32le','-']),'<f4').copy()
-def filter_pcm(x,chain):
- return np.frombuffer(subprocess.check_output(['ffmpeg','-v','error','-f','f32le','-ar',str(SR),'-ac','1','-i','-','-af',chain,'-f','f32le','-'],input=x.astype('<f4').tobytes()),'<f4').copy()
-def encode(x,name):
- p=OUT/name
- subprocess.run(['ffmpeg','-v','error','-y','-f','f32le','-ar',str(SR),'-ac','1','-i','-','-c:a','libmp3lame','-b:a','96k',str(p)],input=x.astype('<f4').tobytes(),check=True)
- return {'path':name,'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
-def fade(x,attack=.0005,release=.025):
- x=x.copy();n=min(len(x)//2,max(1,round(SR*attack)));m=min(len(x)//2,max(1,round(SR*release)));x[:n]*=np.linspace(0,1,n);x[-m:]*=np.linspace(1,0,m);return x
-def onsets(x):
- n=441;env=np.sqrt(np.mean(x[:len(x)//n*n].reshape(-1,n)**2,axis=1));idx=np.flatnonzero(env>env.max()*.38)
- groups=np.split(idx,np.flatnonzero(np.diff(idx)>40)+1);peaks=[int(g[np.argmax(env[g])]) for g in groups if len(g)]
- assert len(peaks)>=2,('need two independent shots',peaks)
- out=[]
- for peak in peaks[:2]:
-  start=peak
-  while start>0 and env[start-1]>env[peak]*.075:start-=1
-  out.append(max(0,start/100-.006))
- return out
-manifest={'sourceArchiveSha256':hashlib.sha256((SRC/'firearms.7z').read_bytes()).hexdigest(),'schema':1,'sampleRate':SR,'stride':STRIDE,'shots':{},'foley':{}}
-for key,(source,rate,body,bass,lp,duration) in SHOTS.items():
- path=SRC/'extracted/Prepared SFX Library'/source;x=decode(path);times=onsets(x);bank=np.zeros(round(STRIDE*2*SR),dtype=np.float32);cues=[]
- for i,t in enumerate(times):
-  clip=x[round(t*SR):round((t+duration)*SR)];clip=clip*(.72/max(float(np.max(np.abs(clip))),1e-8))
-  chain=f'asetrate={SR*rate},aresample={SR},highpass=f=65,lowpass=f={lp},equalizer=f={body}:t=o:w=1.5:g={bass},acompressor=threshold=0.04:ratio=3:attack=0.1:release=100:makeup=3.5,alimiter=limit=0.75:level=false'
-  clip=fade(filter_pcm(clip,chain));clip*=.80/max(float(np.max(np.abs(clip))),1e-8);assert len(clip)<STRIDE*SR
-  pos=round(i*STRIDE*SR);bank[pos:pos+len(clip)]=clip
-  # Remove pre-attack noise at playback while retaining 2 ms before the transient.
-  window=max(1,round(SR*.001));section=clip[:round(SR*.09)];env=np.max(np.abs(section[:len(section)//window*window].reshape(-1,window)),axis=1)
-  hits=np.flatnonzero(env>env.max()*.18);trim=max(0,(int(hits[0])-2)*window/SR) if len(hits) else 0
-  cues.append({'offset':i*STRIDE,'duration':len(clip)/SR,'attackTrim':round(trim,6)})
- manifest['shots'][key]={**encode(bank,key+'.mp3'),'cues':cues,'source':source,'sourceSha256':hashlib.sha256(path.read_bytes()).hexdigest(),'sourceOnsets':times,'filter':chain,'peak':.80,'rate':rate,'bodyHz':body,'bodyDb':bass,'lowpass':lp}
-foley={
- 'pistol-out':('pistol-reload.wav',.11,.30),'pistol-in':('pistol-reload.wav',.63,1.02),'pistol-close':('pistol-reload.wav',1.24,1.45),
- 'rifle-out':('rifle-reload.wav',.19,.38),'rifle-in':('rifle-reload.wav',.99,1.15),'rifle-close':('rifle-reload.wav',1.19,1.39),
- 'open':('pump.wav',.025,.18),'close':('pump.wav',.185,.39),'shell':('rifle-reload.wav',.44,.65),
- 'dry':('rifle-reload.wav',.26,.29),'cloth':('rifle-reload.wav',.42,.57),
+# 조작음: magout, magin, open(당김/열기), close(놓음/닫힘), shell(한 발), port(약실에 한 발), dry
+HANDLE = {
+ 'ar7':  dict(magout='D_5', magin='D_4', open='D_9', close='D_13', dry='D_16'),
+ 'ka47': dict(magout='C_11', magin='C_10', open='C_12', close='C_13', dry='C_7'),
+ 'sc17': dict(magout='D_5', magin='D_4', open='U_3', close='U_4', dry='U_6'),
+ 'mk14': dict(magout='G_9', magin='G_8', open='U_1', close='U_2', dry='U_6'),
+ 'kr98': dict(magout='W_5', magin='W_4', open='W_9', close='W_12', dry='W_13', up='W_6', down='M_7'),
+ 's12':  dict(open='O_4', close='O_5', shell='O_3', port='O_7', dry='O_8'),
+ 'm1014':dict(open='U_1', close='U_2', shell='K_3', port='K_13', dry='K_7'),
+ 'db2':  dict(open='H_13', close='H_1', shell='H_7', dry='H_8'),
+ 'sa12': dict(magout='N_11', magin='N_10', open='C_0', close='C_1', dry='N_18'),
+ 'aa12': dict(magout='P_7', magin='P_6', open='P_8', close='U_2', dry='P_1'),
+ 'p92':  dict(magout='F_5', magin='F_4', open='F_8', close='F_17', dry='F_23'),
+ 'g18':  dict(magout='X_5', magin='X_4', open='X_8', close='X_11', dry='X_18'),
+ 'm1911':dict(magout='A_5', magin='A_4', open='A_8', close='A_11', dry='A_19'),
+ 'de7':  dict(magout='A_5', magin='A_4', open='A_8', close='A_17', dry='A_19'),
+ 'r45':  dict(open='V_9', shell='V_3', magin='V_2', close='V_10', dry='V_5'),
 }
-chunks=[];offset=0.;cues={}
-for key,(source,start,end) in foley.items():
- x=decode(SRC/source)[round(start*SR):round(end*SR)];x=fade(x*(.65/max(float(np.max(np.abs(x))),1e-8)),.001,.012)
- cues[key]={'offset':offset,'duration':len(x)/SR,'source':source,'sourceStart':start,'sourceEnd':end,'sourceSha256':hashlib.sha256((SRC/source).read_bytes()).hexdigest()}
- chunks.extend([x,np.zeros(round(.06*SR),dtype=np.float32)]);offset+=(len(x)+round(.06*SR))/SR
-manifest['foley']={**encode(np.concatenate(chunks),'foley.mp3'),'cues':cues}
-(OUT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
-print('Built 15 distinct two-take shot banks and physical foley bank:',sum(p.stat().st_size for p in OUT.glob('*.mp3')),'bytes')
+EXTRA = {'switch': 'C_4'}
+SRC = sys.argv[1]; OUT = sys.argv[2]
+SR = 44100
+paths = {os.path.basename(p)[:-4]: p for p in glob.glob(os.path.join(SRC, 'Master Tracks', '*', '*.wav'))}
+
+def load(i, ch=2, hp=0):
+    af = ['-af', f'highpass=f={hp}:poles=2'] if hp else []
+    raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', paths[i], '-ac', str(ch), '-ar', str(SR)] + af + ['-f', 'f32le', '-'], capture_output=True, check=True).stdout
+    return np.frombuffer(raw, np.float32).reshape(-1, ch).copy()
+
+def env(x, win):
+    a = np.abs(x).max(1)
+    k = max(1, int(win * SR))
+    c = np.convolve(a, np.ones(k) / k, 'same')
+    return c
+
+def events(x, thr_rel, gap, win=0.004):
+    e = env(x, win); pk = e.max(); on = e > pk * thr_rel
+    ev = []; i = 0; n = len(e)
+    while i < n:
+        if on[i]:
+            s = i; last = i
+            while i < n and (on[i] or i - last < gap * SR):
+                if on[i]: last = i
+                i += 1
+            ev.append((s, last, e[s:last + 1].max()))
+        else: i += 1
+    return ev, e
+
+def fade(y, tail):
+    n = len(y); k = min(n, int(tail * SR))
+    y[n - k:] *= np.linspace(1, 0, k)[:, None] ** 2
+    y[:int(0.002 * SR)] *= np.linspace(0, 1, int(0.002 * SR))[:, None]
+    return y
+
+def shot(i, length, stereo, take=0):
+    x = load(i, 2)
+    ev, e = events(x, 0.35, 0.5, 0.002)
+    ev = [v for v in ev if v[2] > e.max() * 0.5]
+    s = ev[min(take, len(ev) - 1)][0]
+    # 다음 총성 전까지
+    nxt = [v[0] for v in ev if v[0] > s + 0.1 * SR]
+    end = min(len(x), s + int(length * SR), (nxt[0] - int(0.02 * SR)) if nxt else len(x))
+    y = x[max(0, s - int(0.004 * SR)):end].copy()
+    if not stereo: y = y.mean(1, keepdims=True)
+    y = fade(y, min(0.5, len(y) / SR * 0.5))
+    return y / (np.abs(y).max() + 1e-9) * 0.97, len(ev)
+
+LEN = {'magout': 0.35, 'magin': 0.3, 'open': 0.45, 'close': 0.3, 'shell': 0.32, 'port': 0.35, 'dry': 0.18, 'up': 0.2, 'down': 0.22, 'switch': 0.25}
+def handle(i, kind):
+    x = load(i, 1, 150)
+    ev, e = events(x, 0.12, 0.3, 0.004)
+    if not ev: raise RuntimeError('no event ' + i)
+    pk = np.median([v[2] for v in ev])
+    best = min(ev, key=lambda v: abs(v[2] - pk))
+    s0, s1 = best[0], best[1]
+    seg = e[s0:s1 + 1]; p = s0 + int(seg.argmax()); P = e[p]
+    # 시작: 정점 앞 0.25초 안에서 정점의 25%를 처음 넘는 곳 (open 은 당기는 소리부터)
+    back = int((0.25 if kind in ('open', 'port') else 0.08) * SR)
+    w = e[max(0, p - back):p + 1]; idx = np.nonzero(w > P * 0.25)[0]
+    s = max(0, p - back) + (idx[0] if len(idx) else len(w) - 1) - int(0.008 * SR)
+    lim = min(len(x), s + int(LEN.get(kind, 0.3) * SR)); j = p
+    while j < lim and (e[j] > P * 0.012 or j < p + int(0.1 * SR)): j += 1
+    y = x[max(0, s):min(lim, j + int(0.04 * SR))].copy()
+    y = fade(y, min(0.06, len(y) / SR * 0.3))
+    return y / (np.abs(y).max() + 1e-9) * 0.9, len(ev)
+
+def enc(y, path, ch, kbps):
+    y16 = np.clip(y, -1, 1)
+    p = subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'f32le', '-ar', str(SR), '-ac', str(ch), '-i', '-', '-b:a', f'{kbps}k', path], input=y16.astype(np.float32).tobytes(), check=True)
+    return hashlib.sha256(open(path, 'rb').read()).hexdigest()
+
+def bank(cues, ch, gap=0.25):
+    pad = np.zeros((int(gap * SR), ch), np.float32)
+    parts = [pad]; meta = {}; t = gap
+    for name, y in cues:
+        meta[name] = {'offset': round(t, 4), 'duration': round(len(y) / SR, 4)}
+        parts += [y.astype(np.float32), pad]; t += len(y) / SR + gap
+    return np.concatenate(parts), meta
+
+os.makedirs(OUT, exist_ok=True)
+man = {'schema': 2, 'sampleRate': SR, 'source': 'The Free Firearm Sound Library (CC0 1.0) master tracks', 'weapons': {}}
+log = []
+for gid in SHOTS:
+    own, near, far, rate = SHOTS[gid]
+    st = [];
+    for k, i in enumerate(own):
+        y, n = shot(i, 1.6, True); st.append((f'own{k}', y)); log.append(f'{gid} own {i} takes={n} {len(y)/SR:.2f}s')
+    sb, sm = bank(st, 2)
+    h1 = enc(sb, os.path.join(OUT, f'{gid}-shot.mp3'), 2, 160)
+    mono = []
+    y, n = shot(near, 1.4, False); mono.append(('near', y)); log.append(f'{gid} near {near} takes={n}')
+    y, n = shot(far, 2.2, False); mono.append(('far', y)); log.append(f'{gid} far {far} takes={n}')
+    for ev, i in HANDLE[gid].items():
+        y, n = handle(i, ev); mono.append((ev, y)); log.append(f'{gid} {ev} {i} takes={n} {len(y)/SR:.2f}s')
+    mb, mm = bank(mono, 1)
+    h2 = enc(mb, os.path.join(OUT, f'{gid}-fx.mp3'), 1, 112)
+    man['weapons'][gid] = {'rate': rate, 'shot': {'path': f'{gid}-shot.mp3', 'sha': h1[:12], 'cues': sm}, 'fx': {'path': f'{gid}-fx.mp3', 'sha': h2[:12], 'cues': mm}, 'src': {'own': own, 'near': near, 'far': far, **HANDLE[gid]}}
+for ev, i in EXTRA.items():
+    y, n = handle(i, ev); b, m = bank([(ev, y)], 1); h = enc(b, os.path.join(OUT, f'{ev}.mp3'), 1, 96)
+    man[ev] = {'path': f'{ev}.mp3', 'sha': h[:12], 'cues': m, 'src': i}
+json.dump(man, open(os.path.join(OUT, 'manifest.json'), 'w'), indent=1)
+print('\n'.join(log))
