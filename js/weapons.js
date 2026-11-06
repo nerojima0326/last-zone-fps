@@ -708,18 +708,18 @@ const SCOPE_ADS = { reddot: 0.34, holo: 0.32, x2: 0.24, x4: 0.2, x8: 0.17 };
 //  자세: roll(+ 반시계: 총 윗면이 왼쪽으로) · yaw · pitch(+ 총구 위) · px/py/pz, ch* = 장전 손잡이·슬라이드를 당길 때, heavy = 무게로 처짐, hx = 탄창 잡는 손 x
 //  eject/release: 총 공간 기준점 (배출구, 노리쇠 멈치 버튼)
 const RSTYLE = {
-  ar7: { s: 'ar', roll: -0.42, yaw: 0.22, pitch: 0.1, px: -0.075, py: 0.07, pz: 0.03, chRoll: -0.28, chYaw: 0.16, chPitch: 0.13 },
-  ka47: { s: 'ak', roll: -0.3, yaw: 0.16, pitch: 0.17, px: -0.06, py: 0.06, pz: 0.02, chRoll: 0.42, chYaw: -0.1, chPitch: 0.06, chX: 0.02 },
-  sc17: { s: 'scar', roll: -0.36, yaw: 0.27, pitch: 0.08, px: -0.08, py: 0.075, pz: 0.04, chRoll: -0.62, chYaw: 0.14, chPitch: 0.1, chZ: 0.05 },
-  mk14: { s: 'm14', roll: -0.46, yaw: 0.2, pitch: 0.13, px: -0.07, py: 0.07, pz: 0.03, chRoll: 0.28, chYaw: -0.1, chPitch: 0.04 },
+  ar7: { s: 'ar', roll: -0.34, yaw: 0.18, pitch: 0.07, px: -0.06, py: 0.05, pz: 0.03, chRoll: -0.14, chYaw: 0.08, chPitch: 0.05 },
+  ka47: { s: 'ak', roll: -0.26, yaw: 0.14, pitch: 0.08, px: -0.05, py: 0.04, pz: 0.02, chRoll: -0.1, chYaw: 0.06, chPitch: 0.02, chX: 0.01 },
+  sc17: { s: 'scar', roll: -0.32, yaw: 0.27, pitch: 0.08, px: -0.08, py: 0.075, pz: 0.04, chRoll: -0.3, chYaw: 0.14, chPitch: 0.1, chZ: 0.05 },
+  mk14: { s: 'm14', roll: -0.38, yaw: 0.2, pitch: 0.13, px: -0.07, py: 0.07, pz: 0.03, chRoll: -0.1, chYaw: 0.06, chPitch: 0.04 },
   kr98: { s: 'bolt', roll: -0.34, yaw: 0.18, pitch: 0.09, px: -0.07, py: 0.065, pz: 0.03 },
-  sa12: { s: 'saiga', roll: -0.5, yaw: 0.25, pitch: 0.07, px: -0.07, py: 0.05, pz: 0.03, heavy: 0.03, chRoll: 0.26, chYaw: -0.1, chPitch: -0.04 },
-  aa12: { s: 'drum', roll: -0.55, yaw: 0.3, pitch: 0.18, px: -0.08, py: 0.05, pz: 0.03, heavy: 0.045, hx: -0.052, chRoll: -0.32, chYaw: 0.1, chPitch: 0.08 },
+  sa12: { s: 'saiga', roll: -0.4, yaw: 0.2, pitch: 0.07, px: -0.07, py: 0.05, pz: 0.03, heavy: 0.03, chRoll: -0.1, chYaw: 0.06, chPitch: -0.04 },
+  aa12: { s: 'drum', roll: -0.42, yaw: 0.24, pitch: 0.1, px: -0.08, py: 0.05, pz: 0.03, heavy: 0.045, hx: -0.052, chRoll: -0.25, chYaw: 0.1, chPitch: 0.08 },
   p92: { s: 'release', roll: -0.32, yaw: 0.3, pitch: 0.05, px: -0.07, py: 0.05, pz: -0.07 },
-  g18: { s: 'overhand', roll: -0.42, yaw: 0.32, pitch: 0.06, px: -0.07, py: 0.05, pz: -0.06, chRoll: 0.3, chYaw: -0.1, chPitch: 0.12, chZ: -0.03, chY: 0.02 },
+  g18: { s: 'overhand', roll: -0.34, yaw: 0.26, pitch: 0.05, px: -0.05, py: 0.03, pz: -0.05, chRoll: -0.12, chYaw: 0.1, chPitch: 0.04, chZ: -0.02, chY: -0.01 },
   m1911: { s: 'slingshot', roll: -0.28, yaw: 0.26, pitch: 0.1, px: -0.06, py: 0.05, pz: -0.06, chRoll: -0.15, chYaw: 0.08, chPitch: 0.2, chZ: -0.01, chY: 0.0 },
-  de7: { s: 'heavy', roll: -0.62, yaw: 0.34, pitch: 0.08, px: -0.04, py: 0.04, pz: -0.09, heavy: 0.02, chRoll: 0.25, chYaw: -0.1, chPitch: 0.12, chZ: -0.03 },
-  s12: { s: 'pump', eject: [0.016, 0.072, -0.13], portDuration: 1.35, portClose: 0.82 },
+  de7: { s: 'heavy', roll: -0.45, yaw: 0.28, pitch: 0.08, px: -0.04, py: 0.04, pz: -0.09, heavy: 0.02, chRoll: -0.12, chYaw: 0.1, chPitch: 0.12, chZ: -0.03 },
+  s12: { s: 'pump', eject: [0.016, 0.072, -0.13], portDuration: 1.1, portClose: 0.82 },
   m1014: { s: 'semi', eject: [0.024, 0.044, -0.065], release: [0.0, -0.016, -0.036], portOpen: 0.22, portSeat: 0.54, portClose: 0.7 },
   db2: { s: 'pair' },
   r45: { s: 'revolver' }
@@ -762,7 +762,7 @@ const Guns = G.Guns = {
   mats, CLS, gunData, rstyle,
   reloadFeel(id) { return RFEEL[id] || RFEEL.ar7; },
   // Freeze the original empty state for the entire reload, including every shell cycle.
-  reloadFactor(empty) { return empty ? 1.35 : 1; },
+  reloadFactor(empty) { return empty ? 1.1 : 1; },
   reloadDuration(id,empty) { return G.WEAPONS[id].reload*this.reloadFactor(empty); },
   // 소리도 손·부품과 같은 정규화 시각을 사용한다. 한 프레임에 여러 사건을 지나도 모두 재생한다.
   reloadEvents(id, empty, phase, port) {
@@ -785,7 +785,7 @@ const Guns = G.Guns = {
       list = [[0.16, 'open'], [0.28, 'shell'], [0.6, 'magin'], [0.765, 'close']];
     } else if (phase === 'start') {
       list = def.reloadType === 'break' ? [[0.4, 'open'], [0.52, 'shell']]
-        : port ? [[st.portOpen || 0.14, 'open'], [st.portSeat || 0.47, 'shell'], [st.portClose || (st.s === 'semi' ? 0.63 : 0.68), 'close']] : [];
+        : port ? [[st.portOpen || 0.14, 'open'], [st.portSeat || 0.47, 'port'], [st.portClose || (st.s === 'semi' ? 0.63 : 0.68), 'close']] : [];
     } else if (phase === 'load') list = [[def.reloadType === 'break' ? 0.58 : st.s === 'semi' ? 0.48 : 0.55, 'shell']];
     else list = def.reloadType === 'break' ? [[0.3, 'close']] : [];
     return list.filter(e => Number.isFinite(e[0]) && e[0] >= 0 && e[0] <= 1).sort((a, b) => a[0] - b[0]);
@@ -982,11 +982,11 @@ const Guns = G.Guns = {
     const pull = (t, mode) => {
       let ap, Hc, off;
       if (mode === 'under') { Hc = v(ch, 0.008, -0.008, 0.004); ap = v(ch, 0.065, -0.16, 0.035); off = v(Hc, 0.06, -0.1, 0.09); }
-      else if (mode === 'over') { Hc = v(ch, 0.002, 0.015, 0.0); ap = v(ch, -0.1, 0.16, 0.02); off = v(Hc, -0.025, 0.11, 0.09); }
+      else if (mode === 'over') { Hc = v(ch, 0.002, 0.015, 0.0); ap = v(ch, -0.08, 0.075, 0.02); off = v(Hc, -0.03, 0.06, 0.09); }
       else { Hc = v(ch, -0.012, 0.004, 0.0); ap = v(ch, -0.11, -0.015, 0.015); off = v(Hc, -0.11, 0.02, 0.1); }
       K.chGrab = Hc;K.chMode=mode;
-      const outside=v(ch,-0.15,mode==='over'?0.17:mode==='under'?-0.18:-0.04,0.055);
-      const escape=mode==='under'?v(ch,-0.14,-0.19,0.09):v(ch,-0.17,mode==='over'?0.16:0.035,0.07);
+      const outside=v(ch,-0.15,mode==='over'?0.085:mode==='under'?-0.18:-0.04,0.055);
+      const escape=mode==='under'?v(ch,-0.14,-0.19,0.09):v(ch,-0.17,mode==='over'?0.08:0.035,0.07);
       return { k: [[t-0.015,outside],[t, ap], [t + 0.04, Hc], [t + 0.1, v(Hc, 0, 0, 0.075)], [t + 0.12, off],[t+0.15,escape]], T: { chA: t + 0.04, chB: t + 0.1, chRel: t + 0.103 } };
     };
     const slap = t => {
@@ -1077,8 +1077,8 @@ const Guns = G.Guns = {
     if (S === 'overhand' || heavy) {
       // 손바닥을 슬라이드 위에 덮어 움켜쥐고 뒤로 당겼다 놓는다
       const t = rhythm.rack, pull = heavy ? 0.13 : 0.085, Hg = K.slideGrab = v(St, -0.002, 0.024, 0.012);
-      tail = [[t, v(St, -0.035, 0.075, 0.035)], [t + 0.035, Hg], [t + pull, v(Hg, 0, 0.004, 0.045 * k)],
-        [t + pull + 0.012, v(Hg, -0.012, 0.035, 0.06)], [rhythm.home - 0.035, v(F, -0.02, 0.03, 0.03)], [1, F]];
+      tail = [[t, v(St, -0.03, 0.038, 0.03)], [t + 0.035, Hg], [t + pull, v(Hg, 0, 0.004, 0.045 * k)],
+        [t + pull + 0.012, v(Hg, -0.02, 0.016, 0.055)], [rhythm.home - 0.035, v(F, -0.02, 0.03, 0.03)], [1, F]];
       Te = { slideA: t + 0.035, slideB: t + pull, slideRel: t + pull + 0.004, endE: rhythm.home };
     } else if (S === 'slingshot') {
       // 슬라이드 뒤끝을 엄지·검지로 집어 얼굴 쪽으로 당겼다 놓는다

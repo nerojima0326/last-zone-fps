@@ -368,7 +368,7 @@ const A = G.Audio = {
   },
   click(type,weaponId) {
     if (!this.ok()) return;
-    if(weaponId&&G.WeaponAudio?.event(this,type,weaponId))return;
+    if((weaponId||type==='switch')&&G.WeaponAudio?.event(this,type,weaponId))return;
     const t = this.ctx.currentTime, o = this.out({ g: 1, pan: 0.1, lp: 20000, rev: 0.05 }, 0.5);
     if (type === 'dry') { this.tone(o, t, { type: 'square', f0: 1800, a: 0.12, dur: 0.02 }); this.noise(o, t, { dur: 0.02, a: 0.2, hp: 4000 }); }
     else if (type === 'magout') { this.noise(o, t, { dur: 0.05, a: 0.4, bp: 1200, q: 3 }); this.tone(o, t, { type: 'triangle', f0: 600, f1: 300, a: 0.15, dur: 0.06 }); }
