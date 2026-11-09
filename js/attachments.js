@@ -106,7 +106,7 @@ const A=G.Attachments={models:{},open:false,
   const saved=Object.entries(m.scopes).map(([id,v])=>[v.group,v.group.visible]);
   for(const [id,v] of Object.entries(m.scopes))v.group.visible=id===scope;
   const flash=m.flash?.visible;if(m.flash)m.flash.visible=false;
-  const model=this.previewModel=m.gun.clone(true);
+  const model=this.previewModel=m.id==='g18'&&G.G17Pilot?.ready?G.G17Pilot.preview(scope):m.gun.clone(true);
   for(const [group,visible]of saved)group.visible=visible;if(m.flash)m.flash.visible=flash;
   this.previewScene.add(model);model.updateMatrixWorld(true);const box=new T.Box3().setFromObject(model),center=box.getCenter(new T.Vector3()),size=box.getSize(new T.Vector3());
   const distance=Math.max(size.z*0.95,size.x*2.2,size.y*2.2,0.4);
