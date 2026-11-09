@@ -175,6 +175,7 @@ G.boot = async function () {
   G.VM.init(G.vmScene);
 
   G.UI.init();
+  if(G.G17Pilot)G.G17Pilot.init();
   if(G.Attachments)G.Attachments.initUI();
   G.World.setTimeOfDay(G.UI.opts.tod || 'day');
   G.Player.sens = G.UI.opts.sens;
