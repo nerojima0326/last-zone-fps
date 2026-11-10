@@ -173,7 +173,7 @@ G.Input = {
     this.el = el;
     addEventListener('keydown', e => {
       if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
-      if (['Tab', 'Space', 'KeyF', 'KeyH', 'KeyM', 'KeyG', 'KeyB', 'KeyC', 'KeyR'].includes(e.code)) e.preventDefault();
+      if (['Tab', 'Space', 'KeyF', 'KeyH', 'KeyM', 'KeyG', 'KeyB', 'KeyC', 'KeyR', 'KeyQ', 'KeyE', 'KeyZ', 'KeyL'].includes(e.code)) e.preventDefault();
       if (!this.keys[e.code]) this.hits[e.code] = true;
       this.keys[e.code] = true;
     });
@@ -389,9 +389,11 @@ const A = G.Audio = {
     else if (type === 'land') { this.noise(o, t, { dur: 0.15, a: 0.6, lp: 500, brown: true }); }
     else if (type === 'punch') { this.noise(o, t, { dur: 0.12, a: 0.4, bp: 400, bp1: 1200, q: 1 }); }
   },
-  hit(head, kill) {
+  hit(head, kill, armored) {
     if (!this.ok()) return;
     const t = this.ctx.currentTime, o = this.out({ g: 1, pan: 0, lp: 20000, rev: 0.02 }, 0.4);
+    // 방탄 장비에 맞으면 둔탁한 금속음이 섞인다
+    if (armored && !kill) { this.tone(o, t, { type: 'triangle', f0: head ? 1250 : 520, f1: head ? 700 : 300, a: 0.28, dur: 0.07 }); this.noise(o, t, { dur: 0.03, a: 0.25, bp: 2600, q: 3 }); }
     if (head) { this.tone(o, t, { type: 'sine', f0: 2400, a: 0.35, dur: 0.18 }); this.tone(o, t, { type: 'sine', f0: 3600, a: 0.15, dur: 0.12 }); }
     else this.tone(o, t, { type: 'triangle', f0: 1500, a: 0.25, dur: 0.05 });
     if (kill) { this.tone(o, t + 0.06, { type: 'sine', f0: 880, a: 0.3, dur: 0.15 }); this.tone(o, t + 0.14, { type: 'sine', f0: 1320, a: 0.3, dur: 0.25 }); }
@@ -473,6 +475,12 @@ const A = G.Audio = {
     L.gain.gain.setTargetAtTime(v, t, 0.12);
     if (L.pan) L.pan.pan.setTargetAtTime(U.clamp(pan, -1, 1), t, 0.1);
   },
+  // 루프의 높낮이 (엔진 회전수)
+  setLoopRate(name, rate) {
+    const L = this.loops[name]; if (!L || !L.rate) return;
+    const t = this.ctx.currentTime;
+    for (const [p, base] of L.rate) p.setTargetAtTime(base * rate, t, 0.08);
+  },
   stopLoops() {
     for (const k in this.loops) this.loops[k].gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.1);
   },
@@ -487,7 +495,26 @@ const A = G.Audio = {
       src.buffer = this.brownBuf;
       const f = c.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 700; f.Q.value = 0.6;
       src.connect(f); f.connect(gain);
-    } else if (name === 'plane') {
+    } else if (name === 'rain') {
+      src.buffer = this.noiseBuf;
+      const f = c.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 1800;
+      const f2 = c.createBiquadFilter(); f2.type = 'lowpass'; f2.frequency.value = 9000;
+      src.connect(f); f.connect(f2); f2.connect(gain);
+      const low = c.createBufferSource(); low.buffer = this.brownBuf; low.loop = true;
+      const lg = c.createGain(); lg.gain.value = 0.5; low.connect(lg); lg.connect(gain); low.start();
+    } else if (name === 'engine') {
+      src.buffer = this.brownBuf;
+      const f = c.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 260;
+      src.connect(f); f.connect(gain);
+      L.rate = [];
+      for (const [fr, vol] of [[42, 0.5], [84, 0.28], [127, 0.12]]) {
+        const o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.value = fr;
+        const og = c.createGain(); og.gain.value = vol;
+        const of = c.createBiquadFilter(); of.type = 'lowpass'; of.frequency.value = 520;
+        o.connect(of); of.connect(og); og.connect(gain); o.start();
+        L.rate.push([o.frequency, fr]);
+      }
+    } else if (name === 'plane' || name === 'airdrop') {
       src.buffer = this.brownBuf;
       const f = c.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 500;
       src.connect(f); f.connect(gain);

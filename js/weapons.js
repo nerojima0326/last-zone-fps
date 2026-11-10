@@ -1144,6 +1144,7 @@ const Guns = G.Guns = {
     else if (type === 'medkit') parts = [bx(0.36, 0.2, 0.14, 0, 0.1, 0, 0xe8e8e8), bx(0.14, 0.04, 0.145, 0, 0.1, 0, 0xc81e1e), bx(0.04, 0.14, 0.145, 0, 0.1, 0, 0xc81e1e), bx(0.12, 0.03, 0.03, 0, 0.215, 0, 0x333333)];
     else if (type === 'vest') parts = [bx(0.45, 0.1, 0.5, 0, 0.05, 0, 0x3a4228), bx(0.12, 0.05, 0.1, -0.12, 0.12, 0.12, 0x2e3420), bx(0.12, 0.05, 0.1, 0.12, 0.12, 0.12, 0x2e3420), bx(0.12, 0.05, 0.1, 0, 0.12, 0.12, 0x2e3420)];
     else if (type === 'helmet') parts = [cg(new THREE.SphereGeometry(0.15, 14, 8, 0, Math.PI * 2, 0, Math.PI * 0.55).translate(0, 0.02, 0), 0x3d4a2a), bx(0.3, 0.02, 0.32, 0, 0.03, 0, 0x2e3820)];
+    else if (type === 'bag') parts = [bx(0.34, 0.42, 0.2, 0, 0.21, 0, 0x4a4630), bx(0.26, 0.16, 0.08, 0, 0.14, 0.13, 0x3a3724), bx(0.3, 0.06, 0.22, 0, 0.43, 0, 0x3a3724), bx(0.05, 0.36, 0.03, -0.1, 0.22, -0.11, 0x25231a), bx(0.05, 0.36, 0.03, 0.1, 0.22, -0.11, 0x25231a)];
     else if (type === 'frag') parts = [cg(new THREE.SphereGeometry(0.034, 12, 8).scale(1, 1.15, 1), 0x4f5a2e), bx(0.014, 0.05, 0.012, 0.03, 0.02, 0, 0x8d9296), cg(new THREE.CylinderGeometry(0.012, 0.012, 0.02, 8).translate(0, 0.042, 0), 0x8d9296)];
     else if (type === 'smoke') parts = [cg(new THREE.CylinderGeometry(0.029, 0.029, 0.11, 12), 0x8d9296), cg(new THREE.CylinderGeometry(0.0295, 0.0295, 0.025, 12).translate(0, 0.02, 0), 0xd8d8d8), cg(new THREE.CylinderGeometry(0.018, 0.018, 0.02, 8).translate(0, 0.064, 0), 0x141518)];
     else if (type === 'molotov') parts = [cg(new THREE.CylinderGeometry(0.034, 0.034, 0.11, 12), 0x5a3a12), cg(new THREE.CylinderGeometry(0.013, 0.013, 0.06, 8).translate(0, 0.08, 0), 0x5a3a12), bx(0.03, 0.05, 0.03, 0, 0.12, 0, 0xd8ccb0)];
@@ -1206,7 +1207,7 @@ const Ballistics = G.Ballistics = {
   hitActor(a, o, d, maxT) {
     let best = Infinity, head = false;
     const px = a.pos.x, py = a.pos.y, pz = a.pos.z;
-    if (a.knocked) {
+    if (a.low()) {
       _fwd.set(-Math.sin(a.yaw), 0, -Math.cos(a.yaw));
       let t = sphereT(o, d, px + _fwd.x * 0.3, py + 0.25, pz + _fwd.z * 0.3, 0.38);
       if (t < best) { best = t; head = false; }

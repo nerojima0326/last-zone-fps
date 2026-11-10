@@ -31,7 +31,7 @@ const A=G.Attachments={models:{},open:false,
   if(newItem&&count(newItem)<1){G.UI.toast('먼저 해당 부착물을 획득하세요');return false}
   if(slot==='magazine'){
    const proposed={...inst,attachments:{...inst.attachments,magazine:next}},excess=Math.max(0,inst.mag-this.capacity(proposed,d));
-   if(!G.Game.training&&excess>0&&excess>Math.max(0,G.AMMO_MAX[d.ammo]-a.ammo[d.ammo])){G.UI.toast('예비 탄약 공간이 부족합니다');return false}
+   if(!G.Game.training&&excess>0&&excess>Math.max(0,a.ammoMax(d.ammo)-a.ammo[d.ammo])){G.UI.toast('예비 탄약 공간이 부족합니다');return false}
    inst.mag-=excess;if(!G.Game.training)a.ammo[d.ammo]+=excess;
   }
   add(oldItem,1);add(newItem,-1);

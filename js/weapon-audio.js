@@ -98,6 +98,13 @@ const W=G.WeaponAudio={
   const cue=w.fx.cues[name]?name:null;if(!cue)return false;
   return !!this.play(a,w.fx,cue,{g:1,pan:.08,lp:20000,rev:.04},{gain:(LEVEL[name]||.35)*(MASS[id]||1)*k,delay,wet:.15,vary:.05,own:true});
  },
+ // 다른 사람의 조작음 (위치 기반): 가까이 있는 적의 재장전을 들을 수 있다
+ eventAt(a,type,id,pos){
+  const w=this.bank(id);if(!w||!this.buffers[w.fx.path])return false;
+  const sp=a.spatial(pos,5);if(sp.g<.05||!a._budget())return false;
+  const name=w.fx.cues[type]?type:type==='magin'&&w.fx.cues.shell?'shell':w.fx.cues.close?'close':null;if(!name)return false;
+  return !!this.play(a,w.fx,name,sp,{gain:(LEVEL[name]||.15)*2.4,wet:.3,vary:.06});
+ },
  event(a,type,id){
   if(type==='switch'){const b=this.manifest?.switch;return !!(b&&this.play(a,b,'switch',{g:1,pan:.08,lp:20000,rev:.03},{gain:LEVEL.switch,wet:.1,vary:.06,own:true}))}
   const w=this.bank(id);if(!w||!this.buffers[w.fx.path])return false;
