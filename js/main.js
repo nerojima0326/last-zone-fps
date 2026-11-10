@@ -172,6 +172,7 @@ G.boot = async function () {
   await G.World.init(scene, renderer, progress);
   progress(0.92, '효과 준비 중...');
   G.FX.init(scene);
+  G.Extras.init(scene);
   G.VM.init(G.vmScene);
 
   G.UI.init();
@@ -194,9 +195,11 @@ G.boot = async function () {
 
   addEventListener('resize', onResize);
   renderer.domElement.addEventListener('click', () => {
+    if (G.Game.spectating && !G.Input.locked) { G.Input.lock(); return; }
     if ((G.Game.state === 'playing') && !G.Input.locked) G.resume();
   });
   G.onLockChange = (locked) => {
+    if (G.Game.spectating && !locked) { G.Game.stopSpectate(); return; }
     if (G.Game.state !== 'playing') return;
     if(G.Attachments?.open){G.paused=true;G.UI.showPause(false);return;}
     if (!locked) { G.paused = true; G.UI.showPause(true); }
@@ -368,6 +371,7 @@ function frame(now) {
       G.FX.update(dt);
     }
     G.World.update(dt, camera.position, camera);
+    G.Weather.update(dt);
     G.UI.update(dt);
     const a = Game.player;
     grade.uniforms.uKnock.value = U.damp(grade.uniforms.uKnock.value, a && a.knocked ? 1 : 0, 4, dt);

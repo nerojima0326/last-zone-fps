@@ -63,6 +63,7 @@ const UI = G.UI = {
     $('quitBtn').addEventListener('click', () => G.toMenu());
     $('againBtn').addEventListener('click', () => G.startGame(Object.assign({}, this.opts)));
     $('menuBtn').addEventListener('click', () => G.toMenu());
+    $('specBtn').addEventListener('click', () => G.Game.startSpectate());
     // 나침반
     const strip = $('compassStrip');
     const labels = { 0: 'N', 45: 'NE', 90: 'E', 135: 'SE', 180: 'S', 225: 'SW', 270: 'W', 315: 'NW' };
@@ -81,7 +82,7 @@ const UI = G.UI = {
     this.big = $('bigmap'); this.bctx = this.big.getContext('2d');
     this.el = {
       alive: $('aliveNum'), teams: $('teamsNum'), kills: $('killNum'), hpFill: $('hpFill'), hpLag: $('hpLag'), hpText: $('hpText'),
-      vest: $('vestIcon'), helm: $('helmIcon'), meds: $('medsInfo'), mag: $('ammoMag'), res: $('ammoRes'), wname: $('weaponName'), fmode: $('fireMode'), slots: $('slots'),
+      vest: $('vestIcon'), helm: $('helmIcon'), bag: $('bagIcon'), meds: $('medsInfo'), mag: $('ammoMag'), res: $('ammoRes'), wname: $('weaponName'), fmode: $('fireMode'), slots: $('slots'),
       cross: $('crosshair'), hit: $('hitmarker'), prompt: $('prompt'), progress: $('progress'), progLabel: $('progressLabel'), progFill: $('progressFill'),
       center: $('centerMsg'), kill: $('killMsg'), pick: $('pickupMsg'), plane: $('planeHint'), spec: $('spectate'), vig: $('vignette'), zoneO: $('zoneOverlay'),
       knockO: $('knockOverlay'), flash: $('flashOverlay'), zoneInfo: $('zoneInfo'), zoneLabel: $('zoneLabel'), zoneTime: $('zoneTime'), strip, compassDeg: $('compassDeg'),
@@ -190,6 +191,9 @@ const UI = G.UI = {
     $('resTitle').className = r.win ? 'win' : '';
     $('resRank').innerHTML = '<b>#' + r.rank + '</b><span>/ ' + r.teams + (G.Game.teamSize > 1 ? ' 팀' : '') + '</span>';
     $('resKills').textContent = r.kills; $('resDmg').textContent = r.dmg; $('resTime').textContent = U.fmtTime(r.time); $('resTeamKills').textContent = r.teamKills;
+    $('resAcc').textContent = r.acc ? Math.round(r.acc * 100) + '%' : '-'; $('resHeads').textContent = r.heads || 0; $('resLong').textContent = r.longest ? Math.round(r.longest) + 'm' : '-';
+    $('resNew').innerHTML = (r.best ? '<span>한 판 최다 처치 기록 경신</span>' : '') + (r.fresh || []).map(n => '<span>업적 달성 · ' + G.esc(n) + '</span>').join('');
+    $('specBtn').classList.toggle('hidden', !r.canSpectate);
     $('results').classList.remove('hidden');
   },
 
@@ -207,8 +211,10 @@ const UI = G.UI = {
     this.set('hplag', el.hpLag.style, Math.max(0, hpP) + '%', 'width');
     this.set('hpt', el.hpText, Math.ceil(Math.max(0, hpP)));
     this.set('hpc', el.hpFill, a.knocked ? 'knock' : hpP < 30 ? 'low' : '', 'className');
-    this.set('vest', el.vest, a.vest ? 'gear-i on' : 'gear-i', 'className');
-    this.set('helm', el.helm, a.helmet ? 'gear-i on' : 'gear-i', 'className');
+    for (const [k, e, nm, lv] of [['vest', el.vest, '조끼', a.vest], ['helm', el.helm, '헬멧', a.helmet], ['bag', el.bag, '가방', a.bag]]) {
+      this.set(k, e, lv ? 'gear-i on lv' + lv : 'gear-i', 'className');
+      this.set(k + 't', e, lv ? nm + ' ' + lv : nm);
+    }
     this.set('meds', el.meds, '붕대 ' + a.meds.bandage + ' · 구급상자 ' + a.meds.medkit);
     // 무기
     const inst = a.weapons[a.cur], def = inst ? G.WEAPONS[inst.id] : G.WEAPONS[a.cur];
@@ -240,7 +246,7 @@ const UI = G.UI = {
       el.slots.innerHTML = slots;
     }
     // 조준점
-    const showCross = a.alive && a.state === 'ground' && !a.knocked && P.ads < 0.5 && !this.mapOpen && a.cur !== 'throw';
+    const showCross = a.alive && a.state === 'ground' && !a.knocked && P.ads < 0.5 && !this.mapOpen && a.cur !== 'throw' && !P.vehicle;
     this.drawScope(a.alive && a.state === 'ground' ? P.scopeView : 0, inst ? (inst.scope || def.baseSight) : null, P);
     el.cross.style.display = showCross ? 'block' : 'none';
     if (showCross) {
@@ -292,7 +298,12 @@ const UI = G.UI = {
     else if (a.alive && a.state === 'chute') ph = '<small>고도 ' + Math.round(P.altitude || 0) + 'm · W/S 속도 조절 · 마우스 방향 전환</small>';
     this.set('plane', el.plane, ph, 'innerHTML');
     // 관전
-    if (!a.alive && P.specTarget && Game.state === 'playing') { el.spec.style.display = 'block'; this.set('spec', el.spec, '관전 중: <b>' + G.esc(P.specTarget.name) + '</b> · 좌클릭으로 전환', 'innerHTML'); }
+    if (!a.alive && P.specTarget && (Game.state === 'playing' || Game.spectating)) {
+      const K = P.killcam, t = P.specTarget;
+      const txt = K ? '킬캠 · <b>' + G.esc(t.name) + '</b> · ' + (Game.WEAPON_LABEL[K.weapon] || K.weapon) + (K.head ? ' 헤드샷' : '') + ' · ' + Math.round(K.dist) + 'm · 남은 체력 ' + Math.ceil(t.hp)
+        : '관전 중: <b>' + G.esc(t.name) + '</b> · ' + t.kills + '킬 · 좌클릭으로 전환' + (Game.spectating ? ' · Esc 결과 화면' : '');
+      el.spec.style.display = 'block'; this.set('spec', el.spec, txt, 'innerHTML');
+    }
     else el.spec.style.display = 'none';
     // 나침반
     const yaw = P.camMode === 'fp' ? a.yaw : (P.camMode === 'spectate' && P.specTarget ? P.specTarget.yaw : P.orbitYaw);
@@ -464,6 +475,7 @@ const UI = G.UI = {
       ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.setLineDash([8, 8]); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(a0[0], a0[1]); ctx.lineTo(a1[0], a1[1]); ctx.stroke(); ctx.setLineDash([]);
     }
     this.drawZone(ctx, toS, k, Wd, H);
+    G.Vehicles.draw(ctx, toS, 1.6); G.Airdrop.draw(ctx, toS, 2);
     this.drawActors(ctx, toS, 2);
     ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 2; ctx.strokeRect(1, 1, Wd - 2, H - 2);
     ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.font = 'bold 22px Rajdhani, sans-serif'; ctx.textAlign = 'center'; ctx.fillText('N', Wd / 2, 22);
@@ -503,6 +515,7 @@ const UI = G.UI = {
       ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(0, -12); ctx.lineTo(10, 8); ctx.lineTo(0, 4); ctx.lineTo(-10, 8); ctx.closePath(); ctx.fill(); ctx.restore();
     }
     this.drawZone(ctx, toS, k, Wd, H);
+    G.Vehicles.draw(ctx, toS, 1); G.Airdrop.draw(ctx, toS, 1.6);
     this.drawActors(ctx, toS, 1.6);
   }
 };

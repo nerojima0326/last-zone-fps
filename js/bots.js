@@ -108,7 +108,8 @@ class Bot {
     a.eye(_e);
     a.lookDir(_f); _f.y = 0; _f.normalize();
     let best = null, bestS = Infinity;
-    const vis = W && G.Game.zone && G.Game.zone.cur.r < 60 ? d.vis * 0.8 : d.vis;
+    // 밤·안개·비에는 멀리 보지 못한다
+    const vis = (W && G.Game.zone && G.Game.zone.cur.r < 60 ? d.vis * 0.8 : d.vis) * (W.visK || 1);
     for (const t of G.Game.actors) {
       if (!t.alive || t.team === a.team || t.state !== 'ground') continue;
       const dx = t.pos.x - a.pos.x, dz = t.pos.z - a.pos.z, dist = Math.sqrt(dx * dx + dz * dz);
@@ -260,8 +261,7 @@ class Bot {
     if (G.THROW_NAMES[k]) return a.throwables[k] < 2;
     if (k === 'bandage') return a.meds.bandage < 4;
     if (k === 'medkit') return a.meds.medkit < 1;
-    if (k === 'vest') return !a.vest;
-    if (k === 'helmet') return !a.helmet;
+    if (k === 'vest' || k === 'helmet' || k === 'bag') return (it.level || 1) > a[k];
     return false;
   }
   findLoot() {
@@ -485,11 +485,13 @@ class Bot {
     if (!inst || this.reloadT > 0 || a.ammo[def.ammo] <= 0 || inst.mag >= (G.Attachments?.capacity(inst,def) || def.mag)) return;
     this.reloadT = (def.reloadType === 'shell' || def.reloadType === 'break' ? Math.min(3.4, 0.8 + (def.mag - inst.mag) * def.reload) : def.reload * 1.1 * (G.Attachments?.modifiers(inst).reload || 1)) * G.Guns.reloadFactor(inst.mag===0);
     this.reloadW = a.cur;
+    if (G.Audio.ok() && G.WeaponAudio) G.WeaponAudio.eventAt(G.Audio, def.reloadType === 'mag' ? 'magout' : 'open', inst.id, a.pos);
   }
   finishReload() {
     const a = this.a, k = this.reloadW, inst = a.weapons[k];
     if (!inst) return;
     const def = G.WEAPONS[inst.id];
+    if (G.Audio.ok() && G.WeaponAudio) G.WeaponAudio.eventAt(G.Audio, def.reloadType === 'mag' ? 'magin' : 'close', inst.id, a.pos);
     const n = Math.min((G.Attachments?.capacity(inst,def) || def.mag) - inst.mag, a.ammo[def.ammo]);
     inst.mag += n; a.ammo[def.ammo] -= n;
   }

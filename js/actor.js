@@ -8,7 +8,7 @@ class Actor {
   constructor(o) {
     this.id = o.id; this.name = o.name; this.team = o.team; this.idx = o.idx || 0; this.isPlayer = !!o.isPlayer;
     this.pos = new V3(); this.vel = new V3(); this.yaw = 0; this.pitch = 0; this.hspeed = 0;
-    this.hp = 100; this.alive = true; this.knocked = false; this.bleed = 100; this.vest = false; this.helmet = false;
+    this.hp = 100; this.alive = true; this.knocked = false; this.bleed = 100; this.vest = 0; this.helmet = 0; this.bag = 0;   // 장비 등급 0(없음)~3
     this.weapons = { rifle: null, shotgun: null, pistol: null };
     this.ammo = { '556': 0, '762': 0, '9mm': 0, '45': 0, '12g': 0 };
     this.attachmentBag = {};
@@ -17,16 +17,22 @@ class Actor {
     this.meds = { bandage: 0, medkit: 0 };
     this.cur = 'fists';
     this.kills = 0; this.dmgDealt = 0;
-    this.state = 'plane'; this.onGround = false; this.crouch = false; this.swimming = false; this.inWater = false;
+    this.state = 'plane'; this.onGround = false; this.crouch = false; this.prone = false; this.swimming = false; this.inWater = false;
     this.landV = 0; this.groundMat = 'terrain';
     this.model = null; this.brain = null;
     this.blindT = 0; this.knockedBy = null; this.lastHurtT = -99; this.lastAttacker = null;
     this.deathTime = 0;
   }
-  eyeH() { return this.knocked ? 0.45 : this.crouch ? 1.15 : 1.62; }
+  eyeH() { return this.knocked ? 0.45 : this.prone ? 0.36 : this.crouch ? 1.15 : 1.62; }
+  low() { return this.knocked || this.prone; }
+  // 가방 등급에 따른 소지 한도
+  ammoMax(t) { return Math.round(G.AMMO_MAX[t] * [0.6, 0.8, 1, 1.3][this.bag]); }
+  throwMax() { return 3 + this.bag; }
+  bandageMax() { return 10 + this.bag * 5; }
+  medkitMax() { return 3 + this.bag; }
   eye(out) { return out.set(this.pos.x, this.pos.y + this.eyeH(), this.pos.z); }
-  chest(out) { return out.set(this.pos.x, this.pos.y + (this.knocked ? 0.3 : this.crouch ? 0.85 : 1.2), this.pos.z); }
-  head(out) { return out.set(this.pos.x, this.pos.y + (this.knocked ? 0.3 : this.crouch ? 1.2 : 1.64), this.pos.z); }
+  chest(out) { return out.set(this.pos.x, this.pos.y + (this.low() ? 0.3 : this.crouch ? 0.85 : 1.2), this.pos.z); }
+  head(out) { return out.set(this.pos.x, this.pos.y + (this.low() ? 0.3 : this.crouch ? 1.2 : 1.64), this.pos.z); }
   lookDir(out) { const cp = Math.cos(this.pitch); return out.set(-Math.sin(this.yaw) * cp, Math.sin(this.pitch), -Math.cos(this.yaw) * cp); }
   hasGun() { return !!(this.weapons.rifle || this.weapons.shotgun || this.weapons.pistol); }
   wdef(k) { const w = this.weapons[k]; return w ? G.WEAPONS[w.id] : null; }
@@ -41,7 +47,7 @@ class Actor {
   give(id, extraAmmo, scope) {
     const def = G.WEAPONS[id];
     this.weapons[def.cls] = { id, mag: def.mag, scope: scope || null };
-    if (extraAmmo) this.ammo[def.ammo] = Math.min(G.AMMO_MAX[def.ammo], this.ammo[def.ammo] + extraAmmo);
+    if (extraAmmo) this.ammo[def.ammo] = Math.min(Math.max(this.ammoMax(def.ammo), this.ammo[def.ammo]), this.ammo[def.ammo] + extraAmmo);
   }
   // 조준경이 없는 총에 가방의 가장 좋은 호환 조준경을 끼운다
   autoScope(cls) {
@@ -79,7 +85,7 @@ class Actor {
         res = W.name;
       } else if (cur.id === k || (fromCrate && W.tier <= G.WEAPONS[cur.id].tier)) {
         // 같은 총(또는 상자 속 더 나쁜 총): 탄약과 조준경만 챙긴다
-        const add = W.ammo === G.WEAPONS[cur.id].ammo ? Math.min(mag || 0, G.AMMO_MAX[W.ammo] - this.ammo[W.ammo]) : 0;
+        const add = W.ammo === G.WEAPONS[cur.id].ammo ? Math.min(mag || 0, this.ammoMax(W.ammo) - this.ammo[W.ammo]) : 0;
         const takeScope = it.scope && this.scopeCount(it.scope) < 2;
         if (add <= 0 && !takeScope) return null;
         const got = [];
@@ -105,29 +111,31 @@ class Actor {
       for (const c of (this.isPlayer ? [] : order)) { const w = this.weapons[c]; if (w && !w.scope && G.WEAPONS[w.id].scopes.includes(t) && this.autoScope(c)) break; }
       res = G.SCOPES[t].name;
     } else if (k.startsWith('ammo_')) {
-      const t = k.slice(5), add = Math.min(it.amount, G.AMMO_MAX[t] - this.ammo[t]);
+      const t = k.slice(5), add = Math.min(it.amount, this.ammoMax(t) - this.ammo[t]);
       if (add <= 0) return null;
       this.ammo[t] += add; it.amount -= add;
       res = G.AMMO_NAMES[t] + ' 탄약 +' + add;
       if (it.amount > 0) return res;
     } else if (G.THROW_NAMES[k]) {
-      if (this.throwables[k] >= 3) return null;
-      const add = Math.min(it.amount || 1, 3 - this.throwables[k]);
+      if (this.throwables[k] >= this.throwMax()) return null;
+      const add = Math.min(it.amount || 1, this.throwMax() - this.throwables[k]);
       this.throwables[k] += add; it.amount = (it.amount || 1) - add;
       res = G.THROW_NAMES[k] + (add > 1 ? ' x' + add : '');
       if (it.amount > 0) return res;
     } else if (k === 'bandage') {
-      const add = Math.min(it.amount || 1, 10 - this.meds.bandage);
+      const add = Math.min(it.amount || 1, this.bandageMax() - this.meds.bandage);
       if (add <= 0) return null;
       this.meds.bandage += add; it.amount = (it.amount || 1) - add; res = '붕대 +' + add;
       if (it.amount > 0) return res;
     } else if (k === 'medkit') {
-      if (this.meds.medkit >= 3) return null;
+      if (this.meds.medkit >= this.medkitMax()) return null;
       this.meds.medkit++; res = '구급상자';
-    } else if (k === 'vest') {
-      if (this.vest) return null; this.vest = true; res = '방탄조끼';
-    } else if (k === 'helmet') {
-      if (this.helmet) return null; this.helmet = true; res = '헬멧';
+    } else if (k === 'vest' || k === 'helmet' || k === 'bag') {
+      // 더 높은 등급만 줍고, 입고 있던 것은 내려놓는다
+      const lv = it.level || 1, cur = this[k];
+      if (cur >= lv) return null;
+      if (cur > 0) this._drop = { kind: k, level: cur };
+      this[k] = lv; res = G.GEAR_NAMES[k] + ' Lv.' + lv;
     } else return null;
     it.taken = true;
     return res;
@@ -142,12 +150,14 @@ class Actor {
     for (const k in this.throwables) if (this.throwables[k] > 0) items.push({ kind: k, amount: this.throwables[k] });
     if (this.meds.bandage > 0) items.push({ kind: 'bandage', amount: this.meds.bandage });
     for (let i = 0; i < this.meds.medkit; i++) items.push({ kind: 'medkit', amount: 1 });
-    if (this.vest) items.push({ kind: 'vest', amount: 1 });
-    if (this.helmet) items.push({ kind: 'helmet', amount: 1 });
+    for (const k of ['vest', 'helmet', 'bag']) if (this[k]) items.push({ kind: k, amount: 1, level: this[k] });
     return items;
   }
 }
 G.Actor = Actor;
+G.GEAR_NAMES = { vest: '방탄조끼', helmet: '헬멧', bag: '가방' };
+// 등급별 피해 배율 (0 = 없음)
+G.ARMOR = { helmet: [1, 0.7, 0.6, 0.45], vest: [1, 0.8, 0.7, 0.55] };
 
 /* ------------------------------------------------------------------ */
 /* 캐릭터 물리                                                          */
@@ -156,7 +166,7 @@ G.Physics = {
   STEP: 0.5, R: 0.33, GRAV: 22,
   move(a, dt) {
     const W = G.World, r = this.R, STEP = this.STEP;
-    const height = a.knocked ? 0.6 : a.crouch ? 1.25 : 1.8;
+    const height = a.low() ? 0.6 : a.crouch ? 1.25 : 1.8;
     a.vel.y -= this.GRAV * dt;
     if (a.vel.y < -55) a.vel.y = -55;
     let x = a.pos.x + a.vel.x * dt, z = a.pos.z + a.vel.z * dt;
@@ -218,10 +228,10 @@ G.Physics = {
     a.pos.set(x, y, z);
     a.hspeed = Math.hypot(a.vel.x, a.vel.z);
   },
-  canStand(a) {
+  canStand(a, h) {
     let ok = true;
-    const r = this.R * 0.8, x = a.pos.x, z = a.pos.z;
-    G.World.queryBoxes(x - r, z - r, x + r, z + r, b => { if (b.minY > a.pos.y + 1.0 && b.minY < a.pos.y + 1.82) ok = false; });
+    const r = this.R * 0.8, x = a.pos.x, z = a.pos.z, top = h || 1.82, from = a.prone ? 0.5 : 1.0;
+    G.World.queryBoxes(x - r, z - r, x + r, z + r, b => { if (b.minY > a.pos.y + from && b.minY < a.pos.y + top) ok = false; });
     return ok;
   }
 };

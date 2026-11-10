@@ -1832,11 +1832,19 @@ const W = G.World = {
     }
   },
   setTimeOfDay(tod) {
+    if (tod === 'random') tod = U.pick(['day', 'day', 'sunset', 'night', 'fog', 'rain']);
     if (this.tod === tod && this.envRT) return; // 같은 시간대면 환경맵 재생성(끊김) 생략
     this.tod = tod;
-    const P = tod === 'sunset'
-      ? { elev: 6, az: 250, turb: 8, ray: 2.6, mie: 0.006, sunC: 0xffa868, sunI: 2.7, hemiS: 0x9eb4d8, hemiG: 0x5a4030, hemiI: 0.75, fog: 0xc9a58e, fogD: 0.002, exp: 0.62, cloud: 0xffc8a8 }
-      : { elev: 38, az: 145, turb: 5, ray: 1.4, mie: 0.004, sunC: 0xffeed8, sunI: 3.2, hemiS: 0xc8dcff, hemiG: 0x5a4c38, hemiI: 1.0, fog: 0xb7cde0, fogD: 0.0017, exp: 0.6, cloud: 0xffffff };
+    // 시간대·날씨: 밤·안개·비는 사진 하늘 대신 계산한 하늘을 쓴다. vis = 봇 시야 배율
+    const PRESET = {
+      day:    { elev: 38, az: 145, turb: 5, ray: 1.4, mie: 0.004, sunC: 0xffeed8, sunI: 3.2, hemiS: 0xc8dcff, hemiG: 0x5a4c38, hemiI: 1.0, fog: 0xb7cde0, fogD: 0.0017, exp: 0.6, cloud: 0xffffff, vis: 1 },
+      sunset: { elev: 6, az: 250, turb: 8, ray: 2.6, mie: 0.006, sunC: 0xffa868, sunI: 2.7, hemiS: 0x9eb4d8, hemiG: 0x5a4030, hemiI: 0.75, fog: 0xc9a58e, fogD: 0.002, exp: 0.62, cloud: 0xffc8a8, vis: 1 },
+      night:  { elev: 42, az: 210, skyElev: -9, turb: 2, ray: 0.35, mie: 0.002, sunC: 0x9fb6e6, sunI: 1.5, hemiS: 0x6478a8, hemiG: 0x1c222e, hemiI: 1.5, fog: 0x101824, fogD: 0.0038, exp: 0.62, cloud: 0x202838, vis: 0.5, noCloud: true },
+      fog:    { elev: 30, az: 145, turb: 18, ray: 0.9, mie: 0.02, sunC: 0xe8e4dc, sunI: 2.4, hemiS: 0xd4dce2, hemiG: 0x77736a, hemiI: 2.6, fog: 0xa9b3b8, fogD: 0.011, exp: 0.56, cloud: 0xd0d4d6, vis: 0.42, noCloud: true },
+      rain:   { elev: 34, az: 160, turb: 20, ray: 0.7, mie: 0.02, sunC: 0xc4ccd6, sunI: 1.9, hemiS: 0xb4c0cc, hemiG: 0x5c5e58, hemiI: 2.3, fog: 0x7f8b96, fogD: 0.0048, exp: 0.54, cloud: 0x8a9098, vis: 0.75, noCloud: true }
+    };
+    const P = Object.assign({}, PRESET[tod] || PRESET.day);
+    this.weather = tod; this.visK = P.vis;
     const phi = THREE.MathUtils.degToRad(90 - P.elev), theta = THREE.MathUtils.degToRad(P.az);
     this.sunDir.setFromSphericalCoords(1, phi, theta);
     // 실사 HDRI 하늘이 있으면 태양 방향·안개 색을 사진 하늘에 맞춘다
@@ -1850,12 +1858,14 @@ const W = G.World = {
     const u = this.sky.material.uniforms;
     u.turbidity.value = P.turb; u.rayleigh.value = P.ray; u.mieCoefficient.value = P.mie; u.mieDirectionalG.value = 0.8;
     u.sunPosition.value.copy(this.sunDir);
+    // 밤: 하늘은 해가 진 상태로, 조명은 높이 뜬 달빛으로
+    if (P.skyElev !== undefined) u.sunPosition.value.setFromSphericalCoords(1, THREE.MathUtils.degToRad(90 - P.skyElev), theta);
     this.sun.color.setHex(P.sunC); this.sun.intensity = P.sunI;
     this.hemi.color.setHex(P.hemiS); this.hemi.groundColor.setHex(P.hemiG); this.hemi.intensity = P.hemiI;
     this.scene.fog = new THREE.FogExp2(P.fog, P.fogD);
     this.fogColor = new THREE.Color(P.fog); this.fogD = P.fogD;
     this.renderer.toneMappingExposure = P.exp;
-    for (const c of this.clouds) { c.material.color.setHex(P.cloud); c.visible = !S; }
+    for (const c of this.clouds) { c.material.color.setHex(P.cloud); c.visible = !S && !P.noCloud; }
     this.sky.visible = !S;
     this.scene.background = S ? (S.bg || S.hdr) : null;
     this.scene.backgroundIntensity = S && S.bg ? G.Assets.BG_MAX : 1;

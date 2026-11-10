@@ -22,6 +22,7 @@ const P = G.Player = {
     this.orbitYaw = 0; this.orbitPitch = -0.3; this.specIdx = 0;
     this.dropT = 0; this.indoor = 0; this.indoorT = 0;
     this.prompt = ''; this.lootTarget = null; this.reviveTarget = null;
+    this.lean = 0; this.vault = null; this.vehicle = null; this.killcam = null;
     this.camMode = 'plane';
     this.time = 0;
   },
@@ -112,21 +113,36 @@ const P = G.Player = {
   /* ---------------- 지상 ---------------- */
   updateGround(dt) {
     const I = G.Input, a = this.a, cam = G.camera, W = G.World, now = this.time;
+    if (this.vehicle) { G.Vehicles.drive(this, dt); return; }
     this.camMode = 'fp';
     const inst = a.weapons[a.cur], def = inst ? G.WEAPONS[inst.id] : G.WEAPONS[a.cur];
     const isGun = !!inst && def && def.pellets;
     // 시점
     this.look(cam.fov / BASE_FOV);
+    if (this.vault) { this.vaultLogic(dt); return; }
     if (now - this.lastShot > 0.14 && this.recoilAcc > 0) {
       const r = Math.min(this.recoilAcc, dt * 0.45);
       a.pitch -= r * 0.75; this.recoilAcc -= r;
     }
     // 이동
     const fwd = (I.down('KeyW') ? 1 : 0) - (I.down('KeyS') ? 1 : 0), str = (I.down('KeyD') ? 1 : 0) - (I.down('KeyA') ? 1 : 0);
-    if (I.hit('KeyC') && !a.knocked) { if (a.crouch) { if (G.Physics.canStand(a)) a.crouch = false; } else a.crouch = true; }
-    const sprint = I.down('ShiftLeft') && fwd > 0 && this.ads < 0.3 && !a.crouch && !a.knocked && !this.heal && !(I.lmb && isGun && !this.reload);
+    if (I.hit('KeyC') && !a.knocked) {
+      if (a.prone) { if (G.Physics.canStand(a, 1.27)) { a.prone = false; a.crouch = true; } }
+      else if (a.crouch) { if (G.Physics.canStand(a)) a.crouch = false; } else a.crouch = true;
+    }
+    // 엎드리기 (Z): 물속·공중에서는 불가
+    if (I.hit('KeyZ') && !a.knocked) {
+      if (a.prone) { if (G.Physics.canStand(a)) a.prone = false; else if (G.Physics.canStand(a, 1.27)) { a.prone = false; a.crouch = true; } }
+      else if (a.onGround && !a.inWater) { a.prone = true; a.crouch = false; this.cancelHeal(); }
+    }
+    if (a.prone && (a.knocked || a.inWater)) a.prone = false;
+    const sprint = I.down('ShiftLeft') && fwd > 0 && this.ads < 0.3 && !a.crouch && !a.prone && !a.knocked && !this.heal && !(I.lmb && isGun && !this.reload);
     this.sprinting = sprint;
-    let speed = a.knocked ? 1.1 : sprint ? 6.8 : a.crouch ? 2.3 : 4.6;
+    // 기울이기 (Q/E): 달리는 중·기절 중에는 풀린다
+    const wantLean = sprint || a.knocked || !a.onGround ? 0 : (I.down('KeyE') ? 1 : 0) - (I.down('KeyQ') ? 1 : 0);
+    this.lean = U.damp(this.lean, wantLean, 12, dt);
+    let speed = a.knocked ? 1.1 : a.prone ? 0.95 : sprint ? 6.8 : a.crouch ? 2.3 : 4.6;
+    if (Math.abs(this.lean) > 0.5) speed *= 0.8;
     if (this.ads > 0.5) speed *= 0.62;
     if (this.heal) speed = Math.min(speed, 1.6);
     if (this.revive) speed = 0;
@@ -138,7 +154,9 @@ const P = G.Player = {
     const acc = a.onGround ? 48 : 7;
     a.vel.x = approach(a.vel.x, _d.x, acc * dt); a.vel.z = approach(a.vel.z, _d.z, acc * dt);
     if (I.hit('Space') && a.onGround && !a.knocked && !a.swimming) {
-      if (a.crouch) { if (G.Physics.canStand(a)) a.crouch = false; }
+      if (a.prone) { if (G.Physics.canStand(a)) a.prone = false; else if (G.Physics.canStand(a, 1.27)) { a.prone = false; a.crouch = true; } }
+      else if (a.crouch) { if (G.Physics.canStand(a)) a.crouch = false; }
+      else if (this.tryVault()) { this.cancelHeal(); return; }
       else { a.vel.y = 7.2; this.cancelHeal(); }
     }
     G.Physics.move(a, dt);
@@ -150,11 +168,11 @@ const P = G.Player = {
     // 발소리
     if (a.onGround && a.hspeed > 1.2) {
       this.stepDist += a.hspeed * dt;
-      const stride = sprint ? 2.5 : a.crouch ? 1.4 : 1.9;
+      const stride = sprint ? 2.5 : a.prone ? 1.1 : a.crouch ? 1.4 : 1.9;
       if (this.stepDist > stride) {
         this.stepDist = 0;
         const surf = a.inWater ? 'water' : a.groundMat === 'terrain' ? 'grass' : a.groundMat;
-        G.Audio.footstep(null, surf, a.crouch ? 0.18 : sprint ? 0.5 : 0.32);
+        G.Audio.footstep(null, surf, a.prone ? 0.1 : a.crouch ? 0.18 : sprint ? 0.5 : 0.32);
       }
     }
     this.stepPhase += a.onGround ? a.hspeed * dt * 1.75 : 0;
@@ -290,7 +308,8 @@ const P = G.Player = {
     let s = U.lerp(def.spread, def.ads, this.ads) + this.bloom;
     s += U.clamp(a.hspeed / 4.6, 0, 1.5) * def.move * (1 - this.ads * 0.5);
     if (!a.onGround) s += 0.06;
-    if (a.crouch) s *= 0.8;
+    if (a.prone) s *= 0.6; else if (a.crouch) s *= 0.8;
+    if (Math.abs(this.lean) > 0.3) s *= 1.1;
     const parts = a.weapons[a.cur]?.attachments || {};
     const mod=G.Attachments?.modifiers(a.weapons[a.cur]);
     if(mod) s *= mod.spread * U.lerp(mod.hip, 1, this.ads);
@@ -308,13 +327,14 @@ const P = G.Player = {
     G.VM.muzzleWorld(cam, _m);
     const spread = this.currentSpread(def);
     if (G.Game.training) G.Training.onShot();
+    G.Stats.onShot();
     for (let k = 0; k < def.pellets; k++) {
       const rr = spread * Math.sqrt(Math.random()), th = Math.random() * Math.PI * 2;
       _d.copy(_f).addScaledVector(_r, Math.cos(th) * rr).addScaledVector(_u, Math.sin(th) * rr).normalize();
       G.Ballistics.fire(a, cam.position, _d, def, _m, def.pellets === 1 || k < 3);
     }
     const mod=G.Attachments?.modifiers(inst)||{v:1,h:1};
-    const rv = mod.v * def.recoilV * (this.ads > 0.5 ? 0.7 : 1) * (a.crouch ? 0.82 : 1) * U.rand(0.85, 1.15);
+    const rv = mod.v * def.recoilV * (this.ads > 0.5 ? 0.7 : 1) * (a.prone ? 0.62 : a.crouch ? 0.82 : 1) * U.rand(0.85, 1.15);
     a.pitch = Math.min(1.45, a.pitch + rv); this.recoilAcc += rv;
     a.yaw += mod.h * def.recoilH * U.rand(-1, 1.25);
     this.camKick += def.kick * (def.cls === 'shotgun' ? 0.019 : def.cls === 'pistol' ? 0.014 : 0.016);
@@ -530,6 +550,10 @@ const P = G.Player = {
     if (a.knocked) return;
     a.lookDir(_f);
     const it = Game.lootNear(_e, _f);
+    if (!it) {
+      const v = G.Vehicles.near(a);
+      if (v) { this.prompt = '<kbd>F</kbd> <b>차량</b> 탑승'; if (I.hit('KeyF')) G.Vehicles.enter(this, v); return; }
+    }
     if (it) {
       this.lootTarget = it;
       this.prompt = '<kbd>F</kbd> ' + Game.lootLabel(it);
@@ -538,6 +562,7 @@ const P = G.Player = {
         const res = Game.pickup(a, it);
         if (a.weapons[a.cur] !== before && a.cur !== 'throw') { this.reload = null; this.cycleT = -1; this.raise = 0; this.sw = { t: 0.2, to: a.cur }; }
         if (res) {
+          if (it.airdrop) G.Stats.unlock('airdrop');
           G.UI.pickup(res);
           G.Audio.click('pickup');
           if (!hadGun && a.hasGun()) this.switchTo(a.bestGun());
@@ -545,6 +570,48 @@ const P = G.Player = {
         } else G.UI.toast('더 이상 가질 수 없습니다');
       }
     }
+  },
+  // 낮은 장애물 넘기 (Space): 앞을 가로막은 0.5~1.6m 높이의 벽·창틀·상자 위로 올라서거나 넘어간다
+  tryVault() {
+    const a = this.a, W = G.World;
+    _f.set(-Math.sin(a.yaw), 0, -Math.cos(a.yaw));
+    _e.set(a.pos.x, a.pos.y + 0.45, a.pos.z);
+    if (!W.raycast(_e, _f, 1.1)) return false;
+    const d = W.hit.t, feet = a.pos.y;
+    const top = W.ground(a.pos.x + _f.x * (d + 0.2), a.pos.z + _f.z * (d + 0.2), feet + 1.6, 0.12, 0);
+    const h = top - feet;
+    if (h < 0.5 || h > 1.6) return false;
+    // 넘어갈 공간이 비어 있어야 한다
+    _e.set(a.pos.x, top + 0.35, a.pos.z);
+    if (W.raycast(_e, _f, d + 1.2)) return false;
+    _e.y = top + 1.0;
+    if (W.raycast(_e, _f, d + 1.2)) return false;
+    const tx = a.pos.x + _f.x * (d + 0.95), tz = a.pos.z + _f.z * (d + 0.95);
+    const land = W.ground(tx, tz, top + 0.1, 0.25, 0);
+    if (top - land > 3.2) return false;   // 너머가 낭떠러지면 넘지 않는다
+    this.vault = { t: 0, dur: 0.42 + h * 0.12, x0: a.pos.x, y0: feet, z0: a.pos.z, x1: tx, y1: land, z1: tz, top: top + 0.12 };
+    this.reload = null; this.ads = 0; this.lean = 0;
+    G.Audio.click('land');
+    return true;
+  },
+  vaultLogic(dt) {
+    const a = this.a, V = this.vault;
+    V.t += dt;
+    const k = Math.min(1, V.t / V.dur), e = k * k * (3 - 2 * k);
+    // 올라가는 구간(앞 55%)에 장애물 높이까지, 이후 착지 높이로
+    const up = Math.min(1, k / 0.55), dn = Math.max(0, (k - 0.55) / 0.45);
+    a.pos.set(U.lerp(V.x0, V.x1, e), dn > 0 ? U.lerp(V.top, V.y1, dn * dn) : U.lerp(V.y0, V.top, 1 - (1 - up) * (1 - up)), U.lerp(V.z0, V.z1, e));
+    a.vel.set(0, 0, 0); a.onGround = true; a.hspeed = 0;
+    this.ads = 0; this.sprinting = false;
+    if (k >= 1) {
+      this.vault = null;
+      a.vel.set(-Math.sin(a.yaw) * 2.5, 0, -Math.cos(a.yaw) * 2.5);
+      if (!G.Physics.canStand(a)) a.crouch = true;
+      this.landDip = 0.5;
+    }
+    if (!this.sw) this.raise = 1 - Math.sin(k * Math.PI) * 0.8;
+    this.prompt = '';
+    this.updateCamera(dt);
   },
   updateCamera(dt) {
     const a = this.a, cam = G.camera;
@@ -555,9 +622,19 @@ const P = G.Player = {
     const bob = a.onGround ? Math.sin(this.stepPhase * 2) * 0.022 * U.clamp(a.hspeed / 5, 0, 1.3) * (1 - this.ads * 0.8) : 0;
     const sh = G.FX.shakeAmt;
     cam.position.set(a.pos.x + (Math.random() - 0.5) * sh * 0.06, this.camY + bob - this.landDip * 0.12 + (Math.random() - 0.5) * sh * 0.06, a.pos.z + (Math.random() - 0.5) * sh * 0.06);
+    // 기울이기: 머리를 옆으로 내민다 (벽에 닿으면 그만큼만)
+    let leanRoll = 0;
+    if (Math.abs(this.lean) > 0.01) {
+      const side = this.lean > 0 ? 1 : -1, want = Math.abs(this.lean) * (a.prone ? 0.22 : 0.42);
+      _r.set(Math.cos(a.yaw) * side, 0, -Math.sin(a.yaw) * side);
+      const room = G.World.raycast(cam.position, _r, want + 0.18) ? Math.max(0, G.World.hit.t - 0.18) : want;
+      cam.position.addScaledVector(_r, Math.min(want, room));
+      cam.position.y -= Math.abs(this.lean) * 0.05;
+      leanRoll = -this.lean * 0.16;
+    }
     // 재장전 중 몸의 움직임에 따라 시야도 살짝 흔들린다 (G.VM.cam*)
     const VMc = G.VM;
-    cam.rotation.set(a.pitch + this.camKick + VMc.camRX + (Math.random() - 0.5) * sh * 0.02, a.yaw + VMc.camRY + (Math.random() - 0.5) * sh * 0.02, VMc.camRZ + (Math.random() - 0.5) * sh * 0.015, 'YXZ');
+    cam.rotation.set(a.pitch + this.camKick + VMc.camRX + (Math.random() - 0.5) * sh * 0.02, a.yaw + VMc.camRY + (Math.random() - 0.5) * sh * 0.02, VMc.camRZ + leanRoll + (Math.random() - 0.5) * sh * 0.015, 'YXZ');
     const inst = a.weapons[a.cur], def = inst ? G.WEAPONS[inst.id] : G.WEAPONS[a.cur];
     const scope = inst ? (G.Attachments ? G.Attachments.optic(inst,def) : (inst.scope || def.baseSight || null)) : null;
     if(inst&&G.Attachments)G.Attachments.update(G.VM.models[inst.id],inst);
@@ -572,7 +649,7 @@ const P = G.Player = {
     // 배율 조준경 흔들림 (Shift 로 숨 참기)
     if (zoom >= 2 && this.ads > 0.5) {
       this.swayT += dt;
-      const amp = (zoom >= 8 ? 0.0032 : zoom >= 4 ? 0.0022 : 0.0012) * (this.holding ? 0.12 : this.breathLock ? 1.7 : 1) * (a.crouch ? 0.6 : 1) * (1 + U.clamp(a.hspeed / 4, 0, 1.5)) * this.ads;
+      const amp = (zoom >= 8 ? 0.0032 : zoom >= 4 ? 0.0022 : 0.0012) * (this.holding ? 0.12 : this.breathLock ? 1.7 : 1) * (a.prone ? 0.35 : a.crouch ? 0.6 : 1) * (1 + U.clamp(a.hspeed / 4, 0, 1.5)) * this.ads;
       const t = this.swayT;
       cam.rotation.x += (Math.sin(t * 0.9) * 0.6 + Math.sin(t * 2.3 + 1) * 0.25) * amp;
       cam.rotation.y += (Math.cos(t * 0.7) * 0.6 + Math.sin(t * 1.9) * 0.3) * amp;
@@ -611,9 +688,14 @@ const P = G.Player = {
     const Game = G.Game, cam = G.camera, I = G.Input;
     this.camMode = 'spectate';
     G.VM.set(null);
-    const mates = Game.teams[this.a.team].members.filter(m => m.alive && m !== this.a);
+    // 팀원이 살아 있으면 팀원을, 없으면 남은 생존자 누구나 관전한다
+    let mates = Game.teams[this.a.team].members.filter(m => m.alive && m !== this.a);
+    if (!mates.length) mates = Game.actors.filter(m => m.alive && m !== this.a);
     let t = mates.length ? mates[this.specIdx % mates.length] : null;
-    if (I.lmbHit && mates.length) { this.specIdx++; t = mates[this.specIdx % mates.length]; }
+    if (I.lmbHit && mates.length) { this.specIdx++; t = mates[this.specIdx % mates.length]; this.killcam = null; }
+    // 킬캠: 죽은 직후 5초 동안은 나를 처치한 적
+    const K = this.killcam;
+    if (K) { K.t += dt; if (K.t > 5 || !K.killer.alive) this.killcam = null; else t = K.killer; }
     this.specTarget = t;
     if (!t) {
       // 시체 위에서 바라보기
@@ -642,11 +724,14 @@ const P = G.Player = {
     cam.fov = U.damp(cam.fov, 75, 4, dt); cam.updateProjectionMatrix();
     G.Audio.setListener(cam.position, t.yaw);
   },
-  onDeath() {
+  onDeath(killcam) {
     this.reload = null; this.heal = null; this.revive = null; this.throwSt = null; this.ads = 0; this.scopeView = 0; this.cycleT = -1;
+    this.lean = 0; this.vault = null;
+    if (this.vehicle) G.Vehicles.exit(this, true);
     G.VM.set(null);
-    this.specIdx = 0;
+    this.specIdx = 0; this.killcam = killcam || null;
   },
+  onKnock() { this.lean = 0; this.vault = null; if (this.vehicle) G.Vehicles.exit(this, true); },
   flashed(amt) {
     if (amt <= 0.05) return;
     this.flashAmt = Math.max(this.flashAmt, amt);

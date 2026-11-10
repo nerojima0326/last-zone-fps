@@ -26,15 +26,15 @@ const LOOT_TABLE = [
   ['ammo_556', 8], ['ammo_762', 8], ['ammo_9mm', 6], ['ammo_45', 5], ['ammo_12g', 7],
   ['scope_reddot', 3.5], ['scope_holo', 2.8], ['scope_x2', 2.6], ['scope_x4', 1.8], ['scope_x8', 0.9],
   ['frag', 7], ['smoke', 5], ['molotov', 5], ['flash', 5],
-  ['bandage', 9], ['medkit', 4], ['vest', 4], ['helmet', 5]];
+  ['bandage', 9], ['medkit', 4], ['vest', 4], ['helmet', 5], ['bag', 4]];
 for(const [k,v] of Object.entries(G.Attachments.catalog())) LOOT_TABLE.push([k,1.8]);
 const LOOT_AMOUNT = { ammo_556: 30, ammo_762: 30, ammo_9mm: 30, ammo_45: 24, ammo_12g: 10, bandage: 2 };
-const LOOT_NAMES = { frag: '수류탄', smoke: '연막탄', molotov: '화염병', flash: '섬광탄', bandage: '붕대', medkit: '구급상자', vest: '방탄조끼', helmet: '헬멧' };
+const LOOT_NAMES = { frag: '수류탄', smoke: '연막탄', molotov: '화염병', flash: '섬광탄', bandage: '붕대', medkit: '구급상자', vest: '방탄조끼', helmet: '헬멧', bag: '가방' };
 for (const k of G.GUN_IDS) LOOT_NAMES[k] = G.WEAPONS[k].name;
 for (const t in G.AMMO_NAMES) LOOT_NAMES['ammo_' + t] = G.AMMO_NAMES[t] + ' 탄약';
 for (const t in G.SCOPES) LOOT_NAMES['scope_' + t] = G.SCOPES[t].name;
 for(const [k,v] of Object.entries(G.Attachments.catalog())) LOOT_NAMES[k]=v.name;
-const WEAPON_LABEL = { fists: '주먹', frag: '수류탄', molotov: '화염병', zone: '자기장', fall: '낙하', bleed: '출혈' };
+const WEAPON_LABEL = { fists: '주먹', frag: '수류탄', molotov: '화염병', zone: '자기장', fall: '낙하', bleed: '출혈', vehicle: '차량' };
 for (const k of G.GUN_IDS) WEAPON_LABEL[k] = G.WEAPONS[k].short;
 // 봇이 처음 받는 총: 같은 종류 안에서 낮은 등급일수록 자주
 function pickGun(cls) {
@@ -52,7 +52,7 @@ const Game = G.Game = {
 
   start(o) {
     this.cleanup();
-    this.opts = o;
+    this.opts = o; this.runId = (this.runId || 0) + 1;
     if (o.mode === 'training') return this.startTraining(o);
     this.diff = o.diff; this.teamSize = o.size; this.time = 0; this.ended = false;
     const names = U.shuffle(BOT_NAMES.slice());
@@ -81,6 +81,8 @@ const Game = G.Game = {
     this.setupPlane();
     this.setupZone();
     this.spawnLoot();
+    G.Vehicles.spawn(Math.round(14 * G.World.HALF / 500));
+    G.Stats.begin();
     this.state = 'playing';
     G.UI.startMatch();
     G.UI.center('수송기 탑승 완료', '원하는 지역 위에서 <b>F</b> 키로 뛰어내리세요', '', 5);
@@ -122,7 +124,8 @@ const Game = G.Game = {
     if (this.plane) { G.scene.remove(this.plane.mesh); this.plane = null; }
     if (this.zone && this.zone.mesh) { G.scene.remove(this.zone.mesh); }
     this.zone = null;
-    G.Ballistics.reset(); G.Throwables.reset(); G.FX.reset();
+    G.Ballistics.reset(); G.Throwables.reset(); G.FX.reset(); G.Extras.reset();
+    this.spectating = false;
     if (G.Audio.ctx) G.Audio.stopLoops();
     this.state = 'menu';
   },
@@ -373,6 +376,8 @@ const Game = G.Game = {
       const ch = def.key === 'kr98' ? 0.55 : def.key === 'mk14' ? 0.4 : def.cls === 'rifle' ? 0.14 : 0.08;
       if (sc.length && Math.random() < ch) it.scope = def.key === 'kr98' || def.key === 'mk14' ? U.pick(sc.filter(t => G.SCOPES[t].zoom >= 2)) : U.pick(sc);
     }
+    // 장비 등급: 높은 등급일수록 드물다
+    if (kind === 'vest' || kind === 'helmet' || kind === 'bag') { const r = Math.random(); it.level = r < 0.55 ? 1 : r < 0.88 ? 2 : 3; }
     if (extra) Object.assign(it, extra);
     this.loot.push(it);
     // 20m 격자에 등록 (주변 전리품만 빠르게 찾기)
@@ -385,6 +390,7 @@ const Game = G.Game = {
   lootLabel(it) {
     if (it.kind === 'crate') return '<b>' + G.esc(it.owner || '보급') + '</b>의 상자 열기 <small>(' + it.items.length + '개)</small>';
     let s = '<b>' + (LOOT_NAMES[it.kind] || it.kind) + '</b>';
+    if (it.level) s += ' <small>Lv.' + it.level + '</small>';
     if (it.scope) s += ' <small>+ ' + G.SCOPES[it.scope].name + '</small>';
     if (it.kind.startsWith('ammo_') || it.kind === 'bandage' || ((G.THROW_NAMES[it.kind]) && it.amount > 1)) s += ' x' + it.amount;
     return s + ' 줍기';
@@ -427,7 +433,7 @@ const Game = G.Game = {
       const d = a._drop; a._drop = null;
       const W = G.World, x = it.pos.x + U.rand(-0.4, 0.4), z = it.pos.z + U.rand(-0.4, 0.4);
       const y = W.ground(x, z, it.pos.y + 0.5, 0.2, 0.6);
-      this.addLoot(d.kind, 1, _w.set(x, y, z), { mag: d.mag, scope: d.scope || null, iron: !!d.iron, attachments: { ...d.attachments } }).mesh.visible = true;
+      this.addLoot(d.kind, 1, _w.set(x, y, z), d.level ? { level: d.level } : { mag: d.mag, scope: d.scope || null, iron: !!d.iron, attachments: { ...d.attachments } }).mesh.visible = true;
     }
     return res;
   },
@@ -467,17 +473,19 @@ const Game = G.Game = {
 
   /* ------------ 피해 / 처치 ------------ */
   damage(t, amount, attacker, weapon, head, point, dir) {
-    if (!t.alive || this.state !== 'playing') return;
+    if (!t.alive || (this.state !== 'playing' && !this.spectating)) return;
     if (this.training && t === this.player) return;
     if (t.state !== 'ground' && weapon !== 'zone') return;
     if (attacker && attacker !== t && attacker.team === t.team) return;
-    let dmg = amount;
+    let dmg = amount, armored = false;
     if (weapon !== 'zone' && weapon !== 'fall' && weapon !== 'bleed') {
-      if (head && t.helmet) dmg *= 0.6;
-      if (!head && t.vest && weapon !== 'molotov') dmg *= 0.7;
+      if (head && t.helmet) { dmg *= G.ARMOR.helmet[t.helmet]; armored = true; }
+      if (!head && t.vest && weapon !== 'molotov') { dmg *= G.ARMOR.vest[t.vest]; armored = true; }
     }
     t.lastHurtT = this.time;
     if (attacker && attacker !== t) t.lastAttacker = attacker;
+    const fromPlayer = attacker === this.player && t !== this.player;
+    if (fromPlayer && !t.knocked && weapon !== 'vehicle' && G.WEAPONS[weapon] && G.WEAPONS[weapon].cls) G.Stats.onHit();
     let result = 'hit';
     if (t.knocked) {
       t.bleed -= dmg * 0.9;
@@ -493,7 +501,10 @@ const Game = G.Game = {
         else { this.kill(t, attacker, weapon, head); result = 'kill'; }
       }
     }
-    if (attacker === this.player && t !== this.player) { G.UI.hitmarker(head, result !== 'hit'); G.Audio.hit(head, result !== 'hit'); }
+    if (fromPlayer) {
+      G.UI.hitmarker(head, result !== 'hit'); G.Audio.hit(head, result !== 'hit', armored);
+      G.Nums.add(t, point && point !== t.pos ? point : t.chest(_v), dmg, head, result !== 'hit', armored);
+    }
     if (t === this.player) {
       if (weapon !== 'zone') { G.UI.hurt(dmg, attacker ? attacker.pos : null); G.Audio.hurt(); G.FX.shake(Math.min(0.4, dmg / 60)); }
       else G.UI.hurt(dmg * 0.3, null);
@@ -503,7 +514,7 @@ const Game = G.Game = {
     if (t.brain && attacker) t.brain.onHurt(attacker);
   },
   knock(t, attacker, weapon, head) {
-    t.knocked = true; t.bleed = 100; t.knockedBy = attacker || null; t.crouch = false;
+    t.knocked = true; t.bleed = 100; t.knockedBy = attacker || null; t.crouch = false; t.prone = false;
     t.vel.set(0, t.vel.y, 0);
     if (t.brain) { t.brain.healing = null; t.brain.reviving = null; }
     G.UI.killfeed(attacker, t, weapon, head, true);
@@ -514,7 +525,8 @@ const Game = G.Game = {
   kill(t, attacker, weapon, head) {
     if (!t.alive) return;
     if ((!attacker || attacker === t) && t.knockedBy && t.knockedBy.alive !== undefined) attacker = t.knockedBy;
-    t.alive = false; t.knocked = false; t.hp = 0; t.deathTime = this.time;
+    t.alive = false; t.knocked = false; t.prone = false; t.hp = 0; t.deathTime = this.time;
+    const kdist = attacker && attacker !== t ? attacker.pos.distanceTo(t.pos) : 0;
     t.vel.set(0, 0, 0);
     if (attacker && attacker !== t && attacker.team !== t.team) { attacker.kills++; this.teams[attacker.team].kills++; }
     G.UI.killfeed(attacker, t, weapon, head, false);
@@ -525,8 +537,12 @@ const Game = G.Game = {
       const y = W.ground(t.pos.x, t.pos.z, t.pos.y + 0.5, 0.2, 0.6);
       this.addLoot('crate', 1, _w.set(t.pos.x + 0.6, y, t.pos.z), { items, owner: t.name });
     }
-    if (attacker === this.player && t !== this.player) G.UI.killMsg('적을 처치했습니다', t.name + (head ? ' · 헤드샷' : ''), false, this.player.kills);
-    if (t === this.player) { G.Player.onDeath(); G.UI.center('사망했습니다', attacker && attacker !== t ? G.esc(attacker.name) + '에게 처치됨' : '', '', 3); }
+    if (attacker === this.player && t !== this.player) { G.UI.killMsg('적을 처치했습니다', t.name + (head ? ' · 헤드샷' : '') + (kdist >= 50 ? ' · ' + Math.round(kdist) + 'm' : ''), false, this.player.kills); G.Stats.onKill(kdist, head, weapon); }
+    if (t === this.player) {
+      // 킬캠: 나를 처치한 적을 잠시 따라가며 보여 준다
+      G.Player.onDeath(attacker && attacker !== t && attacker.alive ? { killer: attacker, weapon, head, dist: kdist, t: 0 } : null);
+      G.UI.center('사망했습니다', attacker && attacker !== t ? G.esc(attacker.name) + '에게 처치됨 · ' + (WEAPON_LABEL[weapon] || weapon) + (kdist >= 1 ? ' · ' + Math.round(kdist) + 'm' : '') : (WEAPON_LABEL[weapon] || ''), '', 3);
+    }
     this.checkTeam(t.team);
   },
   revive(t, by) {
@@ -543,7 +559,7 @@ const Game = G.Game = {
       team.eliminated = true;
       for (const m of team.members) if (m.alive) this.kill(m, m.knockedBy, 'bleed', false);
       team.rank = this.teams.filter(t => !t.eliminated).length + 1;
-      if (teamId === this.player.team && !this.ended) { this.ended = true; setTimeout(() => this.finish(false), 3000); }
+      if (teamId === this.player.team && !this.ended) { this.ended = true; const run = this.runId; setTimeout(() => { if (this.runId === run) this.finish(false); }, G.Player.killcam ? 6000 : 3000); }
     }
     const alive = this.teams.filter(t => !t.eliminated);
     if (alive.length <= 1 && !this.ended) {
@@ -551,7 +567,7 @@ const Game = G.Game = {
       if (alive.length === 1) alive[0].rank = 1;
       const win = alive.length === 1 && alive[0].id === this.player.team;
       if (win) G.UI.center('최후의 생존자!', '모든 적을 물리쳤습니다', 'win', 4);
-      setTimeout(() => this.finish(win), win ? 2500 : 3000);
+      const run = this.runId; setTimeout(() => { if (this.runId === run) this.finish(win); }, win ? 2500 : 3000);
     }
   },
   finish(win) {
@@ -559,9 +575,25 @@ const Game = G.Game = {
     this.state = 'ended';
     const team = this.teams[this.player.team];
     const rank = win ? 1 : (team.rank || this.teams.filter(t => !t.eliminated).length + 1);
-    G.UI.showResults({ win, rank, teams: this.teams.length, kills: this.player.kills, dmg: Math.round(this.player.dmgDealt), time: this.player.alive ? this.time : this.player.deathTime, teamKills: team.kills });
+    const r = { win, rank, teams: this.teams.length, kills: this.player.kills, dmg: Math.round(this.player.dmgDealt), time: this.player.alive ? this.time : this.player.deathTime, teamKills: team.kills };
+    Object.assign(r, G.Stats.end(r), { canSpectate: !win && this.teamsAlive() > 1 });
+    G.UI.showResults(r);
     G.Input.unlock();
     G.Audio.stopLoops();
+  },
+  // 결과 화면에서 '관전하기': 남은 경기를 지켜본다 (Esc 로 결과 화면 복귀)
+  startSpectate() {
+    if (this.state !== 'ended' || this.teamsAlive() <= 1) return;
+    this.spectating = true;
+    document.getElementById('results').classList.add('hidden');
+    G.Input.lock();
+  },
+  stopSpectate() {
+    if (!this.spectating) return;
+    this.spectating = false;
+    document.getElementById('results').classList.remove('hidden');
+    const b = document.getElementById('specBtn'); if (b) b.classList.toggle('hidden', this.teamsAlive() <= 1);
+    G.Input.unlock(); G.Audio.stopLoops();
   },
   onShot(shooter, def) {
     const range = def.key === 'kr98' || def.key === 'mk14' ? 200 : def.cls === 'rifle' ? 130 : def.cls === 'shotgun' ? 100 : 75;
@@ -582,7 +614,9 @@ const Game = G.Game = {
     if (this.state !== 'playing' && this.state !== 'ended') return;
     this.time += dt;
     this.updatePlane(dt);
-    if (this.state === 'playing') G.Player.update(dt);
+    if (this.state === 'playing' || this.spectating) G.Player.update(dt);
+    // 결과 화면 뒤 관전: 승부가 나면 결과 화면으로 돌아간다
+    if (this.spectating && this.teamsAlive() <= 1) this.stopSpectate();
     for (const a of this.actors) if (a.brain) a.brain.update(dt);
     // 출혈
     for (const a of this.actors) {
@@ -606,6 +640,7 @@ const Game = G.Game = {
     G.Throwables.update(dt);
     if (this.zone) this.updateZone(dt);
     this.updateLoot(dt);
+    G.Extras.update(dt);
     if (this.training) G.Training.update(dt);
   },
   syncModels(dt) {
@@ -616,15 +651,15 @@ const Game = G.Game = {
       const dx = a.pos.x - cam.x, dz = a.pos.z - cam.z, d2 = dx * dx + dz * dz;
       const far = P.scopeView > 0.5 ? 620 : 380;   // 배율 조준 중에는 더 멀리까지 보인다
       let vis = d2 < (a.alive ? far * far : 160 * 160);
-      if (a.isPlayer && a.alive && P.camMode === 'fp') vis = false;
+      if (a.isPlayer && a.alive && (P.camMode === 'fp' || P.vehicle)) vis = false;
       if (m.root.visible !== vis) m.root.visible = vis;
       if (a.isPlayer && a.alive && P.camMode === 'fp') { m.root.position.copy(a.pos); }
       if (!vis) continue;
       m.root.position.copy(a.pos);
       m.root.rotation.y = a.yaw;
-      m.update(dt, { speed: a.hspeed, pitch: a.pitch, crouch: a.crouch, knocked: a.knocked, dead: !a.alive, state: a.state, cur: a.cur, gun: a.gunId(a.cur), onGround: a.onGround });
+      m.update(dt, { speed: a.hspeed, pitch: a.pitch, crouch: a.crouch, knocked: a.low(), dead: !a.alive, state: a.state, cur: a.cur, gun: a.gunId(a.cur), onGround: a.onGround });
       m.showChute(a.state === 'chute' && a.alive);
-      m.setHelmet(a.helmet);
+      m.setHelmet(!!a.helmet);
       // 45m 밖은 병합된 LOD 메시 1개로, 그림자는 40m 안쪽만
       m.setLOD(d2 > 45 * 45, a.crouch && a.alive && !a.knocked);
       const sh = d2 < 40 * 40;

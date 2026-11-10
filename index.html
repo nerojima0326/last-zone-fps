@@ -11,7 +11,7 @@
 <script>
 // 새 버전이 올라왔는데 휴대폰이 예전 페이지를 기억하고 있으면 새로 불러온다
 (function () {
-  var BUILD = '30';
+  var BUILD = '31';
   window.LZ_BUILD = BUILD;
   try {
     fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (v) {
@@ -97,7 +97,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=30">
+<link rel="stylesheet" href="css/style.css?v=31">
 <script type="importmap">
 {
   "imports": {
@@ -138,7 +138,7 @@
       <div class="opt"><span>참가 인원</span><div class="seg" data-opt="players"><button data-v="24">24</button><button data-v="40" class="on">40</button><button data-v="60">60</button></div></div>
       <div class="opt"><span>봇 난이도</span><div class="seg" data-opt="diff"><button data-v="easy">쉬움</button><button data-v="normal" class="on">보통</button><button data-v="hard">어려움</button></div></div>
       <div class="opt"><span>시작 무기</span><div class="seg" data-opt="loadout"><button data-v="pistol">권총</button><button data-v="rifle" class="on">소총</button><button data-v="shotgun">산탄총</button><button data-v="all">전부</button><button data-v="none">없음</button></div></div>
-      <div class="opt"><span>시간대</span><div class="seg" data-opt="tod"><button data-v="day" class="on">낮</button><button data-v="sunset">노을</button></div></div>
+      <div class="opt"><span>시간대</span><div class="seg" data-opt="tod"><button data-v="day" class="on">낮</button><button data-v="sunset">노을</button><button data-v="night">밤</button><button data-v="fog">안개</button><button data-v="rain">비</button><button data-v="random">무작위</button></div></div>
       <div class="opt"><span>그래픽</span><div class="seg" data-opt="quality"><button data-v="auto" class="on">자동</button><button data-v="potato">최저</button><button data-v="low">낮음</button><button data-v="medium">중간</button><button data-v="high">높음</button></div></div>
       <div class="opt"><span>목표 FPS <small class="hint">해상도 자동 조절</small></span><div class="seg" data-opt="fpsTarget"><button data-v="60">60</button><button data-v="120" class="on">120</button><button data-v="144">144</button></div></div>
       <div class="opt"><span>FPS 표시</span><div class="seg" data-opt="showFps"><button data-v="on" class="on">켜기</button><button data-v="off">끄기</button></div></div>
@@ -149,6 +149,7 @@
 
     <button id="startBtn">게임 시작</button>
     <button id="trainBtn">훈련장 <small>혼자 사격 연습</small></button>
+    <button id="statsBtn">전적 · 업적</button>
     <button id="touchLayoutBtn2" class="ghost touch-only" style="margin-top:10px;width:100%;padding:12px;border-radius:10px;font-size:17px;font-weight:700;color:#fff;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18)">휴대폰 버튼 위치 바꾸기</button>
   </div>
 
@@ -159,7 +160,10 @@
         <div><kbd>W A S D</kbd>이동</div>
         <div><kbd>Shift</kbd>달리기</div>
         <div><kbd>Space</kbd>점프</div>
+        <div><kbd>Space</kbd>낮은 장애물 넘기 (벽·창틀 앞에서)</div>
         <div><kbd>C</kbd>앉기</div>
+        <div><kbd>Z</kbd>엎드리기</div>
+        <div><kbd>Q</kbd><kbd>E</kbd>좌우로 기울이기</div>
         <div><kbd>좌클릭</kbd>사격 / 투척</div>
         <div><kbd>우클릭</kbd>정조준 / 굴리기</div>
         <div><kbd>R</kbd>재장전</div>
@@ -169,7 +173,8 @@
         <div><kbd>4</kbd>투척무기 (반복: 종류 변경)</div>
         <div><kbd>G</kbd>빠른 투척</div>
         <div><kbd>B</kbd>사격 모드 (연사/단발)</div>
-        <div><kbd>F</kbd>줍기 · 소생 · 강하 · 낙하산</div>
+        <div><kbd>F</kbd>줍기 · 소생 · 강하 · 낙하산 · 차량 타고 내리기</div>
+        <div><kbd>L</kbd>손전등</div>
         <div><kbd>H</kbd>치료</div>
         <div><kbd>M</kbd>지도</div>
         <div><kbd>Esc</kbd>일시정지</div>
@@ -213,7 +218,7 @@
   <div id="teamPanel"></div>
 
   <div id="vitals">
-    <div id="gear"><span id="vestIcon" class="gear-i">조끼</span><span id="helmIcon" class="gear-i">헬멧</span><span id="medsInfo"></span></div>
+    <div id="gear"><span id="vestIcon" class="gear-i">조끼</span><span id="helmIcon" class="gear-i">헬멧</span><span id="bagIcon" class="gear-i">가방</span><span id="medsInfo"></span></div>
     <div id="hpBar"><div id="hpLag"></div><div id="hpFill"></div><div id="hpText">100</div></div>
   </div>
 
@@ -261,14 +266,26 @@
       <div><span>피해량</span><b id="resDmg">0</b></div>
       <div><span>생존 시간</span><b id="resTime">0:00</b></div>
       <div><span>팀 처치</span><b id="resTeamKills">0</b></div>
+      <div><span>명중률</span><b id="resAcc">-</b></div>
+      <div><span>헤드샷 처치</span><b id="resHeads">0</b></div>
+      <div><span>최장 처치</span><b id="resLong">-</b></div>
     </div>
+    <div id="resNew"></div>
     <div class="res-btns">
       <button id="againBtn">다시 하기</button>
+      <button id="specBtn" class="ghost hidden">관전하기</button>
       <button id="menuBtn" class="ghost">메인 메뉴</button>
     </div>
   </div>
 </div>
 
+<div id="statsPanel" class="hidden">
+  <div class="panel">
+    <div class="st-title">전적 · 업적</div>
+    <div id="statsBody"></div>
+    <div class="res-btns"><button id="statsClose">닫기</button><button id="statsReset" class="ghost">기록 지우기</button></div>
+  </div>
+</div>
 <div id="fpsBox" class="hidden"></div>
 <div id="errorBox" class="hidden"></div>
 
@@ -296,12 +313,12 @@ try {
     try { window.EZTree = await import('./vendor/ez-tree.es.js'); } catch (e) { console.info('[veg] vendor/ez-tree.es.js 없음 — 기존 나무 사용'); }
   }
   loadFill.style.width = '15%';
-  const files = ['core', 'assets', 'vegetation', 'world', 'effects', 'ambient', 'plane', 'character', 'soldiers', 'gunlib', 'gunmodels', 'weapons','weapon-audio','attachments','g17-pilot','m4-viewmodel', 'throwables', 'actor', 'player', 'bots', 'game', 'training', 'ui', 'main', 'touch'];
+  const files = ['core', 'assets', 'vegetation', 'world', 'effects', 'ambient', 'plane', 'character', 'soldiers', 'gunlib', 'gunmodels', 'weapons','weapon-audio','attachments','g17-pilot','m4-viewmodel', 'throwables', 'actor', 'player', 'bots', 'extras', 'vehicles', 'game', 'training', 'ui', 'main', 'touch'];
   for (let i = 0; i < files.length; i++) {
     loadText.textContent = '스크립트 불러오는 중... (' + files[i] + ')';
     await new Promise((res, rej) => {
       const s = document.createElement('script');
-      s.src = 'js/' + files[i] + '.js?v=30';
+      s.src = 'js/' + files[i] + '.js?v=31';
       s.onload = res;
       s.onerror = () => rej(new Error(files[i] + '.js 를 불러올 수 없습니다'));
       document.body.appendChild(s);
