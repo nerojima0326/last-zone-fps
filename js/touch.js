@@ -48,6 +48,10 @@
     { id: 'heal', name: '치료', html: '<span>치료</span>', act: 'key', key: 'KeyH', ax: 'r', x: 67, y: 253, d: 74, fs: 16 },
     { id: 'pause', name: '일시정지', html: '<span>Ⅱ</span>', act: 'pause', ax: 'l', x: 277, y: 67, d: 74, fs: 16 },
     { id: 'attach', name: '부착물', html: '<span>부착물</span>', act: 'attachments', ax: 'l', x: 450, y: 67, d: 74, fs: 14 },
+    { id: 'leanL', name: '왼쪽 기울이기', html: '<span>◀기울</span>', act: 'key', key: 'KeyQ', ax: 'l', x: 290, y: 160, d: 74, fs: 14 },
+    { id: 'leanR', name: '오른쪽 기울이기', html: '<span>기울▶</span>', act: 'key', key: 'KeyE', ax: 'l', x: 375, y: 160, d: 74, fs: 14 },
+    { id: 'prone', name: '엎드리기', html: '<span>엎드려</span>', act: 'key', key: 'KeyZ', ax: 'l', x: 460, y: 160, d: 74, fs: 14 },
+    { id: 'light', name: '손전등', html: '<span>손전등</span>', act: 'key', key: 'KeyL', ax: 'l', x: 536, y: 67, d: 74, fs: 14 },
     { id: 'map', name: '지도', html: '<span>지도</span>', act: 'key', key: 'KeyM', ax: 'l', x: 363, y: 67, d: 74, fs: 16 }
   ];
   const BY = {};
