@@ -7,6 +7,8 @@ Three.js로 만든 브라우저용 3D 배틀로얄 FPS입니다. 설치나 빌�
 - `start.bat`을 더블클릭하세요. 로컬 서버(`serve.ps1`)를 띄우고 Chrome/Edge에서 게임을 엽니다. 인터넷 연결이 필요합니다(three.js CDN).
 - Linux/macOS에서는 저장소 폴더에서 `python3 -m http.server 8080`을 실행한 뒤 브라우저로 접속합니다. 모델 자동 로딩에는 HTTP 서버가 필요합니다.
 
+GitHub Pages 사이트는 `gh-pages` 브랜치에서 배포됩니다. `main`에 반영한 변경은 검증 후 `gh-pages`에도 병합하고, GitHub Actions의 Pages 배포 성공을 확인해야 사이트에 적용됩니다.
+
 ## 실사 그래픽 (무료 에셋)
 
 ### AR-7 M4 1인칭 모델·애니메이션 (버전 30)

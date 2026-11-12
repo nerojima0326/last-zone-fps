@@ -16,7 +16,8 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
     browser = await chromium.launch({ executablePath: process.env.CHROME_BIN || undefined, headless: true,
       args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
     const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
-    const errors = [], requests = [];
+    const errors = [], requests = [], scripts = [];
+    page.on('request', r => { if (/\/js\/[^/]+\.js\?/.test(r.url())) scripts.push(r.url()); });
     page.on('pageerror', e => errors.push(e.message));
     page.on('response', r => { if (r.url().includes('/models/viewmodels/')) requests.push(r.status()); });
     await page.route('https://fonts.googleapis.com/**', r => r.abort());
@@ -32,6 +33,9 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
     const ready = () => page.waitForFunction(() => window.G?.UI && document.querySelector('#menu:not(.hidden)') && document.querySelector('#loading.hidden'), null, { timeout: 180000 });
     await page.goto(url, { waitUntil: 'domcontentloaded' });
     await ready();
+    const build = await page.evaluate(() => window.LZ_BUILD);
+    assert(scripts.length > 20, 'Game scripts did not load');
+    assert(scripts.every(url => new URL(url).searchParams.get('v') === build), 'Script cache version differs from page build');
     for (let visit = 0; visit < 2; visit++) {
       const models = await page.evaluate(() => ({ m4: G.M4Viewmodel.ready, glock: G.G17Pilot.ready,
         m4Status: document.querySelector('#m4Status').textContent, glockStatus: document.querySelector('#g17Status').textContent,
