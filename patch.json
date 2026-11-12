@@ -1,4 +1,26 @@
 {
   "project": "nerojima/last-zone-fps",
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "recipe": {
+    "credits": [
+      {
+        "files": "assets/patch/range/sandbag-wall-section-7075ee.glb",
+        "license": "CC-BY-4.0",
+        "source": "https://polyfork.dev/asset/sandbag-wall-section-7075ee",
+        "author": "Polyfork"
+      },
+      {
+        "files": "assets/patch/range/concreteFloorPainted/**",
+        "license": "CC0-1.0",
+        "source": "https://polyhaven.com/a/concrete_floor_painted",
+        "author": "Poly Haven"
+      },
+      {
+        "files": "assets/patch/range/plastic_crate_01.glb",
+        "license": "CC0-1.0",
+        "source": "https://polyhaven.com/a/plastic_crate_01",
+        "author": "Poly Haven"
+      }
+    ]
+  }
 }

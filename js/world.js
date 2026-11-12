@@ -101,6 +101,7 @@ const W = G.World = {
     this.hit = { t: 0, point: new THREE.Vector3(), normal: new THREE.Vector3(), mat: 'hard', box: null };
 
     if (G.Assets) await G.Assets.load(renderer, progress);
+    if (G.RangeProps) { progress(0.31, '훈련장 시설 불러오는 중...'); await G.RangeProps.load(renderer); }
     if (G.Soldiers) { progress(0.31, '군인 모델 불러오는 중...'); await G.Soldiers.load(renderer); }
     if (G.GunModels) { progress(0.315, '총기 모델 불러오는 중...'); await G.GunModels.load(renderer); }
     if (G.Attachments) await G.Attachments.load();
@@ -1345,8 +1346,9 @@ const W = G.World = {
     // 거리 표지 기둥 (숫자는 훈련 모드에서 붙인다)
     for (const d of [10, 25, 50, 75, 100]) this.boxMM(b, -36.1, 0, FL - d - 0.1, -35.9, 1.8, FL - d + 0.1, 'wood', wood, NC);
     // 나무·집이 들어오지 않게 영역 표시
+    if (G.RangeProps) G.RangeProps.build(this, b, FL);
     this.footprints.push({ minX: t.x - 16, maxX: t.x + 16, minZ: t.z + FL, maxZ: t.z + FL + 10, kind: 'pad' });   // 사격대 바닥 (포장, 풀 없음)
-    this.footprints.push({ minX: t.x - 44, maxX: t.x + 44, minZ: t.z - 84, maxZ: t.z + FL + 12, kind: 'range' });
+    this.footprints.push({ minX: t.x - 44, maxX: t.x + 44, minZ: t.z - 84, maxZ: t.z + FL + 16, kind: 'range' });
   },
   genWild() {
     const r = this.rnd;
