@@ -412,6 +412,7 @@ function armRig(parent, shoulder, hand, elbow, glove, slack, sideArg) {
     curl: 0.9, curlT: 0.9, thumb: 0.7, thumbT: 0.7, trig: 0.9, trigT: 0.9, palmRef: null, fingerRef: null, palmTarget: new V3(), fingerTarget: new V3(), thumbRest: tq.clone(), handQ: new THREE.Quaternion(), handReady: false, anchorLocal: PALM_CONTACT.clone(), contact: hand.clone(), pinch: hand.clone(), contactError: 0, wristAngle: 0,
     aim: side > 0 ? new V3(0,0.15,-1).normalize() : new V3(1,0,-0.08).normalize(), homeK: 0 };
   rig.pole.set(side * 0.8, -0.55, 0.15).normalize();
+  if (G.PatchCharacters) G.PatchCharacters.replaceArm(rig, [sm, gm], sk);
   solveArm(rig, 1);
   return rig;
 }
