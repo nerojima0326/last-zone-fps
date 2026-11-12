@@ -3,6 +3,7 @@ assets/_src/
 _backup/
 node_modules/
 *.zip
+!assets/models/viewmodels/m4_animations.zip
 Thumbs.db
 .DS_Store
 tools/guns/src/*.glb

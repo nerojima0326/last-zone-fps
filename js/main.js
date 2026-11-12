@@ -176,8 +176,8 @@ G.boot = async function () {
   G.VM.init(G.vmScene);
 
   G.UI.init();
-  if(G.G17Pilot)G.G17Pilot.init();
-  if(G.M4Viewmodel)await G.M4Viewmodel.init();
+  progress(0.94, '총기 모델 자동 적용 중...');
+  await Promise.all([G.G17Pilot?.init(),G.M4Viewmodel?.init()]);
   if(G.Attachments)G.Attachments.initUI();
   G.World.setTimeOfDay(G.UI.opts.tod || 'day');
   G.Player.sens = G.UI.opts.sens;

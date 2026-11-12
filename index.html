@@ -11,7 +11,7 @@
 <script>
 // 새 버전이 올라왔는데 휴대폰이 예전 페이지를 기억하고 있으면 새로 불러온다
 (function () {
-  var BUILD = '33';
+  var BUILD = '34';
   window.LZ_BUILD = BUILD;
   try {
     fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (v) {
@@ -142,8 +142,8 @@
       <div class="opt"><span>그래픽</span><div class="seg" data-opt="quality"><button data-v="auto" class="on">자동</button><button data-v="potato">최저</button><button data-v="low">낮음</button><button data-v="medium">중간</button><button data-v="high">높음</button></div></div>
       <div class="opt"><span>목표 FPS <small class="hint">해상도 자동 조절</small></span><div class="seg" data-opt="fpsTarget"><button data-v="60">60</button><button data-v="120" class="on">120</button><button data-v="144">144</button></div></div>
       <div class="opt"><span>FPS 표시</span><div class="seg" data-opt="showFps"><button data-v="on" class="on">켜기</button><button data-v="off">끄기</button></div></div>
-      <div class="opt g17-opt"><span>G-18 글록 모델 <small class="hint">시험 기능</small></span><div><label class="g17-upload">FBX 파일 선택<input id="g17File" type="file" accept=".fbx" hidden></label> <button id="g17Reset" type="button" hidden>기본으로</button><small id="g17Status">기본 G-18 모델 사용 중</small></div></div>
-      <div class="opt m4-opt"><span>AR-7 M4 모델</span><div><label class="m4-upload">M4 ZIP 선택<input id="m4File" type="file" accept=".zip" hidden></label> <button id="m4Reset" type="button" hidden>기본으로</button><small id="m4Status" role="status">원본 ZIP을 한 번 선택하면 이 기기에 저장됩니다</small></div></div>
+      <div class="opt g17-opt"><span>G-18 글록 모델</span><div><label class="g17-upload">다른 FBX 선택<input id="g17File" type="file" accept=".fbx" hidden></label> <button id="g17Reset" type="button" hidden>기본으로</button><small id="g17Status" role="status">시작할 때 Glock 모델을 자동 적용합니다</small></div></div>
+      <div class="opt m4-opt"><span>AR-7 M4 모델</span><div><label class="m4-upload">다른 M4 ZIP 선택<input id="m4File" type="file" accept=".zip" hidden></label> <button id="m4Reset" type="button" hidden>기본으로</button><small id="m4Status" role="status">시작할 때 M4 모델을 자동 적용합니다</small></div></div>
       <div class="opt"><span>마우스 감도</span><div class="range"><input type="range" id="optSens" min="0.2" max="3" step="0.05" value="1"><b id="sensVal">1.00</b></div></div>
     </div>
 

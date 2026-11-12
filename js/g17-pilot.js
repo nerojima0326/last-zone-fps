@@ -1,10 +1,10 @@
-// Optional user-owned Glock viewmodel. Local FBX bytes are never uploaded.
+// Bundled Glock viewmodel, with optional local file replacement.
 (function () {
 'use strict';
 const G=window.G,T=window.THREE;
 const v=new T.Vector3();
 const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
- init(){
+ async init(){
   const input=document.getElementById('g17File'),status=document.getElementById('g17Status'),reset=document.getElementById('g17Reset');
   const update=G.VM.update,fire=G.VM.fireKick,muzzleWorld=G.VM.muzzleWorld;
   G.VM.update=function(dt,s){update.call(this,dt,s);pilot.update(dt,s,this)};
@@ -21,6 +21,15 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
    catch(e){status.textContent='불러오기 실패: '+e.message;console.error('[G18 Glock]',e)}finally{input.disabled=false;input.value=''}
   });
   reset.addEventListener('click',()=>{pilot.unload();status.textContent='기본 G-18 모델 사용 중';reset.hidden=true});
+  input.disabled=true;status.textContent='Glock 모델 자동 적용 중…';
+  try{
+   const response=await fetch('assets/models/viewmodels/glock17.fbx',{signal:AbortSignal.timeout(30000)});
+   if(!response.ok)throw Error('모델 다운로드 실패 ('+response.status+')');
+   const {TGALoader}=await import('three/addons/loaders/TGALoader.js');
+   await pilot.load(await response.arrayBuffer(),TGALoader);
+   status.textContent='G-18에 Glock 자동 적용됨';reset.hidden=false;
+  }catch(e){status.textContent='Glock 자동 적용 실패 · 기본 모델 사용 중';console.warn('[G18 Glock]',e)}
+  finally{input.disabled=false}
  },
  sample(name,p){
   const part=this.actions[name];if(!part)return;

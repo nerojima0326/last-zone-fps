@@ -1,4 +1,4 @@
-// User-owned BarcodeGames M4 pack. Source files stay on this browser's device.
+// Bundled BarcodeGames M4 pack, with optional browser-local replacement.
 (function () {
 'use strict';
 const G=window.G,T=window.THREE,V=T.Vector3;
@@ -19,19 +19,27 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   const duration=G.Guns.reloadDuration,events=G.Guns.reloadEvents;
   G.Guns.reloadDuration=function(id,empty){return id==='ar7'&&M.ready?M.reloadDuration(empty):duration.call(this,id,empty)};
   G.Guns.reloadEvents=function(id,empty,phase,port){return id==='ar7'&&M.ready?M.reloadEvents(empty):events.call(this,id,empty,phase,port)};
-  const importFile=async(bytes,save)=>{
+  const importFile=async(bytes,save,bundled=false)=>{
    input.disabled=true;status.textContent='M4 모델과 텍스처 불러오는 중…';
    try{
     const {unzipSync}=await import('three/addons/libs/fflate.module.js');await M.loadZip(bytes,unzipSync);
     reset.hidden=false;status.textContent='AR-7에 M4 적용됨';
     if(save){try{await M.cache('put',bytes);status.textContent+=' · 다음 접속 자동 적용'}catch(e){status.textContent+=' · 기기 저장 불가'}}
-    else status.textContent+=' · 저장된 파일 복원됨';
+    else status.textContent+=bundled?' · 자동 적용됨':' · 저장된 파일 복원됨';
    }catch(e){status.textContent='불러오기 실패: '+e.message;console.error('[M4]',e)}
    finally{input.disabled=false;input.value=''}
   };
   input.addEventListener('change',async()=>{const f=input.files?.[0];if(f)await importFile(await f.arrayBuffer(),true)});
   reset.addEventListener('click',async()=>{M.unload();reset.hidden=true;status.textContent='기본 AR-7 모델 사용 중';try{await M.cache('delete')}catch(e){status.textContent+=' · 저장 파일 삭제 실패'}});
-  try{const bytes=await this.cache('get');if(bytes)await importFile(bytes,false)}catch(e){/* Private browsing can disable IndexedDB. File import still works. */}
+  input.disabled=true;status.textContent='M4 모델 자동 적용 중…';
+  try{
+   const response=await fetch('assets/models/viewmodels/m4_animations.zip',{signal:AbortSignal.timeout(30000)});
+   if(!response.ok)throw Error('모델 다운로드 실패 ('+response.status+')');
+   await importFile(await response.arrayBuffer(),false,true);
+  }catch(e){status.textContent='M4 자동 적용 실패 · 기본 모델 사용 중';console.warn('[M4]',e)}
+  finally{input.disabled=false}
+  // A previously chosen custom ZIP remains an override; bundled files need no device storage.
+  try{const bytes=await this.cache('get');if(bytes)await importFile(bytes,false)}catch(e){/* Private browsing can disable IndexedDB. Bundled models still work. */}
  },
  cache(method,value){
   return new Promise((resolve,reject)=>{
