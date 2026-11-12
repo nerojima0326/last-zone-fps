@@ -77,6 +77,10 @@ const Soldiers = G.Soldiers = {
   ready: false, templates: [],
 
   async load(renderer, progress) {
+    if (G.PatchCharacters && await G.PatchCharacters.load(renderer)) {
+      this.patch = true; this.ready = true; this.templates = G.PatchCharacters.templates;
+      return;
+    }
     if (location.protocol === 'file:' || !THREE.FBXLoader) return;
     const mgr = new THREE.LoadingManager();
     mgr.setURLModifier(u => /\.(tga|png|jpg|jpeg|psd|dds)$/i.test(u) && !/atlas_(diff|nor)\.jpg$/.test(u) ? BLANK : u);
@@ -155,6 +159,7 @@ const Soldiers = G.Soldiers = {
 
   // 캐릭터 하나 만들기: { root, body, helmet, bones[], drive(model) }
   create(rnd) {
+    if (this.patch) return G.PatchCharacters.create(rnd);
     const T = this.templates[Math.floor((rnd ? rnd() : Math.random()) * this.templates.length)];
     const root = THREE.SkeletonUtils.clone(T.root);
     const byName = {};
@@ -176,6 +181,7 @@ const Soldiers = G.Soldiers = {
 
   // 절차적 관절 각도 → 군인 뼈 회전
   drive(s, m) {
+    if (s.patch) return G.PatchCharacters.drive(s, m);
     const T = s.T, P = this._P || (this._P = {}), Q = (k) => P[k] || (P[k] = new THREE.Quaternion());
     const qe = (rot, out) => out.setFromEuler(_e.set(rot.x, rot.y, rot.z, rot.order));
     qe(m.spine.rotation, Q('spine'));

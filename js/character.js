@@ -130,13 +130,20 @@ class CharacterModel {
     // 실사 군인 모델 (Rocketbox): 절차적 뼈대는 자세 계산용으로만 남기고 몸은 군인 메시로 그린다
     this.soldier = null;
     if (G.Soldiers && G.Soldiers.ready && o.soldier !== false) {
-      const sd = this.soldier = G.Soldiers.create();
+      const sd = this.soldier = G.Soldiers.create(o.random);
       root.add(sd.root);
       body.geometry.setDrawRange(0, 0); body.castShadow = false; // 총 거치대가 body 아래라 숨기지 않고 그리기만 생략
-      head.remove(this.helmetMesh); this.helmetMesh.geometry.dispose();
-      this.meshes = [sd.body];
-      if (sd.helmet) { this.helmetMesh = sd.helmet; this.meshes.push(sd.helmet); }
-      else this.helmetMesh = new THREE.Object3D();
+      this.meshes = sd.meshes ? sd.meshes.slice() : [sd.body];
+      if (sd.patch) {
+        this.helmetMesh.position.y = 0.06;
+        this.helmetMesh.scale.setScalar(0.9);
+        this.meshes.push(this.helmetMesh);
+      }
+      else {
+        head.remove(this.helmetMesh); this.helmetMesh.geometry.dispose();
+        if (sd.helmet) { this.helmetMesh = sd.helmet; this.meshes.push(sd.helmet); }
+        else this.helmetMesh = new THREE.Object3D();
+      }
       this.helmetMesh.visible = !!o.helmet;
     }
   }
@@ -159,7 +166,13 @@ class CharacterModel {
   setShadows(on) { for (const m of this.meshes) m.castShadow = on; for (const k in this.guns) this.guns[k].castShadow = on; }
   setHelmet(on) { if (this.helmetMesh.visible !== on) this.helmetMesh.visible = on; }
   setLOD(on, crouch) {
-    if (this.soldier) { this.lod = on; return; }
+    if (this.soldier) {
+      if (this.soldier.patch) {
+        this.soldier.root.visible = !on; this.body.visible = !on; this.lodMesh.visible = on;
+        this.lodMesh.scale.y = crouch ? 0.72 : 1;
+      }
+      this.lod = on; return;
+    }
     if (this.lod !== on) { this.lod = on; this.body.visible = !on; this.lodMesh.visible = on; }
     if (on) this.lodMesh.scale.y = crouch ? 0.72 : 1;
   }
@@ -238,7 +251,13 @@ class CharacterModel {
   }
   dispose() {
     if (!this.soldier) for (const m of this.meshes) m.geometry.dispose();
-    else this.body.geometry.dispose();
+    else {
+      this.body.geometry.dispose();
+      if (this.soldier.patch) {
+        this.helmetMesh.geometry.dispose();
+        for (const skeleton of new Set(this.soldier.meshes.map(m => m.skeleton))) skeleton.dispose();
+      }
+    }
     this.lodMesh.geometry.dispose();
     if (this.body.skeleton) this.body.skeleton.dispose();
     if (this.root.parent) this.root.parent.remove(this.root);

@@ -20,6 +20,24 @@
         "license": "CC0-1.0",
         "source": "https://polyhaven.com/a/plastic_crate_01",
         "author": "Poly Haven"
+      },
+      {
+        "files": "assets/patch/people/survivor-sweater.glb",
+        "license": "CC0-1.0",
+        "source": "https://patch.gg/api/v1/assets/mpfb%3Ahuman-0408",
+        "author": "MakeHuman team, Cortu, MargaretToigo; prepared by Patch"
+      },
+      {
+        "files": "assets/patch/people/fps-arms.glb",
+        "license": "CC0-1.0",
+        "source": "https://patch.gg/api/v1/assets/mpfb%3Ahuman-0408",
+        "author": "MakeHuman team, Cortu, MargaretToigo; prepared by Patch"
+      },
+      {
+        "files": "assets/patch/people/survivor-cargo.glb",
+        "license": "CC0-1.0",
+        "source": "https://patch.gg/api/v1/assets/mpfb%3Ahuman-0348",
+        "author": "MakeHuman team, Cortu, MargaretToigo; prepared by Patch"
       }
     ]
   }

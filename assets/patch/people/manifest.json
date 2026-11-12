@@ -1,0 +1,62 @@
+{
+  "runtime": "patch-web@1",
+  "changes": "1K textures; separate first-person arm geometry; runtime retargeting to existing game poses.",
+  "assets": [
+    {
+      "id": "mpfb:human-0408",
+      "title": "Slim man in a knit sweater and cargo pants",
+      "source": {
+        "id": "mpfb",
+        "name": "MakeHuman (MPFB)",
+        "ref": "human-0408",
+        "rev": "2.0.18",
+        "url": "https://github.com/makehumancommunity/mpfb2/tree/d0a32e57a7f915cb2f2b95410e2117648c7bbb7e"
+      },
+      "credit": "Slim man in a knit sweater and cargo pants by Patch, made with MPFB from CC0 MakeHuman parts by MakeHuman team, Cortu and MargaretToigo (https://github.com/makehumancommunity/mpfb2/tree/d0a32e57a7f915cb2f2b95410e2117648c7bbb7e), CC0 1.0 Universal (https://creativecommons.org/publicdomain/zero/1.0/). Changed by Patch: skin under clothes removed, game-engine skeleton, re-packed GLB, credit added to the file.",
+      "license": "CC0-1.0",
+      "original": {
+        "url": "https://assets.patchusercontent.com/sha256/5c81901bf6d0df2f47b450cfd0bd85862b9dbc06e1312808e6d4264ffbedbac7/human-0408.glb",
+        "sha256": "5c81901bf6d0df2f47b450cfd0bd85862b9dbc06e1312808e6d4264ffbedbac7"
+      },
+      "files": [
+        {
+          "file": "survivor-sweater.glb",
+          "sha256": "6d639caad77676558adbedd9b3d2eee3784b92e84343fb39471ce880ac436023",
+          "size": 4082168,
+          "triangles": 35098
+        },
+        {
+          "file": "fps-arms.glb",
+          "sha256": "6db731bfe1cdcaa5027b64fb4b23d0d0d29f027fb068afe46bdec63acf8d545a",
+          "size": 859092,
+          "triangles": 9866
+        }
+      ]
+    },
+    {
+      "id": "mpfb:human-0348",
+      "title": "Bald man in a tucked t-shirt and cargo pants",
+      "source": {
+        "id": "mpfb",
+        "name": "MakeHuman (MPFB)",
+        "ref": "human-0348",
+        "rev": "2.0.18",
+        "url": "https://github.com/makehumancommunity/mpfb2/tree/d0a32e57a7f915cb2f2b95410e2117648c7bbb7e"
+      },
+      "credit": "Bald man in a tucked t-shirt and cargo pants by Patch, made with MPFB from CC0 MakeHuman parts by MakeHuman team, Cortu and MargaretToigo (https://github.com/makehumancommunity/mpfb2/tree/d0a32e57a7f915cb2f2b95410e2117648c7bbb7e), CC0 1.0 Universal (https://creativecommons.org/publicdomain/zero/1.0/). Changed by Patch: skin under clothes removed, game-engine skeleton, re-packed GLB, credit added to the file.",
+      "license": "CC0-1.0",
+      "original": {
+        "url": "https://assets.patchusercontent.com/sha256/223953b8569b72b66c0f796585ab41e9f61e73f35575fcd875e895acee4b192f/human-0348.glb",
+        "sha256": "223953b8569b72b66c0f796585ab41e9f61e73f35575fcd875e895acee4b192f"
+      },
+      "files": [
+        {
+          "file": "survivor-cargo.glb",
+          "sha256": "0e7ca58bfc8679114ddc71834699d89be42db92db7f55e7c5912dfffa80b9e3a",
+          "size": 2964072,
+          "triangles": 31456
+        }
+      ]
+    }
+  ]
+}

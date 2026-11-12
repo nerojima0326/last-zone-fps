@@ -37,6 +37,10 @@
 
 MIT 라이선스 에셋은 게임을 배포할 때 위 라이선스 파일(저작권 고지)을 함께 넣어야 합니다. CC0 에셋은 표기 의무가 없습니다.
 
+## 사람 · 1인칭 팔 (v34, Patch 에셋)
+
+Patch가 MakeHuman/MPFB의 CC0 부품으로 준비한 실사 캐릭터 `mpfb:human-0408`, `mpfb:human-0348`을 사용합니다. 긴소매 캐릭터의 팔·손을 분리한 1인칭 모델도 포함합니다. 원작자 MakeHuman team, Cortu, MargaretToigo와 Patch의 정확한 크레딧, 원본 해시, 라이선스, 가공 내용은 [캐릭터·팔 출처](patch/people/CREDITS.md)에 있습니다.
+
 ## 훈련장 시설 (v33, Patch 에셋)
 
 모래주머니 벽은 Polyfork의 Sandbag Wall Section(CC BY 4.0), 사격장 바닥은 Rob Tuytel의 Concrete Floor Painted(CC0), 보급 상자는 PierreB3D의 Plastic Crate 01(CC0)을 사용합니다. Patch에서 제공받은 파일을 게임에 포함했으며 별도 파일 선택 없이 불러옵니다. 크기·배치와 렌더링 재질은 게임에 맞게 조정했습니다. 원본 출처·고지·라이선스는 [훈련장 에셋 출처](patch/range/CREDITS.md)와 해당 폴더의 `LICENSES/`에 있습니다. 게임 메뉴의 **훈련장 에셋 출처**에서도 확인할 수 있습니다.

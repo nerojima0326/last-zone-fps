@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><base href="../"><title>캐릭터 미리보기</title>
+<style>body{margin:0;background:#18212a;color:#eee;font:15px sans-serif}canvas{display:block}#controls{position:fixed;top:16px;left:16px;padding:14px;background:#13202de6;border-radius:8px}button{margin:4px;padding:7px}#status{margin:8px 4px}</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script></head>
+<body><div id="controls">캐릭터 미리보기 · <a href="tools/reloads.html" style="color:#a9d9ff">1인칭 팔·장전</a><div id="poses"></div><div id="status">불러오는 중…</div></div>
+<script type="module">
+import * as T from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {FBXLoader} from 'three/addons/loaders/FBXLoader.js';
+import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
+import {MeshoptDecoder} from 'three/addons/libs/meshopt_decoder.module.js';
+import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
+window.THREE={...T,GLTFLoader,FBXLoader,mergeGeometries,MeshoptDecoder,SkeletonUtils};
+try{
+ for(const name of ['core','gunlib','gunmodels','weapons','character','soldiers','patch-characters'])await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='js/'+name+'.js?v=34';s.onload=resolve;s.onerror=reject;document.body.append(s);});
+ const G=window.G,renderer=new T.WebGLRenderer({antialias:true});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.toneMapping=T.ACESFilmicToneMapping;document.body.append(renderer.domElement);
+ const scene=new T.Scene();scene.background=new T.Color(0x26333f);
+ scene.add(new T.HemisphereLight(0xe4edff,0x5e4d34,2));const sun=new T.DirectionalLight(0xffe8cf,3);sun.position.set(-3,5,-4);scene.add(sun);
+ const floor=new T.Mesh(new T.PlaneGeometry(40,40),new T.MeshStandardMaterial({color:0x394450,roughness:1}));floor.rotation.x=-Math.PI/2;scene.add(floor);scene.add(new T.GridHelper(20,40,0x6c7e8c,0x465461));
+ const camera=new T.PerspectiveCamera(37,innerWidth/innerHeight,.01,100);camera.position.set(2.9,1.8,-4.8);camera.lookAt(0,.9,0);
+ await G.PatchCharacters.load(renderer);await G.GunModels.load(renderer);await G.Soldiers.load(renderer);
+ const models=[0,.999].map(rnd=>{const m=new G.CharacterModel({helmet:true,random:()=>rnd});scene.add(m.root);return m;});
+ let current='idle',paused=false;
+ const labels={idle:'서기',run:'달리기',crouch:'앉기',air:'점프',chute:'낙하산',knocked:'기절',dead:'사망'};
+ function pose(name){current=name;models.forEach(m=>m.deathT=0);document.getElementById('status').textContent=(G.PatchCharacters.ready?'Patch 실사 캐릭터 2종':'기본 캐릭터')+' · '+labels[name];}
+ function step(dt){models.forEach((m,i)=>{m.root.position.set(i===0?-.65:.65,0,0);m.update(dt,{pitch:0,cur:'rifle',gun:'ar7',speed:current==='run'?5.5:0,onGround:current!=='air',crouch:current==='crouch',state:current==='chute'?'chute':'ground',knocked:current==='knocked',dead:current==='dead'});m.showChute(current==='chute');});scene.updateMatrixWorld(true);renderer.render(scene,camera);}
+ for(const [key,label]of Object.entries(labels)){const b=document.createElement('button');b.textContent=label;b.onclick=()=>pose(key);document.getElementById('poses').append(b);}
+ pose('idle');let then=performance.now();function loop(now){if(!paused)step(Math.min(.04,(now-then)/1000));then=now;requestAnimationFrame(loop);}requestAnimationFrame(loop);
+ window.PeopleStudio={ready:true,models,scene,camera,renderer,pose,step,pause(){paused=true}};
+}catch(error){document.getElementById('status').textContent=error.message;console.error(error);}
+</script></body></html>
