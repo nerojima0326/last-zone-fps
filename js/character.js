@@ -184,14 +184,21 @@ class CharacterModel {
       lK = -0.3 * e; rK = -0.5 * e; aL = [0.5 + e, 0, 0.4]; aR = [0.3 + e * 0.8, 0, -0.4]; eL = 0.3; eR = 0.5;
       chestRX = 0; headRX = 0.2 * e;
       this.setGun(null);
-    } else if (a.knocked) {
+    } else if (a.knocked || a.prone) {
       r.rotation.x = -1.4; yOff = 0.2;
       this.phase += a.speed * dt * 3;
       const s = Math.sin(this.phase) * Math.min(1, a.speed);
       lT = -0.2 + s * 0.4; rT = -0.2 - s * 0.4; lK = -0.6; rK = -0.6;
       aL = [2.4 + s * 0.4, 0, 0.3]; aR = [2.4 - s * 0.4, 0, -0.3]; eL = 0.5; eR = 0.5;
       chestRX = 0.5; headRX = 0.6;
-      this.setGun(null);
+      if (a.prone && !a.knocked) {
+        // 엎드려 쏴: 상체를 팔꿈치로 받치고 총을 앞으로
+        r.rotation.x = -1.45; yOff = 0.02;
+        lT = 0.12 + s * 0.25; rT = 0.12 - s * 0.25; lK = -0.12; rK = -0.12;
+        chestRX = this.proneChest + U.clamp(a.pitch, -0.4, 0.4) * 0.6; spineRX = this.proneSpine; headRX = this.proneHead;
+        this.setGun(a.gun || gun);
+        this.ikGun = (gun === 'rifle' || gun === 'shotgun' || gun === 'pistol') ? gun : null;
+      } else this.setGun(null);
     } else if (a.state === 'freefall') {
       r.rotation.x = -1.25; yOff = 1;
       aL = [0.4, 0, -1.3]; aR = [0.4, 0, 1.3]; eL = 0.6; eR = 0.6;
@@ -222,6 +229,8 @@ class CharacterModel {
       this.ikGun = (gun === 'rifle' || gun === 'shotgun' || gun === 'pistol') && this.throwT <= 0 ? gun : null;
       if (this.throwT > 0) { this.throwT -= dt; const k = this.throwT / 0.5; aR = [2.6 * k + 0.6, 0, -0.2]; eR = 0.8 * k; }
     }
+    // 기울이기: 발을 축으로 몸을 옆으로 눕힌다 (머리가 leanX 만큼 나오게)
+    if (a.lean && !a.dead && !a.knocked && !a.prone) r.rotation.z = -Math.asin(U.clamp(a.lean / Math.max(0.8, a.eyeH || 1.62), -0.5, 0.5));
     r.position.y += yOff;
     this.hip.position.y = hipY;
     this.spine.rotation.x = spineRX - this.flinch * 0.3;
@@ -273,6 +282,8 @@ function makeChute() {
   return g;
 }
 
+// 엎드려 쏴 자세 (몸이 -1.45 rad 누운 상태에서 척추·가슴을 들어 총을 앞으로)
+CharacterModel.prototype.proneSpine = 0.5; CharacterModel.prototype.proneChest = 1.0; CharacterModel.prototype.proneHead = 0.1;
 G.CharacterModel = CharacterModel;
 G.OUTFITS = OUTFITS;
 })();

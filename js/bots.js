@@ -5,14 +5,14 @@ const THREE = window.THREE, G = window.G, U = G.U;
 const V3 = THREE.Vector3;
 
 const DIFF = {
-  easy:   { react: 1.35, err: 2.5, track: 0.85, vis: 75, rate: 0.48, burst: [2, 3], pause: [0.75, 1.35], nade: 0.05, turn: 2.8, head: 0.02 },
-  normal: { react: 0.85, err: 1.65, track: 1.45, vis: 105, rate: 0.68, burst: [2, 4], pause: [0.48, 0.95], nade: 0.14, turn: 3.8, head: 0.07 },
-  hard:   { react: 0.28, err: 0.7, track: 3.3, vis: 150, rate: 1.0, burst: [4, 8], pause: [0.2, 0.45], nade: 0.45, turn: 7,  head: 0.3 }
+  easy:   { react: 1.35, err: 2.5, track: 0.85, vis: 75, rate: 0.48, burst: [2, 3], pause: [0.75, 1.35], nade: 0.05, turn: 2.8, head: 0.02, peek: 0.35, prone: 0.1 },
+  normal: { react: 0.85, err: 1.65, track: 1.45, vis: 105, rate: 0.68, burst: [2, 4], pause: [0.48, 0.95], nade: 0.14, turn: 3.8, head: 0.07, peek: 0.7, prone: 0.22 },
+  hard:   { react: 0.28, err: 0.7, track: 3.3, vis: 150, rate: 1.0, burst: [4, 8], pause: [0.2, 0.45], nade: 0.45, turn: 7,  head: 0.3, peek: 1, prone: 0.32 }
 };
 // Teammates retain their previous effectiveness when enemy difficulty is reduced.
 const ALLY_DIFF = {
-  easy: { react: 0.9, err: 1.7, track: 1.5, vis: 95, rate: 0.65, burst: [2,4], pause: [0.45,0.9], nade: 0.12, turn: 3.5, head: 0.05 },
-  normal: { react: 0.5, err: 1.1, track: 2.3, vis: 125, rate: 0.85, burst: [3,6], pause: [0.3,0.65], nade: 0.28, turn: 5, head: 0.15 },
+  easy: { react: 0.9, err: 1.7, track: 1.5, vis: 95, rate: 0.65, burst: [2,4], pause: [0.45,0.9], nade: 0.12, turn: 3.5, head: 0.05, peek: 0.7, prone: 0.2 },
+  normal: { react: 0.5, err: 1.1, track: 2.3, vis: 125, rate: 0.85, burst: [3,6], pause: [0.3,0.65], nade: 0.28, turn: 5, head: 0.15, peek: 0.85, prone: 0.26 },
   hard: DIFF.hard
 };
 const _e = new V3(), _c = new V3(), _d = new V3(), _w = new V3(), _a = new V3(), _f = new V3(), _r = new V3(), _m = new V3(), _p = new V3(), _l = new V3();
@@ -34,6 +34,7 @@ class Bot {
     this.dropTarget = new V3(); this.jumpAt = 0; this.chuteAt = U.rand(95, 140);
     this.wanderT = 0; this.time = 0; this.followOff = new V3(U.rand(-6, 6), 0, U.rand(-6, 6));
     this.run = false;
+    this.leanWant = 0; this.vehicle = null; this.carGoal = null; this.carDest = new V3(); this.carType = ''; this.carCD = U.rand(3, 10);
   }
   get now() { return G.Game.time; }
 
@@ -52,13 +53,16 @@ class Bot {
     if (this.reloadT > 0) { this.reloadT -= dt; if (this.reloadT <= 0) this.finishReload(); }
     this.thinkT -= dt;
     if (this.thinkT <= 0) { this.thinkT = 0.3 + Math.random() * 0.2; this.think(); }
+    if (this.vehicle) { this.updateVehicle(dt); return; }
+    this.carCD -= dt;
+    if (this.carCD <= 0) { this.carCD = 4; this.considerCar(); }
 
     _w.set(0, 0, 0);
     let speed = 0, faceYaw = null;
     const combat = this.target && this.target.alive && (this.visible || this.lostT < 1.2);
     if (this.healing) {
       this.healing.t += dt;
-      a.crouch = true;
+      if (!a.prone) a.crouch = true;
       if (this.healing.t >= this.healing.dur) {
         if (this.healing.kind === 'medkit' && a.meds.medkit > 0) { a.meds.medkit--; a.hp = 100; }
         else if (a.meds.bandage > 0) { a.meds.bandage--; a.hp = Math.min(75, a.hp + 20); }
@@ -78,6 +82,9 @@ class Bot {
       speed = this.combat(dt, _w);
       faceYaw = null;
     } else if (!this.healing && !this.reviving) {
+      // 전투가 끝났으면 일어나서 움직인다
+      if (a.prone && this.goal) { if (G.Physics.canStand(a)) a.prone = false; else if (G.Physics.canStand(a, 1.27)) { a.prone = false; a.crouch = true; } }
+      if (this.leanWant && !combat) this.leanWant = 0;
       if (this.goal) {
         speed = this.navigate(dt, _w);
         faceYaw = speed > 0.1 ? Math.atan2(-_w.x, -_w.z) : null;
@@ -88,6 +95,10 @@ class Bot {
       a.pitch = U.damp(a.pitch, 0, 3, dt);
       if (a.cur === 'fists' || !a.weapons[a.cur]) a.cur = a.bestGun();
     }
+    // 기울이기: 벽에 닿으면 그만큼만
+    const leanTo = this.leanWant && !a.prone && a.onGround ? this.leanRoom(this.leanWant) : 0;
+    a.leanX = U.damp(a.leanX, leanTo, 9, dt);
+    if (Math.abs(a.leanX) < 0.005 && !leanTo) a.leanX = 0;
     if (faceYaw !== null) a.yaw += U.clamp(U.angleDiff(a.yaw, faceYaw), -this.d.turn * dt, this.d.turn * dt);
     if (a.blindT > 0) { a.yaw += Math.sin(this.time * 3) * dt * 2; _w.multiplyScalar(0.4); }
     const acc = a.onGround ? 30 : 6;
@@ -138,6 +149,33 @@ class Bot {
       this.lastSeen.copy(best.pos); this.hasLast = true; this.lostT = 0;
       this.healing = null;
     }
+    this.peek();
+  }
+  // 엄폐물 모서리: 가운데서는 안 보이지만 옆으로 내밀면 보이는 쪽으로 기울인다
+  peek() {
+    const a = this.a, t = this.target, W = G.World;
+    if (!t || !t.alive || !this.hasLast || this.lostT > 5 || a.prone || a.knocked || !a.onGround || a.swimming || this.vehicle || this.reloadT > 0 || this.healing || this.reviving) { this.leanWant = 0; return; }
+    if (this.visible) return;                 // 지금 기울인 자세로 보이면 유지
+    if (Math.random() > this.d.peek) return;
+    _c.copy(this.lastSeen); _c.y += t.low() ? 0.3 : t.crouch ? 0.85 : 1.2;
+    _e.set(a.pos.x, a.pos.y + a.eyeH(), a.pos.z);
+    if (W.los(_e, _c)) { this.leanWant = 0; return; }
+    const first = this.leanWant || (Math.random() < 0.5 ? 1 : -1);
+    for (const side of [first, -first]) {
+      const room = this.leanRoom(side);
+      if (Math.abs(room) < 0.25) continue;
+      _m.set(_e.x + Math.cos(a.yaw) * room, _e.y, _e.z - Math.sin(a.yaw) * room);
+      if (W.los(_m, _c)) { this.leanWant = side; return; }
+    }
+    this.leanWant = 0;
+  }
+  // 옆으로 내밀 수 있는 거리 (부호 포함)
+  leanRoom(side) {
+    const a = this.a, W = G.World, want = 0.42;
+    _p.set(a.pos.x, a.pos.y + a.eyeH(), a.pos.z);
+    _l.set(Math.cos(a.yaw) * side, 0, -Math.sin(a.yaw) * side);
+    const room = W.raycast(_p, _l, want + 0.18) ? Math.max(0, W.hit.t - 0.18) : want;
+    return Math.min(want, room) * side;
   }
   hear(pos, loud) {
     if (this.visible) return;
@@ -151,6 +189,7 @@ class Bot {
   }
   onHurt(attacker) {
     if (!attacker || attacker === this.a) return;
+    this.hurtByT = G.Game.time;
     this.healing = null;
     if (!this.visible) {
       this.alertPos.copy(attacker.pos); this.alertT = 6;
@@ -164,6 +203,11 @@ class Bot {
     const a = this.a, Game = G.Game, Z = Game.zone, W = G.World;
     if (this.healing || this.reviving) return;
     const combat = this.target && this.target.alive && this.visible;
+    if (this.vehicle) { this.thinkDriving(); return; }
+    if (this.goalType === 'car') {
+      if (combat || !this.carGoal || this.carGoal.driver) { this.carGoal = null; this.goal = null; }
+      else { this.run = true; return; }
+    }
     if (this.target && !this.target.alive) { this.target = null; this.hasLast = false; }
     // 무기 재장전 (비전투)
     const inst = a.weapons[a.cur];
@@ -284,7 +328,13 @@ class Bot {
     const g = this.goal;
     const dx = g.x - a.pos.x, dz = g.z - a.pos.z, dist = Math.hypot(dx, dz);
     this.goalT += dt;
-    if (dist < (this.goalType === 'loot' ? 1.3 : this.goalType === 'revive' ? 1.1 : 2.5)) {
+    if (this.goalType === 'car' && this.carGoal) { g.x = this.carGoal.pos.x; g.z = this.carGoal.pos.z; }
+    if (dist < (this.goalType === 'loot' ? 1.3 : this.goalType === 'revive' ? 1.1 : this.goalType === 'car' ? 3.3 : 2.5)) {
+      if (this.goalType === 'car') {
+        const v = this.carGoal; this.carGoal = null; this.goal = null;
+        if (v && !v.driver && G.Vehicles.botEnter(this, v)) this.setGoal(this.carDest, this.carType);
+        return 0;
+      }
       if (this.goalType === 'loot' && this.lootItem) {
         if (!this.lootItem.taken) G.Game.pickup(a, this.lootItem);
         if (this.lootItem.claim === a) this.lootItem.claim = null;
@@ -422,8 +472,14 @@ class Bot {
       this.strafeT = U.rand(0.5, 1.6);
       const r = Math.random();
       this.strafe = r < 0.4 ? 1 : r < 0.8 ? -1 : 0;
-      if (dist > 35 && Math.random() < 0.35 && a.cur !== 'shotgun') { a.crouch = true; this.strafe = 0; }
+      if (a.prone) {
+        // 가까워지거나 오래 안 보이면 일어난다
+        if ((dist < 22 || (!this.visible && this.lostT > 2) || Math.random() < 0.12) && G.Physics.canStand(a)) a.prone = false;
+        this.strafe = 0;
+      } else if (dist > 45 && a.cur === 'rifle' && a.onGround && !a.inWater && !a.swimming && !this.leanWant && this.visible && Math.random() < d.prone) { a.prone = true; a.crouch = false; this.strafe = 0; }
+      else if (dist > 35 && Math.random() < 0.35 && a.cur !== 'shotgun') { a.crouch = true; this.strafe = 0; }
       else if (Math.random() < 0.5) a.crouch = false;
+      if (this.leanWant) this.strafe = 0;
       if (G.Game.diff === 'hard' && Math.random() < 0.12 && a.onGround && dist < 30) a.vel.y = 7;
     }
     _f.set(-Math.sin(a.yaw), 0, -Math.cos(a.yaw)); _r.set(Math.cos(a.yaw), 0, -Math.sin(a.yaw));
@@ -431,12 +487,13 @@ class Bot {
     const range = a.cur === 'shotgun' ? [3, 10] : a.cur === 'fists' ? [0, 1.4] : a.cur === 'pistol' ? [8, 30] : [15, 70];
     if (dist > range[1]) fwd = 1; else if (dist < range[0]) fwd = -0.6;
     if (!this.visible) fwd = 0.6;
-    const spd = a.crouch ? 2.2 : 4.0;
+    if (this.leanWant || a.prone) { fwd = dist < range[0] && !a.prone ? -0.6 : 0; this.strafe = a.prone ? 0 : this.strafe; }
+    const spd = a.prone ? 0.9 : a.crouch ? 2.2 : 4.0;
     out.copy(_r).multiplyScalar(this.strafe).addScaledVector(_f, fwd);
     if (out.lengthSq() > 0) out.normalize().multiplyScalar(spd);
     if (this.strafe !== 0 && this.blocked(a.yaw - this.strafe * Math.PI / 2, 1.5)) { this.strafe = -this.strafe; }
     if (fwd !== 0 && this.blocked(a.yaw + (fwd > 0 ? 0 : Math.PI), 1.5)) out.addScaledVector(_f, -fwd * spd * 0.9);
-    if (this.reloadT > 0 || (inst && inst.mag === 0)) {
+    if ((this.reloadT > 0 || (inst && inst.mag === 0)) && !a.prone) {
       if(this.coverSearchT<=0){this.coverSearchT=1.2;this.findCover(t)}
       if(this.coverT>0){const dx=this.coverPos.x-a.pos.x,dz=this.coverPos.z-a.pos.z,cd=Math.hypot(dx,dz);
         if(cd>0.9){out.set(dx/cd*4,0,dz/cd*4);a.crouch=false}else{out.set(0,0,0);a.crouch=true}
@@ -462,7 +519,7 @@ class Bot {
     _f.set(-Math.sin(a.yaw), 0, -Math.cos(a.yaw)); _r.set(Math.cos(a.yaw), 0, -Math.sin(a.yaw));
     _m.copy(_e).addScaledVector(_d, 0.75).addScaledVector(_r, 0.12); _m.y -= 0.2;
     const up = _l.set(0, 1, 0);
-    const spread = def.spread * (a.hspeed > 1 ? 1.1 : 0.7) * (a.crouch ? 0.8 : 1);
+    const spread = def.spread * (a.hspeed > 1 ? 1.1 : 0.7) * (a.prone ? 0.6 : a.crouch ? 0.8 : 1);
     for (let k = 0; k < def.pellets; k++) {
       const rr = spread * Math.sqrt(Math.random()), th = Math.random() * Math.PI * 2;
       _p.copy(_d).addScaledVector(_r, Math.cos(th) * rr).addScaledVector(up, Math.sin(th) * rr).normalize();
@@ -532,6 +589,43 @@ class Bot {
     const lim = W.HALF - 5; a.pos.x = U.clamp(a.pos.x, -lim, lim); a.pos.z = U.clamp(a.pos.z, -lim, lim);
     const g2 = W.ground(a.pos.x, a.pos.z, a.pos.y + 0.5, 0.3, 0.6);
     if (a.pos.y <= g2 + 0.02 || a.pos.y < W.waterAt(a.pos.x, a.pos.z) - 1.2) { Game.land(a); a.cur = a.bestGun(); this.thinkT = 0; }
+  }
+  /* ------------ 차량 ------------ */
+  // 먼 목적지로 가야 하면 근처 빈 차를 탄다 (플레이어 팀 봇은 플레이어를 따라 걷는다)
+  considerCar() {
+    const a = this.a, Game = G.Game;
+    if (!G.Vehicles || this.vehicle || !this.goal || this.healing || this.reviving || a.prone || a.swimming) return;
+    if (a.team === Game.player.team || !a.hasGun()) return;
+    if (this.goalType !== 'zone' && this.goalType !== 'wander') return;
+    if (this.target && this.target.alive && this.lostT < 8) return;
+    const gd = Math.hypot(this.goal.x - a.pos.x, this.goal.z - a.pos.z);
+    if (gd < 150) return;
+    const v = G.Vehicles.freeNear(a, 45);
+    if (!v || Math.hypot(this.goal.x - v.pos.x, this.goal.z - v.pos.z) > gd + 20) return;
+    this.carDest.copy(this.goal); this.carType = this.goalType;
+    this.carGoal = v; v.claim = a;
+    this.setGoal(v.pos, 'car'); this.run = true;
+  }
+  thinkDriving() {
+    const a = this.a, Z = G.Game.zone;
+    const zc = Z.next || Z.cur;
+    // 목적지가 자기장 밖이 되면 새 지점으로
+    if (!this.goal || Math.hypot(this.goal.x - zc.x, this.goal.z - zc.z) > zc.r * 0.9) {
+      const ang = Math.random() * 6.28, rr = Math.sqrt(Math.random()) * zc.r * 0.5;
+      this.setGoal(_p.set(zc.x + Math.cos(ang) * rr, 0, zc.z + Math.sin(ang) * rr), 'zone');
+    }
+  }
+  updateVehicle(dt) {
+    const a = this.a, v = this.vehicle, Vh = G.Vehicles;
+    // 가까이 적이 보이거나 다쳤으면 세우고 내려서 싸운다
+    const threat = (this.visible && this.target && a.pos.distanceTo(this.target.pos) < 70) || G.Game.time - (this.hurtByT ?? -99) < 1;
+    if (threat || this.vStuck > 3 || !this.goal) this.vStop = true;
+    if (this.vStop) {
+      Vh.step(v, a, dt, 0, 0, true);
+      if (Math.abs(v.speed) < 3) { Vh.botExit(this); this.vStop = false; this.vStuck = 0; this.carCD = 25; }
+      return;
+    }
+    if (Vh.botDrive(this, dt, this.goal)) { Vh.botExit(this); this.carCD = 25; }
   }
   updateKnocked(dt) {
     const a = this.a, team = G.Game.teams[a.team];

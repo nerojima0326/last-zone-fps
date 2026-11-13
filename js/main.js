@@ -176,6 +176,7 @@ G.boot = async function () {
   G.VM.init(G.vmScene);
 
   G.UI.init();
+  if (G.Settings) { G.Settings.apply(); G.Settings.initUI(); }
   progress(0.94, '총기 모델 자동 적용 중...');
   await Promise.all([G.G17Pilot?.init(),G.M4Viewmodel?.init()]);
   if(G.Attachments)G.Attachments.initUI();

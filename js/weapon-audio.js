@@ -52,7 +52,7 @@ const W=G.WeaponAudio={
   if(this.voices.length>=48)this.kill(this.voices.find(v=>!v.own)||this.voices[0]);
   const source=c.createBufferSource();source.buffer=buffer;source.playbackRate.value=rate;
   const filter=c.createBiquadFilter();filter.type='lowpass';filter.frequency.value=Math.min(sp.lp,o.cut||20000);filter.Q.value=.6;
-  const gain=c.createGain(),level=(o.gain||1)*sp.g;
+  const gain=c.createGain(),level=(o.gain||1)*sp.g*(a.volOf?a.volOf('weapons'):1);
   gain.gain.setValueAtTime(level,t);
   gain.gain.setValueAtTime(level,t+Math.max(.002,seconds-.04));gain.gain.linearRampToValueAtTime(0,t+seconds);
   source.connect(filter);filter.connect(gain);
