@@ -107,12 +107,13 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   // It is part of the source's single Main mesh, so separate its upper triangles.
   const rearSight=this.splitRearSight(body,main);
   // Anchors measured from the supplied M4's barrel, rear aperture and rail (cm).
+  const mainRestMatrix=new T.Matrix4().copy(pivot.matrixWorld).invert().multiply(main.matrixWorld);
   const muzzleLocal=new V(.344,1.8,51.5),ironLocal=new V(.344,8.15,-8.3),ironOffset=new V();
   main.localToWorld(point.copy(ironLocal));ironOffset.set(-point.x,-point.y,-.22-point.z);
   const previewTemplate=frame.clone(true),remove=[];previewTemplate.traverse(o=>{if(o.isSkinnedMesh||o.isCamera||o.name==='Mag2')remove.push(o)});for(const o of remove)o.removeFromParent();
   const flash=G.VM.models.ar7.flash.clone();flash.name='M4Flash';flash.visible=false;pivot.add(flash);
   this.unload();G.VM.root.add(pivot);
-  Object.assign(this,{ready:true,active:false,model,pivot,frame,main,body,rearSight,mixer,actions,spare,flash,muzzleLocal,ironLocal,ironOffset,aimOffset:ironOffset.clone(),previewTemplate,scope:null,mount:null,mountKey:null,name:'Idle',shotT:99,equipT:99,aim:0});
+  Object.assign(this,{ready:true,active:false,model,pivot,frame,main,mainRestMatrix,body,rearSight,mixer,actions,spare,flash,muzzleLocal,ironLocal,ironOffset,aimOffset:ironOffset.clone(),previewTemplate,scope:null,mount:null,mountKey:null,name:'Idle',shotT:99,equipT:99,aim:0});
  },
  splitRearSight(body,main){
   const source=body.geometry.index?body.geometry.toNonIndexed():body.geometry,lists=[[],[]],v=new V();
@@ -128,6 +129,7 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
  },
  sample(name,p){
   const part=this.actions[name];if(this.name!==name){this.mixer.stopAllAction();part.action.reset().play();this.name=name}
+  part.action.paused=false;
   this.mixer.setTime(part.start+clamp(p,0,1)*part.duration);
  },
  reloadDuration(empty){return empty?Math.max(this.actions.Reload_Empty.duration,this.actions.Reload.duration*1.1):this.actions.Reload.duration},
@@ -181,7 +183,8 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
      const dot=new T.Mesh(new T.CircleGeometry(.09,16),new T.MeshBasicMaterial({color:0xff2415,depthTest:false}));dot.position.set(0,eye,3);dot.renderOrder=10;holder.add(dot);
      this.mountGeometries.push(dot.geometry);this.mountMaterials.push(dot.material);
     }
-    this.pivot.updateMatrixWorld(true);const sight=new V(0,eye,0);holder.localToWorld(sight);this.pivot.worldToLocal(sight);
+    // Calibrate against the idle pose, even when the rail is rebuilt during draw or reload.
+    holder.updateMatrix();const sight=new V(0,eye,0).applyMatrix4(holder.matrix).applyMatrix4(this.mainRestMatrix);
     this.aimOffset.set(-sight.x,-sight.y,-({reddot:.32,holo:.3,x2:.25,x4:.22,x8:.2}[scope]||.3)-sight.z);
    }
   }

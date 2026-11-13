@@ -35,7 +35,8 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
   const part=this.actions[name];if(!part)return;
   // All FBX takes retain absolute source timeline offsets.
   if(this.name!==name){this.mixer.stopAllAction();part.action.reset().play();this.name=name}
-  this.mixer.setTime(part.start+T.MathUtils.clamp(p,0,1)*(part.end-part.start));
+   part.action.paused=false;
+   this.mixer.setTime(part.start+T.MathUtils.clamp(p,0,1)*(part.end-part.start));
  },
  update(dt,s,vm){
   if(!this.ready)return;
@@ -77,7 +78,7 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
     const holder=new T.Group();holder.rotation.y=Math.PI;holder.position.set(0,4.15,1);holder.add(optic);this.mount.add(holder);
     const point=new T.Object3D();point.position.set(0,eye,0);holder.add(point);
     const dot=new T.Mesh(new T.CircleGeometry(.08,16),new T.MeshBasicMaterial({color:0xff2519,depthTest:false}));dot.position.set(0,eye,2);holder.add(dot);
-    this.pivot.updateMatrixWorld(true);point.getWorldPosition(v);this.pivot.worldToLocal(v);this.aimOffset.set(-v.x,-v.y,-.28-v.z);
+    holder.updateMatrix();v.copy(point.position).applyMatrix4(holder.matrix).applyMatrix4(this.mainRestMatrix);this.aimOffset.set(-v.x,-v.y,-.28-v.z);
    }
   }
   if(parts.muzzle){
@@ -107,13 +108,14 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
    const action=mixer.clipAction(clip);action.setLoop(T.LoopOnce,1);action.clampWhenFinished=true;actions[name]={action,start,end};
   }
   actions.Idle.action.play();mixer.setTime(actions.Idle.start);pivot.updateMatrixWorld(true);
+  const mainRestMatrix=new T.Matrix4().copy(pivot.matrixWorld).invert().multiply(main.matrixWorld);
   const box=new T.Box3().setFromObject(slideMesh),x=(box.min.x+box.max.x)*.5;
   const ironOffset=new T.Vector3(-x,-box.max.y-.001,-.28-(box.max.z-.01));
   const muzzleLocal=main.worldToLocal(new T.Vector3(x,box.max.y-.019,box.min.z-.002));
   const slide=model.getObjectByName('Slide_j'),spare=model.getObjectByName('Mag1');
   const flash=G.VM.models.g18.flash.clone();flash.name='G18Flash';flash.visible=false;pivot.add(flash);
   this.unload();G.VM.root.add(pivot);
-  Object.assign(this,{ready:true,model,pivot,mixer,actions,active:false,name:'Idle',main,slide,slideRestZ:slide?.position.z,spare,flash,muzzleLocal,ironOffset,aimOffset:ironOffset.clone(),mount:null,mountKey:null,shotT:99});
+  Object.assign(this,{ready:true,model,pivot,mixer,actions,active:false,name:'Idle',main,mainRestMatrix,slide,slideRestZ:slide?.position.z,spare,flash,muzzleLocal,ironOffset,aimOffset:ironOffset.clone(),mount:null,mountKey:null,shotT:99});
   if(spare)spare.visible=false;
  },
  unload(){

@@ -13,6 +13,22 @@ const assets={};for(const[id,file]of Object.entries({reddot:'red-dot',holo:'holo
 const G={VM:V,vmCamera:{fov:54},Guns:{reloadDuration(){return 1.8},reloadEvents(){return[]}},Game:{player:{weapons:{rifle:{id:'ar7',attachments:{}}}}},Attachments:{make(id,scale){const o=assets[id]?.clone(true);if(o)o.scale.setScalar(scale);return o}}};window.G=G;window.THREE={...T,FBXLoader};vm.runInThisContext(fs.readFileSync(root+'/js/m4-viewmodel.js','utf8'));const M=G.M4Viewmodel;await M.init();M.install(model);
 const s={ads:0,raise:1,landDip:0,phase:0,moving:0,sprint:false,hideVM:false,reload:null,scope:null,empty:false},cam=new T.PerspectiveCamera(54,16/9,.01,10);cam.updateMatrixWorld(true);let frames=0,checks=0;
 const assert=(v,label)=>{if(!v)throw Error(label);checks++};
+// An optic may first be mounted while the weapon is still being drawn.
+// Its idle aiming point must be independent of the animation and pivot transform.
+for (const scope of ['reddot','holo','x2','x4','x8']) {
+ M.sample('Idle',0); M.mountKey=null; M.syncAttachments(scope);
+ const reference=M.aimOffset.clone();
+ for (const pose of ['Draw','Reload','Reload_Empty','Fire']) {
+  M.sample(pose,.35); M.pivot.position.set(.12,.08,-.04); M.pivot.rotation.set(.1,.2,-.1);
+  M.mountKey=null; M.syncAttachments(scope);
+  assert(M.aimOffset.distanceTo(reference)<1e-8,scope+' ADS shifted while '+pose);
+ }
+}
+M.pivot.position.set(0,0,0); M.pivot.rotation.set(0,0,0);
+M.sample('Reload',.4); M.pivot.updateMatrixWorld(true);
+const scrub=M.model.getObjectByName('LeftHand').getWorldPosition(new T.Vector3());
+M.sample('Reload',1); M.sample('Reload',.4); M.pivot.updateMatrixWorld(true);
+assert(scrub.distanceTo(M.model.getObjectByName('LeftHand').getWorldPosition(new T.Vector3()))<1e-8,'clamped reload failed to seek backwards');
 for(const fps of[30,60,144]){
  V.set('ar7');V.update(2,s);assert(M.name==='Idle'&&!original.root.visible,'idle replacement');
  for(const empty of[false,true]){
