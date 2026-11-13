@@ -1,0 +1,50 @@
+[
+  {
+    "file": "Boomstick_baseColor.png",
+    "url": "https://raw.githubusercontent.com/Godot-Dojo/Deprecated-Godot-XR-Weapons/f08c7b1ae25ef23a287789b65ec52fe71419d03b/xr_weapons/textures/Boomstick/Boomstick_baseColor.png",
+    "sha256": "c6d27a03b04d46130cf1e066241fbf5d688fcff26c9036f52980eae1a7d6f59b",
+    "license": "CC0-1.0"
+  },
+  {
+    "file": "Boomstick_normal.png",
+    "url": "https://raw.githubusercontent.com/Godot-Dojo/Deprecated-Godot-XR-Weapons/f08c7b1ae25ef23a287789b65ec52fe71419d03b/xr_weapons/textures/Boomstick/Boomstick_normal.png",
+    "sha256": "afe54f2ab7d9774826928593fc63c9c0f89e340fe8b1701b78761f93bd9508ba",
+    "license": "CC0-1.0"
+  },
+  {
+    "file": "Boomstick_occlusionRoughnessMetallic.png",
+    "url": "https://raw.githubusercontent.com/Godot-Dojo/Deprecated-Godot-XR-Weapons/f08c7b1ae25ef23a287789b65ec52fe71419d03b/xr_weapons/textures/Boomstick/Boomstick_occlusionRoughnessMetallic.png",
+    "sha256": "a2953eb6b93fcf290f7e83b03c62e6d2858f718ed9a8cff1c5ca8c7d602cf2e9",
+    "license": "CC0-1.0"
+  },
+  {
+    "file": "Rifle_Battle_West.glb",
+    "url": "https://raw.githubusercontent.com/petroulacl/fps-asset-kit/a19b7458a593598211c95ec46ef4eb4b6d1f94d7/weapons/flat_guns_west/Flat%20Guns%20West/GLB/Rifle_Battle_West.glb",
+    "sha256": "69d2db533e9eeee80a4bc27f32a9bcbde36e66b2ec4adf82db53334687a625e1",
+    "license": "CC0-1.0"
+  },
+  {
+    "file": "Shotgun_Auto_East.glb",
+    "url": "https://raw.githubusercontent.com/petroulacl/fps-asset-kit/a19b7458a593598211c95ec46ef4eb4b6d1f94d7/weapons/flat_guns_east/Flat%20Guns%20East/GLB/Shotgun_Auto_East.glb",
+    "sha256": "f831a0907cca12cbf1b37f14d3c7e3402a27e101a218ddc4daaee99e575a135d",
+    "license": "CC0-1.0"
+  },
+  {
+    "file": "Shotgun_Auto_West.glb",
+    "url": "https://raw.githubusercontent.com/petroulacl/fps-asset-kit/a19b7458a593598211c95ec46ef4eb4b6d1f94d7/weapons/flat_guns_west/Flat%20Guns%20West/GLB/Shotgun_Auto_West.glb",
+    "sha256": "74f3c88add8079acd744ae2851f215a4c2d05a7ac60c53e84f116131a7d8d67a",
+    "license": "CC0-1.0"
+  },
+  {
+    "file": "Shotgun_Pump_East.glb",
+    "url": "https://raw.githubusercontent.com/petroulacl/fps-asset-kit/a19b7458a593598211c95ec46ef4eb4b6d1f94d7/weapons/flat_guns_east/Flat%20Guns%20East/GLB/Shotgun_Pump_East.glb",
+    "sha256": "806e4b7ec4fdebe96814cf98a69f2e05507b632c3c1f59a59e81a28ab389ac1a",
+    "license": "CC0-1.0"
+  },
+  {
+    "file": "doublebarrelshotgun.gltf",
+    "url": "https://raw.githubusercontent.com/Godot-Dojo/Deprecated-Godot-XR-Weapons/f08c7b1ae25ef23a287789b65ec52fe71419d03b/xr_weapons/models/doublebarrelshotgun/doublebarrelshotgun.gltf",
+    "sha256": "96ed79b1d8459aa551d7f54d8f1b6d5a24b157d5039dc2b555c2975d9fb6d2e9",
+    "license": "CC0-1.0"
+  }
+]

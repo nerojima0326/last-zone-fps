@@ -2,7 +2,8 @@
 //  · AR-7: M4A1 (3DModelsCC0, CC0, FBX)   · P-92: Service Pistol (Poly Haven, CC0, glTF)
 //  · 나머지 13종: assets/models/guns/<id>.glb — tools/guns 로 만든 게임용 GLB
 //      실사 CC0 (3DModelsCC0 팩): KA-47(AK-47) · KR-98(Sniper) · S-12(펌프 산탄총)
-//      직접 설계: SC-17 · MK-14 · M-1014 · DB-2 · SA-12 · AA-12 · G-18 · M-1911 · DE-7 · R-45
+//      CC0 추가: SC-17 · M-1014 · SA-12 · AA-12 (Flat Guns), DB-2 (Boomstick)
+//      직접 설계: MK-14 · G-18 · M-1911 · DE-7 · R-45
 //    GLB 는 이미 '총 공간'(원점 = 방아쇠, 총구 -Z, 위 +Y, m)이고 메시 userData.part = 부품,
 //    재질 이름 = 재질 키, 루트 userData.lz = 손·조준선·레일 기준점을 담고 있다.
 // 모두 gunlib.js 의 절차적 총과 같은 형식(부품별 지오메트리 + 기준점)으로 내보낸다 → weapons.js 가 1인칭/3인칭/전리품에 쓴다.
@@ -201,6 +202,7 @@ const GM = G.GunModels = {
       glb: true, type: id, cls: meta.cls, mats,
       data: {
         id, real: true, parts, mats, pivots: piv, trigger: new V3(0, 0, 0), muzzle: v(meta.muzzle),
+        sourceAsset: meta.sourceAsset || null, credit: meta.credit || null,
         sight: meta.sight ? { y: meta.sight[0], z: meta.sight[1] } : null,
         rail: meta.rail ? { y: meta.rail[0], z: meta.rail[1], on: meta.rail[2] || 'body' } : null,
         fore: v(meta.fore), port: v(meta.port), charge: v(meta.charge), slideTop: v(meta.slideTop),

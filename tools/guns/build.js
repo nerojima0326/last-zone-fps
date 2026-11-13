@@ -4,6 +4,7 @@
 import { THREE, materials, exportGLB, cleanMeta } from './kit.js';
 import { DESIGNS } from './designs.js';
 import { REAL, buildReal } from './real.js';
+import { IMPORTED, buildImported } from './imported.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
@@ -12,6 +13,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 const IDS = ['ka47', 'sc17', 'mk14', 'kr98', 's12', 'm1014', 'db2', 'sa12', 'aa12', 'g18', 'm1911', 'de7', 'r45'];
 
 async function build(id) {
+  if (IMPORTED[id]) return buildImported(id);
   if (REAL[id]) return buildReal(id, './');
   const M = DESIGNS[id]();
   const r = M.build();

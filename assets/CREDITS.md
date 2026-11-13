@@ -31,7 +31,9 @@
 | KA-47 소총 | AK-47 (3DModelsCC0 "Free CC0 Guns & Explosives Pack", GLB 변환본) | [GitHub (BoQsc)](https://github.com/BoQsc/cc0-guns-explosives-pack-glb) | CC0 |
 | KR-98 저격소총 | Sniper Rifle (같은 팩, 일체형 조준경은 빼고 가늠자 추가) | [GitHub (BoQsc)](https://github.com/BoQsc/cc0-guns-explosives-pack-glb) | CC0 |
 | S-12 산탄총 | Shotgun (같은 팩, 펌프액션) | [GitHub (BoQsc)](https://github.com/BoQsc/cc0-guns-explosives-pack-glb) | CC0 |
-| SC-17 · MK-14 · M-1014 · DB-2 · SA-12 · AA-12 · G-18 · M-1911 · DE-7 · R-45 | 이 게임용으로 직접 설계한 모델 (`tools/guns/designs.js`) | — | 이 저장소의 일부 |
+| SC-17 · M-1014 · SA-12 · AA-12 | Flat Guns (Pichuliru), 게임용 부품·기준점 변환 | [GitHub 배포본](https://github.com/petroulacl/fps-asset-kit), [가공·원본 상세](models/guns/CREDITS.md) | CC0 |
+| DB-2 | Boomstick / DoubleBarrelShotgun | [Godot-Dojo](https://github.com/Godot-Dojo/Deprecated-Godot-XR-Weapons), [상세](models/guns/CREDITS.md) | CC0 |
+| MK-14 · G-18 · M-1911 · DE-7 · R-45 | 이 게임용으로 직접 설계한 모델 (`tools/guns/designs.js`) | — | 이 저장소의 일부 |
 | AR-7 1인칭 모델·애니메이션 | M4 - FPS Weapon Animations Pack FREE (v.1), BarcodeGames | [Fab](https://www.fab.com/listings/38da8f1e-cb54-4cda-beb1-6e55642a55a9) | Fab Standard License ([상세](models/viewmodels/CREDITS.md)) |
 | G-18 1인칭 모델·애니메이션 | Glock 17 FPS 모델 (`glock17.fbx`) | 확인 필요 | 확인 필요 ([상세](models/viewmodels/CREDITS.md)) |
 | P-92 권총 | Service Pistol (Mateusz Sadek) | [Poly Haven](https://polyhaven.com/a/service_pistol) | CC0 |
@@ -48,7 +50,7 @@ MIT 라이선스 에셋은 게임을 배포할 때 위 라이선스 파일(저�
 - `tex/`, `hdri/*_1k.hdr`, `models/pistol/`, `_src/`, `vendor/ez-tree.es.js` 는 `download-assets.bat` 으로 받습니다.
 - `hdri/*_bg.jpg` 는 `_src/` 의 4k HDRI를 `tools/make-sky.py` 로 변환한 하늘 배경입니다.
 - `char/`(군인 아틀라스 텍스처), `models/rifle/` 은 `_src/` 원본을 `tools/convert-models.py` 로 변환한 결과입니다.
-- `models/guns/*.glb` 는 `tools/guns/run.cjs build` 로 만든 결과입니다 (실사 3종은 위 팩 원본을 정규화·1K 텍스처, 나머지는 직접 설계). 자세한 방법은 `tools/guns/README.md`.
+- `models/guns/*.glb` 는 `tools/guns/run.cjs build` 로 만든 결과입니다 (기존 실사 3종, 추가 CC0 5종, 직접 설계 5종). 자세한 방법은 `tools/guns/README.md`.
 - `_src/` 는 변환에만 쓰이므로 (약 300MB) 지워도 게임에는 영향이 없습니다.
 
 ## 총성 · 장전음 (v20)

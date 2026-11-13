@@ -798,7 +798,9 @@ const Guns = G.Guns = {
     const s = D.vmScale || C.scale, at = C.at;
     const P = v => v.clone().sub(D.trigger).multiplyScalar(s).add(at);   // 총 공간(m) → 뷰모델 공간
     const root = new THREE.Group(), gun = new THREE.Group(); root.add(gun);
-    const o = { root, gun, parts: {}, rest: {}, id, def, cls, s, scopes: {}, real: !!D.real, toVM: P };
+    const o = { root, gun, parts: {}, rest: {}, id, def, cls, s, scopes: {}, real: !!D.real, toVM: P,
+      chargeMode: D.extra && D.extra.chargeMode,
+      chargeApproachLift: D.extra && D.extra.chargeApproachLift || 0 };
     o.supportN=cls==='pistol'||id==='sa12'?[1,0.1,0]:[0,1,0.05];
     o.supportF=cls==='pistol'?[0,0.25,-1]:id==='sa12'?[0,0.85,-0.5]:[1,0,-0.08];
     const matOf = k => D.real ? D.mats[k] : (M[k] || M.metal);
@@ -980,6 +982,7 @@ const Guns = G.Guns = {
     // 장전 손잡이: 오른쪽(아래로 / 위로 넘어) · 왼쪽 / 노리쇠 멈치 치기
     const ch = o.charge;
     const pull = (t, mode) => {
+      mode = o.chargeMode || mode; // Imported models can put the handle on a different side/height.
       let ap, Hc, off;
       if (mode === 'under') { Hc = v(ch, 0.008, -0.008, 0.004); ap = v(ch, 0.065, -0.16, 0.035); off = v(Hc, 0.06, -0.1, 0.09); }
       else if (mode === 'over') { Hc = v(ch, 0.002, 0.015, 0.0); ap = v(ch, -0.08, 0.075, 0.02); off = v(Hc, -0.03, 0.06, 0.09); }
@@ -987,6 +990,7 @@ const Guns = G.Guns = {
       K.chGrab = Hc;K.chMode=mode;
       const outside=v(ch,-0.15,mode==='over'?0.085:mode==='under'?-0.18:-0.04,0.055);
       const escape=mode==='under'?v(ch,-0.14,-0.19,0.09):v(ch,-0.17,mode==='over'?0.08:0.035,0.07);
+      ap.y+=o.chargeApproachLift;outside.y+=o.chargeApproachLift;off.y+=o.chargeApproachLift;escape.y+=o.chargeApproachLift;
       return { k: [[t-0.015,outside],[t, ap], [t + 0.04, Hc], [t + 0.1, v(Hc, 0, 0, 0.075)], [t + 0.12, off],[t+0.15,escape]], T: { chA: t + 0.04, chB: t + 0.1, chRel: t + 0.103 } };
     };
     const slap = t => {
