@@ -197,7 +197,7 @@ G.boot = async function () {
   addEventListener('resize', onResize);
   renderer.domElement.addEventListener('click', () => {
     if (G.Game.spectating && !G.Input.locked) { G.Input.lock(); return; }
-    if ((G.Game.state === 'playing') && !G.Input.locked) G.resume();
+    if (G.Game.state === 'playing' && !G.Input.locked && !G.Settings?.open && !G.Attachments?.open) G.resume();
   });
   G.onLockChange = (locked) => {
     if (G.Game.spectating && !locked) { G.Game.stopSpectate(); return; }

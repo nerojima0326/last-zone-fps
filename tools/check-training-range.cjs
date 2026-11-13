@@ -4,6 +4,94 @@ const fs = require('fs'), http = require('http'), path = require('path'), assert
 const { chromium } = require('playwright');
 const root = path.resolve(__dirname, '..');
 const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.jpg': 'image/jpeg', '.glb': 'model/gltf-binary' };
+
+async function checkBindings(page) {
+  await page.click('#settingsBtn');
+  await page.click('button.kb[data-act="KeyW"]');
+  await page.keyboard.press('s');
+  await page.click('button.kr[data-act="KeyW"]');
+  assert.deepEqual(await page.evaluate(() => ['KeyW', 'KeyS'].map(k => G.Input.map(k))), ['KeyW', 'KeyS']);
+  assert.equal(await page.locator('button.kr[data-act="KeyS"]').count(), 0);
+  await page.click('button.kb[data-act="KeyF"]');
+  await page.keyboard.press('j');
+  assert.equal(await page.locator('kbd[data-k="KeyF"]').textContent(), 'J');
+  await page.keyboard.press('Escape');
+  assert(await page.locator('#settingsPanel').isHidden());
+}
+
+function checkTrainingLifecycle() {
+  const { Game, Training, Vehicles, World, Player } = G;
+  const check = (ok, message) => { if (!ok) throw Error(message); };
+  const v = Vehicles.list[0];
+  const countCells = () => World.grid.reduce((n, cell) => n + cell.length, 0);
+  const cells = countCells(), boxes = World.boxes.length;
+  for (let i = 0; i < 12; i++) {
+    Vehicles.enter(Player, v);
+    Vehicles.exit(Player);
+  }
+  check(countCells() === cells && World.boxes.length === boxes, 'Repeated parking leaked colliders');
+  const collider = v.box;
+  let matches = 0;
+  World.queryBoxes(collider.minX, collider.minZ, collider.maxX, collider.maxZ, b => { if (b === collider) matches++; });
+  check(matches === 1, 'Parked vehicle collision missing or duplicated');
+
+  Game.time += 0.5; Training.update(0);
+  const kind = 'att_under_grip', slots = Training.items.length;
+  const pickup = () => Game.pickup(Game.player, Training.items.find(it => it.kind === kind && !it.taken));
+  check(pickup(), 'Pickup before respawn');
+  Game.time += 0.41; Training.update(0);
+  check(Training.items.length === slots && Training.items.filter(it => it.kind === kind).length === 1, 'Pickup retained stale table entries');
+  check(pickup(), 'Pickup before range exit');
+  const opts = { ...G.UI.opts, mode: 'training' };
+  G.toMenu(); G.startGame(opts); G.paused = true;
+  Game.time += 0.5; Training.update(0);
+  check(Training.items.filter(it => it.kind === kind).length === 1, 'Old range respawn leaked into a new session');
+  const shot = Training.onShot(), target = Training.targets[0];
+  for (let i = 0; i < 3; i++) Training.onHit({ target, head: true }, 1, target.root.position, new THREE.Vector3(0, 0, -1), shot);
+  check(Training.stats.shots === 1 && Training.stats.hits === 1 && Training.stats.heads === 1, 'Pellets counted as separate trigger pulls');
+}
+
+function checkMatchLifecycle() {
+  const { Game, Player, Stats, Vehicles } = G;
+  const check = (ok, message) => { if (!ok) throw Error(message); };
+  const player = Game.player, enemy = Game.actors.find(a => a.team !== player.team);
+  check(Game.actors.length === G.UI.opts.players && Game.teams.length === Math.ceil(Game.actors.length / 2), 'Duo team setup');
+  Game.updatePlane(8); Game.jump(player); Game.openChute(player); Game.land(player);
+  Player.onLand(); enemy.state = 'ground';
+  const model = enemy.model;
+  model.setLOD(true, true);
+  check(model.lodMesh.visible && !model.body.visible && !model.soldier?.root.visible, 'Distant character still renders detailed mesh');
+  model.setLOD(false, false);
+  check(!model.lodMesh.visible && model.body.visible && (!model.soldier || model.soldier.root.visible), 'Near character failed to restore');
+
+  const a = new G.Actor({ id: 999, team: 1, isPlayer: true }), def = G.WEAPONS.ar7;
+  a.give('ar7'); a.ammo[def.ammo] = a.ammoMax(def.ammo) - 2;
+  const duplicate = { kind: 'ar7', mag: 19, scope: 'x4', attachments: { under: 'grip' } };
+  check(a.pickup(duplicate) && !duplicate.taken && duplicate.mag === 17 && a.scopes.x4 === 1 && !a.weapons.rifle.scope, 'Partial duplicate pickup lost items or changed the active optic');
+  check(!a.pickup(duplicate) && duplicate.mag === 17, 'Repeated pickup duplicated ammo');
+  const car = Vehicles.list[0], bot = enemy.brain;
+  bot.carGoal = car; car.claim = enemy; bot.setGoal(car.pos, 'car');
+  enemy.pos.copy(car.pos); enemy.pos.x += 18;
+  bot.goalT = 61; bot.navigate(0, new THREE.Vector3());
+  check(!bot.goal && !bot.carGoal && !car.claim, 'Abandoned vehicle stayed reserved');
+
+  const shot1 = Stats.onShot(), shot2 = Stats.onShot();
+  for (const shot of [shot2, shot1, shot2]) Game.damage(enemy, 1, player, 'ar7', false, null, null, shot);
+  check(Stats.m.shots === 2 && Stats.m.hits === 2, 'Overlapping shots lost or duplicated a hit');
+  const mate = Game.teams[player.team].members.find(a => a !== player);
+  mate.state = 'ground'; Game.knock(mate, enemy, 'ar7', false); Game.revive(mate, player);
+  check(mate.alive && !mate.knocked && mate.hp === 25, 'Team revive');
+  Game.kill(player, enemy, 'ar7', false); Game.kill(mate, enemy, 'ar7', false);
+  check(Game.pendingResult && Game.state === 'playing', 'Defeat skipped killcam delay');
+  Game.time = Game.pendingResult.at; Game.update(0);
+  const endedAt = Game.time, matches = Stats.data.matches;
+  Game.update(1);
+  check(Game.state === 'ended' && Game.time === endedAt && Stats.data.matches === matches, 'Results kept simulating');
+  Game.startSpectate(); Game.update(1 / 60);
+  check(Game.spectating && Game.time > endedAt, 'Spectating failed to resume simulation');
+  Game.stopSpectate(); G.toMenu();
+}
+
 (async () => {
   const server = http.createServer((req, res) => {
     const rel = decodeURIComponent(req.url.split('?')[0]);
@@ -31,6 +119,7 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
     await page.goto(`http://127.0.0.1:${server.address().port}/index.html`);
     await page.waitForFunction(() => window.G && G.UI && document.querySelector('#menu:not(.hidden)'), null, { timeout: 180000 });
     console.log('Full game menu ready');
+    await checkBindings(page);
     await page.click('#trainBtn');
     await page.waitForFunction(() => G.Game.training && G.Training.active, null, { timeout: 30000 });
     await page.evaluate(() => { G.Input.unlock(); });
@@ -89,6 +178,8 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
       return { clearTargets, bulletBlocked: true, walkingBlocked: true, aisleClear: true, attachmentPickup: true, shotHits: T.stats.hits };
     });
     console.log('Gameplay:', JSON.stringify(checks));
+    assert((await page.locator('#centerMsg').textContent()).includes('J'));
+    await page.evaluate(checkTrainingLifecycle);
 
     if (process.env.SHOTS) {
       fs.mkdirSync(process.env.SHOTS, { recursive: true });
@@ -120,6 +211,10 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
       groups: G.scene.children.filter(c => c.name === 'training-range-props').length,
       crates: G.World.range.props.crates.length, version: window.LZ_BUILD }));
     assert.equal(repeated.targets, loaded.targets); assert.equal(repeated.groups, 1);
+    await page.evaluate(() => G.toMenu());
+    await page.click('button.mode[data-size="2"]');
+    await page.click('#startBtn');
+    await page.evaluate(checkMatchLifecycle);
     assert.equal(errors.length, 0, errors.join('\n'));
     console.log('PASS:', JSON.stringify({ ...loaded, checks, repeated, errors, assets: assetResponses }));
   } finally { if (browser) await browser.close(); server.close(); }

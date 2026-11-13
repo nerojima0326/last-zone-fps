@@ -52,7 +52,7 @@ const Game = G.Game = {
 
   start(o) {
     this.cleanup();
-    this.opts = o; this.runId = (this.runId || 0) + 1;
+    this.opts = o;
     if (o.mode === 'training') return this.startTraining(o);
     this.diff = o.diff; this.teamSize = o.size; this.time = 0; this.ended = false;
     const names = U.shuffle(BOT_NAMES.slice());
@@ -85,7 +85,7 @@ const Game = G.Game = {
     G.Stats.begin();
     this.state = 'playing';
     G.UI.startMatch();
-    G.UI.center('수송기 탑승 완료', '원하는 지역 위에서 <b>F</b> 키로 뛰어내리세요', '', 5);
+    G.UI.center('수송기 탑승 완료', '원하는 지역 위에서 <b>' + G.Settings.label('KeyF') + '</b> 키로 뛰어내리세요', '', 5);
   },
   // 훈련장: 플레이어 혼자, 수송기·자기장·전리품 없이 사격대 앞에서 시작
   startTraining(o) {
@@ -111,7 +111,7 @@ const Game = G.Game = {
     G.UI.startMatch();
     document.getElementById('hud').classList.add('training');
     G.Training.start();
-    G.UI.center('훈련장', '테이블의 총·조준경은 <b>F</b> 로 바꿔 들 수 있어요 · 탄약 무한 · 사격대 뒤 지프로 운전 연습', '', 6);
+    G.UI.center('훈련장', '테이블의 총·조준경은 <b>' + G.Settings.label('KeyF') + '</b> 로 바꿔 들 수 있어요 · 탄약 무한 · 사격대 뒤 지프로 운전 연습', '', 6);
   },
   cleanup() {
     if (G.Training) G.Training.stop();
@@ -120,12 +120,16 @@ const Game = G.Game = {
     for (const a of this.actors) if (a.model) a.model.dispose();
     this.actors = []; this.teams = [];
     for (const it of this.loot) if (it.mesh) G.scene.remove(it.mesh);
-    this.loot = []; this.lootCells = new Map(); this.lootVis = [];
-    if (this.plane) { G.scene.remove(this.plane.mesh); this.plane = null; }
-    if (this.zone && this.zone.mesh) { G.scene.remove(this.zone.mesh); }
+    this.loot = []; this.lootCells = new Map(); this.lootVis = []; this.glowList = []; this.lootT = 0;
+    if (this.plane) { G.disposePlane(this.plane.mesh); this.plane = null; this.props = null; }
+    if (this.zone?.mesh) {
+      G.scene.remove(this.zone.mesh);
+      this.zone.mesh.geometry.dispose(); this.zone.mesh.material.dispose();
+    }
     this.zone = null;
     G.Ballistics.reset(); G.Throwables.reset(); G.FX.reset(); G.Extras.reset();
-    this.spectating = false;
+    this.spectating = false; this.pendingResult = null;
+    this.player = null; G.Player.a = null; G.Player.vehicle = null; G.Player.autoReload = null;
     if (G.Audio.ctx) G.Audio.stopLoops();
     this.state = 'menu';
   },
@@ -472,7 +476,7 @@ const Game = G.Game = {
   },
 
   /* ------------ 피해 / 처치 ------------ */
-  damage(t, amount, attacker, weapon, head, point, dir) {
+  damage(t, amount, attacker, weapon, head, point, dir, shot) {
     if (!t.alive || (this.state !== 'playing' && !this.spectating)) return;
     if (this.training && t === this.player) return;
     if (t.state !== 'ground' && weapon !== 'zone') return;
@@ -485,7 +489,7 @@ const Game = G.Game = {
     t.lastHurtT = this.time;
     if (attacker && attacker !== t) t.lastAttacker = attacker;
     const fromPlayer = attacker === this.player && t !== this.player;
-    if (fromPlayer && !t.knocked && weapon !== 'vehicle' && G.WEAPONS[weapon] && G.WEAPONS[weapon].cls) G.Stats.onHit();
+    if (fromPlayer && !t.knocked) G.Stats.onHit(shot);
     let result = 'hit';
     if (t.knocked) {
       t.bleed -= dmg * 0.9;
@@ -516,7 +520,7 @@ const Game = G.Game = {
   knock(t, attacker, weapon, head) {
     t.knocked = true; t.bleed = 100; t.knockedBy = attacker || null; t.crouch = false; t.prone = false;
     t.vel.set(0, t.vel.y, 0);
-    if (t.brain) { t.brain.healing = null; t.brain.reviving = null; }
+    if (t.brain) { t.brain.clearGoal(); t.brain.healing = null; t.brain.reviving = null; }
     G.UI.killfeed(attacker, t, weapon, head, true);
     if (attacker === this.player) G.UI.killMsg('적을 기절시켰습니다', t.name, true);
     if (t === this.player) { G.UI.center('기절했습니다!', '팀원이 소생시켜 줄 때까지 버티세요', '', 3); G.Player.onKnock && G.Player.onKnock(); }
@@ -525,6 +529,7 @@ const Game = G.Game = {
   kill(t, attacker, weapon, head) {
     if (!t.alive) return;
     if ((!attacker || attacker === t) && t.knockedBy && t.knockedBy.alive !== undefined) attacker = t.knockedBy;
+    if (t.brain) t.brain.clearGoal();
     t.alive = false; t.knocked = false; t.prone = false; t.hp = 0; t.deathTime = this.time;
     const kdist = attacker && attacker !== t ? attacker.pos.distanceTo(t.pos) : 0;
     t.vel.set(0, 0, 0);
@@ -559,7 +564,9 @@ const Game = G.Game = {
       team.eliminated = true;
       for (const m of team.members) if (m.alive) this.kill(m, m.knockedBy, 'bleed', false);
       team.rank = this.teams.filter(t => !t.eliminated).length + 1;
-      if (teamId === this.player.team && !this.ended) { this.ended = true; const run = this.runId; setTimeout(() => { if (this.runId === run) this.finish(false); }, G.Player.killcam ? 6000 : 3000); }
+      if (teamId === this.player.team && !this.ended) {
+        this.ended = true; this.pendingResult = { win: false, at: this.time + (G.Player.killcam ? 6 : 3) };
+      }
     }
     const alive = this.teams.filter(t => !t.eliminated);
     if (alive.length <= 1 && !this.ended) {
@@ -567,12 +574,12 @@ const Game = G.Game = {
       if (alive.length === 1) alive[0].rank = 1;
       const win = alive.length === 1 && alive[0].id === this.player.team;
       if (win) G.UI.center('최후의 생존자!', '모든 적을 물리쳤습니다', 'win', 4);
-      const run = this.runId; setTimeout(() => { if (this.runId === run) this.finish(win); }, win ? 2500 : 3000);
+      this.pendingResult = { win, at: this.time + (win ? 2.5 : 3) };
     }
   },
   finish(win) {
     if (this.state !== 'playing') return;
-    this.state = 'ended';
+    this.state = 'ended'; this.pendingResult = null;
     const team = this.teams[this.player.team];
     const rank = win ? 1 : (team.rank || this.teams.filter(t => !t.eliminated).length + 1);
     const r = { win, rank, teams: this.teams.length, kills: this.player.kills, dmg: Math.round(this.player.dmgDealt), time: this.player.alive ? this.time : this.player.deathTime, teamKills: team.kills };
@@ -611,12 +618,13 @@ const Game = G.Game = {
   teamsAlive() { let n = 0; for (const t of this.teams) if (!t.eliminated) n++; return n; },
 
   update(dt) {
-    if (this.state !== 'playing' && this.state !== 'ended') return;
+    if (this.state !== 'playing' && !this.spectating) return;
     this.time += dt;
+    if (this.pendingResult && this.time >= this.pendingResult.at) { this.finish(this.pendingResult.win); return; }
     this.updatePlane(dt);
     if (this.state === 'playing' || this.spectating) G.Player.update(dt);
     // 결과 화면 뒤 관전: 승부가 나면 결과 화면으로 돌아간다
-    if (this.spectating && this.teamsAlive() <= 1) this.stopSpectate();
+    if (this.spectating && this.teamsAlive() <= 1) { this.stopSpectate(); return; }
     for (const a of this.actors) if (a.brain) a.brain.update(dt);
     // 출혈
     for (const a of this.actors) {
@@ -658,11 +666,11 @@ const Game = G.Game = {
       if (!vis) continue;
       m.root.position.copy(a.pos);
       m.root.rotation.y = a.yaw;
+      m.setLOD(d2 > 45 * 45, a.crouch && a.alive && !a.knocked);
       m.update(dt, { speed: a.hspeed, pitch: a.pitch, crouch: a.crouch, knocked: a.knocked, prone: a.prone && !a.knocked, lean: a.leanX, eyeH: a.eyeH(), dead: !a.alive, state: a.state, cur: a.cur, gun: a.gunId(a.cur), onGround: a.onGround });
       m.showChute(a.state === 'chute' && a.alive);
       m.setHelmet(!!a.helmet);
       // 45m 밖은 병합된 LOD 메시 1개로, 그림자는 40m 안쪽만
-      m.setLOD(d2 > 45 * 45, a.crouch && a.alive && !a.knocked);
       const sh = d2 < 40 * 40;
       if (m._sh !== sh) { m._sh = sh; m.setShadows(sh); }
     }

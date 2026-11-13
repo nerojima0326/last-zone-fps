@@ -126,7 +126,7 @@
   function setKnob(dx, dy) { knob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`; }
   function releaseAll() {
     touches.clear();
-    I.keys = {}; I.lmb = false; I.rmb = false; adsOn = false;
+    I.reset(); adsOn = false;
     adsBtn.classList.remove('on');
     stick.classList.remove('on'); setKnob(0, 0);
     sprintTag.classList.remove('on');
@@ -287,8 +287,10 @@
     if (ui.dataset.st !== st) ui.dataset.st = st;
     let label = '', on = false;
     if (st === 'air') { label = a.state === 'plane' ? '점프' : '낙하산'; on = true; }
+    else if (P.vehicle) { label = '내리기'; on = true; }
     else if (P.reviveTarget) { label = '소생'; on = true; }
     else if (P.lootTarget) { label = '줍기'; on = true; }
+    else if (!a.knocked && G.Vehicles.near(a)) { label = '탑승'; on = true; }
     else label = '줍기';
     if (fLabel.textContent !== label) fLabel.textContent = label;
     fBtn.classList.toggle('lit', on);

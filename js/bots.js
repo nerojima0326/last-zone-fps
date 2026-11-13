@@ -205,7 +205,7 @@ class Bot {
     const combat = this.target && this.target.alive && this.visible;
     if (this.vehicle) { this.thinkDriving(); return; }
     if (this.goalType === 'car') {
-      if (combat || !this.carGoal || this.carGoal.driver) { this.carGoal = null; this.goal = null; }
+      if (combat || !this.goal || !this.carGoal || this.carGoal.driver) this.clearGoal();
       else { this.run = true; return; }
     }
     if (this.target && !this.target.alive) { this.target = null; this.hasLast = false; }
@@ -226,7 +226,7 @@ class Bot {
       this.run = true;
       return;
     }
-    if (combat) { this.goal = null; return; }
+    if (combat) { this.clearGoal(); return; }
     // 치료
     if (a.hp < 60 && (a.meds.medkit > 0 || (a.meds.bandage > 0 && a.hp < 75)) && this.lostT > 2.5) {
       const kind = a.meds.medkit > 0 && (a.hp < 45 || a.meds.bandage === 0) ? 'medkit' : 'bandage';
@@ -239,7 +239,7 @@ class Bot {
     let km = null, kd = 70;
     for (const m of team.members) { if (m !== a && m.alive && m.knocked) { const d = a.pos.distanceTo(m.pos); if (d < kd) { kd = d; km = m; } } }
     if (km && this.lostT > 1.5) {
-      if (kd < 1.9) { this.reviving = km; this.reviveT = 0; this.goal = null; return; }
+      if (kd < 1.9) { this.reviving = km; this.reviveT = 0; this.clearGoal(); return; }
       this.setGoal(km.pos, 'revive'); this.run = true;
       if (this.hasLast && this.lostT < 8 && a.throwables.smoke > 0 && kd < 25 && Math.random() < 0.3) this.throwAt('smoke', km.pos);
       return;
@@ -252,7 +252,7 @@ class Bot {
         if (k) { this.throwAt(k, this.lastSeen); this.nadeCD = U.rand(10, 22); }
       }
       if (this.lostT > 2 && !(a.team === Game.player.team && this.leaderDist() > 30)) { this.setGoal(this.lastSeen, 'hunt'); this.run = false; return; }
-      if (this.lostT <= 2) { this.goal = null; return; }
+      if (this.lostT <= 2) { this.clearGoal(); return; }
     }
     // 팀 리더 따라가기
     const leader = this.leader();
@@ -264,7 +264,7 @@ class Bot {
     // 파밍
     if (this.goalType === 'loot' && this.lootItem && !this.lootItem.taken && this.goal) return;
     const it = this.findLoot();
-    if (it) { this.lootItem = it; it.claim = a; this.setGoal(it.pos, 'loot'); this.run = a.pos.distanceTo(it.pos) > 15; return; }
+    if (it) { this.clearGoal(); this.lootItem = it; it.claim = a; this.setGoal(it.pos, 'loot'); this.run = a.pos.distanceTo(it.pos) > 15; return; }
     // 배회
     this.wanderT -= 0.4;
     if (!this.goal || this.wanderT <= 0) {
@@ -288,7 +288,16 @@ class Bot {
     return null;
   }
   leaderDist() { const l = this.leader(); return l ? l.pos.distanceTo(this.a.pos) : 0; }
+  clearGoal() {
+    if (this.carGoal?.claim === this.a) this.carGoal.claim = null;
+    if (this.lootItem?.claim === this.a) this.lootItem.claim = null;
+    this.carGoal = null; this.lootItem = null; this.goal = null; this.goalType = '';
+  }
   setGoal(p, type) {
+    if (type !== 'car' && this.carGoal) {
+      if (this.carGoal.claim === this.a) this.carGoal.claim = null;
+      this.carGoal = null;
+    }
     if (!this.goal) this.goal = new V3();
     this.goal.set(p.x, 0, p.z);
     if (this.goalType !== type) { this.stuck = 0; }
@@ -326,23 +335,22 @@ class Bot {
   navigate(dt, out) {
     const a = this.a, W = G.World;
     const g = this.goal;
+    if (this.goalType === 'car' && this.carGoal) { g.x = this.carGoal.pos.x; g.z = this.carGoal.pos.z; }
     const dx = g.x - a.pos.x, dz = g.z - a.pos.z, dist = Math.hypot(dx, dz);
     this.goalT += dt;
-    if (this.goalType === 'car' && this.carGoal) { g.x = this.carGoal.pos.x; g.z = this.carGoal.pos.z; }
     if (dist < (this.goalType === 'loot' ? 1.3 : this.goalType === 'revive' ? 1.1 : this.goalType === 'car' ? 3.3 : 2.5)) {
       if (this.goalType === 'car') {
-        const v = this.carGoal; this.carGoal = null; this.goal = null;
+        const v = this.carGoal; this.clearGoal();
         if (v && !v.driver && G.Vehicles.botEnter(this, v)) this.setGoal(this.carDest, this.carType);
         return 0;
       }
       if (this.goalType === 'loot' && this.lootItem) {
-        if (!this.lootItem.taken) G.Game.pickup(a, this.lootItem);
-        if (this.lootItem.claim === a) this.lootItem.claim = null;
-        this.lootItem = null; this.thinkT = 0.05;
+        if (!this.lootItem.taken && !G.Game.pickup(a, this.lootItem)) this.lootItem.failed = a;
+        this.thinkT = 0.05;
       }
-      this.goal = null; return 0;
+      this.clearGoal(); return 0;
     }
-    if (this.goalT > 60) { this.goal = null; return 0; }
+    if (this.goalT > 60) { this.clearGoal(); return 0; }
     let yaw = Math.atan2(-dx, -dz);
     if (this.detourT > 0) { this.detourT -= dt; yaw = this.detourYaw; }
     else {
@@ -374,8 +382,8 @@ class Bot {
         this.detourT = 0.8 + Math.random() * 0.6;
         this.detourYaw = yaw + (Math.random() < 0.5 ? 1 : -1) * U.rand(1.2, 2.4);
         if (this.stuck > 4) {
-          if (this.lootItem) { this.lootItem.failed = a; if (this.lootItem.claim === a) this.lootItem.claim = null; this.lootItem = null; }
-          this.goal = null; this.stuck = 0; return 0;
+          if (this.lootItem) this.lootItem.failed = a;
+          this.clearGoal(); this.stuck = 0; return 0;
         }
       } else this.stuck = Math.max(0, this.stuck - 1);
       this.progT = 0; this.lastProg.copy(a.pos);

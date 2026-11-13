@@ -77,8 +77,8 @@ const Stats = G.Stats = {
     if (G.Game.state === 'playing') G.UI.feedMsg('<b style="color:#ffcf3a">업적 달성</b> ' + a[1]);
   },
   // 명중은 한 발(산탄은 한 번의 격발)에 한 번만 센다
-  onShot() { if (this.m && !G.Game.training) { this.m.shots++; this.open = true; } },
-  onHit() { if (this.m && !G.Game.training && this.open) { this.m.hits++; this.open = false; } },
+  onShot() { if (this.m && !G.Game.training) { this.m.shots++; return { hit: false }; } },
+  onHit(shot) { if (this.m && shot && !shot.hit) { this.m.hits++; shot.hit = true; } },
   onKill(dist, head, weapon) {
     if (!this.m || G.Game.training) return;
     if (head) { this.m.heads++; this.data.heads++; if (this.data.heads >= 25) this.unlock('headhunter'); }
@@ -104,7 +104,7 @@ const Stats = G.Stats = {
     d.bestKills = Math.max(d.bestKills, r.kills); d.longest = Math.max(d.longest, m.longest);
     if (!d.bestRank || r.rank < d.bestRank) d.bestRank = r.rank;
     this.save();
-    const out = { acc, heads: m.heads, longest: m.longest, best, fresh: this.fresh.slice() };
+    const out = { acc, shots: m.shots, heads: m.heads, longest: m.longest, best, fresh: this.fresh.slice() };
     this.m = null;
     return out;
   },
@@ -138,9 +138,9 @@ const DROP_GUNS = [['aa12', null], ['kr98', 'x8'], ['mk14', 'x4'], ['sc17', 'x4'
 const Airdrop = G.Airdrop = {
   drops: [], plane: null, next: 0, count: 0,
   reset() {
-    for (const d of this.drops) { if (d.mesh) G.scene.remove(d.mesh); if (d.box) { d.box.minY = d.box.maxY = -1e6; d.box.minX = d.box.maxX = d.box.minZ = d.box.maxZ = 1e7; } }
+    for (const d of this.drops) { if (d.mesh) G.scene.remove(d.mesh); G.World.removeCollider(d.box); }
     this.drops = [];
-    if (this.plane) { G.scene.remove(this.plane.mesh); this.plane = null; if (G.Audio.ctx) G.Audio.setLoop('airdrop', 0); }
+    if (this.plane) { G.disposePlane(this.plane.mesh); this.plane = null; if (G.Audio.ctx) G.Audio.setLoop('airdrop', 0); }
     this.next = 150; this.count = 0;
   },
   crateMesh() {
@@ -190,7 +190,7 @@ const Airdrop = G.Airdrop = {
     const alt = Math.max(230, W.heightAt(s.x, s.z) + 190);
     this.plane = { mesh, dir, t: 0, speed: 75, start: new V3(s.x, alt, s.z).addScaledVector(dir, -span), len: span * 2, drop: span, target: s, dropped: false, pos: new V3() };
     this.count++;
-    G.UI.center('보급 상자 투하', '수송기가 안전 구역으로 접근 중입니다 · <b>M</b> 지도에 표시', 'zone', 4);
+    G.UI.center('보급 상자 투하', '수송기가 안전 구역으로 접근 중입니다 · <b>' + G.Settings.label('KeyM') + '</b> 지도에 표시', 'zone', 4);
     return true;
   },
   contents() {
@@ -222,7 +222,7 @@ const Airdrop = G.Airdrop = {
         G.scene.add(mesh);
         this.drops.push({ mesh, x: P.target.x, z: P.target.z, y: P.pos.y - 6, vy: -22, landed: false, smoke: 0, life: 0, item: null, box: null });
       }
-      if (s > P.len) { G.scene.remove(P.mesh); this.plane = null; G.Audio.setLoop('airdrop', 0); }
+      if (s > P.len) { G.disposePlane(P.mesh); this.plane = null; G.Audio.setLoop('airdrop', 0); }
     }
     const cam = G.camera.position;
     for (const d of this.drops) {
@@ -240,7 +240,7 @@ const Airdrop = G.Airdrop = {
           d.mesh.updateMatrixWorld(true);
           // 실제 전리품 (상자 열기)
           d.item = Game.addLoot('crate', 1, _v.set(d.x, g + 0.3, d.z), { items: this.contents(), owner: '보급', airdrop: true });
-          d.box = W.addCollider(d.x - 0.75, g, d.z - 0.55, d.x + 0.75, g + 1.0, d.z + 0.55, 'wood');
+          d.box = W.addCollider(d.x - 0.75, g, d.z - 0.55, d.x + 0.75, g + 1.0, d.z + 0.55, 'wood', true);
           G.Audio.click('land');
           if (Math.hypot(cam.x - d.x, cam.z - d.z) < 400) G.UI.feedMsg('보급 상자가 착지했습니다');
         }

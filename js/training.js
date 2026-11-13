@@ -69,14 +69,14 @@ function signTexture(text) {
 }
 
 const T = G.Training = {
-  active: false, targets: [], objs: [], items: [], nums: [], shotId: 0,
+  active: false, targets: [], objs: [], items: [], nums: [], respawns: [],
   stats: { shots: 0, hits: 0, heads: 0, last: 0, downs: 0, dmg: 0 },
 
   start() {
     const W = G.World, R = W.range;
     if (!R) return;
     this.active = true;
-    this.targets = []; this.objs = []; this.items = []; this.nums = []; this.hitShots = new Set();
+    this.targets = []; this.objs = []; this.items = []; this.nums = []; this.respawns = [];
     this.stats = { shots: 0, hits: 0, heads: 0, last: 0, downs: 0, dmg: 0 };
     const M = this.mats || (this.mats = {
       sil: new THREE.MeshStandardMaterial({ map: silhouetteTexture(), alphaTest: 0.5, side: THREE.DoubleSide, roughness: 0.95 }),
@@ -172,7 +172,7 @@ const T = G.Training = {
   // 테이블 물건 하나 (총구가 표적 쪽을 향하게)
   placeItem(kind, x, y, z, rotY) {
     const Game = G.Game;
-    const it = Game.addLoot(kind, G.THROW_NAMES[kind] ? 1 : 1, _p.set(x, y, z), { train: { x, y, z, rotY } });
+    const it = Game.addLoot(kind, 1, _p.set(x, y, z), { train: { x, y, z, rotY } });
     it.scope = null;
     it.mesh.rotation.set(0, rotY, 0);
     it.mesh.updateMatrix(); it.mesh.updateMatrixWorld(true);
@@ -181,13 +181,26 @@ const T = G.Training = {
   },
   // 집어 간 물건은 그 자리에 다시 놓는다
   respawn(it) {
-    const s = it.train;
-    setTimeout(() => { if (this.active) this.placeItem(it.kind, s.x, s.y, s.z, s.rotY); }, 400);
+    const i = this.items.indexOf(it);
+    if (i < 0) return;
+    this.items.splice(i, 1);
+    this.respawns.push({ kind: it.kind, slot: it.train, at: G.Game.time + 0.4 });
   },
   stop() {
     if (!this.active && !this.objs.length) return;
     this.active = false;
-    for (const o of this.objs) G.scene.remove(o);
+    const geometries = new Set(), materials = new Set();
+    const shared = new Set(Object.values(this.mats));
+    for (const o of this.objs) {
+      G.scene.remove(o);
+      o.traverse(m => {
+        if (m.geometry) geometries.add(m.geometry);
+        if (m.material && !shared.has(m.material)) materials.add(m.material);
+      });
+    }
+    for (const geo of geometries) geo.dispose();
+    for (const mat of materials) { if (mat.map) mat.map.dispose(); mat.dispose(); }
+    this.respawns = [];
     this.objs = []; this.targets = []; this.items = [];
     for (const n of this.nums) n.el.remove();
     this.nums = [];
@@ -213,7 +226,7 @@ const T = G.Training = {
     for (const t in a.ammo) a.ammo[t] = 999;
     for (const k of G.THROW_ORDER) if ((a.throwables[k] || 0) < 3) a.throwables[k] = 3;
   },
-  onShot() { this.shotId++; this.stats.shots++; this.dirty = true; },
+  onShot() { this.stats.shots++; this.dirty = true; return { hit: false, head: false }; },
 
   /* ---------------- 판정 ---------------- */
   // 총알 (o, d 단위벡터) 이 maxT 안에서 표적에 맞으면 {t, target, head}
@@ -243,8 +256,8 @@ const T = G.Training = {
   onHit(h, dmg, point, dir, shot) {
     const t = h.target;
     t.fd = (t.fd || 0) + dmg; t.fh = t.fh || h.head; t.fp = (t.fp || new V3()).copy(point);
-    if (shot && !this.hitShots.has(shot)) { this.hitShots.add(shot); this.stats.hits++; }
-    if (h.head) this.stats.heads++;
+    if (shot && !shot.hit) { shot.hit = true; this.stats.hits++; }
+    if (h.head && shot && !shot.head) { shot.head = true; this.stats.heads++; }
     G.FX.impact(point, _s.copy(dir).negate(), t.kind === 'gong' ? 'metal' : 'wood');
     G.Audio.impact(point, t.kind === 'gong' ? 'metal' : 'wood');
     if (t.kind === 'gong') t.swingV += U.clamp(dmg / 40, 0.3, 2.2) * 3.2;
@@ -281,6 +294,10 @@ const T = G.Training = {
     this.flush();
     this.refill();
     const time = G.Game.time;
+    while (this.respawns.length && this.respawns[0].at <= time) {
+      const { kind, slot } = this.respawns.shift();
+      this.placeItem(kind, slot.x, slot.y, slot.z, slot.rotY);
+    }
     for (const t of this.targets) {
       if (t.kind === 'sil') {
         if (t.move) {

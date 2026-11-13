@@ -87,13 +87,14 @@ class Actor {
         res = W.name;
       } else if (cur.id === k || (fromCrate && W.tier <= G.WEAPONS[cur.id].tier)) {
         // 같은 총(또는 상자 속 더 나쁜 총): 탄약과 조준경만 챙긴다
-        const add = W.ammo === G.WEAPONS[cur.id].ammo ? Math.min(mag || 0, this.ammoMax(W.ammo) - this.ammo[W.ammo]) : 0;
-        const takeScope = it.scope && this.scopeCount(it.scope) < 2;
+        const add = Math.min(mag, Math.max(0, this.ammoMax(W.ammo) - this.ammo[W.ammo]));
+        const takeScope = it.scope && it.scope !== W.baseSight && this.scopeCount(it.scope) < 2;
         if (add <= 0 && !takeScope) return null;
         const got = [];
-        if (add > 0) { this.ammo[W.ammo] += add; got.push(G.AMMO_NAMES[W.ammo] + ' +' + add); }
-        if (takeScope) { this.scopes[it.scope]++; got.push(G.SCOPES[it.scope].name); it.scope = null; this.autoScope(W.cls); }
+        if (add > 0) { this.ammo[W.ammo] += add; it.mag = mag - add; got.push(G.AMMO_NAMES[W.ammo] + ' +' + add); }
+        if (takeScope) { this.scopes[it.scope]++; got.push(G.SCOPES[it.scope].name); it.scope = null; if (!this.isPlayer) this.autoScope(W.cls); }
         res = got.join(', ');
+        if ((it.mag ?? mag) > 0 || (it.scope && it.scope !== W.baseSight) || Object.values(it.attachments || {}).some(Boolean)) return res;
       } else {
         // 다른 총: 들고 있던 총을 내려놓고 바꾼다
         this._drop = { kind: cur.id, mag: cur.mag, scope: cur.scope, iron: !!cur.iron, attachments: { ...cur.attachments } };

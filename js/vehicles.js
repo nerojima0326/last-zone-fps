@@ -69,9 +69,9 @@ const Vh = G.Vehicles = {
   block(v) {
     const c = Math.abs(Math.cos(v.yaw)), s = Math.abs(Math.sin(v.yaw));
     const hx = HALF_W * c + HALF_L * s - 0.25 * Math.min(c, s) * 2, hz = HALF_W * s + HALF_L * c - 0.25 * Math.min(c, s) * 2;
-    v.box = G.World.addCollider(v.pos.x - hx, v.pos.y, v.pos.z - hz, v.pos.x + hx, v.pos.y + 1.7, v.pos.z + hz, 'metal') || G.World.boxes[G.World.boxes.length - 1];
+    v.box = G.World.addCollider(v.pos.x - hx, v.pos.y, v.pos.z - hz, v.pos.x + hx, v.pos.y + 1.7, v.pos.z + hz, 'metal', true);
   },
-  unblock(v) { if (v.box) { v.box.minY = v.box.maxY = -1e6; v.box.minX = v.box.maxX = v.box.minZ = v.box.maxZ = 1e7; v.box = null; } },
+  unblock(v) { G.World.removeCollider(v.box); v.box = null; },
   place(v, k) {
     const W = G.World;
     _f.set(-Math.sin(v.yaw), 0, -Math.cos(v.yaw)); _r.set(Math.cos(v.yaw), 0, -Math.sin(v.yaw));
@@ -94,8 +94,8 @@ const Vh = G.Vehicles = {
   enter(P, v) {
     const a = P.a;
     this.unblock(v);
-    v.driver = a; P.vehicle = v;
-    P.reload = null; P.heal = null; P.ads = 0; P.scopeView = 0; P.lean = 0; a.leanX = 0; P.throwSt = null; P.cycleT = -1;
+    v.driver = a; v.claim = null; P.vehicle = v;
+    P.reload = null; P.autoReload = null; P.heal = null; P.ads = 0; P.scopeView = 0; P.lean = 0; a.leanX = 0; P.throwSt = null; P.cycleT = -1;
     a.crouch = false; a.prone = false;
     P.orbitYaw = v.yaw; P.orbitPitch = -0.22;
     G.VM.set(null);
@@ -111,9 +111,10 @@ const Vh = G.Vehicles = {
       const x = v.pos.x + _r.x * ox + Math.sin(v.yaw) * oz, z = v.pos.z + _r.z * ox + Math.cos(v.yaw) * oz;
       let free = true;
       W.queryBoxes(x - 0.4, z - 0.4, x + 0.4, z + 0.4, b => { if (b.maxY > v.pos.y + 0.5 && b.minY < v.pos.y + 1.8) free = false; });
-      if (!free && !forced) continue;
+      if (!free) continue;
       a.pos.set(x, Math.max(W.heightAt(x, z), v.pos.y - 0.5), z); done = true; break;
     }
+    if (!done && !forced) return;
     if (!done) a.pos.set(v.pos.x, v.pos.y + 1.8, v.pos.z);
     a.vel.set(-Math.sin(v.yaw) * v.speed * 0.5, 0, -Math.cos(v.yaw) * v.speed * 0.5);
     a.yaw = P.orbitYaw; a.pitch = 0;
@@ -128,7 +129,7 @@ const Vh = G.Vehicles = {
     const I = G.Input, a = P.a, v = P.vehicle, W = G.World, cam = G.camera;
     P.camMode = 'vehicle';
     P.orbitYaw -= I.mdx * 0.0026 * P.sens;
-    P.orbitPitch = U.clamp(P.orbitPitch - I.mdy * 0.0026 * P.sens, -1.1, 0.25);
+    P.orbitPitch = U.clamp(P.orbitPitch - P.lookY() * 0.0026 * P.sens, -1.1, 0.25);
     const thr = (I.down('KeyW') ? 1 : 0) - (I.down('KeyS') ? 1 : 0), st = (I.down('KeyA') ? 1 : 0) - (I.down('KeyD') ? 1 : 0);
     this.step(v, a, dt, thr, st, I.down('Space'));
     if (!v.driver) return;
@@ -141,7 +142,7 @@ const Vh = G.Vehicles = {
     // 흙먼지
     if (Math.abs(v.speed) > 7 && Math.random() < dt * 14) G.FX.dust(_c.copy(v.pos).addScaledVector(_f, -1.7 * Math.sign(v.speed)), 1, 0, 0.3, 0, 0.5, 0.45, 0.36, 1.4);
     // 내리기
-    P.prompt = '<kbd>F</kbd> 내리기 · <b>' + Math.round(Math.abs(v.speed) * 3.6) + '</b> km/h'; P.lootTarget = null; P.reviveTarget = null;
+    P.prompt = '<kbd>' + G.Settings.label('KeyF') + '</kbd> 내리기 · <b>' + Math.round(Math.abs(v.speed) * 3.6) + '</b> km/h'; P.lootTarget = null; P.reviveTarget = null;
     if (I.hit('KeyF')) { this.exit(P); return; }
     // 3인칭 카메라
     const dist = 7.5;
@@ -199,6 +200,7 @@ const Vh = G.Vehicles = {
     const lim = W.HALF - 6;
     v.pos.x = U.clamp(nx, -lim, lim); v.pos.z = U.clamp(nz, -lim, lim);
     this.place(v, 1 - Math.exp(-10 * dt));
+    if (v.driver !== a) return;
     // 들이받기
     if (Math.abs(v.speed) > 5) {
       const now = G.Game.time, s = Math.sign(v.speed);
@@ -236,7 +238,7 @@ const Vh = G.Vehicles = {
     this.unblock(v);
     v.driver = a; v.claim = null; bot.vehicle = v; a.inVehicle = v;
     a.crouch = false; a.prone = false; a.leanX = 0;
-    bot.vStuck = 0; bot.vRev = 0; bot.vProg = 0; bot.vLast = v.pos.clone(); bot.vT = 0;
+    bot.vStop = false; bot.vStuck = 0; bot.vRev = 0; bot.vLast = v.pos.clone(); bot.vT = 0;
     if (G.Audio.ok() && G.WeaponAudio) G.WeaponAudio.eventAt(G.Audio, 'close', 'ka47', v.pos);
     return true;
   },
