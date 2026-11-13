@@ -50,6 +50,16 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
       G.Input.unlock(); G.paused = true;
       const state = { ads: 0, raise: 1, phase: 0, moving: 0, hideVM: false, reload: null };
       for (const [id, model] of [['ar7', G.M4Viewmodel], ['g18', G.G17Pilot]]) {
+        // Calibrate in idle, then mount the same optic during the first draw/reload.
+        model.sample('Idle',0); model.mountKey=null; model.syncAttachments('reddot');
+        const reference=model.aimOffset.clone();
+        G.VM.set(null);G.VM.update(.016,state);G.VM.set(id);
+        model.mountKey=null;G.VM.update(.016,{...state,scope:'reddot'});
+        if (reference.distanceTo(model.aimOffset)>1e-8) throw Error('First equip changed ADS alignment: '+id);
+        for(const empty of [false,true]) {
+          model.mountKey=null;G.VM.update(.016,{...state,scope:'reddot',reload:{type:'mag',empty,p:.55}});
+          if (reference.distanceTo(model.aimOffset)>1e-8) throw Error('Reload changed ADS alignment: '+id);
+        }
         G.VM.set(id); G.VM.update(1, state);
         if (!model.pivot.visible || G.VM.models[id].root.visible) throw Error('Replacement not shown: ' + id);
         for (const empty of [false, true]) {

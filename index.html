@@ -11,7 +11,7 @@
 <script>
 // 새 버전이 올라왔는데 휴대폰이 예전 페이지를 기억하고 있으면 새로 불러온다
 (function () {
-  var BUILD = '37';
+  var BUILD = '38';
   window.LZ_BUILD = BUILD;
   try {
     fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (v) {
@@ -101,7 +101,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=37">
+<link rel="stylesheet" href="css/style.css?v=38">
 <script type="importmap">
 {
   "imports": {

@@ -51,6 +51,52 @@ function checkTrainingLifecycle() {
   check(Training.stats.shots === 1 && Training.stats.hits === 1 && Training.stats.heads === 1, 'Pellets counted as separate trigger pulls');
 }
 
+function checkVehicleSlopes() {
+  const W=G.World,V=G.Vehicles,I=G.Input,cam=G.camera;
+  const methods={heightAt:W.heightAt,waterAt:W.waterAt,queryBoxes:W.queryBoxes,rayBoxes:W.rayBoxes};
+  const camera={position:cam.position.clone(),quaternion:cam.quaternion.clone(),fov:cam.fov};
+  const a=new G.Actor({id:997,team:0,isPlayer:true}), mesh=new THREE.Mesh(V.geo,V.mat);
+  mesh.rotation.order='YXZ';
+  const p=Object.create(G.Player);
+  const v={mesh,pos:new THREE.Vector3(),speed:0,steer:0,pitch:0,roll:0,driver:a,hitT:new Map(),noiseT:1};
+  Object.assign(p,{a,vehicle:v,sens:1,orbitPitch:-.22,orbitYaw:0});
+  let cases=0;
+  try {
+    I.reset(); W.waterAt=()=>-100; W.queryBoxes=()=>{}; W.rayBoxes=()=>Infinity;
+    for(const [sx,sz] of [[0,0],[.5,0],[-.5,0],[0,.6],[0,-.6],[.35,.45]]) {
+      W.heightAt=(x,z)=>20+sx*x+sz*z;
+      for(const yaw of [0,Math.PI/2,Math.PI,-Math.PI/2]) {
+        v.pos.set(0,20,0); v.yaw=yaw; v.pitch=0; v.roll=0; v.speed=0;
+        V.place(v,1);
+        for(const x of [-.95,.95]) for(const z of [-1.25,1.25]) {
+          const wheel=mesh.localToWorld(new THREE.Vector3(x,0,z));
+          const gap=wheel.y-W.heightAt(wheel.x,wheel.z);
+          if(Math.abs(gap)>.02) throw Error('Tilted wheel missed ground by '+gap+' on '+[sx,sz,yaw]);
+        }
+        p.orbitYaw=yaw; V.drive(p,1/60);
+        const eye=v.pos.clone();eye.y+=1.9;
+        if(cam.position.distanceTo(eye)<3.5) throw Error('Hill pushed chase camera into jeep');
+        for(let i=1;i<=16;i++) {
+          const point=eye.clone().lerp(cam.position,i/16);
+          if(point.y<W.heightAt(point.x,point.z)+.35) throw Error('Vehicle camera looks through hillside');
+        }
+        I.keys.KeyW=true;
+        for(let i=0;i<90;i++) V.step(v,a,1/60,1,0,false);
+        I.reset();
+        for(const x of [-.95,.95]) for(const z of [-1.25,1.25]) {
+          const wheel=mesh.localToWorld(new THREE.Vector3(x,0,z));
+          if(wheel.y<W.heightAt(wheel.x,wheel.z)-.001) throw Error('Driving wheel sank into hill');
+        }
+        cases++;
+      }
+    }
+  } finally {
+    Object.assign(W,methods); I.reset(); G.Audio.setLoop('engine',0);
+    cam.position.copy(camera.position);cam.quaternion.copy(camera.quaternion);cam.fov=camera.fov;cam.updateProjectionMatrix();
+  }
+  return cases;
+}
+
 function checkMatchLifecycle() {
   const { Game, Player, Stats, Vehicles } = G;
   const check = (ok, message) => { if (!ok) throw Error(message); };
@@ -179,6 +225,7 @@ function checkMatchLifecycle() {
     });
     console.log('Gameplay:', JSON.stringify(checks));
     assert((await page.locator('#centerMsg').textContent()).includes('J'));
+    console.log('Slope driving and chase camera:',await page.evaluate(checkVehicleSlopes));
     await page.evaluate(checkTrainingLifecycle);
 
     if (process.env.SHOTS) {

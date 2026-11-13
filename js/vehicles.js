@@ -4,6 +4,7 @@
 const THREE = window.THREE, G = window.G, U = G.U;
 const V3 = THREE.Vector3;
 const _f = new V3(), _r = new V3(), _c = new V3(), _e = new V3(), _d = new V3();
+const _support = new V3();
 const HALF_L = 1.9, HALF_W = 0.95, MAX = 21, REV = 6;
 
 function build() {
@@ -75,12 +76,21 @@ const Vh = G.Vehicles = {
   place(v, k) {
     const W = G.World;
     _f.set(-Math.sin(v.yaw), 0, -Math.cos(v.yaw)); _r.set(Math.cos(v.yaw), 0, -Math.sin(v.yaw));
-    const h = (ox, oz) => Math.max(W.heightAt(v.pos.x + _f.x * oz + _r.x * ox, v.pos.z + _f.z * oz + _r.z * ox), W.waterAt(v.pos.x, v.pos.z) - 0.9);
+    const ground = (x, z) => Math.max(W.heightAt(x, z), W.waterAt(x, z) - 0.9);
+    const h = (ox, oz) => ground(v.pos.x + _f.x * oz + _r.x * ox, v.pos.z + _f.z * oz + _r.z * ox);
     const hf = h(0, 1.4), hb = h(0, -1.4), hl = h(-0.9, 0), hr = h(0.9, 0);
-    v.pos.y = U.lerp(v.pos.y, (hf + hb + hl + hr) / 4, k);
-    v.pitch = U.lerp(v.pitch, Math.atan2(hf - hb, 2.8), k); v.roll = U.lerp(v.roll, Math.atan2(hl - hr, 1.8), k);
-    v.mesh.position.copy(v.pos);
+    const pitch = Math.atan2(hf - hb, 2.8), roll = Math.atan2((hr - hl) * Math.cos(pitch), 1.8);
+    v.pitch = U.lerp(v.pitch, pitch, k); v.roll = U.lerp(v.roll, roll, k);
     v.mesh.rotation.set(v.pitch, v.yaw, v.roll);
+    // Support the tilted wheel treads instead of sinking the uphill wheels into the terrain.
+    let supportY = -Infinity;
+    for (const x of [-0.95, 0.95]) for (const z of [-1.25, 1.25]) {
+      _support.set(x, 0, z).applyQuaternion(v.mesh.quaternion);
+      supportY = Math.max(supportY, ground(v.pos.x + _support.x, v.pos.z + _support.z) - _support.y);
+    }
+    v.pos.y = Math.max(supportY, U.lerp(v.pos.y, supportY, k));
+    v.mesh.position.copy(v.pos);
+    v.mesh.updateMatrixWorld(true);
   },
   near(a) {
     let best = null, bd = 3.4;
@@ -148,8 +158,17 @@ const Vh = G.Vehicles = {
     const dist = 7.5;
     _c.set(Math.sin(P.orbitYaw) * Math.cos(P.orbitPitch), -Math.sin(P.orbitPitch), Math.cos(P.orbitYaw) * Math.cos(P.orbitPitch));
     _e.copy(v.pos); _e.y += 1.9;
-    let L = dist;
-    if (W.raycast(_e, _c, dist)) L = Math.max(1.2, W.hit.t - 0.3);
+    _d.copy(_e).addScaledVector(_c, dist);
+    // Lift the camera boom over hills before checking buildings. A terrain hit used
+    // to shorten the boom into the jeep's cabin on steep slopes.
+    for (let i = 1; i <= 8; i++) {
+      const t = i / 8, x = U.lerp(_e.x, _d.x, t), z = U.lerp(_e.z, _d.z, t);
+      _d.y = Math.max(_d.y, _e.y + (W.heightAt(x, z) + 0.5 - _e.y) / t);
+    }
+    _c.copy(_d).sub(_e);
+    let L = _c.length(); _c.normalize();
+    const wall = W.rayBoxes(_e.x, _e.y, _e.z, _c.x, _c.y, _c.z, L, null);
+    if (wall < Infinity) L = Math.max(0.3, wall - 0.3);
     cam.position.copy(_e).addScaledVector(_c, L);
     const gy = W.heightAt(cam.position.x, cam.position.z) + 0.4; if (cam.position.y < gy) cam.position.y = gy;
     cam.lookAt(_e);
