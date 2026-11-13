@@ -173,6 +173,7 @@ G.boot = async function () {
   progress(0.92, '효과 준비 중...');
   G.FX.init(scene);
   G.Extras.init(scene);
+  await G.ReloadAssets?.load();
   G.VM.init(G.vmScene);
 
   G.UI.init();

@@ -122,6 +122,31 @@ const logic=await page.evaluate(()=>{
  return cases;
 });
 console.log('Ammo and sound cases:',logic);
+const imported=await page.evaluate(()=>{
+ const R=G.ReloadAssets,st=ReloadStudio,out=[];
+ if(!R.ready)throw Error('Bundled reload clips did not load');
+ for(const id of ['sc17','sa12','aa12','m1014','db2'])for(const mode of ['empty','tactical']){
+  st.select(id,mode);st.pause();st.seek(st.duration*.43);
+  const m=st.model, motion=m.reloadMotion;
+  if(!motion||!motion.weight||!Number.isFinite(motion.time))throw Error('Source clip not used: '+id);
+  const expected=['m1014','db2'].includes(id)?'Armature|SG_FPS_Reload':mode==='empty'?'Rig|AK_Reload_full':'Rig|AK_Reload';
+  if(motion.sourceClip!==expected)throw Error('Wrong reload clip: '+id+' '+mode);
+  const rotation=m.root.quaternion.clone(),position=m.root.position.clone();
+  try{
+   R.ready=false;st.seek(st.duration*.43);
+   if(m.reloadMotion)throw Error('Missing-asset fallback still uses clip');
+   const difference=rotation.angleTo(m.root.quaternion)+position.distanceTo(m.root.position);
+   if(difference<.01)throw Error('Imported source has no visible effect: '+id+' '+mode);
+   out.push({id,mode,source:expected,difference});
+  }finally{R.ready=true;}
+  st.select(id,mode);st.pause();let maximum=0;
+  for(let t=0;t<st.duration;t+=1/60){st.advance(1/60);maximum=Math.max(maximum,st.model.reloadMotion?.handDisplacement||0);}
+  if(maximum<.001)throw Error('Source wrist trajectory was not retargeted: '+id+' '+mode);
+  out[out.length-1].handTravelMm=maximum*1000;
+ }
+ return out;
+});
+console.log('Imported reload clips:',JSON.stringify(imported));
 if(process.env.SHOTS){
  fs.mkdirSync(process.env.SHOTS,{recursive:true});
  for(const id of ['ka47','de7']){

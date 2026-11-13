@@ -11,7 +11,7 @@
 <script>
 // 새 버전이 올라왔는데 휴대폰이 예전 페이지를 기억하고 있으면 새로 불러온다
 (function () {
-  var BUILD = '39';
+  var BUILD = '40';
   window.LZ_BUILD = BUILD;
   try {
     fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (v) {
@@ -200,6 +200,7 @@
       <p>Concrete Floor Painted — Rob Tuytel · Plastic Crate 01 — PierreB3D. <a href="https://polyhaven.com" target="_blank" rel="noopener noreferrer">Poly Haven</a>, CC0. Patch를 통해 제공받았습니다.</p>
       <p>AR-7 1인칭 모델·애니메이션 — <a href="https://www.fab.com/listings/38da8f1e-cb54-4cda-beb1-6e55642a55a9" target="_blank" rel="noopener noreferrer">M4 - FPS Weapon Animations Pack FREE, BarcodeGames</a>, Fab Standard License.</p>
       <p>SC-17 · M-1014 · SA-12 · AA-12 — Pichuliru의 Flat Guns (CC0), <a href="https://github.com/petroulacl/fps-asset-kit" target="_blank" rel="noopener noreferrer">GitHub 배포본</a>. DB-2 — Boomstick (CC0), <a href="https://github.com/Godot-Dojo/Deprecated-Godot-XR-Weapons" target="_blank" rel="noopener noreferrer">Godot-Dojo 배포본</a>. 게임에 맞게 크기·부품·조준점·장전 동작을 조정했으며 시작할 때 자동 적용됩니다.</p>
+      <p>SC-17 · SA-12 · AA-12 장전 — Cransh의 <a href="https://sketchfab.com/3d-models/fps-ak-74m-animations-94be8385c402474cacd39bc096c6ca14" target="_blank" rel="noopener noreferrer">FPS AK-74m animations</a>. M-1014 · DB-2의 탄약 이동·총기 자세 — 같은 제작자의 <a href="https://sketchfab.com/3d-models/fps-arms-remington-shotgun-e68ef617fe8a48cca8610d016ffd5881" target="_blank" rel="noopener noreferrer">FPS Arms remington (shotgun)</a>. <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>. 원본 모션을 추출해 총기별 리그·시간·접촉점에 맞게 조정했습니다. DB-2의 총열 개폐는 기존 동작을 사용합니다. <a href="assets/animations/reloads/CREDITS.md" target="_blank" rel="noopener noreferrer">상세 출처·변경 내역</a>.</p>
       <p>G-18 1인칭 모델·애니메이션 — Glock 17 FPS 모델 (출처 확인 중).</p>
       <p>그 밖의 출처: 저장소의 <code>assets/CREDITS.md</code></p>
     </details>
@@ -346,7 +347,7 @@ try {
     try { window.EZTree = await import('./vendor/ez-tree.es.js'); } catch (e) { console.info('[veg] vendor/ez-tree.es.js 없음 — 기존 나무 사용'); }
   }
   loadFill.style.width = '15%';
-  const files = ['core', 'assets', 'range-props', 'vegetation', 'world', 'effects', 'ambient', 'plane', 'character', 'soldiers', 'gunlib', 'gunmodels', 'weapons','weapon-audio','attachments','g17-pilot','m4-viewmodel', 'throwables', 'actor', 'player', 'bots', 'extras', 'vehicles', 'game', 'training', 'ui', 'settings', 'main', 'touch'];
+  const files = ['core', 'assets', 'range-props', 'vegetation', 'world', 'effects', 'ambient', 'plane', 'character', 'soldiers', 'gunlib', 'gunmodels', 'reload-assets', 'weapons','weapon-audio','attachments','g17-pilot','m4-viewmodel', 'throwables', 'actor', 'player', 'bots', 'extras', 'vehicles', 'game', 'training', 'ui', 'settings', 'main', 'touch'];
   for (let i = 0; i < files.length; i++) {
     loadText.textContent = '스크립트 불러오는 중... (' + files[i] + ')';
     await new Promise((res, rej) => {

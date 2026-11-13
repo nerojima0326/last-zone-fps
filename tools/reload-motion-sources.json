@@ -1,0 +1,23 @@
+[
+  {
+    "file": "ak.gltf",
+    "url": "https://raw.githubusercontent.com/Ayush-Mohanty/FPS-Arms-3D/c80a452e680c5a27c9e936176eb17e446869529a/Models/fps_ak-74m_animations/scene.gltf",
+    "sha256": "5c97d7a3883811b41ae02cde2ace376725ac6d979a67da12386e8e1a63a1800f",
+    "license": "CC-BY-4.0",
+    "author": "Cransh"
+  },
+  {
+    "file": "ak.bin",
+    "url": "https://raw.githubusercontent.com/Ayush-Mohanty/FPS-Arms-3D/c80a452e680c5a27c9e936176eb17e446869529a/Models/fps_ak-74m_animations/scene.bin",
+    "sha256": "2d62ccdf3a11e3cc2b11a2a8b1afc42ed786f6eb18f860dd7dec28d93d0e9c69",
+    "license": "CC-BY-4.0",
+    "author": "Cransh"
+  },
+  {
+    "file": "remington.glb",
+    "url": "https://raw.githubusercontent.com/lawrior/fps-arms/89a0088101869b275e7835da9f7fa124f192ba5f/fps_arms_remington_shotgun.glb",
+    "sha256": "f3929243d91c23fdae355d6d65f547b3089419f8b2a6d50db932d5963836ee72",
+    "license": "CC-BY-4.0",
+    "author": "Cransh"
+  }
+]

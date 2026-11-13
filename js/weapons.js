@@ -1566,6 +1566,7 @@ const VM = G.VM = {
   },
   // ---------------- 총 애니메이션 ----------------
   animGun(m, s, dt) {
+    m.reloadMotion = null;
     const P = m.parts, R = m.rest, K = m.keys, def = m.def;
     // 기본: 부품 원위치, 손은 손잡이·총열 덮개
     for (const k in P) { P[k].position.copy(R[k]); P[k].rotation.set(0, 0, 0); P[k].visible = true; }
@@ -1614,6 +1615,7 @@ const VM = G.VM = {
       else if (rl.type === 'break') this.animBreak(m, rl);
       this.handContacts(m, rl);
       this.reloadAccent(m, rl);
+      G.ReloadAssets?.apply(m, rl, POSE);
     } else if (P.barrel) {
       m.armL.tgt.copy(P.barrel.position).add(K.barrelOff);
     }

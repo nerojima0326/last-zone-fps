@@ -53,6 +53,10 @@ MIT 라이선스 에셋은 게임을 배포할 때 위 라이선스 파일(저�
 - `models/guns/*.glb` 는 `tools/guns/run.cjs build` 로 만든 결과입니다 (기존 실사 3종, 추가 CC0 5종, 직접 설계 5종). 자세한 방법은 `tools/guns/README.md`.
 - `_src/` 는 변환에만 쓰이므로 (약 300MB) 지워도 게임에는 영향이 없습니다.
 
+## 추가 AR · SG 장전 모션 (v40)
+
+Cransh의 **FPS AK-74m animations**와 **FPS Arms remington (shotgun)** (CC BY 4.0)에서 추출한 손목·총기 애니메이션 곡선을 사용합니다. SC-17·SA-12·AA-12·M-1014·DB-2에 맞춰 시간·접촉점·반복 단계를 조정했습니다. 원본 페이지, GitHub 배포본, 저작자·라이선스 및 DB-2의 조정 범위는 [장전 애니메이션 출처](animations/reloads/CREDITS.md)에 기록했습니다.
+
 ## 총성 · 장전음 (v20)
 
 실제 총성은 The Free Firearm Sound Library(CC0), 기계 조작음은 SpringySpringo의 에어소프트 녹음(CC0)을 편집했다. 총기별 매핑·가공·출처는 [오디오 출처](audio/weapons/CREDITS.md)를 참고한다.

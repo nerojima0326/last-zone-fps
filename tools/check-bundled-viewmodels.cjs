@@ -45,6 +45,7 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
         inputsEmpty: [...document.querySelectorAll('input[type=file]')].every(i => !i.files.length) }));
       assert(models.m4 && models.glock && models.inputsEmpty, JSON.stringify(models));
       assert(models.m4Status.includes('자동 적용') && models.glockStatus.includes('자동 적용'), JSON.stringify(models));
+      assert(await page.evaluate(ids=>G.ReloadAssets.ready&&ids.every(id=>G.ReloadAssets.has(id)),Object.keys(longGuns)), 'Reload assets must load without browser file storage');
       const bundled = await page.evaluate(expected => Object.entries(expected).map(([id, source]) => {
         const data = G.GunModels.data(id), vm = G.VM.models[id];
         return { id, loaded: data?.sourceAsset === source && vm?.real && data.muzzle.toArray().every(Number.isFinite),
@@ -102,12 +103,14 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
     // Missing hosted files must not prevent entering the game with its original models.
     await page.route('**/assets/models/viewmodels/**', r => r.fulfill({ status: 404, body: '' }));
     await page.route(/\/assets\/models\/guns\/(sc17|m1014|sa12|aa12|db2)\.glb/, r => r.fulfill({ status: 404, body: '' }));
+    await page.route('**/assets/animations/reloads/motion.json*', r => r.fulfill({ status: 404, body: '' }));
     await page.reload({ waitUntil: 'domcontentloaded' }); await ready();
     const fallback = await page.evaluate(() => !G.M4Viewmodel.ready && !G.G17Pilot.ready &&
       document.querySelector('#m4Status').textContent.includes('실패') && document.querySelector('#g17Status').textContent.includes('실패'));
     assert(fallback, 'Missing-file fallback failed');
     const longGunFallback = await page.evaluate(ids => ids.every(id => !G.GunModels.has(id) && !G.VM.models[id].real), Object.keys(longGuns));
     assert(longGunFallback, 'Missing long-gun files must use the procedural fallback');
+    assert(await page.evaluate(()=>!G.ReloadAssets.ready), 'Missing reload data must use the original animations');
     assert.deepEqual(errors, []);
     console.log('PASS', { visits: 2, requests, gameplay, fallback, errors });
   } finally { if (browser) await browser.close(); server.close(); }
