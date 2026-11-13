@@ -111,7 +111,7 @@ const Game = G.Game = {
     G.UI.startMatch();
     document.getElementById('hud').classList.add('training');
     G.Training.start();
-    G.UI.center('훈련장', '테이블의 총·조준경은 <b>F</b> 로 바꿔 들 수 있어요 · 탄약 무한', '', 6);
+    G.UI.center('훈련장', '테이블의 총·조준경은 <b>F</b> 로 바꿔 들 수 있어요 · 탄약 무한 · 사격대 뒤 지프로 운전 연습', '', 6);
   },
   cleanup() {
     if (G.Training) G.Training.stop();

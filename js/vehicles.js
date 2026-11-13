@@ -54,6 +54,17 @@ const Vh = G.Vehicles = {
       this.list.push(v); this.place(v, 1); this.block(v);
     }
   },
+  // 정해진 자리에 한 대 (훈련장 운전 코스)
+  spawnAt(x, z, yaw) {
+    const W = G.World;
+    if (!this.geo) { this.geo = build(); this.mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.7, metalness: 0.2 }); }
+    const mesh = new THREE.Mesh(this.geo, this.mat);
+    mesh.castShadow = true; mesh.rotation.order = 'YXZ';
+    G.scene.add(mesh);
+    const v = { mesh, pos: new V3(x, W.heightAt(x, z), z), yaw, speed: 0, steer: 0, pitch: 0, roll: 0, driver: null, box: null, hitT: new Map(), noiseT: 0, home: { x, z, yaw } };
+    this.list.push(v); this.place(v, 1); this.block(v);
+    return v;
+  },
   // 세워 둔 차는 충돌 상자를 둔다 (걸어서 통과·총알 관통 방지). 회전을 감안해 조금 줄인 축 정렬 상자
   block(v) {
     const c = Math.abs(Math.cos(v.yaw)), s = Math.abs(Math.sin(v.yaw));

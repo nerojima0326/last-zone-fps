@@ -188,6 +188,18 @@ const W = G.World = {
       }
       H[iz * N + ix] = h;
     }
+    // 사격장 옆 운전 연습 코스: 사격장과 같은 높이로 고른다
+    const rg = this.towns.find(t => t.type === 'range');
+    this.course = rg ? { x0: rg.x + 56, x1: rg.x + 140, z0: rg.z - 36, z1: rg.z + 64, h: rg.h, spurX: rg.x + 8 } : null;
+    if (this.course) {
+      const c = this.course;
+      for (let iz = 0; iz < N; iz++) for (let ix = 0; ix < N; ix++) {
+        const x = ix * CELL - HALF, z = iz * CELL - HALF;
+        const dx = Math.max(c.x0 - 8 - x, 0, x - c.x1 - 8), dz = Math.max(c.z0 - 8 - z, 0, z - c.z1 - 8);
+        const sd = Math.hypot(dx, dz);
+        if (sd < 40) { const i = iz * N + ix; H[i] = U.lerp(H[i], c.h, U.smoothstep(40, 4, sd)); }
+      }
+    }
     this.labels = MOUNTAINS.map(M => ({ name: M.name, x: M.x, z: M.z }));
     // 호수 (수면 높이 결정)
     this.lakes = LAKE_DEFS.map(L => this.makeLake(L));
@@ -365,6 +377,16 @@ const W = G.World = {
       this.roads.push({ ax: t.x - t.r - 10, az: t.z + 4, bx: t.x + t.r + 10, bz: t.z + 4, w: 6 });
       this.roads.push({ ax: t.x - 2, az: t.z - t.r - 10, bx: t.x - 2, bz: t.z + t.r + 10, w: 6 });
     }
+    this.courseRoads();
+  },
+  // 운전 연습 코스 도로: 사격장 뒤 진입로 → 모서리를 깎은 사각형 한 바퀴
+  courseRoads() {
+    const c = this.course;
+    if (!c) return;
+    const w = 8, k = 12, { x0, x1, z0, z1 } = c;
+    const P = [[x0 + k, z1], [x1 - k, z1], [x1, z1 - k], [x1, z0 + k], [x1 - k, z0], [x0 + k, z0], [x0, z0 + k], [x0, z1 - k], [x0 + k, z1]];
+    for (let i = 0; i < P.length - 1; i++) this.roads.push({ ax: P[i][0], az: P[i][1], bx: P[i + 1][0], bz: P[i + 1][1], w, course: true });
+    this.roads.push({ ax: c.spurX, az: z1, bx: x0 + k, bz: z1, w, course: true });
   },
   // 도로와 강이 만나는 곳마다 다리
   findBridges() {
@@ -1349,6 +1371,11 @@ const W = G.World = {
     if (G.RangeProps) G.RangeProps.build(this, b, FL);
     this.footprints.push({ minX: t.x - 16, maxX: t.x + 16, minZ: t.z + FL, maxZ: t.z + FL + 10, kind: 'pad' });   // 사격대 바닥 (포장, 풀 없음)
     this.footprints.push({ minX: t.x - 44, maxX: t.x + 44, minZ: t.z - 84, maxZ: t.z + FL + 16, kind: 'range' });
+    const c = this.course;
+    if (c) {
+      this.footprints.push({ minX: c.x0 - 7, maxX: c.x1 + 7, minZ: c.z0 - 7, maxZ: c.z1 + 7, kind: 'range' });
+      this.footprints.push({ minX: c.spurX - 2, maxX: c.x0, minZ: c.z1 - 6, maxZ: c.z1 + 6, kind: 'range' });
+    }
   },
   genWild() {
     const r = this.rnd;
