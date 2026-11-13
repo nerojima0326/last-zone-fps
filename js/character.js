@@ -159,8 +159,10 @@ class CharacterModel {
   setShadows(on) { for (const m of this.meshes) m.castShadow = on; for (const k in this.guns) this.guns[k].castShadow = on; }
   setHelmet(on) { if (this.helmetMesh.visible !== on) this.helmetMesh.visible = on; }
   setLOD(on, crouch) {
-    if (this.soldier) { this.lod = on; return; }
-    if (this.lod !== on) { this.lod = on; this.body.visible = !on; this.lodMesh.visible = on; }
+    if (this.lod !== on) {
+      this.lod = on; this.body.visible = !on; this.lodMesh.visible = on;
+      if (this.soldier) this.soldier.root.visible = !on;
+    }
     if (on) this.lodMesh.scale.y = crouch ? 0.72 : 1;
   }
   update(dt, a) {
@@ -243,13 +245,19 @@ class CharacterModel {
     if (this.chute && this.chute.visible) {
       this.chute.rotation.z = Math.sin(this.phase * 0.7) * 0.05;
     }
-    if (this.soldier) G.Soldiers.drive(this.soldier, this);
+    if (this.soldier && !this.lod) G.Soldiers.drive(this.soldier, this);
   }
   dispose() {
     if (!this.soldier) for (const m of this.meshes) m.geometry.dispose();
-    else this.body.geometry.dispose();
+    else {
+      this.body.geometry.dispose();
+      const skeletons = new Set();
+      this.soldier.root.traverse(o => { if (o.isSkinnedMesh) skeletons.add(o.skeleton); });
+      for (const skeleton of skeletons) skeleton.dispose();
+    }
     this.lodMesh.geometry.dispose();
     if (this.body.skeleton) this.body.skeleton.dispose();
+    if (this.chute) this.chute.traverse(o => { if (o.geometry) { o.geometry.dispose(); o.material.dispose(); } });
     if (this.root.parent) this.root.parent.remove(this.root);
   }
 }

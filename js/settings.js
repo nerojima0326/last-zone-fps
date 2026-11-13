@@ -16,6 +16,21 @@ const ACTIONS = [
 ];
 const RESERVED = new Set(['Escape', 'Tab', 'F5', 'F11', 'F12', 'MetaLeft', 'MetaRight']);
 
+function validKey(code) {
+  return typeof code === 'string' && /^[A-Z][A-Za-z0-9]{0,31}$/.test(code) && code !== 'Unidentified' && !RESERVED.has(code);
+}
+function assignKey(binds, action, code) {
+  const old = binds[action] || action;
+  for (const [other] of ACTIONS) {
+    if (other === action || (binds[other] || other) !== code) continue;
+    if (old === other) delete binds[other]; else binds[other] = old;
+  }
+  if (code === action) delete binds[action]; else binds[action] = code;
+}
+function settingNumber(value, fallback, min, max) {
+  return typeof value === 'number' && Number.isFinite(value) ? U.clamp(value, min, max) : fallback;
+}
+
 function keyName(code) {
   if (!code) return '없음';
   if (code.startsWith('Key')) return code.slice(3);
@@ -30,14 +45,23 @@ const S = G.Settings = {
   load() {
     let s = null;
     try { s = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { s = null; }
-    this.data = Object.assign({}, DEF, s || {});
-    this.data.vol = Object.assign({}, DEF.vol, (s && s.vol) || {});
-    this.data.binds = Object.assign({}, (s && s.binds) || {});
+    this.data = {
+      adsSens: settingNumber(s?.adsSens, DEF.adsSens, 0.3, 1.5),
+      scopeSens: settingNumber(s?.scopeSens, DEF.scopeSens, 0.3, 1.5),
+      fov: settingNumber(s?.fov, DEF.fov, 70, 100),
+      invertY: s?.invertY === true, vol: {}, binds: {}
+    };
+    for (const k of Object.keys(DEF.vol)) this.data.vol[k] = settingNumber(s?.vol?.[k], DEF.vol[k], 0, 1.5);
+    for (const [act] of ACTIONS) {
+      const code = s?.binds?.[act];
+      if (validKey(code)) assignKey(this.data.binds, act, code);
+    }
     this.apply();
   },
   save() { try { localStorage.setItem(KEY, JSON.stringify(this.data)); } catch (e) { /* 저장 안 되면 이번 실행만 */ } },
   // 실제로 누르는 키 (바꾸지 않았으면 원래 키)
   bound(action) { return this.data.binds[action] || action; },
+  label(action) { return keyName(this.bound(action)); },
   apply() {
     const d = this.data, P = G.Player, A = G.Audio, I = G.Input;
     if (P) { P.adsSens = d.adsSens; P.scopeSens = d.scopeSens; P.fov = d.fov; P.invertY = d.invertY; }
@@ -55,11 +79,8 @@ const S = G.Settings = {
     }
   },
   setBind(action, code) {
-    const b = this.data.binds;
-    // 이미 다른 동작이 그 키를 쓰고 있으면 서로 바꾼다
-    const old = this.bound(action);
-    for (const [act] of ACTIONS) if (act !== action && this.bound(act) === code) { if (old === act) delete b[act]; else b[act] = old; }
-    if (code === action) delete b[action]; else b[action] = code;
+    if (!validKey(code) || !ACTIONS.some(([act]) => act === action)) return;
+    assignKey(this.data.binds, action, code);
     this.apply(); this.save();
   },
 
@@ -68,12 +89,12 @@ const S = G.Settings = {
     const $ = id => document.getElementById(id);
     const panel = $('settingsPanel');
     if (!panel) return;
-    const d = this.data;
-    const open = () => { this.render(); panel.classList.remove('hidden'); G.Audio.init(); this.apply(); G.Audio.click('ui'); };
+    const open = () => { this.open = true; $('setMsg').textContent = ''; this.render(); panel.classList.remove('hidden'); G.Audio.init(); this.apply(); G.Audio.click('ui'); };
     for (const id of ['settingsBtn', 'settingsBtn2']) { const b = $(id); if (b) b.addEventListener('click', open); }
-    const close = () => { this.waiting = null; panel.classList.add('hidden'); this.render(); };
+    const close = () => { this.open = false; this.waiting = null; panel.classList.add('hidden'); this.render(); };
     $('setClose').addEventListener('click', close);
     $('setReset').addEventListener('click', () => {
+      this.waiting = null;
       this.data = JSON.parse(JSON.stringify(DEF));
       this.apply(); this.save(); this.render();
       // 메뉴의 마우스 감도는 그대로 둔다 (UI.opts.sens)
@@ -101,17 +122,21 @@ const S = G.Settings = {
     list.addEventListener('click', e => {
       const btn = e.target.closest('button[data-act]');
       if (!btn) return;
-      if (btn.dataset.reset) { delete this.data.binds[btn.dataset.act]; this.apply(); this.save(); this.render(); return; }
+      if (btn.dataset.reset) { this.waiting = null; this.setBind(btn.dataset.act, btn.dataset.act); this.render(); return; }
       this.waiting = btn.dataset.act; this.render();
     });
     // 바꿀 키 입력 받기 (게임 입력보다 먼저 가로챈다)
     addEventListener('keydown', e => {
-      if (!this.waiting) return;
+      if (!this.open) return;
+      if (!this.waiting) {
+        if (e.code === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); close(); }
+        return;
+      }
       e.preventDefault(); e.stopImmediatePropagation();
       const act = this.waiting;
       this.waiting = null;
       if (e.code === 'Escape') { this.render(); return; }
-      if (RESERVED.has(e.code)) { $('setMsg').textContent = keyName(e.code) + ' 키는 쓸 수 없습니다.'; this.render(); return; }
+      if (!validKey(e.code)) { $('setMsg').textContent = keyName(e.code) + ' 키는 쓸 수 없습니다.'; this.render(); return; }
       this.setBind(act, e.code);
       $('setMsg').textContent = '';
       this.render();
@@ -132,10 +157,11 @@ const S = G.Settings = {
     }
     $('setKeys').innerHTML = h;
     this.updateHelp();
+    if (G.UI) G.UI.slotKey = null;
   },
   // 메뉴의 조작법 표시도 바뀐 키로
   updateHelp() {
-    for (const el of document.querySelectorAll('kbd[data-k]')) el.textContent = keyName(this.bound(el.dataset.k));
+    for (const el of document.querySelectorAll('[data-k]')) el.textContent = keyName(this.bound(el.dataset.k));
   }
 };
 S.load();

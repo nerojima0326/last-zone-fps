@@ -90,7 +90,7 @@ const A=G.Attachments={models:{},open:false,
    const b=e.target.closest('[data-slot]');if(!b)return;const inst=a.weapons[this.viewSlot],slot=b.dataset.slot,val=b.dataset.value;if(!inst)return;
    this.change(a,inst,slot,val);this.render();
   });
-  addEventListener('keydown',e=>{if(e.repeat||G.Game?.state!=='playing')return;if(e.code==='Tab'){e.preventDefault();e.stopImmediatePropagation();this.open?this.close():this.show()}else if(e.code==='Escape'&&this.open){e.preventDefault();e.stopImmediatePropagation();this.close()}},true)
+  addEventListener('keydown',e=>{if(e.repeat||G.Game?.state!=='playing'||G.Settings?.open)return;if(e.code==='Tab'&&(this.open||!G.paused)){e.preventDefault();e.stopImmediatePropagation();this.open?this.close():this.show()}else if(e.code==='Escape'&&this.open){e.preventDefault();e.stopImmediatePropagation();this.close()}},true)
  },
  show(){const p=G.Player,a=G.Game.player;if(!a?.alive||a.knocked||!['rifle','shotgun','pistol'].some(k=>a.weapons[k])){G.UI.toast('총을 보유한 상태에서 부착물을 변경할 수 있습니다');return}if(p.reload||p.throwSt||p.cycleT>=0||p.pumpT>=0){G.UI.toast('동작이 끝난 뒤 부착물을 변경하세요');return}this.viewSlot=a.weapons[a.cur]?a.cur:['rifle','shotgun','pistol'].find(k=>a.weapons[k]);this.wasLocked=G.Input.locked;this.open=true;this.panel.hidden=false;G.paused=true;G.Input.unlock();G.UI.showPause(false);this.render()},
  close(){if(!this.open)return;this.open=false;this.panel.hidden=true;if(this.wasLocked)G.resume();else G.UI.showPause(true)},

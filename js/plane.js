@@ -215,6 +215,13 @@ function mats() {
   return MAT;
 }
 
+G.disposePlane = function (plane) {
+  plane.removeFromParent();
+  const geometries = new Set();
+  plane.traverse(o => { if (o.geometry) geometries.add(o.geometry); });
+  for (const geometry of geometries) geometry.dispose();
+};
+
 G.buildPlane = function () {
   const M = mats();
   const g = new THREE.Group(), props = [];

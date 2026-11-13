@@ -617,14 +617,26 @@ const W = G.World = {
     const key = Math.floor((wx + HALF) / 250) + ',' + Math.floor((wz + HALF) / 250) + '|' + mat + (B ? '|d' : '');
     (this.parts[key] || (this.parts[key] = [])).push(geo);
   },
-  addCollider(x0, y0, z0, x1, y1, z1, mat) {
+  addCollider(x0, y0, z0, x1, y1, z1, mat, dynamic = false) {
     const b = { minX: x0, minY: y0, minZ: z0, maxX: x1, maxY: y1, maxZ: z1, mat: mat || 'hard', stamp: 0 };
-    const id = this.boxes.length;
-    this.boxes.push(b);
+    if (dynamic) b.cells = [];
+    else this.boxes.push(b);
     const gx0 = U.clamp(Math.floor((x0 + HALF) / GCELL), 0, GN - 1), gx1 = U.clamp(Math.floor((x1 + HALF) / GCELL), 0, GN - 1);
     const gz0 = U.clamp(Math.floor((z0 + HALF) / GCELL), 0, GN - 1), gz1 = U.clamp(Math.floor((z1 + HALF) / GCELL), 0, GN - 1);
-    for (let gz = gz0; gz <= gz1; gz++) for (let gx = gx0; gx <= gx1; gx++) this.grid[gz * GN + gx].push(id);
+    for (let gz = gz0; gz <= gz1; gz++) for (let gx = gx0; gx <= gx1; gx++) {
+      const cell = this.grid[gz * GN + gx];
+      cell.push(b);
+      if (dynamic) b.cells.push(cell);
+    }
     return b;
+  },
+  removeCollider(b) {
+    if (!b?.cells) return;
+    for (const cell of b.cells) {
+      const i = cell.indexOf(b);
+      if (i >= 0) cell.splice(i, 1);
+    }
+    b.cells.length = 0;
   },
   finalizeParts() {
     this.bChunks = {};
@@ -2219,7 +2231,7 @@ const W = G.World = {
     for (let gz = gz0; gz <= gz1; gz++) for (let gx = gx0; gx <= gx1; gx++) {
       const cell = this.grid[gz * GN + gx];
       for (let i = 0; i < cell.length; i++) {
-        const b = this.boxes[cell[i]];
+        const b = cell[i];
         if (b.stamp === s) continue;
         b.stamp = s;
         if (b.maxX < x0 || b.minX > x1 || b.maxZ < z0 || b.minZ > z1) continue;
@@ -2242,7 +2254,7 @@ const W = G.World = {
       if (gx >= 0 && gx < GN && gz >= 0 && gz < GN) {
         const cell = this.grid[gz * GN + gx];
         for (let i = 0; i < cell.length; i++) {
-          const b = this.boxes[cell[i]];
+          const b = cell[i];
           if (b.stamp === s) continue;
           b.stamp = s;
           let t0 = (b.minX - ox) * idx, t1 = (b.maxX - ox) * idx, a = 0, sgn = dx > 0 ? -1 : 1;

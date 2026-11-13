@@ -6,7 +6,7 @@ const V3 = THREE.Vector3;
 const PXD = 3.2; // 나침반 px/도
 const MODE_NOTES = {
   1: '혼자서 모든 적과 싸워 최후의 1인이 되세요.',
-  2: 'AI 봇 1명이 팀원으로 함께합니다. 쓰러진 팀원을 <b>F</b>를 길게 눌러 소생시킬 수 있습니다.',
+  2: 'AI 봇 1명이 팀원으로 함께합니다. 쓰러진 팀원을 <b data-k="KeyF">F</b>를 길게 눌러 소생시킬 수 있습니다.',
   3: 'AI 봇 2명이 팀원으로 함께하는 3인 트리오입니다.',
   4: 'AI 봇 3명이 팀원으로 함께하는 4인 분대전입니다.'
 };
@@ -17,9 +17,20 @@ const UI = G.UI = {
   opts: { size: 1, players: 40, diff: 'normal', loadout: 'rifle', tod: 'day', quality: 'auto', sens: 1, name: 'Player', fpsTarget: 120, showFps: 'on', qv: 2 },
   feed: [], dmgDirs: [], hmT: 0, hurtV: 0, lowPulse: 0, centerT: 0, killT: 0, pickT: 0, mapOpen: false,
   init() {
-    try { const s = JSON.parse(localStorage.getItem('lastzone_opts') || 'null'); if (s) Object.assign(this.opts, s); } catch (e) { /* 저장소 사용 불가 */ }
-    // 예전 기본값(높음)을 쓰던 사람은 한 번 '자동'으로 바꿔 준다
-    if (this.opts.qv !== 2) { this.opts.qv = 2; if (this.opts.quality === 'high') this.opts.quality = 'auto'; }
+    let saved;
+    try { saved = JSON.parse(localStorage.getItem('lastzone_opts') || 'null'); } catch (e) { /* 저장소 사용 불가 */ }
+    if (saved && typeof saved === 'object') {
+      const size = Number(saved.size);
+      if (Number.isInteger(size) && MODE_NOTES[size]) this.opts.size = size;
+      if (Number.isFinite(saved.sens)) this.opts.sens = U.clamp(saved.sens, 0.2, 3);
+      if (typeof saved.name === 'string') this.opts.name = saved.name.trim().slice(0, 12) || 'Player';
+      for (const seg of document.querySelectorAll('.seg')) {
+        const key = seg.dataset.opt;
+        const choice = Array.from(seg.querySelectorAll('button')).find(b => b.dataset.v === String(saved[key]));
+        if (choice) this.opts[key] = typeof this.opts[key] === 'number' ? Number(choice.dataset.v) : choice.dataset.v;
+      }
+      if (saved.qv !== 2 && this.opts.quality === 'high') this.opts.quality = 'auto';
+    }
     this.fpsEl = $('fpsBox');
     this.fpsEl.classList.toggle('hidden', this.opts.showFps !== 'on');
     document.querySelectorAll('.ppl').forEach(p => { p.innerHTML = '<i></i>'.repeat(+p.dataset.n); });
@@ -27,6 +38,7 @@ const UI = G.UI = {
     const setMode = (n) => {
       modes.forEach(b => b.classList.toggle('on', +b.dataset.size === n));
       this.opts.size = n; $('modeNote').innerHTML = MODE_NOTES[n];
+      if (G.Settings) G.Settings.updateHelp();
     };
     modes.forEach(b => b.addEventListener('click', () => { setMode(+b.dataset.size); G.Audio.init(); G.Audio.click('ui'); }));
     setMode(this.opts.size);
@@ -155,7 +167,6 @@ const UI = G.UI = {
     e.style.opacity = 1; this.killT = 2.6;
   },
   pickup(text) { const e = this.el.pick; e.textContent = '+ ' + text; e.style.opacity = 1; this.pickT = 2; },
-  toast(text) { const e = this.el.pick; e.textContent = text; e.style.opacity = 1; this.pickT = 1.8; },
   feedMsg(html) { this.pushFeed('<span>' + html + '</span>'); },
   killfeed(killer, victim, weapon, head, knock) {
     const P = G.Game.player, pt = P.team;
@@ -191,7 +202,7 @@ const UI = G.UI = {
     $('resTitle').className = r.win ? 'win' : '';
     $('resRank').innerHTML = '<b>#' + r.rank + '</b><span>/ ' + r.teams + (G.Game.teamSize > 1 ? ' 팀' : '') + '</span>';
     $('resKills').textContent = r.kills; $('resDmg').textContent = r.dmg; $('resTime').textContent = U.fmtTime(r.time); $('resTeamKills').textContent = r.teamKills;
-    $('resAcc').textContent = r.acc ? Math.round(r.acc * 100) + '%' : '-'; $('resHeads').textContent = r.heads || 0; $('resLong').textContent = r.longest ? Math.round(r.longest) + 'm' : '-';
+    $('resAcc').textContent = r.shots ? Math.round(r.acc * 100) + '%' : '-'; $('resHeads').textContent = r.heads || 0; $('resLong').textContent = r.longest ? Math.round(r.longest) + 'm' : '-';
     $('resNew').innerHTML = (r.best ? '<span>한 판 최다 처치 기록 경신</span>' : '') + (r.fresh || []).map(n => '<span>업적 달성 · ' + G.esc(n) + '</span>').join('');
     $('specBtn').classList.toggle('hidden', !r.canSpectate);
     $('results').classList.remove('hidden');
@@ -201,7 +212,7 @@ const UI = G.UI = {
     const Game = G.Game;
     if (Game.state !== 'playing' && Game.state !== 'ended') return;
     const P = G.Player, a = Game.player, el = this.el, cam = G.camera;
-    if (G.Input.hit('KeyM') && Game.state === 'playing') { this.mapOpen = !this.mapOpen; el.bigWrap.classList.toggle('on', this.mapOpen); }
+    if (!G.paused && G.Input.hit('KeyM') && Game.state === 'playing') { this.mapOpen = !this.mapOpen; el.bigWrap.classList.toggle('on', this.mapOpen); }
     this.set('alive', el.alive, Game.aliveCount());
     this.set('teams', el.teams, Game.teamsAlive());
     this.set('kills', el.kills, a.kills);
@@ -228,7 +239,7 @@ const UI = G.UI = {
       this.set('wn', el.wname, def.name + (sc ? ' · ' + G.SCOPES[sc].name : ''));
       const mode = def.auto ? (P.fireMode === 'auto' ? 'AUTO' : 'SINGLE') : ({ pump: 'PUMP', bolt: 'BOLT', break: 'DOUBLE' }[def.action] || 'SEMI');
       const spare = G.SCOPE_ORDER.some(t => a.scopes[t] > 0 && def.scopes.includes(t));
-      this.set('fm', el.fmode, mode + ' · ' + G.AMMO_NAMES[def.ammo] + (spare ? ' · V 조준경' : ''));
+      this.set('fm', el.fmode, mode + ' · ' + G.AMMO_NAMES[def.ammo] + (spare ? ' · ' + G.Settings.label('KeyV') + ' 조준경' : ''));
     } else {
       this.set('mag', el.mag, '-'); this.set('res', el.res, ''); this.set('wn', el.wname, '맨손'); this.set('fm', el.fmode, '');
     }
@@ -240,9 +251,9 @@ const UI = G.UI = {
       let slots = '';
       ['rifle', 'shotgun', 'pistol'].forEach((k, i) => {
         const w = a.weapons[k];
-        slots += '<div class="slot' + (w ? ' has' : '') + (a.cur === k ? ' cur' : '') + '"><span class="k">' + (i + 1) + '</span>' + (w ? G.WEAPONS[w.id].short : G.CLASS_NAMES[k]) + '</div>';
+        slots += '<div class="slot' + (w ? ' has' : '') + (a.cur === k ? ' cur' : '') + '"><span class="k">' + G.Settings.label('Digit' + (i + 1)) + '</span>' + (w ? G.WEAPONS[w.id].short : G.CLASS_NAMES[k]) + '</div>';
       });
-      slots += '<div class="slot' + (a.throwCount() ? ' has' : '') + (a.cur === 'throw' ? ' cur' : '') + '"><span class="k">4</span>' + G.THROW_NAMES[tk] + ' <span class="cnt">' + a.throwables[tk] + '</span></div>';
+      slots += '<div class="slot' + (a.throwCount() ? ' has' : '') + (a.cur === 'throw' ? ' cur' : '') + '"><span class="k">' + G.Settings.label('Digit4') + '</span>' + G.THROW_NAMES[tk] + ' <span class="cnt">' + a.throwables[tk] + '</span></div>';
       el.slots.innerHTML = slots;
     }
     // 조준점
@@ -293,9 +304,9 @@ const UI = G.UI = {
     for (let i = 0; i < this.feed.length; i++) { const f = this.feed[i]; f.t -= dt; if (f.t < 1) f.el.style.opacity = Math.max(0, f.t); if (f.t <= 0) { f.el.remove(); this.feed.splice(i--, 1); } }
     // 강하 안내
     let ph = '';
-    if (a.alive && a.state === 'plane') ph = Game.planeCanJump() ? '<kbd>F</kbd> 뛰어내리기<small>마우스로 둘러보고 원하는 지역 위에서 강하하세요 · M 지도</small>' : '<small>맵 상공에 진입하면 뛰어내릴 수 있습니다</small>';
-    else if (a.alive && a.state === 'freefall') ph = (P.altitude < 260 && P.dropT > 1 ? '<kbd>F</kbd> 낙하산 펼치기' : '자유 낙하 중') + '<small>고도 ' + Math.round(P.altitude || 0) + 'm · W 급강하 · S 감속</small>';
-    else if (a.alive && a.state === 'chute') ph = '<small>고도 ' + Math.round(P.altitude || 0) + 'm · W/S 속도 조절 · 마우스 방향 전환</small>';
+    if (a.alive && a.state === 'plane') ph = Game.planeCanJump() ? '<kbd>' + G.Settings.label('KeyF') + '</kbd> 뛰어내리기<small>마우스로 둘러보고 원하는 지역 위에서 강하하세요 · ' + G.Settings.label('KeyM') + ' 지도</small>' : '<small>맵 상공에 진입하면 뛰어내릴 수 있습니다</small>';
+    else if (a.alive && a.state === 'freefall') ph = (P.altitude < 260 && P.dropT > 1 ? '<kbd>' + G.Settings.label('KeyF') + '</kbd> 낙하산 펼치기' : '자유 낙하 중') + '<small>고도 ' + Math.round(P.altitude || 0) + 'm · ' + G.Settings.label('KeyW') + ' 급강하 · ' + G.Settings.label('KeyS') + ' 감속</small>';
+    else if (a.alive && a.state === 'chute') ph = '<small>고도 ' + Math.round(P.altitude || 0) + 'm · ' + G.Settings.label('KeyW') + '/' + G.Settings.label('KeyS') + ' 속도 조절 · 마우스 방향 전환</small>';
     this.set('plane', el.plane, ph, 'innerHTML');
     // 관전
     if (!a.alive && P.specTarget && (Game.state === 'playing' || Game.spectating)) {

@@ -172,7 +172,7 @@ G.Input = {
   init(el) {
     this.el = el;
     addEventListener('keydown', e => {
-      if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
+      if (!this.locked || G.paused || e.isComposing || (document.activeElement && document.activeElement.tagName === 'INPUT')) return;
       // 설정에서 바꾼 키 → 게임이 쓰는 원래 키
       const code = this.map(e.code);
       if (['Tab', 'Space', 'KeyF', 'KeyH', 'KeyM', 'KeyG', 'KeyB', 'KeyC', 'KeyR', 'KeyQ', 'KeyE', 'KeyZ', 'KeyL'].includes(e.code) || (code && code !== e.code)) e.preventDefault();
@@ -199,10 +199,10 @@ G.Input = {
     addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('pointerlockchange', () => {
       this.locked = document.pointerLockElement === this.el;
-      if (!this.locked) { this.lmb = this.rmb = false; this.keys = {}; }
+      if (!this.locked) this.reset();
       if (G.onLockChange) G.onLockChange(this.locked);
     });
-    addEventListener('blur', () => { this.keys = {}; this.lmb = this.rmb = false; });
+    addEventListener('blur', () => this.reset());
   },
   lock() {
     try {
@@ -215,6 +215,7 @@ G.Input = {
   map(code) { return this.remap[code] || (this.blocked && this.blocked.has(code) ? null : code); },
   down(c) { return !!this.keys[c]; },
   hit(c) { return !!this.hits[c]; },
+  reset() { this.keys = {}; this.lmb = this.rmb = false; this.endFrame(); },
   endFrame() { this.hits = {}; this.mdx = this.mdy = 0; this.lmbHit = this.rmbHit = false; this.wheel = 0; }
 };
 

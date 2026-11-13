@@ -1,0 +1,41 @@
+name: Game regressions
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Install test dependencies
+        run: |
+          npm install --prefix "$RUNNER_TEMP/lz-tests" --no-audit --no-fund playwright@1.62.1 three@0.160.0
+          "$RUNNER_TEMP/lz-tests/node_modules/.bin/playwright" install --with-deps chromium
+          echo "NODE_PATH=$RUNNER_TEMP/lz-tests/node_modules" >> "$GITHUB_ENV"
+          echo "THREE_DIR=$RUNNER_TEMP/lz-tests/node_modules/three" >> "$GITHUB_ENV"
+      - name: Import bundled models
+        run: |
+          node tools/check-glock-import.mjs assets/models/viewmodels/glock17.fbx
+          node tools/check-m4-model.mjs assets/models/viewmodels/m4_animations.zip
+      - name: Exercise the shipped game and asset fallback
+        run: |
+          node tools/check-training-range.cjs
+          RANGE_FALLBACK=1 node tools/check-training-range.cjs
+          node tools/check-bundled-viewmodels.cjs
+          node tools/check-combat.cjs
+      - name: Check reload animation and audio
+        run: |
+          node tools/check-reloads.cjs
+          node tools/check-clearance.cjs
+          node tools/check-weapon-audio.cjs

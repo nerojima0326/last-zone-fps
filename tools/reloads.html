@@ -50,11 +50,13 @@ import {FBXLoader} from 'three/addons/loaders/FBXLoader.js';
 import {MeshoptDecoder} from 'three/addons/libs/meshopt_decoder.module.js';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 window.THREE = {...T, mergeGeometries, GLTFLoader, FBXLoader, MeshoptDecoder};
-window.LZ_BUILD = '22';
 const $ = id => document.getElementById(id);
 try {
+  const version = await fetch('version.txt', { cache: 'no-store' });
+  if (!version.ok) throw new Error('버전 정보를 불러올 수 없습니다');
+  window.LZ_BUILD = (await version.text()).trim();
   for (const file of ['core','gunlib','gunmodels','weapons','weapon-audio','player']) await new Promise((resolve,reject) => {
-    const s=document.createElement('script'); s.src=`js/${file}.js?v=22`; s.onload=resolve; s.onerror=()=>reject(new Error(file+' 로드 실패')); document.body.appendChild(s);
+    const s=document.createElement('script'); s.src=`js/${file}.js?v=${encodeURIComponent(window.LZ_BUILD)}`; s.onload=resolve; s.onerror=()=>reject(new Error(file+' 로드 실패')); document.body.appendChild(s);
   });
   const G=window.G, stage=$('stage'), renderer=new T.WebGLRenderer({antialias:true});
   renderer.setPixelRatio(Math.min(devicePixelRatio,1.5)); renderer.toneMapping=T.ACESFilmicToneMapping; renderer.toneMappingExposure=1;

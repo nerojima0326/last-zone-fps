@@ -1,6 +1,7 @@
 param([int]$Port = 8080)
 # Minimal static file server (PowerShell only, no Node/Python needed)
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
+$rootPrefix = [IO.Path]::GetFullPath($root) + [IO.Path]::DirectorySeparatorChar
 $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://localhost:$Port/")
 $listener.Start()
@@ -13,7 +14,7 @@ try {
       $path = [Uri]::UnescapeDataString($ctx.Request.Url.AbsolutePath)
       if ($path -eq '/') { $path = '/index.html' }
       $full = [IO.Path]::GetFullPath((Join-Path $root ($path.TrimStart('/'))))
-      if ($full.StartsWith($root) -and (Test-Path $full -PathType Leaf)) {
+      if ($full.StartsWith($rootPrefix, [StringComparison]::OrdinalIgnoreCase) -and (Test-Path -LiteralPath $full -PathType Leaf)) {
         $bytes = [IO.File]::ReadAllBytes($full)
         $ext = [IO.Path]::GetExtension($full).ToLower()
         if ($mime.ContainsKey($ext)) { $ctx.Response.ContentType = $mime[$ext] }
@@ -24,6 +25,7 @@ try {
         $ctx.Response.StatusCode = 404
       }
     } catch {
+      $ctx.Response.StatusCode = 500
       Write-Host "request error: $($_.Exception.Message)"
     } finally {
       try { $ctx.Response.Close() } catch {}

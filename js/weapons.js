@@ -1196,10 +1196,9 @@ const _d = new V3(), _p = new V3(), _q2 = new V3(), _h = new V3(), _tail = new V
 const Ballistics = G.Ballistics = {
   list: [],
   reset() { for (const p of this.list) G.FX.freeTracer(p.tracer); this.list.length = 0; },
-  fire(owner, origin, dir, def, muzzle, tracer) {
-    const p = { owner, team: owner.team, def, pos: origin.clone(), vel: dir.clone().multiplyScalar(def.vel * U.rand(0.97, 1.03)), dist: 0, tracer: null, voff: new V3(), whiz: false, start: origin.clone() };
+  fire(owner, origin, dir, def, muzzle, tracer, shot) {
+    const p = { owner, team: owner.team, def, shot, pos: origin.clone(), vel: dir.clone().multiplyScalar(def.vel * U.rand(0.97, 1.03)), dist: 0, tracer: null, voff: new V3(), whiz: false, start: origin.clone() };
     if (muzzle) p.voff.copy(muzzle).sub(origin);
-    if (G.Training && G.Training.active) p.shot = G.Training.shotId;
     if (tracer) p.tracer = G.FX.getTracer();
     this.list.push(p);
   },
@@ -1272,7 +1271,7 @@ const Ballistics = G.Ballistics = {
         const dist = p.start.distanceTo(_p);
         const def = p.def;
         const dmg = G.dmgAt(def, dist) * (head ? def.head : 1);
-        Game.damage(target, dmg, p.owner, def.key, head, _p, _d);
+        Game.damage(target, dmg, p.owner, def.key, head, _p, _d, p.shot);
         G.FX.blood(_p, _d.x, _d.y, _d.z, head ? 10 : 6);
         G.Audio.impact(_p, 'flesh');
         dead = true;

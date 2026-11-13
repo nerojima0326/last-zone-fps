@@ -12,14 +12,14 @@ const P = G.Player = {
   init(actor) {
     this.a = actor;
     this.ads = 0; this.nextFire = 0; this.lastShot = -9; this.recoilAcc = 0;
-    this.reload = null; this.sw = null; this.raise = 1; this.pumpT = -1; this.punchT = -1; this.cycleT = -1;
+    this.reload = null; this.autoReload = null; this.sw = null; this.raise = 1; this.pumpT = -1; this.punchT = -1; this.cycleT = -1;
     this.scopeView = 0; this.breath = 1; this.breathLock = false; this.swayT = 0; this._rl = {};
     this.throwSt = null; this.throwKind = 'frag';
     this.heal = null; this.revive = null;
     this.bloom = 0; this.fireMode = 'auto';
     this.camY = 0; this.landDip = 0; this.stepPhase = 0; this.stepDist = 0; this.camKick = 0;
     this.flashAmt = 0; this.flashHold = 0;
-    this.orbitYaw = 0; this.orbitPitch = -0.3; this.specIdx = 0;
+    this.orbitYaw = 0; this.orbitPitch = -0.3; this.specIdx = 0; this.specTarget = null;
     this.dropT = 0; this.indoor = 0; this.indoorT = 0;
     this.prompt = ''; this.lootTarget = null; this.reviveTarget = null;
     this.lean = 0; this.vault = null; this.vehicle = null; this.killcam = null;
@@ -32,8 +32,9 @@ const P = G.Player = {
     const m = this.scopeView > 0.5 ? this.scopeSens : U.lerp(1, this.adsSens, U.clamp(this.ads, 0, 1));
     const k = 0.0022 * this.sens * scale * m;
     a.yaw -= I.mdx * k;
-    a.pitch = U.clamp(a.pitch - I.mdy * k * (this.invertY ? -1 : 1), -1.45, 1.45);
+    a.pitch = U.clamp(a.pitch - this.lookY() * k, -1.45, 1.45);
   },
+  lookY() { return G.Input.mdy * (this.invertY ? -1 : 1); },
   update(dt) {
     const a = this.a;
     this.time += dt;
@@ -50,7 +51,7 @@ const P = G.Player = {
   updatePlane(dt) {
     const I = G.Input, cam = G.camera, pl = G.Game.plane;
     this.camMode = 'plane';
-    this.orbitYaw -= I.mdx * 0.003 * this.sens; this.orbitPitch = U.clamp(this.orbitPitch - I.mdy * 0.003 * this.sens, -1.2, 0.5);
+    this.orbitYaw -= I.mdx * 0.003 * this.sens; this.orbitPitch = U.clamp(this.orbitPitch - this.lookY() * 0.003 * this.sens, -1.2, 0.5);
     const dist = 34;
     _c.set(Math.sin(this.orbitYaw) * Math.cos(this.orbitPitch), -Math.sin(this.orbitPitch), Math.cos(this.orbitYaw) * Math.cos(this.orbitPitch)).multiplyScalar(dist);
     cam.position.copy(pl.pos).add(_c);
@@ -68,7 +69,7 @@ const P = G.Player = {
     this.camMode = 'drop';
     this.dropT += dt;
     this.orbitYaw -= I.mdx * 0.0028 * this.sens;
-    this.orbitPitch = U.clamp(this.orbitPitch - I.mdy * 0.0028 * this.sens, -1.3, 0.6);
+    this.orbitPitch = U.clamp(this.orbitPitch - this.lookY() * 0.0028 * this.sens, -1.3, 0.6);
     a.yaw = this.orbitYaw; a.pitch = 0;
     const fwd = (I.down('KeyW') ? 1 : 0) - (I.down('KeyS') ? 1 : 0), str = (I.down('KeyD') ? 1 : 0) - (I.down('KeyA') ? 1 : 0);
     _f.set(-Math.sin(a.yaw), 0, -Math.cos(a.yaw)); _r.set(Math.cos(a.yaw), 0, -Math.sin(a.yaw));
@@ -223,6 +224,10 @@ const P = G.Player = {
     }
     const inst = a.weapons[a.cur], def = inst ? G.WEAPONS[inst.id] : G.WEAPONS[a.cur];
     const isGun = !!inst && !!def && !!def.pellets;
+    if (this.autoReload && now >= this.autoReload.at) {
+      if (this.autoReload.weapon === inst && inst.mag === 0 && !this.heal) this.startReload();
+      this.autoReload = null;
+    }
     // 정조준 (볼트를 당기는 동안은 조준이 풀린다)
     const wantAds = I.rmb && isGun && !this.sw && !this.reload && !this.sprinting && a.cur !== 'throw' && this.cycleT < 0;
     const zoom = isGun ? this.zoomOf(inst, def) : 1;
@@ -292,7 +297,7 @@ const P = G.Player = {
     if (slot === 'throw') { if (a.throwCount() <= 0) return; if (a.throwables[this.throwKind] <= 0) this.cycleThrow(); }
     else if (slot !== 'fists' && !a.weapons[slot]) return;
     if ((this.sw ? this.sw.to : a.cur) === slot) return;
-    this.reload = null; this.cycleT = -1; this.pumpT = -1;
+    this.reload = null; this.autoReload = null; this.cycleT = -1; this.pumpT = -1;
     this.sw = { t: this.sw && this.sw.t < 0.2 ? this.sw.t : 0, to: slot };
     G.Audio.click('switch');
   },
@@ -328,12 +333,11 @@ const P = G.Player = {
     _r.set(1, 0, 0).applyQuaternion(cam.quaternion); _u.set(0, 1, 0).applyQuaternion(cam.quaternion);
     G.VM.muzzleWorld(cam, _m);
     const spread = this.currentSpread(def);
-    if (G.Game.training) G.Training.onShot();
-    G.Stats.onShot();
+    const shot = G.Game.training ? G.Training.onShot() : G.Stats.onShot();
     for (let k = 0; k < def.pellets; k++) {
       const rr = spread * Math.sqrt(Math.random()), th = Math.random() * Math.PI * 2;
       _d.copy(_f).addScaledVector(_r, Math.cos(th) * rr).addScaledVector(_u, Math.sin(th) * rr).normalize();
-      G.Ballistics.fire(a, cam.position, _d, def, _m, def.pellets === 1 || k < 3);
+      G.Ballistics.fire(a, cam.position, _d, def, _m, def.pellets === 1 || k < 3, shot);
     }
     const mod=G.Attachments?.modifiers(inst)||{v:1,h:1};
     const rv = mod.v * def.recoilV * (this.ads > 0.5 ? 0.7 : 1) * (a.prone ? 0.62 : a.crouch ? 0.82 : 1) * U.rand(0.85, 1.15);
@@ -349,7 +353,7 @@ const P = G.Player = {
     if (def.action === 'pump') this.pumpT = 0;
     else if (def.action === 'bolt') { if (inst.mag > 0) this.cycleT = 0; }
     else if (def.action !== 'break' && def.reloadType !== 'revolver') this.ejectShell(def.cls === 'shotgun');
-    if (inst.mag === 0 && a.ammo[def.ammo] > 0) setTimeout(() => { if (this.a === a && a.weapons[a.cur] === inst && inst.mag === 0) this.startReload(); }, 220);
+    if (inst.mag === 0 && a.ammo[def.ammo] > 0) this.autoReload = { weapon: inst, at: this.time + 0.22 };
   },
   ejectShell(red) {
     const cam = G.camera;
@@ -544,7 +548,7 @@ const P = G.Player = {
           this.revive.t += dt;
           if (this.revive.t >= 5) { Game.revive(best, a); this.revive = null; }
         } else this.revive = null;
-        if (!this.revive) this.prompt = '<kbd>F</kbd> 길게 눌러 <b>' + esc(best.name) + '</b> 소생';
+        if (!this.revive) this.prompt = '<kbd>' + G.Settings.label('KeyF') + '</kbd> 길게 눌러 <b>' + esc(best.name) + '</b> 소생';
         return;
       }
     }
@@ -554,11 +558,11 @@ const P = G.Player = {
     const it = Game.lootNear(_e, _f);
     if (!it) {
       const v = G.Vehicles.near(a);
-      if (v) { this.prompt = '<kbd>F</kbd> <b>차량</b> 탑승'; if (I.hit('KeyF')) G.Vehicles.enter(this, v); return; }
+      if (v) { this.prompt = '<kbd>' + G.Settings.label('KeyF') + '</kbd> <b>차량</b> 탑승'; if (I.hit('KeyF')) G.Vehicles.enter(this, v); return; }
     }
     if (it) {
       this.lootTarget = it;
-      this.prompt = '<kbd>F</kbd> ' + Game.lootLabel(it);
+      this.prompt = '<kbd>' + G.Settings.label('KeyF') + '</kbd> ' + Game.lootLabel(it);
       if (I.hit('KeyF')) {
         const hadGun = a.hasGun(), before = a.weapons[a.cur];
         const res = Game.pickup(a, it);
@@ -736,7 +740,7 @@ const P = G.Player = {
     G.VM.set(null);
     this.specIdx = 0; this.killcam = killcam || null;
   },
-  onKnock() { this.lean = 0; this.a.leanX = 0; this.vault = null; if (this.vehicle) G.Vehicles.exit(this, true); },
+  onKnock() { this.autoReload = null; this.lean = 0; this.a.leanX = 0; this.vault = null; if (this.vehicle) G.Vehicles.exit(this, true); },
   flashed(amt) {
     if (amt <= 0.05) return;
     this.flashAmt = Math.max(this.flashAmt, amt);
