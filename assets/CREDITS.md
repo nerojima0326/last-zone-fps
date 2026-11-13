@@ -32,6 +32,8 @@
 | KR-98 저격소총 | Sniper Rifle (같은 팩, 일체형 조준경은 빼고 가늠자 추가) | [GitHub (BoQsc)](https://github.com/BoQsc/cc0-guns-explosives-pack-glb) | CC0 |
 | S-12 산탄총 | Shotgun (같은 팩, 펌프액션) | [GitHub (BoQsc)](https://github.com/BoQsc/cc0-guns-explosives-pack-glb) | CC0 |
 | SC-17 · MK-14 · M-1014 · DB-2 · SA-12 · AA-12 · G-18 · M-1911 · DE-7 · R-45 | 이 게임용으로 직접 설계한 모델 (`tools/guns/designs.js`) | — | 이 저장소의 일부 |
+| AR-7 1인칭 모델·애니메이션 | M4 - FPS Weapon Animations Pack FREE (v.1), BarcodeGames | [Fab](https://www.fab.com/listings/38da8f1e-cb54-4cda-beb1-6e55642a55a9) | Fab Standard License ([상세](models/viewmodels/CREDITS.md)) |
+| G-18 1인칭 모델·애니메이션 | Glock 17 FPS 모델 (`glock17.fbx`) | 확인 필요 | 확인 필요 ([상세](models/viewmodels/CREDITS.md)) |
 | P-92 권총 | Service Pistol (Mateusz Sadek) | [Poly Haven](https://polyhaven.com/a/service_pistol) | CC0 |
 | 나무 · 덤불 | EZ-Tree 생성기 (Daniel Greenheck, 나무껍질·잎 텍스처 포함) | [GitHub](https://github.com/dgreenheck/ez-tree) | MIT (`vendor/ez-tree.LICENSE.txt`) |
 

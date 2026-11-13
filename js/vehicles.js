@@ -29,7 +29,7 @@ const Vh = G.Vehicles = {
   reset() {
     for (const v of this.list) { G.scene.remove(v.mesh); this.unblock(v); }
     this.list = [];
-    if (G.Audio.ctx) G.Audio.setLoop('engine', 0);
+    if (G.Audio.ctx) { G.Audio.setLoop('engine', 0); G.Audio.setLoop('engineBot', 0); }
   },
   spawn(n) {
     const W = G.World;
@@ -53,6 +53,17 @@ const Vh = G.Vehicles = {
       const v = { mesh, pos: new V3(x, y, z), yaw: Math.atan2(-dx, -dz) + (Math.random() < 0.5 ? Math.PI : 0), speed: 0, steer: 0, pitch: 0, roll: 0, driver: null, box: null, hitT: new Map(), noiseT: 0 };
       this.list.push(v); this.place(v, 1); this.block(v);
     }
+  },
+  // 정해진 자리에 한 대 (훈련장 운전 코스)
+  spawnAt(x, z, yaw) {
+    const W = G.World;
+    if (!this.geo) { this.geo = build(); this.mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.7, metalness: 0.2 }); }
+    const mesh = new THREE.Mesh(this.geo, this.mat);
+    mesh.castShadow = true; mesh.rotation.order = 'YXZ';
+    G.scene.add(mesh);
+    const v = { mesh, pos: new V3(x, W.heightAt(x, z), z), yaw, speed: 0, steer: 0, pitch: 0, roll: 0, driver: null, box: null, hitT: new Map(), noiseT: 0, home: { x, z, yaw } };
+    this.list.push(v); this.place(v, 1); this.block(v);
+    return v;
   },
   // 세워 둔 차는 충돌 상자를 둔다 (걸어서 통과·총알 관통 방지). 회전을 감안해 조금 줄인 축 정렬 상자
   block(v) {
@@ -84,7 +95,7 @@ const Vh = G.Vehicles = {
     const a = P.a;
     this.unblock(v);
     v.driver = a; P.vehicle = v;
-    P.reload = null; P.heal = null; P.ads = 0; P.scopeView = 0; P.lean = 0; P.throwSt = null; P.cycleT = -1;
+    P.reload = null; P.heal = null; P.ads = 0; P.scopeView = 0; P.lean = 0; a.leanX = 0; P.throwSt = null; P.cycleT = -1;
     a.crouch = false; a.prone = false;
     P.orbitYaw = v.yaw; P.orbitPitch = -0.22;
     G.VM.set(null);
@@ -119,9 +130,38 @@ const Vh = G.Vehicles = {
     P.orbitYaw -= I.mdx * 0.0026 * P.sens;
     P.orbitPitch = U.clamp(P.orbitPitch - I.mdy * 0.0026 * P.sens, -1.1, 0.25);
     const thr = (I.down('KeyW') ? 1 : 0) - (I.down('KeyS') ? 1 : 0), st = (I.down('KeyA') ? 1 : 0) - (I.down('KeyD') ? 1 : 0);
+    this.step(v, a, dt, thr, st, I.down('Space'));
+    if (!v.driver) return;
+    P.sprinting = false; P.ads = 0; P.scopeView = 0;
+    // 소리: 엔진 + 주변 봇이 듣는다
+    G.Audio.setLoop('engine', 0.32 + Math.abs(v.speed) / MAX * 0.25);
+    G.Audio.setLoopRate('engine', 0.7 + Math.abs(v.speed) / MAX * 1.1);
+    v.noiseT -= dt;
+    if (v.noiseT <= 0) { v.noiseT = 1; G.Game.onNoise(v.pos, 45 + Math.abs(v.speed) * 2.5, a); }
+    // 흙먼지
+    if (Math.abs(v.speed) > 7 && Math.random() < dt * 14) G.FX.dust(_c.copy(v.pos).addScaledVector(_f, -1.7 * Math.sign(v.speed)), 1, 0, 0.3, 0, 0.5, 0.45, 0.36, 1.4);
+    // 내리기
+    P.prompt = '<kbd>F</kbd> 내리기 · <b>' + Math.round(Math.abs(v.speed) * 3.6) + '</b> km/h'; P.lootTarget = null; P.reviveTarget = null;
+    if (I.hit('KeyF')) { this.exit(P); return; }
+    // 3인칭 카메라
+    const dist = 7.5;
+    _c.set(Math.sin(P.orbitYaw) * Math.cos(P.orbitPitch), -Math.sin(P.orbitPitch), Math.cos(P.orbitYaw) * Math.cos(P.orbitPitch));
+    _e.copy(v.pos); _e.y += 1.9;
+    let L = dist;
+    if (W.raycast(_e, _c, dist)) L = Math.max(1.2, W.hit.t - 0.3);
+    cam.position.copy(_e).addScaledVector(_c, L);
+    const gy = W.heightAt(cam.position.x, cam.position.z) + 0.4; if (cam.position.y < gy) cam.position.y = gy;
+    cam.lookAt(_e);
+    cam.fov = U.damp(cam.fov, 74 + Math.abs(v.speed) * 0.35, 5, dt); cam.updateProjectionMatrix();
+    G.VM.set(null);
+    G.lodZoom = 1;
+  },
+  // 차량 물리 한 단계 (플레이어·봇 공용). thr: -1..1, st: 왼쪽 +, brake: 브레이크
+  step(v, a, dt, thr, st, brake) {
+    const W = G.World;
     const wet = W.waterAt(v.pos.x, v.pos.z) - W.heightAt(v.pos.x, v.pos.z);
     const top = wet > 0.5 ? 4 : MAX;
-    if (I.down('Space')) v.speed = approach(v.speed, 0, 26 * dt);
+    if (brake) v.speed = approach(v.speed, 0, 26 * dt);
     else if (thr > 0) v.speed = v.speed < 0 ? approach(v.speed, 0, 22 * dt) : Math.min(top, v.speed + 9.5 * (1 - v.speed / (top + 4)) * dt);
     else if (thr < 0) v.speed = v.speed > 0.5 ? approach(v.speed, 0, 20 * dt) : Math.max(-REV, v.speed - 6 * dt);
     else v.speed = approach(v.speed, 0, (2.2 + Math.abs(v.speed) * 0.12) * dt);
@@ -152,7 +192,7 @@ const Vh = G.Vehicles = {
     }
     if (bumped) {
       // 세게 들이받은 순간에만 한 번 다친다
-      if (!v.bump && Math.abs(v.speed) > 9) { G.FX.shake(0.3); G.Audio.impact(v.pos, 'metal'); G.Game.damage(a, Math.min(30, (Math.abs(v.speed) - 9) * 2.2), null, 'fall', false, a.pos, null); }
+      if (!v.bump && Math.abs(v.speed) > 9) { if (a.isPlayer) G.FX.shake(0.3); G.Audio.impact(v.pos, 'metal'); G.Game.damage(a, Math.min(30, (Math.abs(v.speed) - 9) * 2.2), null, 'fall', false, a.pos, null); }
       v.speed *= Math.pow(0.02, dt);
     }
     v.bump = bumped;
@@ -177,34 +217,106 @@ const Vh = G.Vehicles = {
     }
     // 운전자 상태
     a.pos.copy(v.pos); a.vel.set(_f.x * v.speed, 0, _f.z * v.speed); a.hspeed = Math.abs(v.speed); a.onGround = true; a.yaw = v.yaw; a.pitch = 0;
-    P.sprinting = false; P.ads = 0; P.scopeView = 0;
-    // 소리: 엔진 + 주변 봇이 듣는다
-    G.Audio.setLoop('engine', 0.32 + Math.abs(v.speed) / MAX * 0.25);
-    G.Audio.setLoopRate('engine', 0.7 + Math.abs(v.speed) / MAX * 1.1);
-    v.noiseT -= dt;
-    if (v.noiseT <= 0) { v.noiseT = 1; G.Game.onNoise(v.pos, 45 + Math.abs(v.speed) * 2.5, a); }
-    // 흙먼지
-    if (Math.abs(v.speed) > 7 && Math.random() < dt * 14) G.FX.dust(_c.copy(v.pos).addScaledVector(_f, -1.7 * Math.sign(v.speed)), 1, 0, 0.3, 0, 0.5, 0.45, 0.36, 1.4);
-    // 내리기
-    P.prompt = '<kbd>F</kbd> 내리기 · <b>' + Math.round(Math.abs(v.speed) * 3.6) + '</b> km/h'; P.lootTarget = null; P.reviveTarget = null;
-    if (I.hit('KeyF')) { this.exit(P); return; }
-    // 3인칭 카메라
-    const dist = 7.5;
-    _c.set(Math.sin(P.orbitYaw) * Math.cos(P.orbitPitch), -Math.sin(P.orbitPitch), Math.cos(P.orbitYaw) * Math.cos(P.orbitPitch));
-    _e.copy(v.pos); _e.y += 1.9;
-    let L = dist;
-    if (W.raycast(_e, _c, dist)) L = Math.max(1.2, W.hit.t - 0.3);
-    cam.position.copy(_e).addScaledVector(_c, L);
-    const gy = W.heightAt(cam.position.x, cam.position.z) + 0.4; if (cam.position.y < gy) cam.position.y = gy;
-    cam.lookAt(_e);
-    cam.fov = U.damp(cam.fov, 74 + Math.abs(v.speed) * 0.35, 5, dt); cam.updateProjectionMatrix();
-    G.VM.set(null);
-    G.lodZoom = 1;
+  },
+  /* ---------------- 봇 운전 ---------------- */
+  // 봇이 탈 만한 빈 차 (다른 봇이 찜하지 않은 것)
+  freeNear(a, r) {
+    let best = null, bd = r;
+    for (const v of this.list) {
+      if (v.driver || (v.claim && v.claim !== a && v.claim.alive)) continue;
+      if (G.World.waterAt(v.pos.x, v.pos.z) - G.World.heightAt(v.pos.x, v.pos.z) > 0.3) continue;
+      const d = Math.hypot(v.pos.x - a.pos.x, v.pos.z - a.pos.z);
+      if (d < bd && Math.abs(v.pos.y - a.pos.y) < 3) { bd = d; best = v; }
+    }
+    return best;
+  },
+  botEnter(bot, v) {
+    const a = bot.a;
+    if (v.driver) return false;
+    this.unblock(v);
+    v.driver = a; v.claim = null; bot.vehicle = v; a.inVehicle = v;
+    a.crouch = false; a.prone = false; a.leanX = 0;
+    bot.vStuck = 0; bot.vRev = 0; bot.vProg = 0; bot.vLast = v.pos.clone(); bot.vT = 0;
+    if (G.Audio.ok() && G.WeaponAudio) G.WeaponAudio.eventAt(G.Audio, 'close', 'ka47', v.pos);
+    return true;
+  },
+  botExit(bot) {
+    const v = bot.vehicle, a = bot.a, W = G.World;
+    if (!v) return;
+    _r.set(Math.cos(v.yaw), 0, -Math.sin(v.yaw));
+    let done = false;
+    for (const [ox, oz] of [[-1.9, 0], [1.9, 0], [0, 3], [0, -3]]) {
+      const x = v.pos.x + _r.x * ox + Math.sin(v.yaw) * oz, z = v.pos.z + _r.z * ox + Math.cos(v.yaw) * oz;
+      let free = true;
+      W.queryBoxes(x - 0.4, z - 0.4, x + 0.4, z + 0.4, b => { if (b.maxY > v.pos.y + 0.5 && b.minY < v.pos.y + 1.8) free = false; });
+      if (!free) continue;
+      a.pos.set(x, Math.max(W.heightAt(x, z), v.pos.y - 0.5), z); done = true; break;
+    }
+    if (!done) a.pos.set(v.pos.x, v.pos.y + 1.8, v.pos.z);
+    a.vel.set(-Math.sin(v.yaw) * v.speed * 0.4, 0, -Math.cos(v.yaw) * v.speed * 0.4);
+    a.yaw = v.yaw; a.pitch = 0;
+    v.driver = null; bot.vehicle = null; a.inVehicle = null;
+    if (Math.abs(v.speed) < 1.5) { v.speed = 0; this.block(v); }
+  },
+  // 봇 운전: 목표 쪽으로 핸들을 꺾고, 막히면 후진해서 돌아 나온다. 다 오면 true(내릴 때)
+  botDrive(bot, dt, goal) {
+    const a = bot.a, v = bot.vehicle, W = G.World;
+    const dx = goal.x - v.pos.x, dz = goal.z - v.pos.z, dist = Math.hypot(dx, dz);
+    if (dist < 18) { this.step(v, a, dt, 0, 0, true); return Math.abs(v.speed) < 1; }
+    const want = Math.atan2(-dx, -dz);
+    let diff = U.angleDiff(v.yaw, want);
+    // 앞이 막혔으면 피해 가는 쪽으로
+    _f.set(-Math.sin(v.yaw), 0, -Math.cos(v.yaw));
+    const look = 5 + Math.abs(v.speed) * 0.5;
+    // 차 폭만큼 세 줄로 앞을 본다
+    const ahead = (yaw) => {
+      const fx = -Math.sin(yaw), fz = -Math.cos(yaw), rx = -fz, rz = fx;
+      for (const o of [0, -0.95, 0.95]) if (W.rayBoxes(v.pos.x + rx * o, v.pos.y + 1, v.pos.z + rz * o, fx, 0, fz, look, null) < Infinity) return true;
+      const hx = v.pos.x + fx * look, hz = v.pos.z + fz * look;
+      return W.heightAt(hx, hz) - v.pos.y > 2.2 || W.waterAt(hx, hz) - W.heightAt(hx, hz) > 0.6;
+    };
+    const blocked = ahead(v.yaw);
+    if (blocked) {
+      for (const t of [0.5, 0.9, 1.4]) {
+        if (!ahead(v.yaw + t)) { diff = t; break; }
+        if (!ahead(v.yaw - t)) { diff = -t; break; }
+      }
+    }
+    let thr = Math.abs(diff) > 1.6 ? 0.5 : 1, st = U.clamp(diff * 2.2, -1, 1);
+    // 끼임: 2초 동안 거의 못 움직였으면 1.3초 후진
+    bot.vT += dt;
+    if (bot.vRev > 0) { bot.vRev -= dt; thr = -1; st = -bot.vRevSt; }
+    else if (bot.vT > 2) {
+      if (v.pos.distanceTo(bot.vLast) < 2.5) { bot.vStuck++; bot.vRev = 1.3; bot.vRevSt = st || 1; }
+      else bot.vStuck = Math.max(0, bot.vStuck - 1);
+      bot.vT = 0; bot.vLast.copy(v.pos);
+    }
+    // 봇은 너무 빨리 몰지 않고, 앞이 막히거나 크게 꺾을 때는 속도를 줄인다 (들이받아 다치지 않게)
+    const slow = (Math.abs(diff) > 0.8 && v.speed > 9) || (blocked && v.speed > 7);
+    if (thr > 0 && v.speed > 15) thr = 0;
+    this.step(v, a, dt, slow ? 0 : thr, st, slow);
+    return false;
   },
   update(dt) {
+    // 봇이 운전하는 차 중 가장 가까운 차의 엔진 소리
+    if (G.Audio.ctx) {
+      let near = null, nd = 120;
+      for (const v of this.list) if (v.driver && !v.driver.isPlayer) { const d = v.pos.distanceTo(G.camera.position); if (d < nd) { nd = d; near = v; } }
+      if (near) { G.Audio.setLoop('engineBot', 0.5 + Math.abs(near.speed) / MAX * 0.3, near.pos, 14); G.Audio.setLoopRate('engineBot', 0.7 + Math.abs(near.speed) / MAX * 1.1); }
+      else G.Audio.setLoop('engineBot', 0);
+    }
     // 운전자가 없는 채로 굴러가는 차는 서서히 멈춘 뒤 다시 충돌 상자를 둔다
     for (const v of this.list) {
-      if (v.driver) { if (!v.driver.alive || v.driver.knocked) { const P = G.Player; if (P.vehicle === v) this.exit(P, true); else v.driver = null; } continue; }
+      if (v.driver) {
+        const d = v.driver;
+        if (!d.alive || d.knocked) { const P = G.Player; if (P.vehicle === v) this.exit(P, true); else if (d.brain && d.brain.vehicle === v) this.botExit(d.brain); else v.driver = null; }
+        else if (!d.isPlayer) {
+          v.noiseT -= dt;
+          if (v.noiseT <= 0) { v.noiseT = 1; G.Game.onNoise(v.pos, 45 + Math.abs(v.speed) * 2.5, d); }
+          if (Math.abs(v.speed) > 7 && Math.random() < dt * 14 && v.pos.distanceTo(G.camera.position) < 120) { _f.set(-Math.sin(v.yaw), 0, -Math.cos(v.yaw)); G.FX.dust(_c.copy(v.pos).addScaledVector(_f, -1.7 * Math.sign(v.speed)), 1, 0, 0.3, 0, 0.5, 0.45, 0.36, 1.4); }
+        }
+        continue;
+      }
       if (v.speed === 0) continue;
       v.speed = approach(v.speed, 0, 9 * dt);
       _f.set(-Math.sin(v.yaw), 0, -Math.cos(v.yaw));

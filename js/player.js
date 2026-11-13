@@ -8,7 +8,7 @@ const _f = new V3(), _r = new V3(), _d = new V3(), _m = new V3(), _e = new V3(),
 const SLOT_ORDER = ['rifle', 'shotgun', 'pistol', 'throw'];
 
 const P = G.Player = {
-  a: null, sens: 1,
+  a: null, sens: 1, adsSens: 1, scopeSens: 1, fov: 80, invertY: false,
   init(actor) {
     this.a = actor;
     this.ads = 0; this.nextFire = 0; this.lastShot = -9; this.recoilAcc = 0;
@@ -28,9 +28,11 @@ const P = G.Player = {
   },
   look(scale) {
     const I = G.Input, a = this.a;
-    const k = 0.0022 * this.sens * scale;
+    // 조준 감도: 배율 조준경이면 scopeSens, 그 외 정조준은 adsSens (설정)
+    const m = this.scopeView > 0.5 ? this.scopeSens : U.lerp(1, this.adsSens, U.clamp(this.ads, 0, 1));
+    const k = 0.0022 * this.sens * scale * m;
     a.yaw -= I.mdx * k;
-    a.pitch = U.clamp(a.pitch - I.mdy * k, -1.45, 1.45);
+    a.pitch = U.clamp(a.pitch - I.mdy * k * (this.invertY ? -1 : 1), -1.45, 1.45);
   },
   update(dt) {
     const a = this.a;
@@ -118,7 +120,7 @@ const P = G.Player = {
     const inst = a.weapons[a.cur], def = inst ? G.WEAPONS[inst.id] : G.WEAPONS[a.cur];
     const isGun = !!inst && def && def.pellets;
     // 시점
-    this.look(cam.fov / BASE_FOV);
+    this.look(cam.fov / this.fov);
     if (this.vault) { this.vaultLogic(dt); return; }
     if (now - this.lastShot > 0.14 && this.recoilAcc > 0) {
       const r = Math.min(this.recoilAcc, dt * 0.45);
@@ -590,7 +592,7 @@ const P = G.Player = {
     const land = W.ground(tx, tz, top + 0.1, 0.25, 0);
     if (top - land > 3.2) return false;   // 너머가 낭떠러지면 넘지 않는다
     this.vault = { t: 0, dur: 0.42 + h * 0.12, x0: a.pos.x, y0: feet, z0: a.pos.z, x1: tx, y1: land, z1: tz, top: top + 0.12 };
-    this.reload = null; this.ads = 0; this.lean = 0;
+    this.reload = null; this.ads = 0; this.lean = 0; if (this.a) this.a.leanX = 0;
     G.Audio.click('land');
     return true;
   },
@@ -624,11 +626,13 @@ const P = G.Player = {
     cam.position.set(a.pos.x + (Math.random() - 0.5) * sh * 0.06, this.camY + bob - this.landDip * 0.12 + (Math.random() - 0.5) * sh * 0.06, a.pos.z + (Math.random() - 0.5) * sh * 0.06);
     // 기울이기: 머리를 옆으로 내민다 (벽에 닿으면 그만큼만)
     let leanRoll = 0;
+    a.leanX = 0;
     if (Math.abs(this.lean) > 0.01) {
       const side = this.lean > 0 ? 1 : -1, want = Math.abs(this.lean) * (a.prone ? 0.22 : 0.42);
       _r.set(Math.cos(a.yaw) * side, 0, -Math.sin(a.yaw) * side);
       const room = G.World.raycast(cam.position, _r, want + 0.18) ? Math.max(0, G.World.hit.t - 0.18) : want;
       cam.position.addScaledVector(_r, Math.min(want, room));
+      a.leanX = Math.min(want, room) * side;
       cam.position.y -= Math.abs(this.lean) * 0.05;
       leanRoll = -this.lean * 0.16;
     }
@@ -641,9 +645,10 @@ const P = G.Player = {
     const zoom = scope ? G.SCOPES[scope].zoom : 1;
     // 배율 조준 중에는 먼 건물도 상세 모델로 (창문 너머가 보이게)
     G.lodZoom = zoom > 1 && this.ads > 0.6 ? Math.pow(zoom, 0.85) : 1;
-    let adsFov = def && def.adsFov ? def.adsFov : BASE_FOV;
-    if (zoom > 1) adsFov = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(BASE_FOV / 2)) / zoom));
-    const fov = U.lerp(BASE_FOV, adsFov, this.ads) + (this.sprinting ? 4 : 0);
+    const baseFov = this.fov || BASE_FOV;
+    let adsFov = def && def.adsFov ? Math.min(def.adsFov, baseFov) : baseFov;
+    if (zoom > 1) adsFov = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(baseFov / 2)) / zoom));
+    const fov = U.lerp(baseFov, adsFov, this.ads) + (this.sprinting ? 4 : 0);
     cam.fov = zoom > 1 && this.ads > 0.95 ? fov : U.damp(cam.fov, fov, 18, dt);
     cam.updateProjectionMatrix();
     // 배율 조준경 흔들림 (Shift 로 숨 참기)
@@ -726,12 +731,12 @@ const P = G.Player = {
   },
   onDeath(killcam) {
     this.reload = null; this.heal = null; this.revive = null; this.throwSt = null; this.ads = 0; this.scopeView = 0; this.cycleT = -1;
-    this.lean = 0; this.vault = null;
+    this.lean = 0; this.vault = null; if (this.a) this.a.leanX = 0;
     if (this.vehicle) G.Vehicles.exit(this, true);
     G.VM.set(null);
     this.specIdx = 0; this.killcam = killcam || null;
   },
-  onKnock() { this.lean = 0; this.vault = null; if (this.vehicle) G.Vehicles.exit(this, true); },
+  onKnock() { this.lean = 0; this.a.leanX = 0; this.vault = null; if (this.vehicle) G.Vehicles.exit(this, true); },
   flashed(amt) {
     if (amt <= 0.05) return;
     this.flashAmt = Math.max(this.flashAmt, amt);

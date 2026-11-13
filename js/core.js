@@ -173,11 +173,14 @@ G.Input = {
     this.el = el;
     addEventListener('keydown', e => {
       if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
-      if (['Tab', 'Space', 'KeyF', 'KeyH', 'KeyM', 'KeyG', 'KeyB', 'KeyC', 'KeyR', 'KeyQ', 'KeyE', 'KeyZ', 'KeyL'].includes(e.code)) e.preventDefault();
-      if (!this.keys[e.code]) this.hits[e.code] = true;
-      this.keys[e.code] = true;
+      // 설정에서 바꾼 키 → 게임이 쓰는 원래 키
+      const code = this.map(e.code);
+      if (['Tab', 'Space', 'KeyF', 'KeyH', 'KeyM', 'KeyG', 'KeyB', 'KeyC', 'KeyR', 'KeyQ', 'KeyE', 'KeyZ', 'KeyL'].includes(e.code) || (code && code !== e.code)) e.preventDefault();
+      if (!code) return;
+      if (!this.keys[code]) this.hits[code] = true;
+      this.keys[code] = true;
     });
-    addEventListener('keyup', e => { this.keys[e.code] = false; });
+    addEventListener('keyup', e => { const code = this.map(e.code); if (code) this.keys[code] = false; });
     addEventListener('mousemove', e => {
       if (!this.locked) return;
       this.mdx += U.clamp(e.movementX, -250, 250);
@@ -208,6 +211,8 @@ G.Input = {
     } catch (e) { /* 무시 */ }
   },
   unlock() { if (document.pointerLockElement) document.exitPointerLock(); },
+  remap: {}, blocked: null,
+  map(code) { return this.remap[code] || (this.blocked && this.blocked.has(code) ? null : code); },
   down(c) { return !!this.keys[c]; },
   hit(c) { return !!this.hits[c]; },
   endFrame() { this.hits = {}; this.mdx = this.mdy = 0; this.lmbHit = this.rmbHit = false; this.wheel = 0; }
@@ -240,7 +245,7 @@ const A = G.Audio = {
     this.comp.connect(c.destination);
     this.muffle = c.createBiquadFilter(); this.muffle.type = 'lowpass'; this.muffle.frequency.value = 22000;
     this.muffle.connect(this.comp);
-    this.master = c.createGain(); this.master.gain.value = 0.75; this.master.connect(this.muffle);
+    this.master = c.createGain(); this.master.gain.value = 0.75 * ((this.vol && this.vol.master) ?? 1); this.master.connect(this.muffle);
     this.verb = c.createConvolver(); this.verb.buffer = this._impulse(2.6, 3.2);
     this.verbOut = c.createGain(); this.verbOut.gain.value = 0.55;
     this.verb.connect(this.verbOut); this.verbOut.connect(this.master);
@@ -322,6 +327,9 @@ const A = G.Audio = {
     osc.start(t); osc.stop(t + at + o.dur + 0.05);
   },
   ok() { return !!this.ctx && this.ctx.state === 'running'; },
+  // 설정 음량 (G.Settings): master 는 마스터 게인, 나머지는 곱한다
+  vol: null,
+  volOf(k) { return this.vol && this.vol[k] !== undefined ? this.vol[k] : 1; },
 
   shot(kind, pos, own, suppressed = false) {
     if (!this.ok()) return;
@@ -330,7 +338,7 @@ const A = G.Audio = {
     const cfg = SHOT[kind]; if (!cfg) return;
     const sp = this.spatial(own ? null : pos, 28);
     if (sp.g < 0.02 || (!own && !this._budget())) return;
-    const t = this.ctx.currentTime, o = this.out(sp, cfg.vol * (own ? 0.9 : 1) * (suppressed ? 0.45 : 1));
+    const t = this.ctx.currentTime, o = this.out(sp, cfg.vol * (own ? 0.9 : 1) * (suppressed ? 0.45 : 1) * this.volOf('weapons'));
     this.noise(o, t, { dur: cfg.crack, a: 1.0, hp: 500, lp: cfg.lp });
     this.noise(o, t, { dur: cfg.body, a: 0.7, lp: 1600, lp1: 300 });
     this.tone(o, t, { type: 'sine', f0: cfg.f0, f1: 38, a: cfg.thump, dur: cfg.td });
@@ -469,7 +477,7 @@ const A = G.Audio = {
       if (vol <= 0.001) return;
       L = this.loops[name] = this._makeLoop(name);
     }
-    let v = vol, pan = 0;
+    let v = vol * this.volOf('ambient'), pan = 0;
     if (pos) { const sp = this.spatial(pos, ref || 15); v *= sp.g; pan = sp.pan; }
     const t = this.ctx.currentTime;
     L.gain.gain.setTargetAtTime(v, t, 0.12);
@@ -502,7 +510,7 @@ const A = G.Audio = {
       src.connect(f); f.connect(f2); f2.connect(gain);
       const low = c.createBufferSource(); low.buffer = this.brownBuf; low.loop = true;
       const lg = c.createGain(); lg.gain.value = 0.5; low.connect(lg); lg.connect(gain); low.start();
-    } else if (name === 'engine') {
+    } else if (name.startsWith('engine')) {
       src.buffer = this.brownBuf;
       const f = c.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 260;
       src.connect(f); f.connect(gain);

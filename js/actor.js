@@ -17,7 +17,7 @@ class Actor {
     this.meds = { bandage: 0, medkit: 0 };
     this.cur = 'fists';
     this.kills = 0; this.dmgDealt = 0;
-    this.state = 'plane'; this.onGround = false; this.crouch = false; this.prone = false; this.swimming = false; this.inWater = false;
+    this.state = 'plane'; this.onGround = false; this.crouch = false; this.prone = false; this.leanX = 0; this.swimming = false; this.inWater = false;
     this.landV = 0; this.groundMat = 'terrain';
     this.model = null; this.brain = null;
     this.blindT = 0; this.knockedBy = null; this.lastHurtT = -99; this.lastAttacker = null;
@@ -30,9 +30,11 @@ class Actor {
   throwMax() { return 3 + this.bag; }
   bandageMax() { return 10 + this.bag * 5; }
   medkitMax() { return 3 + this.bag; }
-  eye(out) { return out.set(this.pos.x, this.pos.y + this.eyeH(), this.pos.z); }
-  chest(out) { return out.set(this.pos.x, this.pos.y + (this.low() ? 0.3 : this.crouch ? 0.85 : 1.2), this.pos.z); }
-  head(out) { return out.set(this.pos.x, this.pos.y + (this.low() ? 0.3 : this.crouch ? 1.2 : 1.64), this.pos.z); }
+  // 기울이기(leanX, 오른쪽 +, m): 머리는 그만큼, 가슴은 절반만 옆으로
+  lean(out, k) { if (this.leanX) { out.x += Math.cos(this.yaw) * this.leanX * k; out.z -= Math.sin(this.yaw) * this.leanX * k; } return out; }
+  eye(out) { return this.lean(out.set(this.pos.x, this.pos.y + this.eyeH(), this.pos.z), 1); }
+  chest(out) { return this.lean(out.set(this.pos.x, this.pos.y + (this.low() ? 0.3 : this.crouch ? 0.85 : 1.2), this.pos.z), 0.55); }
+  head(out) { return this.lean(out.set(this.pos.x, this.pos.y + (this.low() ? 0.3 : this.crouch ? 1.2 : 1.64), this.pos.z), 1); }
   lookDir(out) { const cp = Math.cos(this.pitch); return out.set(-Math.sin(this.yaw) * cp, Math.sin(this.pitch), -Math.cos(this.yaw) * cp); }
   hasGun() { return !!(this.weapons.rifle || this.weapons.shotgun || this.weapons.pistol); }
   wdef(k) { const w = this.weapons[k]; return w ? G.WEAPONS[w.id] : null; }

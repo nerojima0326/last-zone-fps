@@ -1217,9 +1217,13 @@ const Ballistics = G.Ballistics = {
       if (t < best) { best = t; head = false; }
     } else {
       const top = a.crouch ? 1.02 : 1.45, hy = a.crouch ? 1.2 : 1.64;
-      let t = cylT(o, d, px, pz, 0.27, py, py + top);
+      // 기울이면 상체와 머리가 옆으로 나온다
+      const lx = a.leanX ? Math.cos(a.yaw) * a.leanX : 0, lz = a.leanX ? -Math.sin(a.yaw) * a.leanX : 0;
+      let t = cylT(o, d, px, pz, 0.27, py, py + top * 0.55);
       if (t < best) { best = t; head = false; }
-      t = sphereT(o, d, px, py + hy, pz, 0.15);
+      t = cylT(o, d, px + lx * 0.5, pz + lz * 0.5, 0.25, py + top * 0.55, py + top);
+      if (t < best) { best = t; head = false; }
+      t = sphereT(o, d, px + lx, py + hy, pz + lz, 0.15);
       if (t < best) { best = t; head = true; }
     }
     return best <= maxT ? { t: best, head } : null;

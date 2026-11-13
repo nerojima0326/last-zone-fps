@@ -111,7 +111,7 @@ const Game = G.Game = {
     G.UI.startMatch();
     document.getElementById('hud').classList.add('training');
     G.Training.start();
-    G.UI.center('훈련장', '테이블의 총·조준경은 <b>F</b> 로 바꿔 들 수 있어요 · 탄약 무한', '', 6);
+    G.UI.center('훈련장', '테이블의 총·조준경은 <b>F</b> 로 바꿔 들 수 있어요 · 탄약 무한 · 사격대 뒤 지프로 운전 연습', '', 6);
   },
   cleanup() {
     if (G.Training) G.Training.stop();
@@ -652,12 +652,13 @@ const Game = G.Game = {
       const far = P.scopeView > 0.5 ? 620 : 380;   // 배율 조준 중에는 더 멀리까지 보인다
       let vis = d2 < (a.alive ? far * far : 160 * 160);
       if (a.isPlayer && a.alive && (P.camMode === 'fp' || P.vehicle)) vis = false;
+      if (a.inVehicle && a.alive) vis = false;
       if (m.root.visible !== vis) m.root.visible = vis;
       if (a.isPlayer && a.alive && P.camMode === 'fp') { m.root.position.copy(a.pos); }
       if (!vis) continue;
       m.root.position.copy(a.pos);
       m.root.rotation.y = a.yaw;
-      m.update(dt, { speed: a.hspeed, pitch: a.pitch, crouch: a.crouch, knocked: a.low(), dead: !a.alive, state: a.state, cur: a.cur, gun: a.gunId(a.cur), onGround: a.onGround });
+      m.update(dt, { speed: a.hspeed, pitch: a.pitch, crouch: a.crouch, knocked: a.knocked, prone: a.prone && !a.knocked, lean: a.leanX, eyeH: a.eyeH(), dead: !a.alive, state: a.state, cur: a.cur, gun: a.gunId(a.cur), onGround: a.onGround });
       m.showChute(a.state === 'chute' && a.alive);
       m.setHelmet(!!a.helmet);
       // 45m 밖은 병합된 LOD 메시 1개로, 그림자는 40m 안쪽만

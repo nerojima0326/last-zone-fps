@@ -356,3 +356,28 @@ html.mobile #weaponPanel #slots { justify-content: center; }
 .st-ach div.on { opacity: 1; border-color: #ffcf3a; background: rgba(255,207,58,0.08); }
 .st-ach small { color: var(--muted); font-size: 12px; }
 @media (max-width: 700px) { .st-grid { grid-template-columns: repeat(2, 1fr); } .st-ach { grid-template-columns: 1fr; } }
+
+/* ---- 설정 창 (v36, js/settings.js) ---- */
+#settingsBtn { width: 100%; margin-top: 10px; padding: 10px; border-radius: 10px; font-size: 16px; font-weight: 700; letter-spacing: 2px; color: #fff; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.18); }
+#settingsBtn small { font-size: 12px; letter-spacing: 0; font-weight: 500; color: var(--muted); margin-left: 8px; }
+#settingsBtn:hover { background: rgba(255,255,255,0.14); }
+#settingsPanel { position: fixed; inset: 0; z-index: 45; display: flex; align-items: center; justify-content: center; background: rgba(5,8,12,0.6); backdrop-filter: blur(6px); }
+#settingsPanel.hidden { display: none; }
+#settingsPanel .panel { text-align: left; width: min(720px, 94vw); max-height: 90vh; overflow: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 26px; }
+.set-sec { margin: 16px 0 8px; font-size: 13px; font-weight: 800; letter-spacing: 2px; color: var(--accent); }
+.set-sec small { display: block; margin-top: 3px; font-weight: 500; letter-spacing: 0; color: var(--muted); font-size: 12px; }
+.set-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.set-row > span { font-size: 15px; }
+.set-row > span small { color: var(--muted); font-size: 12px; margin-left: 6px; }
+.set-row .range b { width: 48px; }
+.set-row .tog { min-width: 84px; padding: 7px 12px; border-radius: 8px; color: #fff; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); font-weight: 700; }
+.set-row .tog.on { background: rgba(255,181,38,0.35); border-color: #ffd27a; }
+#setKeys { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 18px; }
+#setKeys .sk { display: grid; grid-template-columns: 1fr 120px 26px; align-items: center; gap: 6px; padding: 3px 0; font-size: 14px; }
+#setKeys .sk.changed span { color: #ffd27a; }
+#setKeys .kb { padding: 5px 8px; border-radius: 6px; color: #fff; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); font-family: var(--num); font-size: 13px; font-weight: 700; }
+#setKeys .kb.wait { background: rgba(255,181,38,0.4); border-color: #ffd27a; font-family: inherit; }
+#setKeys .kr { padding: 3px 0; border-radius: 6px; color: #ddd; background: transparent; border: 1px solid rgba(255,255,255,0.15); }
+#setMsg { min-height: 20px; margin: 8px 0; color: #ff9b7a; font-size: 13px; }
+@media (max-width: 700px) { #setKeys { grid-template-columns: 1fr; } .set-row { flex-wrap: wrap; } .set-row .range input { width: 140px; } }
+html.mobile #setKeys, html.mobile #setKeysSec, html.mobile #setMsg { display: none; }
