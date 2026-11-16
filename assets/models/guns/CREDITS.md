@@ -1,3 +1,20 @@
+# 권총 · 리볼버 · DMR 모델 (v42)
+
+직접 설계했던 M-1911 · DE-7 · R-45 · MK-14를 CC0 모델로 바꿨습니다. 시작할 때 자동으로 적용되며, 1인칭·3인칭·바닥 전리품에 같은 모델을 씁니다.
+
+| 게임 총기 / 번들 파일 | 원본 에셋 | 제작자 / 배포처 | 라이선스 |
+|---|---|---|---|
+| M-1911 / `m1911.glb` | Flat Guns East — Pistol Compact East | Pichuliru / [fps-asset-kit](https://github.com/petroulacl/fps-asset-kit) | CC0 1.0 |
+| DE-7 / `de7.glb` | Flat Guns East — Pistol Full East | Pichuliru / 같은 배포처 | CC0 1.0 |
+| MK-14 / `mk14.glb` | Flat Guns West — Sniper Material West | Pichuliru / 같은 배포처 | CC0 1.0 |
+| R-45 / `r45.glb` | Ultimate Gun Pack — Revolver_2 | Quaternius / [원본](https://quaternius.com/packs/ultimategun.html), GitHub 사본 [WingNut17/ps1-style](https://github.com/WingNut17/ps1-style) (`assets/models/props/items/weapons/Ultimate Gun Pack by Quaternius/`) | CC0 1.0 |
+
+가공:
+- 권총 2종은 탄창(손잡이) 높이를 기존 설계와 같게 맞추고 같은 위치에 놓아 손 IK가 그대로 쥐게 했습니다. 슬라이드·탄창 분리, 조준·레일·슬라이드 당기는 점·탄창 빠지는 방향을 모델에서 계산합니다.
+- R-45는 한 덩어리 메시라 실린더를 기하(가장 넓은 원통 구간)로 떼어 냈습니다. 실린더 반지름을 기존 설계와 같게 맞추고, 실린더 안의 탄 6발은 기존 설계의 것을 실린더 축에 맞춰 넣었습니다. 원본은 색만 있는 재질이라 금속·나무 재질을 새로 지정했습니다.
+- MK-14는 받치는 손 높이를 총열 덮개 아랫면에 맞추고, 장전 중 탄창을 쥐는 위치를 조금 낮춰(`RSTYLE.mk14.hd`) 팔이 탄창 멈치 부위를 스치지 않게 했습니다.
+- 원본 URL·SHA-256은 [`tools/guns/imported-sources.json`](../../../tools/guns/imported-sources.json)에 고정했습니다.
+
 # 추가 AR · SG 모델 (v39)
 
 아래 모델은 게임에 포함되어 **시작할 때 자동 적용**됩니다. 파일 선택·업로드·별도 다운로드가 필요하지 않으며 1인칭, 3인칭, 바닥 전리품에 같은 모델을 사용합니다. v39에서는 기존 게임의 팔 IK·사격·장전 동작을 연결했습니다. v40에 추가한 별도 원본 장전 모션과 해당 라이선스는 [장전 애니메이션 출처](../../animations/reloads/CREDITS.md)에 기록했습니다.

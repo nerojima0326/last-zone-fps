@@ -2,6 +2,12 @@
 
 Three.js로 만든 브라우저용 3D 배틀로얄 FPS입니다. 설치나 빌드 없이 바로 실행됩니다.
 
+## 권총·리볼버·DMR 모델 교체 (버전 42)
+
+- M-1911 · DE-7 · MK-14를 Flat Guns(Pichuliru, CC0) 모델로, R-45를 Quaternius Ultimate Gun Pack(CC0)의 리볼버로 바꿨습니다. 원본은 GitHub에서 받아 `tools/guns/imported-sources.json`에 고정했습니다.
+- 손 IK·장전 동작은 그대로 이어집니다: 권총은 손잡이를 기존 위치·크기에 맞췄고, 리볼버는 실린더를 떼어 내 기존 실린더 축에 맞춰 꺾이고 탄 6발이 들어갑니다.
+- [모델별 출처·가공](assets/models/guns/CREDITS.md)
+
 ## 모든 총기에 실사 팔 (버전 41)
 
 - M4 팩(BarcodeGames)의 실사 팔·손 모델을 AR-7·G-18 외의 총 13종과 맨손·투척 화면에도 씁니다(`js/real-arms.js`).
@@ -62,7 +68,7 @@ GitHub Pages 사이트는 `gh-pages` 브랜치에서 배포됩니다. `main`에 
 - **총기 (15종 모두 3D 모델):** 3인칭·바닥 전리품·훈련장 테이블도 같은 모델입니다.
   - 실사 무료 에셋(CC0): AR-7(M4A1) · KA-47(AK-47) · KR-98(볼트액션 저격소총) · S-12(펌프 산탄총) · P-92(Service Pistol)
   - 추가 CC0 에셋 5종: SC-17 · M-1014 · DB-2 · SA-12 · AA-12. 모델별 출처와 가공 내용은 [총기 출처](assets/models/guns/CREDITS.md)에 기록했습니다.
-  - 직접 설계한 모델 5종: MK-14(EBR) · G-18(글록 18 계열) · M-1911 · DE-7(데저트 이글 계열) · R-45(리볼버).
+  - 직접 설계한 모델: G-18(글록 18 계열, 3인칭·전리품). M-1911 · DE-7 · MK-14는 Flat Guns(CC0), R-45는 Quaternius Ultimate Gun Pack(CC0) 모델로 바꿨습니다(v42).
   - 모델 파일은 `assets/models/guns/*.glb` (메시 압축·최대 1K 텍스처). 만드는 도구는 `tools/guns/` (설명은 `tools/guns/README.md`).
 - **나무·덤불:** EZ-Tree로 소나무·참나무·물푸레·사시나무·덤불 9종을 생성합니다. 가까운 것만 실제 가지·잎으로 그리고(그래픽 높음 130m · 중간 100m · 낮음 70m), 먼 것은 시작할 때 찍어 둔 사진판(임포스터)으로 그려 성능을 지킵니다.
 - `assets/` 폴더가 없으면 예전 절차적 그래픽으로 자동 전환됩니다. 변경 전 파일은 `_backup/`에 있습니다.

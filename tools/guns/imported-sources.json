@@ -46,5 +46,29 @@
     "url": "https://raw.githubusercontent.com/Godot-Dojo/Deprecated-Godot-XR-Weapons/f08c7b1ae25ef23a287789b65ec52fe71419d03b/xr_weapons/models/doublebarrelshotgun/doublebarrelshotgun.gltf",
     "sha256": "96ed79b1d8459aa551d7f54d8f1b6d5a24b157d5039dc2b555c2975d9fb6d2e9",
     "license": "CC0-1.0"
+  },
+  {
+    "file": "Sniper_Material_West.glb",
+    "url": "https://raw.githubusercontent.com/petroulacl/fps-asset-kit/a19b7458a593598211c95ec46ef4eb4b6d1f94d7/weapons/flat_guns_west/Flat%20Guns%20West/GLB/Sniper_Material_West.glb",
+    "sha256": "39566eb2d97b2250c9102b6d95862828f68b99bf47b427caf127af3daab89f9d",
+    "license": "CC0-1.0"
+  },
+  {
+    "file": "Revolver_2.fbx",
+    "url": "https://raw.githubusercontent.com/WingNut17/ps1-style/42b446d7983d87b6029f42d5e110861a80c6ebee/assets/models/props/items/weapons/Ultimate%20Gun%20Pack%20by%20Quaternius/Revolver_2.fbx",
+    "sha256": "ae42f8f82b318e654f816cbd79d0174bd021e2a4eafd577ddaa9e46e4485d584",
+    "license": "CC0-1.0"
+  },
+  {
+    "file": "Pistol_Compact_East.glb",
+    "url": "https://raw.githubusercontent.com/petroulacl/fps-asset-kit/a19b7458a593598211c95ec46ef4eb4b6d1f94d7/weapons/flat_guns_east/Flat%20Guns%20East/GLB/Pistol_Compact_East.glb",
+    "sha256": "951f555a75f04b2e7690a6117f918c502b983b81504ded617c7358c3c6553135",
+    "license": "CC0-1.0"
+  },
+  {
+    "file": "Pistol_Full_East.glb",
+    "url": "https://raw.githubusercontent.com/petroulacl/fps-asset-kit/a19b7458a593598211c95ec46ef4eb4b6d1f94d7/weapons/flat_guns_east/Flat%20Guns%20East/GLB/Pistol_Full_East.glb",
+    "sha256": "c126348ea1f3a5263ddd174d753d13cf78b9f86fdcd596e0bce396250928d6d1",
+    "license": "CC0-1.0"
   }
 ]
