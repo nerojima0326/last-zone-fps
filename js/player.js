@@ -228,8 +228,8 @@ const P = G.Player = {
       if (this.autoReload.weapon === inst && inst.mag === 0 && !this.heal) this.startReload();
       this.autoReload = null;
     }
-    // 정조준 (볼트를 당기는 동안은 조준이 풀린다)
-    const wantAds = I.rmb && isGun && !this.sw && !this.reload && !this.sprinting && a.cur !== 'throw' && this.cycleT < 0;
+    // 정조준. v46: 볼트를 당기는 동안에도 조준 버튼을 누르고 있으면 조준(배율)을 유지한다
+    const wantAds = I.rmb && isGun && !this.sw && !this.reload && !this.sprinting && a.cur !== 'throw';
     const zoom = isGun ? this.zoomOf(inst, def) : 1;
     this.ads = approach(this.ads, wantAds ? 1 : 0, dt / ((isGun ? def.adsTime * (G.Attachments?.modifiers(inst).ads || 1) : 0.17) + (zoom > 1 ? 0.06 : 0)));
     this.scopeView = zoom > 1 ? U.smoothstep(0.8, 1, this.ads) : 0;
@@ -743,6 +743,8 @@ const P = G.Player = {
   onKnock() { this.autoReload = null; this.lean = 0; this.a.leanX = 0; this.vault = null; if (this.vehicle) G.Vehicles.exit(this, true); },
   flashed(amt) {
     if (amt <= 0.05) return;
+    // 이미 하얗게 된 동안 또 맞으면 잔상은 처음 것을 그대로 둔다
+    if (amt >= 0.3 && this.flashAmt < 0.3) this.freezeReq = true;
     this.flashAmt = Math.max(this.flashAmt, amt);
     this.flashHold = Math.max(this.flashHold, amt * 2.4);
     G.Audio.ring(amt);

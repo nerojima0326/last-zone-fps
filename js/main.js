@@ -173,7 +173,7 @@ G.boot = async function () {
   progress(0.92, '효과 준비 중...');
   G.FX.init(scene);
   G.Extras.init(scene);
-  await G.ReloadAssets?.load();
+  await Promise.all([G.ReloadAssets?.load(), G.ThrowModels?.load(renderer)]);
   G.VM.init(G.vmScene);
 
   G.UI.init();
@@ -388,6 +388,8 @@ function frame(now) {
   const se = (QUALITY[G.quality] || QUALITY.high).shEvery;
   if (se && (frameNo % se === 0 || (se === 2 && ms > 14))) renderer.shadowMap.needsUpdate = true;
   renderFrame(dt);
+  // 섬광: 맞은 순간의 화면을 잔상으로 붙잡는다 (그린 직후라야 WebGL 캔버스를 복사할 수 있다)
+  if (G.Player && G.Player.freezeReq) { G.Player.freezeReq = false; G.UI.freezeFrame && G.UI.freezeFrame(renderer.domElement); }
   G.Input.endFrame();
 }
 

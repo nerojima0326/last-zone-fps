@@ -1129,6 +1129,15 @@ const Guns = G.Guns = {
       T: { grab, out, release, newMag: release + 0.02, seat, endT: seat + 0.16 } };
   },
   throwModel(k, vm) {
+    // v46: 실사 모델 (throwable-models.js). 손에 든 것은 핀이 꽂힌 채, 던진 것은 핀이 빠진 채
+    if (G.ThrowModels && G.ThrowModels.has(k)) {
+      const g = G.ThrowModels.make(k, { pin: !!vm });
+      if (k === 'molotov' && vm) {
+        const f = new THREE.Mesh(new THREE.SphereGeometry(0.009, 8, 6), mats().fire);
+        f.position.set(0.012, g.userData.top + 0.006, 0); f.scale.set(1, 1.6, 1); f.userData.keep = true; g.add(f); g.userData.flame = f;
+      }
+      return g;
+    }
     const M = mats();
     const g = new THREE.Group();
     if (k === 'frag') {
@@ -1192,6 +1201,7 @@ const Guns = G.Guns = {
       m.castShadow = true;
       return m;
     }
+    if (G.THROW_NAMES[type] && G.ThrowModels && G.ThrowModels.has(type)) return G.ThrowModels.make(type);
     return new THREE.Mesh(this.tpGeo(type), G.CharMat || new THREE.MeshStandardMaterial({ vertexColors: true }));
   },
   itemModel(kind) {
@@ -1556,6 +1566,8 @@ const VM = G.VM = {
         else { const k = (q - 0.65) / 0.35; hand.position.add(_a.set(-0.04, 0.02 - 0.25 * k, -0.23 + 0.1 * k)); hand.rotation.x = -0.9; }
         for (const k in m.items) if (m.items[k].visible && q > 0.55) m.items[k].visible = false;
       }
+      // 안전핀: 들어 올리는 동안 뽑는다
+      for (const k in m.items) { const pin = m.items[k].userData.pin; if (pin) pin.visible = q < 0.2; }
       const it = m.items.molotov;
       if (it && it.userData.flame) { const f = it.userData.flame; f.scale.set(1 + Math.random() * 0.3, 1.5 + Math.random() * 0.6, 1); }
     }

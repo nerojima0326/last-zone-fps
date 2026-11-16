@@ -81,6 +81,8 @@ kbd { font-family: var(--num); font-weight: 600; font-size: 12px; background: rg
 #zoneOverlay { background: radial-gradient(ellipse at center, rgba(40,120,255,0.05) 30%, rgba(40,110,255,0.45) 100%); transition: opacity 0.4s; }
 #knockOverlay { background: radial-gradient(ellipse at center, rgba(90,0,0,0.15) 20%, rgba(70,0,0,0.75) 100%); transition: opacity 0.4s; }
 #flashOverlay { background: #fff; }
+/* 섬광 잔상: 맞은 순간 멈춘 화면 (흰빛이 걷히면서 드러났다 사라진다) */
+#flashFreeze { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; filter: brightness(1.35) contrast(0.85) blur(0.6px); }
 
 #compass { position: absolute; top: 18px; left: 50%; transform: translateX(-50%); width: 520px; height: 34px; overflow: hidden; -webkit-mask: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); mask: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); }
 #compassStrip { position: absolute; top: 0; left: 0; height: 100%; white-space: nowrap; }
