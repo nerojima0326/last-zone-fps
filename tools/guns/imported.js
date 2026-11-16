@@ -15,7 +15,13 @@ export const IMPORTED = {
   m1911: 'Pistol_Compact_East.glb',
   de7: 'Pistol_Full_East.glb',
   mk14: 'Sniper_Material_West.glb',
-  r45: 'Revolver_2.fbx'
+  r45: 'Revolver_2.fbx',
+  // v45: 볼트액션 저격총 (Flat Guns West)
+  kr98: 'Sniper_Rifle_West.glb'
+};
+// KR-98 은 설계 모델이 없다: 예전 실사 모델(v44)의 길이·손 위치를 기준으로 쓴다
+const BASE = {
+  kr98: () => ({ cls: 'rifle', muzzle: [0, 0.059, -0.766], fore: [-0.008, 0.007, -0.30], magDir: [0, -1, 0], ironDist: 0.46, pivots: {}, extra: {} })
 };
 const PISTOLS = new Set(['m1911', 'de7']);
 // 설계 모델(designs.js)의 부품 상자 — 손 IK 기준(손잡이 위치)을 그대로 쓰기 위해 맞춘다
@@ -37,7 +43,9 @@ function partFor(name, id) {
   if (n === 'shell') return null; // Gameplay supplies the loading/ejected shells.
   if (n === 'magazine') return 'mag';
   if (n === 'rearsights') return 'rearsight';
-  if (n === 'bolt' || n.startsWith('charginghandle')) return 'charge';
+  if (id === 'kr98' && n === 'frontsights') return 'rearsight';  // 접이식 가늠쇠: 조준경을 달면 같이 접힌다
+  if (n === 'bolt') return id === 'kr98' ? 'bolt' : 'charge';  // 볼트액션은 볼트가 돌았다 빠진다
+  if (n.startsWith('charginghandle')) return 'charge';
   if (id === 'db2' && n === 'barrel') return 'barrel';
   if (n === 'slide') return 'slide';
   // M-1014 uses a fixed fore-end; it must not pump on a semi-auto shot.
@@ -70,7 +78,7 @@ export async function buildImported(id) {
     ? new THREE.Box3().setFromObject(triggerNode).getCenter(new THREE.Vector3())
     : triggerNode.getWorldPosition(new THREE.Vector3());
   // Keep muzzle length close to the previous rig, except the short DB-2 asset.
-  const meta = structuredClone(DESIGNS[id]().meta);
+  const meta = structuredClone(BASE[id] ? BASE[id]() : DESIGNS[id]().meta);
   const scale = id === 'db2' ? 1.1 : Math.abs(meta.muzzle[2] / (bounds.min.z - trigger.z));
   const point = p => p.clone().sub(trigger).multiplyScalar(scale);
   let post = p => p;   // 권총은 아래에서 손잡이 기준으로 다시 맞춘다
@@ -220,6 +228,67 @@ export async function buildImported(id) {
     // 받치는 손: 총열 덮개 아랫면 바로 아래
     const near = meshes.filter(m => m.part === 'body').flatMap(m => { const a = m.geo.attributes.position, r = []; for (let i = 0; i < a.count; i++) if (Math.abs(a.getZ(i) - meta.fore[2]) < .03) r.push(a.getY(i)); return r; }); meta.fore[1] = Math.min(...near) - .01;
     meta.extra = Object.assign({}, meta.extra, { chargeApproachLift: .035 });
+  }
+  if (id === 'kr98') {
+    // 볼트: 회전축 = 볼트 몸통 중심선(손잡이를 뺀 가운데 부분), 손이 잡는 점 = 손잡이 끝(오른쪽 끝)
+    const pts = meshes.filter(m => m.part === 'bolt').flatMap(m => { const a = m.geo.attributes.position, r = []; for (let i = 0; i < a.count; i++) r.push(new THREE.Vector3().fromBufferAttribute(a, i)); return r; });
+    const bb = box('bolt');
+    const core = pts.filter(p => p.x < bb.min.x + .02);
+    const cy = (Math.min(...core.map(p => p.y)) + Math.max(...core.map(p => p.y))) / 2;
+    meta.pivots.bolt = [0, cy, (bb.min.z + bb.max.z) / 2];
+    // 볼트 몸통은 배출구를 채운 채 그대로 두고, 리시버 밖으로 나온 손잡이만 움직이는 부품으로
+    const edge = -bb.min.x + .002;
+    for (const m of meshes.filter(m => m.part === 'bolt')) {
+      const a = m.geo.attributes, keep = { p: [], n: [], uv: [] }, out = { p: [], n: [], uv: [] };
+      for (let t = 0; t < a.position.count; t += 3) {
+        const cx = (a.position.getX(t) + a.position.getX(t + 1) + a.position.getX(t + 2)) / 3, dst = cx > edge ? out : keep;
+        for (let i = t; i < t + 3; i++) {
+          dst.p.push(a.position.getX(i), a.position.getY(i), a.position.getZ(i));
+          dst.n.push(a.normal.getX(i), a.normal.getY(i), a.normal.getZ(i));
+          dst.uv.push(a.uv.getX(i), a.uv.getY(i));
+        }
+      }
+      const geo = q => { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(q.p, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(q.n, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(q.uv, 2)); return g; };
+      m.geo = geo(out);
+      if (keep.p.length) meshes.push({ part: 'body', mat: m.mat, geo: geo(keep) });
+    }
+    pts.length = 0;
+    for (const m of meshes) if (m.part === 'bolt') { const a = m.geo.attributes.position; for (let i = 0; i < a.count; i++) pts.push(new THREE.Vector3().fromBufferAttribute(a, i)); }
+    // 원본 손잡이는 거의 수평이다: 볼트를 축 둘레로 내려 손잡이가 오른쪽 아래를 보게 (닫힌 볼트 모양,
+    // 들어 올릴 때 손이 총 위로 넘어가지 않는다)
+    const turn = -0.7, q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), turn);
+    const ax = new THREE.Vector3(0, cy, 0), v = new THREE.Vector3();
+    for (const m of meshes) if (m.part === 'bolt') {
+      const a = m.geo.attributes.position, n = m.geo.attributes.normal;
+      for (let i = 0; i < a.count; i++) {
+        v.fromBufferAttribute(a, i).sub(ax).applyQuaternion(q).add(ax); a.setXYZ(i, v.x, v.y, v.z);
+        v.fromBufferAttribute(n, i).applyQuaternion(q); n.setXYZ(i, v.x, v.y, v.z);
+      }
+      m.geo.boundingBox = null;
+    }
+    for (const p of pts) p.sub(ax).applyQuaternion(q).add(ax);
+    let knob = pts.reduce((a, p) => p.x > a.x ? p : a, pts[0]);
+    // 원본 손잡이는 탄창 앞쪽(방아쇠보다 15 cm 앞)에 있어 오른팔이 닿지 않는다:
+    // 볼트를 뒤로 옮겨 손잡이가 방아쇠 위(실제 볼트액션 자리, 배출구 뒤 끝)에 오게 한다
+    const back = .17;
+    for (const m of meshes) if (m.part === 'bolt') { m.geo.translate(0, 0, back); m.geo.boundingBox = null; }
+    for (const p of pts) p.z += back;
+    meta.pivots.bolt[2] += back;
+    meta.charge = [knob.x + .006, knob.y, knob.z + .004];
+    // 원본 접이식 가늠자·가늠쇠는 총열보다 10 cm 높아 허리 사격 시야를 가린다: 레일 높이를 기준으로 낮춘다
+    const railY = namedPoint('Attach_Scope')[1];
+    for (const m of meshes) if (m.part === 'rearsight') {
+      const a = m.geo.attributes.position;
+      for (let i = 0; i < a.count; i++) if (a.getY(i) > railY) a.setY(i, railY + (a.getY(i) - railY) * .4);
+      m.geo.computeVertexNormals(); m.geo.boundingBox = null;
+    }
+    // 가늠자(뒤)·가늠쇠(앞) 꼭대기를 잇는 조준선
+    const rs = box('rearsight');
+    const rear = namedPoint('Rear Sights');
+    if (!rs.isEmpty() && rear) meta.sight = [rs.max.y + .001, rear[2]];
+    // 받치는 손: 개머리 앞부분(포엔드) 아랫면 바로 아래
+    const near = meshes.filter(m => m.part === 'body').flatMap(m => { const a = m.geo.attributes.position, r = []; for (let i = 0; i < a.count; i++) if (Math.abs(a.getZ(i) - meta.fore[2]) < .03 && Math.abs(a.getX(i)) < .03) r.push(a.getY(i)); return r; });
+    meta.fore[1] = Math.min(...near) - .006;
   }
   if (id === 'm1014') {
     const pump = namedPoint('Pump');

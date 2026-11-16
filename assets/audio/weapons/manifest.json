@@ -263,67 +263,67 @@
    "rate": 1.0,
    "shot": {
     "path": "kr98-shot.mp3",
-    "sha": "02a4e2b50117",
+    "sha": "092e65de308d",
     "cues": {
      "own0": {
       "offset": 0.25,
-      "duration": 2.005
+      "duration": 1.7435
      },
      "own1": {
-      "offset": 2.505,
-      "duration": 2.005
+      "offset": 2.2435,
+      "duration": 1.7435
      }
     }
    },
    "fx": {
     "path": "kr98-fx.mp3",
-    "sha": "f808912f12fd",
+    "sha": "547b4925c0ae",
     "cues": {
      "near": {
       "offset": 0.25,
-      "duration": 1.755
+      "duration": 1.5261
      },
      "far": {
-      "offset": 2.255,
-      "duration": 2.755
+      "offset": 2.0261,
+      "duration": 2.3956
      },
      "magout": {
-      "offset": 5.26,
+      "offset": 4.6717,
       "duration": 0.1521
      },
      "magin": {
-      "offset": 5.6621,
+      "offset": 5.0738,
       "duration": 0.1516
      },
      "open": {
-      "offset": 6.0637,
+      "offset": 5.4754,
       "duration": 0.1521
      },
      "close": {
-      "offset": 6.4657,
+      "offset": 5.8775,
       "duration": 0.2208
      },
      "dry": {
-      "offset": 6.9365,
+      "offset": 6.3483,
       "duration": 0.1514
      },
      "up": {
-      "offset": 7.3379,
+      "offset": 6.7497,
       "duration": 0.1512
      },
      "down": {
-      "offset": 7.7391,
+      "offset": 7.1508,
       "duration": 0.1849
      }
     }
    },
    "src": {
     "own": [
-     "M_20",
-     "M_22"
+     "W_26",
+     "W_28"
     ],
-    "near": "M_19",
-    "far": "M_23",
+    "near": "W_27",
+    "far": "W_23",
     "magout": "W_5",
     "magin": "W_4",
     "open": "W_9",
