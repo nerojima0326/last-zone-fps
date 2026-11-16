@@ -8,18 +8,18 @@ sys.path.insert(0, os.path.dirname(__file__))
 SHOTS = {  # own(뒤에서 = 쏘는 사람 시점) 2개, near 1, far 1, rate
  'ar7':  (['D_27','D_29'], 'D_31', 'D_25', 1.0),
  'ka47': (['C_39','C_42'], 'C_25', 'C_17', 1.0),
- 'sc17': (['B_17','B_18'], 'B_23', 'B_21', 1.04),
- 'mk14': (['E_20','E_23'], 'E_22', 'E_17', 1.0),
+ 'sc17': (['B_17','B_18'], 'B_23', 'B_21', 1.0),
+ 'mk14': (['U_13','U_15'], 'U_12', 'U_16', 1.0),   # v43: SKS (반자동 소총)
  'kr98': (['M_20','M_22'], 'M_19', 'M_23', 1.0),
  's12':  (['O_18','O_20'], 'O_19', 'O_15', 1.0),
  'm1014':(['K_19','K_21'], 'K_20', 'K_16', 1.0),
- 'db2':  (['N_27','N_29'], 'N_28', 'N_24', 0.97),
+ 'db2':  (['N_27','N_29'], 'N_28', 'N_24', 1.0),
  'sa12': (['H_18','H_20'], 'H_19', 'H_15', 1.0),
- 'aa12': (['H_20','H_18'], 'H_21', 'H_17', 1.06),
+ 'aa12': (['H_20','H_18'], 'H_21', 'H_17', 1.0),   # SA-12 와 같은 녹음 → 아래 CHAR 로 크게 다르게
  'p92':  (['F_44','F_45'], 'F_46', 'F_42', 1.0),
- 'g18':  (['G_26','G_32'], 'G_25', 'G_13', 1.0),
+ 'g18':  (['X_38','X_40'], 'X_39', 'X_31', 1.0),   # v43: Walther PPQ (9mm 권총)
  'm1911':(['A_35','A_36'], 'A_41', 'A_39', 1.0),
- 'de7':  (['L_20','L_22'], 'L_21', 'L_17', 0.97),
+ 'de7':  (['L_20','L_22'], 'L_21', 'L_17', 1.0),
  'r45':  (['V_24','V_26'], 'V_25', 'V_21', 1.0),
 }
 # 조작음: magout, magin, open(당김/열기), close(놓음/닫힘), shell(한 발), port(약실에 한 발), dry
@@ -41,6 +41,41 @@ HANDLE = {
  'r45':  dict(open='V_9', shell='V_3', magin='V_2', close='V_10', dry='V_5'),
 }
 EXTRA = {'switch': 'C_4'}
+# v43: 총마다 성격을 더 뚜렷하게 (녹음에 직접 굽는다)
+#  pitch(재생 속도), bass/treble(dB, 100 Hz / 5 kHz 선반), tail(<1 이면 잔향을 짧게), thump(저음 충격 크기, Hz)
+CHAR = {
+ 'ar7':  (1.00,  0,  1, 1.00, 0.00, 70),
+ 'ka47': (0.96,  2, -1, 1.00, 0.18, 68),
+ 'sc17': (0.94,  3,  0, 1.00, 0.28, 60),
+ 'mk14': (0.99,  1,  3, 0.90, 0.20, 66),
+ 'kr98': (0.92,  4,  1, 1.00, 0.38, 55),
+ 's12':  (0.96,  4, -2, 1.00, 0.36, 56),
+ 'm1014':(1.01,  2,  1, 0.85, 0.26, 60),
+ 'db2':  (0.90,  5, -3, 1.00, 0.50, 48),
+ 'sa12': (1.04,  1,  2, 0.80, 0.18, 64),
+ 'aa12': (0.86,  6, -4, 0.65, 0.48, 50),
+ 'p92':  (1.06, -2,  3, 0.80, 0.00, 80),
+ 'g18':  (1.12, -4,  5, 0.55, 0.00, 80),
+ 'm1911':(0.97,  2,  0, 0.95, 0.15, 74),
+ 'de7':  (0.85,  6, -1, 1.00, 0.62, 44),
+ 'r45':  (0.92,  4,  2, 1.00, 0.40, 52),
+}
+def character(y, gid):
+    pitch, bass, treble, tail, thump, f = CHAR[gid]
+    ch = y.shape[1]
+    af = f'bass=g={bass}:f=100:w=0.7,treble=g={treble}:f=5000:w=0.7,asetrate={int(SR * pitch)},aresample={SR}'
+    raw = subprocess.run(['ffmpeg', '-v', 'error', '-f', 'f32le', '-ar', str(SR), '-ac', str(ch), '-i', '-', '-af', af, '-f', 'f32le', '-'],
+                         input=y.astype(np.float32).tobytes(), capture_output=True, check=True).stdout
+    z = np.frombuffer(raw, np.float32).reshape(-1, ch).copy()
+    t = np.arange(len(z)) / SR
+    if tail < 1:
+        z *= np.where(t < 0.06, 1, np.exp(-(t - 0.06) / (0.45 * tail)))[:, None]
+    if thump > 0:
+        k = np.argmax(np.abs(z).max(1) > np.abs(z).max() * 0.3)
+        tt = np.maximum(0, t - k / SR)
+        th = np.sin(2 * np.pi * f * tt * (1 - 0.25 * np.minimum(tt / 0.15, 1))) * np.exp(-tt / 0.05) * (1 - np.exp(-tt / 0.002)) * (t >= k / SR)
+        z += (0.18 * thump * np.abs(z).max() * th)[:, None]
+    return z / (np.abs(z).max() + 1e-9) * 0.97
 SRC = sys.argv[1]; OUT = sys.argv[2]
 SR = 44100
 paths = {os.path.basename(p)[:-4]: p for p in glob.glob(os.path.join(SRC, 'Master Tracks', '*', '*.wav'))}
@@ -127,12 +162,12 @@ for gid in SHOTS:
     own, near, far, rate = SHOTS[gid]
     st = [];
     for k, i in enumerate(own):
-        y, n = shot(i, 1.6, True); st.append((f'own{k}', y)); log.append(f'{gid} own {i} takes={n} {len(y)/SR:.2f}s')
+        y, n = shot(i, 1.6, True); y = character(y, gid); st.append((f'own{k}', y)); log.append(f'{gid} own {i} takes={n} {len(y)/SR:.2f}s')
     sb, sm = bank(st, 2)
     h1 = enc(sb, os.path.join(OUT, f'{gid}-shot.mp3'), 2, 160)
     mono = []
-    y, n = shot(near, 1.4, False); mono.append(('near', y)); log.append(f'{gid} near {near} takes={n}')
-    y, n = shot(far, 2.2, False); mono.append(('far', y)); log.append(f'{gid} far {far} takes={n}')
+    y, n = shot(near, 1.4, False); y = character(y, gid); mono.append(('near', y)); log.append(f'{gid} near {near} takes={n}')
+    y, n = shot(far, 2.2, False); y = character(y, gid); mono.append(('far', y)); log.append(f'{gid} far {far} takes={n}')
     for ev, i in HANDLE[gid].items():
         y, n = handle(i, ev); mono.append((ev, y)); log.append(f'{gid} {ev} {i} takes={n} {len(y)/SR:.2f}s')
     mb, mm = bank(mono, 1)

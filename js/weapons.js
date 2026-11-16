@@ -45,15 +45,15 @@ G.WEAPONS = {
   aa12: W({ key: 'aa12', name: 'AA-12 자동 샷건', short: 'AA-12', cls: 'shotgun', ammo: '12g', dmg: 11, head: 1.4, rpm: 300, auto: true, action: 'auto', mag: 12, reload: 3.0,
     spread: 0.08, ads: 0.06, move: 0.025, bloom: 0.012, bloomMax: 0.03, recoilV: 0.045, recoilH: 0.015, vel: 400, adsFov: 60, kick: 1.2, pellets: 8, range: 110, falloff: [5, 26], tracerLen: 4, sound: 'shotgun', tier: 4, scopes: ['reddot', 'holo', 'x2'] }),
   // ---- 권총 ----
-  p92: W({ key: 'p92', name: 'P-92 권총', short: 'P-92', cls: 'pistol', model: 'pistol', ammo: '9mm', dmg: 26, head: 2.0, rpm: 420, mag: 15, reload: 1.45,
+  p92: W({ key: 'p92', name: 'P-92 권총', short: 'P-92', cls: 'pistol', model: 'pistol', len: 0.217, ammo: '9mm', dmg: 26, head: 2.0, rpm: 420, mag: 15, reload: 1.45,
     spread: 0.015, ads: 0.0045, move: 0.022, bloom: 0.012, bloomMax: 0.035, recoilV: 0.03, recoilH: 0.009, vel: 380, adsFov: 64, kick: 0.9, range: 320, falloff: [35, 0.7], tracerLen: 5, sound: 'pistol', tier: 1, scopes: ['reddot'] }),
-  g18: W({ key: 'g18', name: 'G-18 자동권총', short: 'G-18', cls: 'pistol', ammo: '9mm', dmg: 18, head: 1.9, rpm: 1100, auto: true, action: 'auto', mag: 20, reload: 1.6,
+  g18: W({ key: 'g18', name: 'G-18 자동권총', short: 'G-18', cls: 'pistol', len: 0.186, ammo: '9mm', dmg: 18, head: 1.9, rpm: 1100, auto: true, action: 'auto', mag: 20, reload: 1.6,
     spread: 0.022, ads: 0.008, move: 0.022, bloom: 0.006, bloomMax: 0.04, recoilV: 0.016, recoilH: 0.011, vel: 370, adsFov: 64, kick: 0.5, range: 250, falloff: [25, 0.65], tracerLen: 5, sound: 'pistol', tier: 2, scopes: ['reddot'] }),
-  m1911: W({ key: 'm1911', name: 'M-1911 권총', short: 'M-1911', cls: 'pistol', ammo: '45', dmg: 32, head: 2.0, rpm: 380, mag: 8, reload: 1.5,
+  m1911: W({ key: 'm1911', name: 'M-1911 권총', short: 'M-1911', cls: 'pistol', len: 0.216, ammo: '45', dmg: 32, head: 2.0, rpm: 380, mag: 8, reload: 1.5,
     spread: 0.016, ads: 0.0045, move: 0.022, bloom: 0.014, bloomMax: 0.035, recoilV: 0.036, recoilH: 0.01, vel: 270, adsFov: 64, kick: 1.0, range: 280, falloff: [30, 0.7], tracerLen: 5, sound: 'pistol45', tier: 1, scopes: ['reddot'] }),
-  de7: W({ key: 'de7', name: 'DE-7 대형권총', short: 'DE-7', cls: 'pistol', ammo: '45', dmg: 48, head: 2.1, rpm: 240, mag: 7, reload: 1.8,
+  de7: W({ key: 'de7', name: 'DE-7 대형권총', short: 'DE-7', cls: 'pistol', len: 0.27, ammo: '45', dmg: 48, head: 2.1, rpm: 240, mag: 7, reload: 1.8,
     spread: 0.02, ads: 0.005, move: 0.025, bloom: 0.02, bloomMax: 0.04, recoilV: 0.06, recoilH: 0.014, vel: 450, adsFov: 62, kick: 1.5, range: 350, falloff: [45, 0.75], tracerLen: 6, sound: 'magnum', tier: 3, scopes: ['reddot'] }),
-  r45: W({ key: 'r45', name: 'R-45 리볼버', short: 'R-45', cls: 'pistol', ammo: '45', dmg: 55, head: 2.1, rpm: 170, mag: 6, reloadType: 'revolver', reload: 2.6,
+  r45: W({ key: 'r45', name: 'R-45 리볼버', short: 'R-45', cls: 'pistol', len: 0.245, ammo: '45', dmg: 55, head: 2.1, rpm: 170, mag: 6, reloadType: 'revolver', reload: 2.6,
     spread: 0.017, ads: 0.0045, move: 0.024, bloom: 0.02, bloomMax: 0.04, recoilV: 0.065, recoilH: 0.015, vel: 440, adsFov: 62, kick: 1.6, range: 350, falloff: [45, 0.75], tracerLen: 6, sound: 'magnum', tier: 3, scopes: [] }),
   fists: { key: 'fists', name: '맨손', short: '맨손', dmg: 22, rpm: 110 }
 };
@@ -754,6 +754,22 @@ const _mv = new V3();
 
 // 총 모델 데이터: 실사/게임용 GLB 모델(gunmodels.js)이 있으면 그것, 없으면 절차적 총(gunlib.js)
 function modelKey(id) { const def = G.WEAPONS[id]; return def.model || id; }
+// 권총 크기: 1인칭 뷰모델 공간에서 실제 길이의 몇 배로 그릴지 (기존 권총들의 평균 비율)
+const VM_LEN = 0.97;
+// 모델의 전체 길이 (총 공간, m)
+function gunLen(D) {
+  if (D._len) return D._len;
+  const b = new THREE.Box3();
+  for (const k in D.parts) for (const g of Object.values(D.parts[k])) if (g && g.isBufferGeometry) { if (!g.boundingBox) g.computeBoundingBox(); b.union(g.boundingBox); }
+  return (D._len = b.isEmpty() ? 0.2 : b.max.z - b.min.z);
+}
+// 3인칭·전리품 모델을 실제 길이로
+function tpSize(m, def) {
+  if (!def.len) return m;
+  const b = new THREE.Box3().setFromObject(m), L = b.max.z - b.min.z;
+  if (L > 1e-3) m.scale.multiplyScalar(def.len / L);
+  return m;
+}
 function gunData(id) {
   const k = modelKey(id);
   if (G.GunModels && G.GunModels.has(k)) return G.GunModels.data(k);
@@ -797,7 +813,10 @@ const Guns = G.Guns = {
     if (id === 'fists' || id === 'throw') return this.buildHands(id);
     const M = mats();
     const def = G.WEAPONS[id], cls = def.cls, C = CLS[cls], D = gunData(id);
-    const s = D.vmScale || C.scale, at = C.at;
+    // len: 실제 전체 길이(m, 권총). 1인칭에서도 총마다 크기가 다르게 (VM_LEN 배로 보이게)
+    // 방아쇠를 중심으로 키우고, 오른손이 쥐는 점도 같이 옮긴다
+    const base = D.vmScale || C.scale, size = def.len ? def.len * VM_LEN / (gunLen(D) * base) : 1, s = base * size, at = C.at;
+    const sized = q => q.clone().sub(at).multiplyScalar(size).add(at);
     const P = v => v.clone().sub(D.trigger).multiplyScalar(s).add(at);   // 총 공간(m) → 뷰모델 공간
     const root = new THREE.Group(), gun = new THREE.Group(); root.add(gun);
     const o = { root, gun, parts: {}, rest: {}, id, def, cls, s, scopes: {}, real: !!D.real, toVM: P,
@@ -875,10 +894,10 @@ const Guns = G.Guns = {
       if (def.reloadType === 'break') { const s2 = o.shell2 = sh.clone(); root.add(s2); s2.visible = false; }
     }
     // 팔
-    const grip=fitWristContact(C.gripR,[-1,0.06,0],[0,0.88,-0.48],GRIP_CONTACT,1,o.armObstacles);
+    const grip=fitWristContact(sized(C.gripR),[-1,0.06,0],[0,0.88,-0.48],GRIP_CONTACT,1,o.armObstacles);
     if (cls === 'pistol') {
       o.armR = armRig(root, C.shoulderR, grip, C.elbowR, C.gloveR, 1.08);
-      const fl=fitWristContact(D.fore?P(D.fore):C.handL,[1,0.1,0],[0,0.25,-1],PALM_CONTACT,-1,o.armObstacles);
+      const fl=fitWristContact(D.fore?P(D.fore):sized(C.handL),[1,0.1,0],[0,0.25,-1],PALM_CONTACT,-1,o.armObstacles);
       o.armL = armRig(root, C.shoulderL.clone().add(fl).sub(C.handL), fl, C.elbowL.clone().add(fl).sub(C.handL), C.gloveL, 1.08);
       o.fore = fl;
     } else {
@@ -1168,7 +1187,7 @@ const Guns = G.Guns = {
     const def = G.WEAPONS[type];
     if (def && def.cls) {
       const k = modelKey(type);
-      if (G.GunModels && G.GunModels.has(k)) return G.GunModels.tpMesh(k, full);
+      if (G.GunModels && G.GunModels.has(k)) return tpSize(G.GunModels.tpMesh(k, full), def);
       const m = new THREE.Mesh(G.GunLib.tpGeo(type, G.GunModels.TPREF[def.cls]), G.GunLib.tpMat());
       m.castShadow = true;
       return m;
@@ -1181,7 +1200,7 @@ const Guns = G.Guns = {
     if (def && def.cls) {
       // 전리품은 가까이서 보므로 재질 그대로 (낮은 품질에서는 정점 색 하나)
       const full = G.Game.training || (G.quality !== 'low' && G.quality !== 'potato');
-      const m = this.tpModel(kind, full); m.rotation.set(0, 0, Math.PI / 2); m.position.y = 0.04; m.scale.setScalar(def.cls === 'pistol' ? 1.6 : 1.15); g.add(m);
+      const m = this.tpModel(kind, full); m.rotation.set(0, 0, Math.PI / 2); m.position.y = 0.04; m.scale.multiplyScalar(def.cls === 'pistol' ? 1.6 : 1.15); g.add(m);
     } else if (kind.startsWith('att_') && G.Attachments) {
       const info=G.Attachments.catalog()[kind],id=info?.slot==='under'?'grip':info?.slot==='side'?'laser':info?.slot==='muzzle'?'suppressor':null;
       const m=id&&G.Attachments.make(id,1.5);
