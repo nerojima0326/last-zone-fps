@@ -2,7 +2,7 @@
 
 | 파일 | 게임 내 사용 | 에셋 | 제작자 | 출처 | 라이선스 |
 |---|---|---|---|---|---|
-| `m4_animations.zip` | AR-7 1인칭 총·팔·손, 꺼내기·사격·장전 애니메이션 | M4 - FPS Weapon Animations Pack FREE (v.1) | BarcodeGames | [Fab](https://www.fab.com/listings/38da8f1e-cb54-4cda-beb1-6e55642a55a9) | Fab Standard License |
+| `m4_animations.zip` | AR-7 1인칭 총·팔·손, 꺼내기·사격·장전 애니메이션. 팔·손 메시는 v41부터 나머지 총기(AR-7·G-18 제외)와 맨손·투척 화면에도 쓰입니다(`js/real-arms.js`) | M4 - FPS Weapon Animations Pack FREE (v.1) | BarcodeGames | [Fab](https://www.fab.com/listings/38da8f1e-cb54-4cda-beb1-6e55642a55a9) | Fab Standard License |
 | `glock17.fbx` | G-18 1인칭 총·팔·손, 사격·장전 애니메이션 | Glock 17 FPS 모델·애니메이션 | 확인 필요 | 확인 필요 (저장소 소유자가 제공) | 확인 필요 |
 
 ## 메모

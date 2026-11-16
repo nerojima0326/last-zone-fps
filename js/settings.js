@@ -117,6 +117,9 @@ const S = G.Settings = {
     ].map(a => (slider(...a), a));
     const inv = $('setInvert');
     inv.addEventListener('click', () => { this.data.invertY = !this.data.invertY; this.apply(); this.save(); this.render(); });
+    // 실사 팔 (real-arms.js 가 따로 저장한다)
+    const ra = $('setRealArms');
+    if (ra) ra.addEventListener('click', () => { if (G.RealArms) G.RealArms.setEnabled(!G.RealArms.enabled); this.render(); });
     // 키 목록
     const list = $('setKeys');
     list.addEventListener('click', e => {
@@ -150,6 +153,8 @@ const S = G.Settings = {
     if (this.sliders) for (const [id, get, , fmt] of this.sliders) { $(id).value = get(); $(id + 'Val').textContent = fmt(get()); }
     const inv = $('setInvert');
     inv.textContent = d.invertY ? '켜짐' : '꺼짐'; inv.classList.toggle('on', d.invertY);
+    const ra = $('setRealArms');
+    if (ra) { const on = !!(G.RealArms && G.RealArms.enabled); ra.textContent = on ? '켜짐' : '꺼짐'; ra.classList.toggle('on', on); }
     let h = '';
     for (const [act, name] of ACTIONS) {
       const k = this.bound(act), changed = k !== act, wait = this.waiting === act;

@@ -180,6 +180,8 @@ G.boot = async function () {
   if (G.Settings) { G.Settings.apply(); G.Settings.initUI(); }
   progress(0.94, '총기 모델 자동 적용 중...');
   await Promise.all([G.G17Pilot?.init(),G.M4Viewmodel?.init()]);
+  // M4 팩의 실사 팔을 나머지 총기에도 (M4·Glock 이 준비된 뒤)
+  G.RealArms?.init();
   if(G.Attachments)G.Attachments.initUI();
   G.World.setTimeOfDay(G.UI.opts.tod || 'day');
   G.Player.sens = G.UI.opts.sens;
