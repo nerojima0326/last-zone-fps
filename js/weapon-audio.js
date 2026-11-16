@@ -6,7 +6,7 @@
 const G=window.G,U=G.U;
 // 조작음 크기 (사격음 대비) · 같은 종류 안의 무게감
 const LEVEL={magout:.15,magin:.19,open:.18,close:.2,shell:.14,port:.16,dry:.13,up:.13,down:.15,switch:.12};
-const MASS={ar7:1,ka47:1.08,sc17:1,mk14:1.1,kr98:1.05,s12:1.05,m1014:1,db2:1.05,sa12:1.08,aa12:1.12,p92:.9,g18:.86,m1911:.95,de7:1,r45:.95};
+const MASS={ar7:1,ka47:1.08,sc17:1,mk14:1.1,kr98:1.05,s12:1.05,m1014:1,db2:1.05,sa12:1.08,aa12:1.12,p92:.9,g18:.86,m1911:.95,de7:.85,r45:.95};
 const base=new URL('assets/audio/weapons/',document.baseURI);
 const W=G.WeaponAudio={
  manifest:null, buffers:{}, raw:{}, voices:[], own:[], sequence:{},
