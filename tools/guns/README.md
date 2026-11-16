@@ -8,7 +8,7 @@
 | `designs.js` | 직접 설계한 모델과 기존 기준점. G-18 모델에 쓰고, 나머지 가져온 모델은 이 기준점(손잡이·받치는 손·실린더 축)에 맞춘다 |
 | `imported.js` | CC0 에셋 9종: SC-17 · M-1014 · DB-2 · SA-12 · AA-12 · M-1911 · DE-7 · MK-14 (Flat Guns 등, glTF) · R-45 (Quaternius, FBX). 원본 스킨의 강체 부품을 분리하고 게임의 팔·장전 시스템에 연결 |
 | `fetch-imports.py` / `imported-sources.json` | 추가 CC0 원본의 고정 URL·SHA-256과 검증 다운로드 도구. 플레이 시에는 불필요 |
-| `real.js` | 실사 CC0 모델 3종 정규화: KA-47(AK-47) · KR-98(Sniper) · S-12(Shotgun) — 수평 보정, 부품 분리, 1K JPEG 텍스처(DirectX 법선 맵 G 반전), 기준점 |
+| `real.js` | 실사 CC0 모델 2종 정규화: KA-47(AK-47) · S-12(Shotgun) (KR-98은 v45부터 `imported.js`의 Flat Guns 모델) — 수평 보정, 부품 분리, 1K JPEG 텍스처(DirectX 법선 맵 G 반전), 기준점 |
 | `build.html` / `build.js` | 브라우저 미리보기 + GLB 내려받기 (기준점 표시: 빨강 총구 · 초록 왼손 · 하늘 장전 손잡이 · 노랑 장전구 · 주황 부품 축 · 흰 조준선 · 파랑 레일) |
 | `run.cjs` | 헤드리스로 전부 만들고 glTF-Transform 으로 압축(meshopt + 위치·법선 양자화)해 `assets/models/guns/` 에 저장 |
 
@@ -40,7 +40,7 @@ CHROME_BIN=/usr/bin/chromium THREE_DIR=/path/to/node_modules/three \
 
 ### 기존 모델
 
-1. 실사 원본: [3DModelsCC0 Guns & Explosives 팩 GLB 변환본](https://github.com/BoQsc/cc0-guns-explosives-pack-glb/releases) 의 `Guns.Explosives_glb.zip` 에서 `AK47.glb`, `Sniper.glb`, `Shotgun.glb` 를 `tools/guns/src/` 에 넣습니다 (CC0, 저장소에는 올리지 않음).
+1. 실사 원본: [3DModelsCC0 Guns & Explosives 팩 GLB 변환본](https://github.com/BoQsc/cc0-guns-explosives-pack-glb/releases) 의 `Guns.Explosives_glb.zip` 에서 `AK47.glb`, `Shotgun.glb` 를 `tools/guns/src/` 에 넣습니다 (CC0, 저장소에는 올리지 않음).
 2. `npm i playwright @gltf-transform/core @gltf-transform/extensions @gltf-transform/functions meshoptimizer`
 3. `node tools/guns/run.cjs build all` (또는 `build g18,r45`)
    - 미리보기 그림: `node tools/guns/run.cjs view r45 persp,side` · 압축된 결과 확인: `... view r45 side final`

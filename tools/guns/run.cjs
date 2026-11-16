@@ -1,7 +1,7 @@
 // run.cjs — 총기 GLB 일괄 제작 (헤드리스 크롬 + glTF-Transform)
 //
 // 준비:  npm i playwright @gltf-transform/core @gltf-transform/extensions @gltf-transform/functions meshoptimizer
-//        tools/guns/src/ 에 원본 GLB (AK47.glb, Sniper.glb, Shotgun.glb) — README 참고
+//        tools/guns/src/ 에 원본 GLB (AK47.glb, Shotgun.glb) — README 참고
 // 사용:  node tools/guns/run.cjs build [id,id,...|all]      → assets/models/guns/<id>.glb
 //        node tools/guns/run.cjs view <id> [persp|side|left|top|front] [final] [out.png]
 //

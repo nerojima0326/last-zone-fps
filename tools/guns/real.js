@@ -22,30 +22,6 @@ export const REAL = {
     }),
     charge: [0.008, 0.004, 0]                // 장전 손잡이 끝(오른쪽) 기준 손 위치 보정
   },
-  // KR-98 ← Sniper (볼트액션, 일체형 조준경은 빼고 게임 조준경을 레일에)
-  kr98: {
-    src: 'src/Sniper.glb', cls: 'rifle', credit: 'Sniper Rifle (3DModelsCC0)',
-    rx: -0.1859,                             // 원본이 10.6° 기울어져 있음 → 총열 수평
-    remove: /Scope/i,
-    move: { Magazine: [0, 0.054, 0] },       // 원본 탄창이 아래로 떨어져 있음 → 탄창 구멍 안으로
-    part: n => /Magazine/i.test(n) ? 'mag' : /Bolt/i.test(n) ? 'bolt' : 'body',
-    meta: T => ({
-      muzzle: [-0.0037, 0.0285, -0.523],
-      sight: [0.057, -0.03],                 // 가늠쇠(총구) 끝 높이, 가늠자는 아래에서 추가
-      rail: [0.0445, 0.15],
-      fore: [-0.0097, -0.024, -0.06],
-      bolt: [-0.0037, 0.0285, 0.2],          // 볼트 회전축 = 총열 축
-      magDir: [0, -1, 0],
-      ironDist: 0.46
-    }),
-    charge: [0.006, 0, 0.004],
-    // 가늠자: 총열 위 (조준경을 달면 숨김)
-    extra(M, T) {
-      const y0 = 0.0375 - T.y, z = -0.03 - T.z, top = 0.0612 - T.y, notch = 0.057 - T.y;
-      M.side('rearsight', 'dark', [[z - 0.012, y0], [z + 0.012, y0], [z + 0.012, y0 + 0.006], [z + 0.004, y0 + 0.008], [z + 0.002, top], [z - 0.004, top], [z - 0.008, y0 + 0.006]], 0.016, { x: -0.0037 - T.x, r: 0.001 });
-      for (const s of [-1, 1]) M.rbox('rearsight', 'dark', 0.0045, top - notch + 0.002, 0.005, -0.0037 - T.x + s * 0.0045, notch + (top - notch) / 2 + 0.001, z - 0.001, { r: 0.0008 });
-    }
-  },
   // S-12 ← Shotgun (펌프액션, 나무 포엔드가 펌프)
   s12: {
     src: 'src/Shotgun.glb', cls: 'shotgun', credit: 'Shotgun (3DModelsCC0)',

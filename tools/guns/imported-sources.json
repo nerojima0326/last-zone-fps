@@ -70,5 +70,11 @@
     "url": "https://raw.githubusercontent.com/petroulacl/fps-asset-kit/a19b7458a593598211c95ec46ef4eb4b6d1f94d7/weapons/flat_guns_east/Flat%20Guns%20East/GLB/Pistol_Full_East.glb",
     "sha256": "c126348ea1f3a5263ddd174d753d13cf78b9f86fdcd596e0bce396250928d6d1",
     "license": "CC0-1.0"
+  },
+  {
+    "file": "Sniper_Rifle_West.glb",
+    "url": "https://raw.githubusercontent.com/petroulacl/fps-asset-kit/a19b7458a593598211c95ec46ef4eb4b6d1f94d7/weapons/flat_guns_west/Flat%20Guns%20West/GLB/Sniper_Rifle_West.glb",
+    "sha256": "c757564169f2d72e9fb4677be425f617d575fd76808ec32d9730d769548fb0d5",
+    "license": "CC0-1.0"
   }
 ]

@@ -29,12 +29,12 @@
 | 군인 캐릭터 3종 | Military_Male_01 · Military_Male_03 · Military_Female_01 | [Microsoft Rocketbox](https://github.com/microsoft/Microsoft-Rocketbox) | MIT (`char/LICENSE-Rocketbox.md`) |
 | AR-7 소총 | M4A1 Assault Rifle (원작 3DModelsCC0, nisu 재배포) | [OpenGameArt](https://opengameart.org/content/m4a1-assault-rifle) | CC0 |
 | KA-47 소총 | AK-47 (3DModelsCC0 "Free CC0 Guns & Explosives Pack", GLB 변환본) | [GitHub (BoQsc)](https://github.com/BoQsc/cc0-guns-explosives-pack-glb) | CC0 |
-| KR-98 저격소총 | Sniper Rifle (같은 팩, 일체형 조준경은 빼고 가늠자 추가) | [GitHub (BoQsc)](https://github.com/BoQsc/cc0-guns-explosives-pack-glb) | CC0 |
 | S-12 산탄총 | Shotgun (같은 팩, 펌프액션) | [GitHub (BoQsc)](https://github.com/BoQsc/cc0-guns-explosives-pack-glb) | CC0 |
 | SC-17 · M-1014 · SA-12 · AA-12 | Flat Guns (Pichuliru), 게임용 부품·기준점 변환 | [GitHub 배포본](https://github.com/petroulacl/fps-asset-kit), [가공·원본 상세](models/guns/CREDITS.md) | CC0 |
 | DB-2 | Boomstick / DoubleBarrelShotgun | [Godot-Dojo](https://github.com/Godot-Dojo/Deprecated-Godot-XR-Weapons), [상세](models/guns/CREDITS.md) | CC0 |
 | G-18 (3인칭·전리품) | 이 게임용으로 직접 설계한 모델 (`tools/guns/designs.js`) | — | 이 저장소의 일부 |
 | M-1911 · DE-7 · MK-14 (v42) | Flat Guns East — Pistol Compact East · Pistol Full East, Flat Guns West — Sniper Material West / Pichuliru | [fps-asset-kit](https://github.com/petroulacl/fps-asset-kit) ([상세](models/guns/CREDITS.md)) | CC0 1.0 |
+| KR-98 저격소총 (v45) | Flat Guns West — Sniper Rifle West / Pichuliru | [fps-asset-kit](https://github.com/petroulacl/fps-asset-kit) ([상세](models/guns/CREDITS.md)) | CC0 1.0 |
 | R-45 (v42) | Ultimate Gun Pack — Revolver_2 / Quaternius | [quaternius.com](https://quaternius.com/packs/ultimategun.html), GitHub 사본 [WingNut17/ps1-style](https://github.com/WingNut17/ps1-style) ([상세](models/guns/CREDITS.md)) | CC0 1.0 |
 | AR-7 1인칭 모델·애니메이션 | M4 - FPS Weapon Animations Pack FREE (v.1), BarcodeGames | [Fab](https://www.fab.com/listings/38da8f1e-cb54-4cda-beb1-6e55642a55a9) | Fab Standard License ([상세](models/viewmodels/CREDITS.md)) |
 | G-18 1인칭 모델·애니메이션 | Glock 17 FPS 모델 (`glock17.fbx`) | 확인 필요 | 확인 필요 ([상세](models/viewmodels/CREDITS.md)) |

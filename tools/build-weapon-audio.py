@@ -10,7 +10,7 @@ SHOTS = {  # own(뒤에서 = 쏘는 사람 시점) 2개, near 1, far 1, rate
  'ka47': (['C_39','C_42'], 'C_25', 'C_17', 1.0),
  'sc17': (['B_17','B_18'], 'B_23', 'B_21', 1.0),
  'mk14': (['U_13','U_15'], 'U_12', 'U_16', 1.0),   # v43: SKS (반자동 소총)
- 'kr98': (['M_20','M_22'], 'M_19', 'M_23', 1.0),
+ 'kr98': (['W_26','W_28'], 'W_27', 'W_23', 1.0),   # v45: Tikka T3 (볼트액션 사냥·저격총)
  's12':  (['O_18','O_20'], 'O_19', 'O_15', 1.0),
  'm1014':(['K_19','K_21'], 'K_20', 'K_16', 1.0),
  'db2':  (['N_27','N_29'], 'N_28', 'N_24', 1.0),
@@ -49,7 +49,7 @@ CHAR = {
  'ka47': dict(pitch=0.90, peak=(900, 7),  cut=(3000, -5), treble=-2, tail=1.00, echo=(45, .25),  drive=3, thump=(0.15, 68)),
  'sc17': dict(pitch=0.86, peak=(700, 6),  cut=(2500, -4), treble=0,  tail=1.00, echo=(70, .30),  drive=2, thump=(0.25, 60)),
  'mk14': dict(pitch=1.08, peak=(3200, 7), cut=(800, -5),  treble=3,  tail=0.70, echo=(0, 0),     drive=0, thump=(0.15, 66)),
- 'kr98': dict(pitch=0.80, peak=(1200, 6), cut=(400, -4),  treble=2,  tail=1.00, echo=(110, .35), drive=3, thump=(0.35, 55)),
+ 'kr98': dict(pitch=0.92, peak=(2200, 7), cut=(700, -3),  treble=3,  tail=1.00, echo=(170, .45), drive=4, thump=(0.45, 50)),
  's12':  dict(pitch=0.88, peak=(500, 8),  cut=(3000, -6), treble=-3, tail=1.00, echo=(60, .30),  drive=4, thump=(0.35, 56)),
  'm1014':dict(pitch=1.06, peak=(1600, 7), cut=(400, -5),  treble=1,  tail=0.75, echo=(0, 0),     drive=2, thump=(0.20, 60)),
  'db2':  dict(pitch=0.78, peak=(350, 9),  cut=(2500, -6), treble=-4, tail=1.00, echo=(90, .35),  drive=4, thump=(0.50, 48)),
