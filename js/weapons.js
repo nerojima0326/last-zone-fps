@@ -713,7 +713,7 @@ const RSTYLE = {
   ar7: { s: 'ar', roll: -0.34, yaw: 0.18, pitch: 0.07, px: -0.06, py: 0.05, pz: 0.03, chRoll: -0.14, chYaw: 0.08, chPitch: 0.05 },
   ka47: { s: 'ak', roll: -0.26, yaw: 0.14, pitch: 0.08, px: -0.05, py: 0.04, pz: 0.02, chRoll: -0.1, chYaw: 0.06, chPitch: 0.02, chX: 0.01 },
   sc17: { s: 'scar', roll: -0.32, yaw: 0.27, pitch: 0.08, px: -0.08, py: 0.075, pz: 0.04, chRoll: -0.3, chYaw: 0.14, chPitch: 0.1, chZ: 0.05 },
-  mk14: { s: 'm14', roll: -0.38, yaw: 0.2, pitch: 0.13, px: -0.07, py: 0.07, pz: 0.03, chRoll: -0.1, chYaw: 0.06, chPitch: 0.04 },
+  mk14: { s: 'm14', hd: 0.135, roll: -0.38, yaw: 0.2, pitch: 0.13, px: -0.07, py: 0.07, pz: 0.03, chRoll: -0.1, chYaw: 0.06, chPitch: 0.04 },
   kr98: { s: 'bolt', roll: -0.34, yaw: 0.18, pitch: 0.09, px: -0.07, py: 0.065, pz: 0.03 },
   sa12: { s: 'saiga', roll: -0.4, yaw: 0.2, pitch: 0.07, px: -0.07, py: 0.05, pz: 0.03, heavy: 0.03, chRoll: -0.1, chYaw: 0.06, chPitch: -0.04 },
   aa12: { s: 'drum', roll: -0.42, yaw: 0.24, pitch: 0.1, px: -0.08, py: 0.05, pz: 0.03, heavy: 0.045, hx: -0.052, chRoll: -0.25, chYaw: 0.1, chPitch: 0.08 },
@@ -969,7 +969,7 @@ const Guns = G.Guns = {
   },
   rifleKeys(o, K, v) {
     const st = K.st, S = st.s, F = o.fore, mr = o.rest.mag, md = o.magDir, k = o.s / 1.54;
-    const Hm = mr.clone().addScaledVector(md, 0.1 * k).add(new V3(st.hx || -0.032, 0, 0));       // 탄창을 쥔 손
+    const Hm = mr.clone().addScaledVector(md, (st.hd || 0.1) * k).add(new V3(st.hx || -0.032, 0, 0));       // 탄창을 쥔 손 (hd: 탄창 위에서 손까지)
     const g = K.grab = Hm.clone().sub(mr);
     const box = o.magBox || new THREE.Box3(new V3(-0.01, -0.1, -0.03), new V3(0.01, 0, 0.03));
     Hm.x=mr.x+box.min.x-0.0015;K.grab.copy(Hm).sub(mr);
