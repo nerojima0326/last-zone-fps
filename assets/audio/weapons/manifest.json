@@ -71,48 +71,48 @@
    "rate": 1.0,
    "shot": {
     "path": "ka47-shot.mp3",
-    "sha": "cadc339c692e",
+    "sha": "7942a17fe85e",
     "cues": {
      "own0": {
       "offset": 0.25,
-      "duration": 1.8967
+      "duration": 1.7822
      },
      "own1": {
-      "offset": 2.3967,
-      "duration": 1.8967
+      "offset": 2.2822,
+      "duration": 1.7822
      }
     }
    },
    "fx": {
     "path": "ka47-fx.mp3",
-    "sha": "b034eaad63c5",
+    "sha": "8a50a5f953fa",
     "cues": {
      "near": {
       "offset": 0.25,
-      "duration": 1.6744
+      "duration": 1.56
      },
      "far": {
-      "offset": 2.1744,
-      "duration": 2.5633
+      "offset": 2.06,
+      "duration": 2.4489
      },
      "magout": {
-      "offset": 4.9878,
+      "offset": 4.7589,
       "duration": 0.1516
      },
      "magin": {
-      "offset": 5.3894,
+      "offset": 5.1605,
       "duration": 0.1514
      },
      "open": {
-      "offset": 5.7907,
+      "offset": 5.5619,
       "duration": 0.2761
      },
      "close": {
-      "offset": 6.3168,
+      "offset": 6.088,
       "duration": 0.1516
      },
      "dry": {
-      "offset": 6.7184,
+      "offset": 6.4895,
       "duration": 0.1513
      }
     }
@@ -135,48 +135,48 @@
    "rate": 1.0,
    "shot": {
     "path": "sc17-shot.mp3",
-    "sha": "96c55e28ead9",
+    "sha": "1c72bb415907",
     "cues": {
      "own0": {
       "offset": 0.25,
-      "duration": 2.0523
+      "duration": 1.8651
      },
      "own1": {
-      "offset": 2.5523,
-      "duration": 2.0523
+      "offset": 2.3651,
+      "duration": 1.8651
      }
     }
    },
    "fx": {
     "path": "sc17-fx.mp3",
-    "sha": "1efc716abb34",
+    "sha": "c54e9ec93cf1",
     "cues": {
      "near": {
       "offset": 0.25,
-      "duration": 1.8197
+      "duration": 1.6325
      },
      "far": {
-      "offset": 2.3197,
-      "duration": 2.75
+      "offset": 2.1325,
+      "duration": 2.5628
      },
      "magout": {
-      "offset": 5.3197,
+      "offset": 4.9453,
       "duration": 0.2021
      },
      "magin": {
-      "offset": 5.7718,
+      "offset": 5.3974,
       "duration": 0.1732
      },
      "open": {
-      "offset": 6.195,
+      "offset": 5.8206,
       "duration": 0.2435
      },
      "close": {
-      "offset": 6.6885,
+      "offset": 6.3141,
       "duration": 0.1623
      },
      "dry": {
-      "offset": 7.1008,
+      "offset": 6.7264,
       "duration": 0.151
      }
     }
@@ -263,56 +263,56 @@
    "rate": 1.0,
    "shot": {
     "path": "kr98-shot.mp3",
-    "sha": "14f934902dc8",
+    "sha": "02a4e2b50117",
     "cues": {
      "own0": {
       "offset": 0.25,
-      "duration": 2.32
+      "duration": 2.005
      },
      "own1": {
-      "offset": 2.82,
-      "duration": 2.32
+      "offset": 2.505,
+      "duration": 2.005
      }
     }
    },
    "fx": {
     "path": "kr98-fx.mp3",
-    "sha": "8be8072f6d89",
+    "sha": "f808912f12fd",
     "cues": {
      "near": {
       "offset": 0.25,
-      "duration": 2.07
+      "duration": 1.755
      },
      "far": {
-      "offset": 2.57,
-      "duration": 3.07
+      "offset": 2.255,
+      "duration": 2.755
      },
      "magout": {
-      "offset": 5.89,
+      "offset": 5.26,
       "duration": 0.1521
      },
      "magin": {
-      "offset": 6.2921,
+      "offset": 5.6621,
       "duration": 0.1516
      },
      "open": {
-      "offset": 6.6937,
+      "offset": 6.0637,
       "duration": 0.1521
      },
      "close": {
-      "offset": 7.0957,
+      "offset": 6.4657,
       "duration": 0.2208
      },
      "dry": {
-      "offset": 7.5665,
+      "offset": 6.9365,
       "duration": 0.1514
      },
      "up": {
-      "offset": 7.9679,
+      "offset": 7.3379,
       "duration": 0.1512
      },
      "down": {
-      "offset": 8.3691,
+      "offset": 7.7391,
       "duration": 0.1849
      }
     }
@@ -337,48 +337,48 @@
    "rate": 1.0,
    "shot": {
     "path": "s12-shot.mp3",
-    "sha": "bd1f847a5ff0",
+    "sha": "31687d605aa1",
     "cues": {
      "own0": {
       "offset": 0.25,
-      "duration": 1.9795
+      "duration": 1.8227
      },
      "own1": {
-      "offset": 2.4795,
-      "duration": 1.9795
+      "offset": 2.3227,
+      "duration": 1.8227
      }
     }
    },
    "fx": {
     "path": "s12-fx.mp3",
-    "sha": "8c0c105ffbf1",
+    "sha": "2d5872e44059",
     "cues": {
      "near": {
       "offset": 0.25,
-      "duration": 1.7522
+      "duration": 1.5954
      },
      "far": {
-      "offset": 2.2522,
-      "duration": 2.6613
+      "offset": 2.0954,
+      "duration": 2.5045
      },
      "open": {
-      "offset": 5.1636,
+      "offset": 4.85,
       "duration": 0.1568
      },
      "close": {
-      "offset": 5.5704,
+      "offset": 5.2568,
       "duration": 0.193
      },
      "shell": {
-      "offset": 6.0134,
+      "offset": 5.6998,
       "duration": 0.1516
      },
      "port": {
-      "offset": 6.415,
+      "offset": 6.1014,
       "duration": 0.1835
      },
      "dry": {
-      "offset": 6.8485,
+      "offset": 6.5349,
       "duration": 0.1532
      }
     }
@@ -465,44 +465,44 @@
    "rate": 1.0,
    "shot": {
     "path": "db2-shot.mp3",
-    "sha": "bbcf5e601925",
+    "sha": "99728ff7d549",
     "cues": {
      "own0": {
       "offset": 0.25,
-      "duration": 2.3205
+      "duration": 2.0564
      },
      "own1": {
-      "offset": 2.8205,
-      "duration": 2.3205
+      "offset": 2.5564,
+      "duration": 2.0564
      }
     }
    },
    "fx": {
     "path": "db2-fx.mp3",
-    "sha": "0d2e18418b52",
+    "sha": "404056da5932",
     "cues": {
      "near": {
       "offset": 0.25,
-      "duration": 2.0641
+      "duration": 1.8
      },
      "far": {
-      "offset": 2.5641,
-      "duration": 3.0897
+      "offset": 2.3,
+      "duration": 2.8256
      },
      "open": {
-      "offset": 5.9038,
+      "offset": 5.3756,
       "duration": 0.1566
      },
      "close": {
-      "offset": 6.3104,
+      "offset": 5.7822,
       "duration": 0.1762
      },
      "shell": {
-      "offset": 6.7366,
+      "offset": 6.2084,
       "duration": 0.2094
      },
      "dry": {
-      "offset": 7.196,
+      "offset": 6.6678,
       "duration": 0.1515
      }
     }
@@ -524,48 +524,48 @@
    "rate": 1.0,
    "shot": {
     "path": "sa12-shot.mp3",
-    "sha": "c8aab7720a93",
+    "sha": "e434a8e5f533",
     "cues": {
      "own0": {
       "offset": 0.25,
-      "duration": 1.6243
+      "duration": 1.5573
      },
      "own1": {
-      "offset": 2.1243,
-      "duration": 1.6243
+      "offset": 2.0573,
+      "duration": 1.5573
      }
     }
    },
    "fx": {
     "path": "sa12-fx.mp3",
-    "sha": "a808c542d445",
+    "sha": "f1b1bfeca713",
     "cues": {
      "near": {
       "offset": 0.25,
-      "duration": 1.4301
+      "duration": 1.3631
      },
      "far": {
-      "offset": 1.9301,
-      "duration": 2.2068
+      "offset": 1.8631,
+      "duration": 2.1398
      },
      "magout": {
-      "offset": 4.3868,
+      "offset": 4.2529,
       "duration": 0.228
      },
      "magin": {
-      "offset": 4.8648,
+      "offset": 4.7309,
       "duration": 0.1516
      },
      "open": {
-      "offset": 5.2665,
+      "offset": 5.1325,
       "duration": 0.2735
      },
      "close": {
-      "offset": 5.79,
+      "offset": 5.656,
       "duration": 0.1511
      },
      "dry": {
-      "offset": 6.191,
+      "offset": 6.0571,
       "duration": 0.1513
      }
     }
@@ -588,48 +588,48 @@
    "rate": 1.0,
    "shot": {
     "path": "aa12-shot.mp3",
-    "sha": "9e5cebc76fe9",
+    "sha": "6b7826cbdf89",
     "cues": {
      "own0": {
       "offset": 0.25,
-      "duration": 2.2757
+      "duration": 2.1676
      },
      "own1": {
-      "offset": 2.7757,
-      "duration": 2.2757
+      "offset": 2.6676,
+      "duration": 2.1676
      }
     }
    },
    "fx": {
     "path": "aa12-fx.mp3",
-    "sha": "97d7ad18ea3f",
+    "sha": "712c267651a8",
     "cues": {
      "near": {
       "offset": 0.25,
-      "duration": 2.0054
+      "duration": 1.8973
      },
      "far": {
-      "offset": 2.5054,
-      "duration": 3.0865
+      "offset": 2.3973,
+      "duration": 2.9784
      },
      "magout": {
-      "offset": 5.8419,
+      "offset": 5.6256,
       "duration": 0.1581
      },
      "magin": {
-      "offset": 6.2499,
+      "offset": 6.0337,
       "duration": 0.1517
      },
      "open": {
-      "offset": 6.6516,
+      "offset": 6.4354,
       "duration": 0.1516
      },
      "close": {
-      "offset": 7.0532,
+      "offset": 6.8369,
       "duration": 0.1515
      },
      "dry": {
-      "offset": 7.4546,
+      "offset": 7.2384,
       "duration": 0.1514
      }
     }
@@ -780,48 +780,48 @@
    "rate": 1.0,
    "shot": {
     "path": "m1911-shot.mp3",
-    "sha": "b074db2e2640",
+    "sha": "7e8710f1545c",
     "cues": {
      "own0": {
       "offset": 0.25,
-      "duration": 1.8276
+      "duration": 1.7064
      },
      "own1": {
-      "offset": 2.3276,
-      "duration": 1.8276
+      "offset": 2.2064,
+      "duration": 1.7064
      }
     }
    },
    "fx": {
     "path": "m1911-fx.mp3",
-    "sha": "8adfecefa43a",
+    "sha": "182156a4c3eb",
     "cues": {
      "near": {
       "offset": 0.25,
-      "duration": 1.6149
+      "duration": 1.4936
      },
      "far": {
-      "offset": 2.1149,
-      "duration": 2.4659
+      "offset": 1.9936,
+      "duration": 2.3447
      },
      "magout": {
-      "offset": 4.8308,
+      "offset": 4.5883,
       "duration": 0.1555
      },
      "magin": {
-      "offset": 5.2363,
+      "offset": 4.9938,
       "duration": 0.1756
      },
      "open": {
-      "offset": 5.6619,
+      "offset": 5.4194,
       "duration": 0.1523
      },
      "close": {
-      "offset": 6.0642,
+      "offset": 5.8217,
       "duration": 0.1752
      },
      "dry": {
-      "offset": 6.4894,
+      "offset": 6.2468,
       "duration": 0.1515
      }
     }
@@ -844,48 +844,48 @@
    "rate": 1.0,
    "shot": {
     "path": "de7-shot.mp3",
-    "sha": "b0e77dfe9511",
+    "sha": "d136fde161d0",
     "cues": {
      "own0": {
       "offset": 0.25,
-      "duration": 2.4737
+      "duration": 2.1105
      },
      "own1": {
-      "offset": 2.9737,
-      "duration": 2.4737
+      "offset": 2.6105,
+      "duration": 2.1105
      }
     }
    },
    "fx": {
     "path": "de7-fx.mp3",
-    "sha": "5fd4201067d0",
+    "sha": "bc620d64d173",
     "cues": {
      "near": {
       "offset": 0.25,
-      "duration": 2.2105
+      "duration": 1.8473
      },
      "far": {
-      "offset": 2.7105,
-      "duration": 3.2631
+      "offset": 2.3473,
+      "duration": 2.9
      },
      "magout": {
-      "offset": 6.2236,
+      "offset": 5.4973,
       "duration": 0.1555
      },
      "magin": {
-      "offset": 6.6291,
+      "offset": 5.9029,
       "duration": 0.1756
      },
      "open": {
-      "offset": 7.0547,
+      "offset": 6.3284,
       "duration": 0.1523
      },
      "close": {
-      "offset": 7.457,
+      "offset": 6.7307,
       "duration": 0.1599
      },
      "dry": {
-      "offset": 7.8668,
+      "offset": 7.1406,
       "duration": 0.1515
      }
     }
@@ -908,48 +908,48 @@
    "rate": 1.0,
    "shot": {
     "path": "r45-shot.mp3",
-    "sha": "7c5a5d62e483",
+    "sha": "ae3c5b96d628",
     "cues": {
      "own0": {
       "offset": 0.25,
-      "duration": 2.0791
+      "duration": 1.8651
      },
      "own1": {
-      "offset": 2.5791,
-      "duration": 2.0791
+      "offset": 2.3651,
+      "duration": 1.8651
      }
     }
    },
    "fx": {
     "path": "r45-fx.mp3",
-    "sha": "6280c1254483",
+    "sha": "ebfe3bebe259",
     "cues": {
      "near": {
       "offset": 0.25,
-      "duration": 1.8465
+      "duration": 1.6325
      },
      "far": {
-      "offset": 2.3465,
-      "duration": 2.7767
+      "offset": 2.1325,
+      "duration": 2.5628
      },
      "open": {
-      "offset": 5.3732,
+      "offset": 4.9453,
       "duration": 0.1511
      },
      "shell": {
-      "offset": 5.7743,
+      "offset": 5.3464,
       "duration": 0.1518
      },
      "magin": {
-      "offset": 6.1761,
+      "offset": 5.7482,
       "duration": 0.1513
      },
      "close": {
-      "offset": 6.5774,
+      "offset": 6.1495,
       "duration": 0.1601
      },
      "dry": {
-      "offset": 6.9875,
+      "offset": 6.5596,
       "duration": 0.1546
      }
     }

@@ -49,16 +49,16 @@ CHAR = {
  'ka47': dict(pitch=0.90, peak=(900, 7),  cut=(3000, -5), treble=-2, tail=1.00, echo=(45, .25),  drive=3, thump=(0.15, 68)),
  'sc17': dict(pitch=0.86, peak=(700, 6),  cut=(2500, -4), treble=0,  tail=1.00, echo=(70, .30),  drive=2, thump=(0.25, 60)),
  'mk14': dict(pitch=1.08, peak=(3200, 7), cut=(800, -5),  treble=3,  tail=0.70, echo=(0, 0),     drive=0, thump=(0.15, 66)),
- 'kr98': dict(pitch=0.80, peak=(1200, 6), cut=(400, -4),  treble=2,  tail=1.00, echo=(110, .35), drive=4, thump=(0.35, 55)),
+ 'kr98': dict(pitch=0.80, peak=(1200, 6), cut=(400, -4),  treble=2,  tail=1.00, echo=(110, .35), drive=3, thump=(0.35, 55)),
  's12':  dict(pitch=0.88, peak=(500, 8),  cut=(3000, -6), treble=-3, tail=1.00, echo=(60, .30),  drive=4, thump=(0.35, 56)),
  'm1014':dict(pitch=1.06, peak=(1600, 7), cut=(400, -5),  treble=1,  tail=0.75, echo=(0, 0),     drive=2, thump=(0.20, 60)),
- 'db2':  dict(pitch=0.78, peak=(350, 9),  cut=(2500, -6), treble=-4, tail=1.00, echo=(90, .35),  drive=6, thump=(0.50, 48)),
+ 'db2':  dict(pitch=0.78, peak=(350, 9),  cut=(2500, -6), treble=-4, tail=1.00, echo=(90, .35),  drive=4, thump=(0.50, 48)),
  'sa12': dict(pitch=1.03, peak=(1400, 8), cut=(4000, -5), treble=1,  tail=0.70, echo=(30, .20),  drive=3, thump=(0.20, 64)),
  'aa12': dict(pitch=0.74, peak=(450, 9),  cut=(2000, -7), treble=-5, tail=0.60, echo=(35, .30),  drive=8, thump=(0.45, 50)),
  'p92':  dict(pitch=1.12, peak=(3000, 6), cut=(700, -5),  treble=3,  tail=0.70, echo=(0, 0),     drive=0, thump=(0.00, 80)),
  'g18':  dict(pitch=1.28, peak=(4500, 8), cut=(900, -7),  treble=5,  tail=0.45, echo=(0, 0),     drive=0, thump=(0.00, 80)),
  'm1911':dict(pitch=0.94, peak=(1100, 7), cut=(3500, -4), treble=0,  tail=0.90, echo=(50, .25),  drive=3, thump=(0.12, 74)),
- 'de7':  dict(pitch=0.76, peak=(600, 9),  cut=(3000, -5), treble=-1, tail=1.00, echo=(120, .40), drive=8, thump=(0.60, 44)),
+ 'de7':  dict(pitch=0.76, peak=(600, 9),  cut=(3000, -5), treble=-1, tail=1.00, echo=(120, .40), drive=5, thump=(0.60, 44)),
  'r45':  dict(pitch=0.86, peak=(1800, 8), cut=(500, -4),  treble=3,  tail=1.00, echo=(80, .30),  drive=4, thump=(0.35, 52)),
 }
 def character(y, gid):
@@ -66,11 +66,19 @@ def character(y, gid):
     (pf, pg), (cf, cg) = c['peak'], c['cut']
     af = [f'equalizer=f={pf}:t=o:w=1.2:g={pg}', f'equalizer=f={cf}:t=o:w=1.4:g={cg}', f'treble=g={c["treble"]}:f=5000:w=0.7']
     if c['drive']: af += [f'volume={c["drive"]}dB', 'asoftclip=type=atan']
-    if c['echo'][0]: af += [f'aecho=1.0:0.9:{c["echo"][0]}|{int(c["echo"][0] * 2.3)}:{c["echo"][1]}|{c["echo"][1] * .5:.3f}']
     af += [f'asetrate={int(SR * c["pitch"])}', f'aresample={SR}']
     raw = subprocess.run(['ffmpeg', '-v', 'error', '-f', 'f32le', '-ar', str(SR), '-ac', str(ch), '-i', '-', '-af', ','.join(af), '-f', 'f32le', '-'],
                          input=(y / (np.abs(y).max() + 1e-9) * 0.5).astype(np.float32).tobytes(), capture_output=True, check=True).stdout
     z = np.frombuffer(raw, np.float32).reshape(-1, ch).copy()
+    # 울림: 또렷한 메아리(두 번째 총성처럼 들림) 대신, 서서히 커졌다 사라지는 퍼진 잔향을 섞는다
+    size, wet = c['echo']
+    if size:
+        rng = np.random.default_rng(len(gid) * 7919 + int(size))
+        n = int(size * 4 / 1000 * SR); tt = np.arange(n) / SR
+        ir = rng.standard_normal(n) * np.exp(-tt / (size / 1000)) * (1 - np.exp(-tt / 0.03))
+        ir = np.convolve(ir, np.ones(96) / 96, 'same')            # 날카로운 반사 끝을 무디게 (고음은 빨리 사라진다)
+        ir *= wet / (np.sqrt((ir ** 2).sum()) + 1e-9)
+        z = z + np.stack([np.convolve(z[:, i], ir)[:len(z)] for i in range(ch)], 1) * 0.35
     t = np.arange(len(z)) / SR
     if c['tail'] < 1:
         z *= np.where(t < 0.05, 1, np.exp(-(t - 0.05) / (0.45 * c['tail'])))[:, None]
