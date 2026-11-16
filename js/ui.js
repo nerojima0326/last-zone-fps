@@ -97,7 +97,7 @@ const UI = G.UI = {
       vest: $('vestIcon'), helm: $('helmIcon'), bag: $('bagIcon'), meds: $('medsInfo'), mag: $('ammoMag'), res: $('ammoRes'), wname: $('weaponName'), fmode: $('fireMode'), slots: $('slots'),
       cross: $('crosshair'), hit: $('hitmarker'), prompt: $('prompt'), progress: $('progress'), progLabel: $('progressLabel'), progFill: $('progressFill'),
       center: $('centerMsg'), kill: $('killMsg'), pick: $('pickupMsg'), plane: $('planeHint'), spec: $('spectate'), vig: $('vignette'), zoneO: $('zoneOverlay'),
-      knockO: $('knockOverlay'), flash: $('flashOverlay'), zoneInfo: $('zoneInfo'), zoneLabel: $('zoneLabel'), zoneTime: $('zoneTime'), strip, compassDeg: $('compassDeg'),
+      knockO: $('knockOverlay'), flash: $('flashOverlay'), freeze: $('flashFreeze'), zoneInfo: $('zoneInfo'), zoneLabel: $('zoneLabel'), zoneTime: $('zoneTime'), strip, compassDeg: $('compassDeg'),
       feed: $('killfeed'), dmg: $('dmgDirs'), team: $('teamPanel'), tags: $('tags'), bigWrap: $('bigmapWrap')
     };
     this.cache = {};
@@ -208,6 +208,14 @@ const UI = G.UI = {
     $('results').classList.remove('hidden');
   },
 
+  // 섬광 잔상: 지금 그린 화면을 복사해 둔다 (작게 — 흐린 잔상이라 해상도가 필요 없다)
+  freezeFrame(src) {
+    const c = this.el && this.el.freeze;
+    if (!c || !src.width) return;
+    const k = Math.min(1, 960 / src.width);
+    c.width = Math.round(src.width * k); c.height = Math.round(src.height * k);
+    try { c.getContext('2d').drawImage(src, 0, 0, c.width, c.height); this.freezeOn = true; } catch (e) { this.freezeOn = false; }
+  },
   update(dt) {
     const Game = G.Game;
     if (Game.state !== 'playing' && Game.state !== 'ended') return;
@@ -283,7 +291,10 @@ const UI = G.UI = {
     el.vig.style.opacity = Math.min(1, this.hurtV * 0.8 + low);
     el.zoneO.style.opacity = a.alive && a.state === 'ground' && !Game.inZone(a.pos) ? 1 : 0;
     el.knockO.style.opacity = a.knocked ? 1 : 0;
-    el.flash.style.opacity = P.flashAmt;
+    // 섬광: 처음엔 새하얗고, 걷히면서 맞은 순간의 멈춘 화면(잔상)이 보였다가 사라진다
+    el.flash.style.opacity = P.flashAmt > 0 ? Math.pow(Math.min(1, P.flashAmt * 1.35), 1.6) : 0;
+    if (el.freeze) el.freeze.style.opacity = this.freezeOn && P.flashAmt > 0 ? Math.min(1, P.flashAmt * 1.7) * 0.9 : 0;
+    if (P.flashAmt <= 0) this.freezeOn = false;
     // 프롬프트 / 진행
     const showPrompt = P.prompt && a.alive && a.state === 'ground' && !this.mapOpen;
     if (showPrompt) { this.set('prompt', el.prompt, P.prompt, 'innerHTML'); el.prompt.style.display = 'block'; } else el.prompt.style.display = 'none';
