@@ -205,6 +205,8 @@ const WRIST = 0.052, HAND_S = 0.93;
 const GRIP_CONTACT = new V3(0,0.067,0.029); // 손가락 뿌리와 엄지 두덩 사이의 손잡이 접촉
 const PALM_CONTACT = new V3(0, 0.046, 0.018); // IK 목표는 손바닥 표면의 접촉점
 let ARM_M = null;
+// 실사 팔(real-arms.js)이 절차적 손과 크기·접촉점을 맞출 때 쓰는 값
+G.ARM_CONST = { handS: HAND_S, middleBase: 0.089 };
 function armMats() {
   if (ARM_M) return ARM_M;
   const M = mats();
@@ -907,12 +909,14 @@ const Guns = G.Guns = {
     if (type === 'fists') {
       const l = o.parts.left = new THREE.Group(); l.position.set(-0.13, -0.15, -0.33); root.add(l);
       const r = o.parts.right = new THREE.Group(); r.position.set(0.13, -0.15, -0.31); root.add(r);
-      armVM(l, new V3(0, 0, 0), new V3(-0.04, -0.12, 0.25), new V3(-0.15, -0.3, 0.55), null, -1, { curl: 1, thumb: 0.9, palm: new V3(0.5, -0.2, 0.2) });
-      armVM(r, new V3(0, 0, 0), new V3(0.04, -0.12, 0.25), new V3(0.15, -0.3, 0.55), null, 1, { curl: 1, thumb: 0.9, palm: new V3(-0.5, -0.2, 0.2) });
+      o.staticArms = {
+        L: armVM(l, new V3(0, 0, 0), new V3(-0.04, -0.12, 0.25), new V3(-0.15, -0.3, 0.55), null, -1, { curl: 1, thumb: 0.9, palm: new V3(0.5, -0.2, 0.2) }),
+        R: armVM(r, new V3(0, 0, 0), new V3(0.04, -0.12, 0.25), new V3(0.15, -0.3, 0.55), null, 1, { curl: 1, thumb: 0.9, palm: new V3(-0.5, -0.2, 0.2) })
+      };
       o.hip = new V3(0, 0, 0); o.muzzle = new V3(0, 0, -0.3);
     } else {
       const hand = o.parts.hand = new THREE.Group(); hand.position.set(0.18, -0.2, -0.46); root.add(hand);
-      armVM(hand, new V3(0, -0.03, 0.02), new V3(0.05, -0.16, 0.28), new V3(0.16, -0.34, 0.58), null, 1, { curl: 0.62, thumb: 0.55, palm: new V3(-0.7, 0.4, 0) });
+      o.staticArms = { L: null, R: armVM(hand, new V3(0, -0.03, 0.02), new V3(0.05, -0.16, 0.28), new V3(0.16, -0.34, 0.58), null, 1, { curl: 0.62, thumb: 0.55, palm: new V3(-0.7, 0.4, 0) }) };
       o.items = {};
       for (const k of G.THROW_ORDER) { const m = Guns.throwModel(k, true); m.visible = false; hand.add(m); o.items[k] = m; }
       o.hip = new V3(0, 0, 0); o.muzzle = new V3(0.15, -0.1, -0.35);
