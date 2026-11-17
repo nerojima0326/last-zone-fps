@@ -16,12 +16,8 @@ export const IMPORTED = {
   de7: 'Pistol_Full_East.glb',
   mk14: 'Sniper_Material_West.glb',
   r45: 'Revolver_2.fbx',
-  // v45: 볼트액션 저격총 (Flat Guns West)
-  kr98: 'Sniper_Rifle_West.glb'
-};
-// KR-98 은 설계 모델이 없다: 예전 실사 모델(v44)의 길이·손 위치를 기준으로 쓴다
-const BASE = {
-  kr98: () => ({ cls: 'rifle', muzzle: [0, 0.059, -0.766], fore: [-0.008, 0.007, -0.30], magDir: [0, -1, 0], ironDist: 0.46, pivots: {}, extra: {} })
+  // v47: 내장 탄창 볼트액션 저격총 (Ultimate Gun Pack, buildBoltRifle)
+  kr98: 'SniperRifle_1.fbx'
 };
 const PISTOLS = new Set(['m1911', 'de7']);
 // 설계 모델(designs.js)의 부품 상자 — 손 IK 기준(손잡이 위치)을 그대로 쓰기 위해 맞춘다
@@ -43,8 +39,7 @@ function partFor(name, id) {
   if (n === 'shell') return null; // Gameplay supplies the loading/ejected shells.
   if (n === 'magazine') return 'mag';
   if (n === 'rearsights') return 'rearsight';
-  if (id === 'kr98' && n === 'frontsights') return 'rearsight';  // 접이식 가늠쇠: 조준경을 달면 같이 접힌다
-  if (n === 'bolt') return id === 'kr98' ? 'bolt' : 'charge';  // 볼트액션은 볼트가 돌았다 빠진다
+  if (n === 'bolt') return 'charge';
   if (n.startsWith('charginghandle')) return 'charge';
   if (id === 'db2' && n === 'barrel') return 'barrel';
   if (n === 'slide') return 'slide';
@@ -67,6 +62,7 @@ async function texture(name, srgb) {
 }
 
 export async function buildImported(id) {
+  if (id === 'kr98') return buildBoltRifle(id);
   if (IMPORTED[id].endsWith('.fbx')) return buildRevolver(id);
   const gltf = await new GLTFLoader().loadAsync(dir + IMPORTED[id]);
   const root = gltf.scene;
@@ -78,7 +74,7 @@ export async function buildImported(id) {
     ? new THREE.Box3().setFromObject(triggerNode).getCenter(new THREE.Vector3())
     : triggerNode.getWorldPosition(new THREE.Vector3());
   // Keep muzzle length close to the previous rig, except the short DB-2 asset.
-  const meta = structuredClone(BASE[id] ? BASE[id]() : DESIGNS[id]().meta);
+  const meta = structuredClone(DESIGNS[id]().meta);
   const scale = id === 'db2' ? 1.1 : Math.abs(meta.muzzle[2] / (bounds.min.z - trigger.z));
   const point = p => p.clone().sub(trigger).multiplyScalar(scale);
   let post = p => p;   // 권총은 아래에서 손잡이 기준으로 다시 맞춘다
@@ -229,67 +225,6 @@ export async function buildImported(id) {
     const near = meshes.filter(m => m.part === 'body').flatMap(m => { const a = m.geo.attributes.position, r = []; for (let i = 0; i < a.count; i++) if (Math.abs(a.getZ(i) - meta.fore[2]) < .03) r.push(a.getY(i)); return r; }); meta.fore[1] = Math.min(...near) - .01;
     meta.extra = Object.assign({}, meta.extra, { chargeApproachLift: .035 });
   }
-  if (id === 'kr98') {
-    // 볼트: 회전축 = 볼트 몸통 중심선(손잡이를 뺀 가운데 부분), 손이 잡는 점 = 손잡이 끝(오른쪽 끝)
-    const pts = meshes.filter(m => m.part === 'bolt').flatMap(m => { const a = m.geo.attributes.position, r = []; for (let i = 0; i < a.count; i++) r.push(new THREE.Vector3().fromBufferAttribute(a, i)); return r; });
-    const bb = box('bolt');
-    const core = pts.filter(p => p.x < bb.min.x + .02);
-    const cy = (Math.min(...core.map(p => p.y)) + Math.max(...core.map(p => p.y))) / 2;
-    meta.pivots.bolt = [0, cy, (bb.min.z + bb.max.z) / 2];
-    // 볼트 몸통은 배출구를 채운 채 그대로 두고, 리시버 밖으로 나온 손잡이만 움직이는 부품으로
-    const edge = -bb.min.x + .002;
-    for (const m of meshes.filter(m => m.part === 'bolt')) {
-      const a = m.geo.attributes, keep = { p: [], n: [], uv: [] }, out = { p: [], n: [], uv: [] };
-      for (let t = 0; t < a.position.count; t += 3) {
-        const cx = (a.position.getX(t) + a.position.getX(t + 1) + a.position.getX(t + 2)) / 3, dst = cx > edge ? out : keep;
-        for (let i = t; i < t + 3; i++) {
-          dst.p.push(a.position.getX(i), a.position.getY(i), a.position.getZ(i));
-          dst.n.push(a.normal.getX(i), a.normal.getY(i), a.normal.getZ(i));
-          dst.uv.push(a.uv.getX(i), a.uv.getY(i));
-        }
-      }
-      const geo = q => { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(q.p, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(q.n, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(q.uv, 2)); return g; };
-      m.geo = geo(out);
-      if (keep.p.length) meshes.push({ part: 'body', mat: m.mat, geo: geo(keep) });
-    }
-    pts.length = 0;
-    for (const m of meshes) if (m.part === 'bolt') { const a = m.geo.attributes.position; for (let i = 0; i < a.count; i++) pts.push(new THREE.Vector3().fromBufferAttribute(a, i)); }
-    // 원본 손잡이는 거의 수평이다: 볼트를 축 둘레로 내려 손잡이가 오른쪽 아래를 보게 (닫힌 볼트 모양,
-    // 들어 올릴 때 손이 총 위로 넘어가지 않는다)
-    const turn = -0.7, q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), turn);
-    const ax = new THREE.Vector3(0, cy, 0), v = new THREE.Vector3();
-    for (const m of meshes) if (m.part === 'bolt') {
-      const a = m.geo.attributes.position, n = m.geo.attributes.normal;
-      for (let i = 0; i < a.count; i++) {
-        v.fromBufferAttribute(a, i).sub(ax).applyQuaternion(q).add(ax); a.setXYZ(i, v.x, v.y, v.z);
-        v.fromBufferAttribute(n, i).applyQuaternion(q); n.setXYZ(i, v.x, v.y, v.z);
-      }
-      m.geo.boundingBox = null;
-    }
-    for (const p of pts) p.sub(ax).applyQuaternion(q).add(ax);
-    let knob = pts.reduce((a, p) => p.x > a.x ? p : a, pts[0]);
-    // 원본 손잡이는 탄창 앞쪽(방아쇠보다 15 cm 앞)에 있어 오른팔이 닿지 않는다:
-    // 볼트를 뒤로 옮겨 손잡이가 방아쇠 위(실제 볼트액션 자리, 배출구 뒤 끝)에 오게 한다
-    const back = .17;
-    for (const m of meshes) if (m.part === 'bolt') { m.geo.translate(0, 0, back); m.geo.boundingBox = null; }
-    for (const p of pts) p.z += back;
-    meta.pivots.bolt[2] += back;
-    meta.charge = [knob.x + .006, knob.y, knob.z + .004];
-    // 원본 접이식 가늠자·가늠쇠는 총열보다 10 cm 높아 허리 사격 시야를 가린다: 레일 높이를 기준으로 낮춘다
-    const railY = namedPoint('Attach_Scope')[1];
-    for (const m of meshes) if (m.part === 'rearsight') {
-      const a = m.geo.attributes.position;
-      for (let i = 0; i < a.count; i++) if (a.getY(i) > railY) a.setY(i, railY + (a.getY(i) - railY) * .4);
-      m.geo.computeVertexNormals(); m.geo.boundingBox = null;
-    }
-    // 가늠자(뒤)·가늠쇠(앞) 꼭대기를 잇는 조준선
-    const rs = box('rearsight');
-    const rear = namedPoint('Rear Sights');
-    if (!rs.isEmpty() && rear) meta.sight = [rs.max.y + .001, rear[2]];
-    // 받치는 손: 개머리 앞부분(포엔드) 아랫면 바로 아래
-    const near = meshes.filter(m => m.part === 'body').flatMap(m => { const a = m.geo.attributes.position, r = []; for (let i = 0; i < a.count; i++) if (Math.abs(a.getZ(i) - meta.fore[2]) < .03 && Math.abs(a.getX(i)) < .03) r.push(a.getY(i)); return r; });
-    meta.fore[1] = Math.min(...near) - .006;
-  }
   if (id === 'm1014') {
     const pump = namedPoint('Pump');
     meta.fore = [pump[0] - .004, pump[1] - .025, pump[2]];
@@ -316,13 +251,10 @@ const REV_MATS = {
   Grey: { color: 0x3c4045, metalness: .6, roughness: .5 },
   DarkWood: { color: 0x5b3420, metalness: 0, roughness: .72 }
 };
-async function buildRevolver(id) {
-  const src = await new FBXLoader().loadAsync(dir + IMPORTED[id]);
+// FBX(Ultimate Gun Pack) → 총 공간 삼각형 (-Z 총구, +Y 위, +X 오른쪽, 원본 단위)
+async function fbxGunTris(file) {
+  const src = await new FBXLoader().loadAsync(dir + file);
   src.updateMatrixWorld(true);
-  const design = DESIGNS[id]();
-  const meta = structuredClone(design.meta);
-  // 설계의 실린더: 축 높이 CY, 앞·뒤 z, 반지름
-  const cylAxis = meta.extra.cylAxis, CR = 0.0205, CZ0 = -0.057, CZ1 = -0.011;
   // 1) 세계 좌표 삼각형 모으기
   const tris = [];
   src.traverse(mesh => {
@@ -353,6 +285,79 @@ async function buildRevolver(id) {
   // 위 × 앞 = 오른쪽? 앞(-Z)×위(+Y) = +X 이므로 (앞 × 위) 방향이 +X
   const toGun = p => { const v = conv(p); v.x = thinSign * p[thin]; return v; };
   for (const t of tris) { t.p = t.p.map(toGun); t.n = t.n.map(toGun); }
+  return tris;
+}
+// v47 KR-98: Ultimate Gun Pack SniperRifle_1 (내장 탄창 볼트액션 사냥총, Quaternius, CC0)
+//  일체형 조준경은 빼고(게임의 조준경을 단다), 볼트 손잡이만 움직이는 부품으로 나눈다.
+//  탄창이 없다: 볼트를 열고 배출구로 한 발씩 밀어 넣는다 (weapons.js RSTYLE kr98 · reloadType 'shell')
+const BOLT_MATS = {
+  Green: { color: 0x3b4630, metalness: 0, roughness: .78 },        // 합성 개머리판 (올리브)
+  Black: { color: 0x1c1d1f, metalness: .15, roughness: .6 },        // 개머리 패드
+  DarkMetal: { color: 0x2c2f33, metalness: .78, roughness: .4 },    // 총열·기관부·볼트
+  Grey: { color: 0x5a5e63, metalness: .7, roughness: .38 }          // 방아쇠
+};
+async function buildBoltRifle(id) {
+  const tris = await fbxGunTris(IMPORTED[id]);
+  const box = f => new THREE.Box3().setFromPoints(tris.filter(f).flatMap(t => t.p));
+  const cen = t => t.p.reduce((v, p) => v.add(p), new THREE.Vector3()).divideScalar(3);
+  // 1) 기관부 (조준경 아래 금속): 방아쇠 앞뒤 구간, 조준경 받침 높이 아래
+  const trig = box(t => t.mat === 'Grey').getCenter(new THREE.Vector3());
+  const recv = box(t => t.mat === 'DarkMetal' && t.p.every(p => p.y < trig.y + 48 && p.z > trig.z - 34 && p.z < trig.z + 31 && p.x < 9));
+  // 2) 조준경(경통·렌즈·링)을 뺀다: 기관부 윗면보다 위, 총구 쪽 가늠쇠는 남긴다
+  const all = tris.filter(t => t.mat !== 'Glass' && !(cen(t).y > recv.max.y + .7 && cen(t).z > recv.min.z - 140 && cen(t).z < recv.max.z + 30));
+  const P = all.flatMap(t => t.p), B = new THREE.Box3().setFromPoints(P);
+  // 3) 총열 중심선 (가늠쇠는 얇아서 뺀다)
+  const tip = P.filter(p => p.z < B.min.z + 3 && Math.abs(p.x) > 1.5), bore = (Math.min(...tip.map(p => p.y)) + Math.max(...tip.map(p => p.y))) / 2;
+  // 4) 크기: 방아쇠~총구 = 이전 KR-98 과 같은 0.766 m, 원점 = 방아쇠
+  const s = 0.766 / (trig.z - B.min.z), M = p => new THREE.Vector3((p.x - trig.x) * s, (p.y - trig.y) * s, (p.z - trig.z) * s);
+  // 5) 볼트 손잡이: 기관부 오른쪽으로 튀어나온 금속
+  const isHandle = t => t.mat === 'DarkMetal' && cen(t).x > 7 && Math.abs(cen(t).z - trig.z - 11) < 12 && cen(t).y < recv.max.y;
+  const mats = {}, buckets = new Map();
+  for (const name of Object.keys(BOLT_MATS)) mats['bolt' + name] = new THREE.MeshStandardMaterial(Object.assign({ name: 'bolt' + name }, BOLT_MATS[name]));
+  for (const t of all) {
+    const part = isHandle(t) ? 'bolt' : 'body', mat = 'bolt' + (BOLT_MATS[t.mat] ? t.mat : 'DarkMetal'), k = part + '|' + mat;
+    if (!buckets.has(k)) buckets.set(k, { part, mat, p: [], n: [], uv: [] });
+    const out = buckets.get(k);
+    t.p.forEach((p, i) => { M(p).toArray(out.p, out.p.length); t.n[i].toArray(out.n, out.n.length); out.uv.push(0, 0); });
+  }
+  const meshes = [];
+  for (const out of buckets.values()) {
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(out.p, 3));
+    geo.setAttribute('normal', new THREE.Float32BufferAttribute(out.n, 3));
+    geo.setAttribute('uv', new THREE.Float32BufferAttribute(out.uv, 2));
+    meshes.push({ part: out.part, mat: out.mat, geo });
+  }
+  const pts = part => meshes.filter(m => m.part === part).flatMap(m => { const a = m.geo.attributes.position, r = []; for (let i = 0; i < a.count; i++) r.push(new THREE.Vector3().fromBufferAttribute(a, i)); return r; });
+  const body = pts('body'), handle = pts('bolt'), FB = new THREE.Box3().setFromPoints(body);
+  const boreY = (bore - trig.y) * s, hb = new THREE.Box3().setFromPoints(handle);
+  const knob = handle.reduce((a, p) => p.x > a.x ? p : a, handle[0]);
+  const rcv = new THREE.Box3(M(recv.min), M(recv.max));
+  // 받치는 손: 앞쪽 개머리(포엔드) 아랫면
+  const foreZ = -0.30, under = body.filter(p => Math.abs(p.z - foreZ) < .03 && Math.abs(p.x) < .03).map(p => p.y);
+  // 가늠쇠 꼭대기 (총구 끝)
+  const front = body.filter(p => p.z < FB.min.z + .06 && Math.abs(p.x) < .004);
+  const meta = {
+    cls: 'rifle', magDir: [0, -1, 0], ironDist: 0.46, extra: { internalMag: true },
+    muzzle: [0, boreY, FB.min.z],
+    fore: [-0.008, Math.min(...under) - .006, foreZ],
+    // 볼트: 총열 축 둘레로 돌고(손잡이 들기) 뒤로 빠진다
+    pivots: { bolt: [0, boreY, (hb.min.z + hb.max.z) / 2] },
+    charge: [knob.x + .006, knob.y, knob.z + .004],
+    // 배출구(탄을 밀어 넣는 곳): 볼트가 빠진 자리, 기관부 윗면 바로 아래
+    port: [0, rcv.max.y - .004, (hb.min.z + hb.max.z) / 2 - .045],
+    sight: [Math.max(...front.map(p => p.y)) + .001, rcv.max.z],
+    rail: [rcv.max.y + .001, (rcv.min.z + rcv.max.z) / 2, 'body'],
+    credit: 'Ultimate Gun Pack / Quaternius (CC0)', sourceAsset: IMPORTED[id], license: 'CC0-1.0'
+  };
+  return { meshes, mats, meta, tris: meshes.reduce((n, m) => n + m.geo.attributes.position.count / 3, 0) };
+}
+async function buildRevolver(id) {
+  const design = DESIGNS[id]();
+  const meta = structuredClone(design.meta);
+  // 설계의 실린더: 축 높이 CY, 앞·뒤 z, 반지름
+  const cylAxis = meta.extra.cylAxis, CR = 0.0205, CZ0 = -0.057, CZ1 = -0.011;
+  const tris = await fbxGunTris(IMPORTED[id]);
   // 3) 실린더 찾기: 위쪽 절반에서 좌우 폭이 가장 넓은 구간
   const P = tris.flatMap(t => t.p), GB = new THREE.Box3().setFromPoints(P), gs = GB.getSize(new THREE.Vector3());
   const N = 120, lo = new Array(N).fill(Infinity), hi = new Array(N).fill(-Infinity), yMid = GB.min.y + gs.y * .45;

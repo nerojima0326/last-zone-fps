@@ -34,7 +34,7 @@
 | DB-2 | Boomstick / DoubleBarrelShotgun | [Godot-Dojo](https://github.com/Godot-Dojo/Deprecated-Godot-XR-Weapons), [상세](models/guns/CREDITS.md) | CC0 |
 | G-18 (3인칭·전리품) | 이 게임용으로 직접 설계한 모델 (`tools/guns/designs.js`) | — | 이 저장소의 일부 |
 | M-1911 · DE-7 · MK-14 (v42) | Flat Guns East — Pistol Compact East · Pistol Full East, Flat Guns West — Sniper Material West / Pichuliru | [fps-asset-kit](https://github.com/petroulacl/fps-asset-kit) ([상세](models/guns/CREDITS.md)) | CC0 1.0 |
-| KR-98 저격소총 (v45) | Flat Guns West — Sniper Rifle West / Pichuliru | [fps-asset-kit](https://github.com/petroulacl/fps-asset-kit) ([상세](models/guns/CREDITS.md)) | CC0 1.0 |
+| KR-98 저격소총 (v47) | Ultimate Gun Pack — SniperRifle_1 / Quaternius (일체형 조준경 제거) | [ps1-style (WingNut17) 사본](https://github.com/WingNut17/ps1-style) ([상세](models/guns/CREDITS.md)) | CC0 1.0 |
 | 투척무기 4종 (v46) | FragGrenadeModel · Flashbang · Smoke_Grenade · Molotov_Cocktail (3DModelsCC0 "Free CC0 Guns & Explosives Pack", GLB 변환본) | [GitHub (BoQsc)](https://github.com/BoQsc/cc0-guns-explosives-pack-glb), [가공 상세](models/throwables/CREDITS.md) | CC0 |
 | R-45 (v42) | Ultimate Gun Pack — Revolver_2 / Quaternius | [quaternius.com](https://quaternius.com/packs/ultimategun.html), GitHub 사본 [WingNut17/ps1-style](https://github.com/WingNut17/ps1-style) ([상세](models/guns/CREDITS.md)) | CC0 1.0 |
 | AR-7 1인칭 모델·애니메이션 | M4 - FPS Weapon Animations Pack FREE (v.1), BarcodeGames | [Fab](https://www.fab.com/listings/38da8f1e-cb54-4cda-beb1-6e55642a55a9) | Fab Standard License ([상세](models/viewmodels/CREDITS.md)) |

@@ -266,7 +266,9 @@ const P = G.Player = {
       const trigger = (def.auto && this.fireMode === 'auto') ? I.lmb : I.lmbHit;
       if (trigger) {
         const R = this.reload;
-        if (R && R.kind === 'shell' && inst.mag > 0 && R.phase !== 'end') this.reload = null;
+        // 볼트액션은 볼트가 열려 있으니 먼저 닫고 쏜다 (닫는 동안 한 발이 약실로)
+        if (R && R.kind === 'shell' && inst.mag > 0 && R.phase !== 'end' && def.action === 'bolt') { R.phase = 'end'; R.t = 0; }
+        else if (R && R.kind === 'shell' && inst.mag > 0 && R.phase !== 'end') this.reload = null;
         else if (R && R.kind === 'break' && inst.mag > 0 && R.phase === 'load') { R.phase = 'end'; R.t = 0; }
         if (!this.reload && now >= this.nextFire && this.cycleT < 0) {
           if (inst.mag > 0) this.fire(def, inst, now);
@@ -385,7 +387,10 @@ const P = G.Player = {
   },
   // 산탄 장전 단계별 시간
   phaseDur(R, def) {
-    const k = G.Guns.reloadFactor(R.empty) / (G.RELOAD_SPEED || 1);
+    const k = G.Guns.reloadFactor(R.empty) / (G.RELOAD_SPEED || 1), st = G.Guns.rstyle(def.key);
+    // 볼트액션 내장 탄창: 볼트 열기 · 닫기
+    if (st.startDur && R.phase === 'start') return st.startDur * k;
+    if (st.endDur && R.phase === 'end') return st.endDur * k;
     if (R.phase === 'start') return (R.kind === 'break' ? 0.5 : R.port ? (G.Guns.rstyle(def.key).portDuration || 0.95) : 0.35) * k;
     if (R.phase === 'end') return (R.kind === 'break' ? 0.42 : (def.action === 'pump' && R.empty && !R.port ? 0.62 : 0.3)) * k;
     return G.Guns.reloadDuration(def.key,R.empty);

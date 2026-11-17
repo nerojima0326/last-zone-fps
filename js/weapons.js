@@ -31,7 +31,7 @@ G.WEAPONS = {
     spread: 0.026, ads: 0.0024, move: 0.04, bloom: 0.008, bloomMax: 0.04, recoilV: 0.024, recoilH: 0.008, vel: 790, adsFov: 46, kick: 0.85, range: 680, falloff: [130, 0.85], tracerLen: 9, sound: 'ak', tier: 3, scopes: ALL_SCOPES }),
   mk14: W({ key: 'mk14', name: 'MK-14 지정사수소총', short: 'MK-14', cls: 'rifle', ammo: '762', dmg: 47, head: 2.3, rpm: 320, mag: 20, reload: 2.7,
     spread: 0.022, ads: 0.0012, move: 0.045, bloom: 0.012, bloomMax: 0.03, recoilV: 0.032, recoilH: 0.008, vel: 860, adsFov: 44, kick: 1.05, range: 900, falloff: [220, 0.85], tracerLen: 10, sound: 'dmr', tier: 3, scopes: ALL_SCOPES, adsTime: 0.2 }),
-  kr98: W({ key: 'kr98', name: 'KR-98 저격소총', short: 'KR-98', cls: 'rifle', ammo: '762', dmg: 85, head: 2.5, rpm: 55, action: 'bolt', cycle: 0.95, mag: 5, reload: 3.1,
+  kr98: W({ key: 'kr98', name: 'KR-98 저격소총', short: 'KR-98', cls: 'rifle', ammo: '762', dmg: 85, head: 2.5, rpm: 55, action: 'bolt', cycle: 0.95, mag: 5, reloadType: 'shell', reload: 0.62,
     spread: 0.06, ads: 0.0004, move: 0.06, bloom: 0, bloomMax: 0, recoilV: 0.05, recoilH: 0.01, vel: 920, adsFov: 42, kick: 1.6, range: 1100, falloff: [350, 0.9], tracerLen: 12, sound: 'sniper', tier: 4, scopes: ALL_SCOPES, adsTime: 0.24 }),
   // ---- 산탄총 ----
   s12: W({ key: 's12', name: 'S-12 펌프 샷건', short: 'S-12', cls: 'shotgun', ammo: '12g', dmg: 15, head: 1.5, rpm: 72, action: 'pump', mag: 6, reloadType: 'shell', reload: 0.55,
@@ -101,6 +101,7 @@ function mats() {
   MM.glove = new THREE.MeshStandardMaterial({ color: acu ? 0x5e5a4c : 0x2c2b27, roughness: 0.92 });
   MM.sleeve = new THREE.MeshStandardMaterial({ color: acu ? 0xffffff : 0x4a5236, roughness: 0.95, map: acu ? acuCamo() : null });
   MM.brass = std(0xc9a040, 1, 0.3);
+  MM.copper = std(0xb8693a, 1, 0.35);
   MM.shell = std(0xa82222, 0.2, 0.5);
   MM.lens = new THREE.MeshStandardMaterial({ color: 0x6fa0c8, metalness: 0.4, roughness: 0.35, transparent: true, opacity: 0.16, depthWrite: false });
   MM.lensDark = new THREE.MeshStandardMaterial({ color: 0x1a3550, metalness: 0.9, roughness: 0.3, transparent: true, opacity: 0.85, envMapIntensity: 1.2 });
@@ -714,7 +715,8 @@ const RSTYLE = {
   ka47: { s: 'ak', roll: -0.26, yaw: 0.14, pitch: 0.08, px: -0.05, py: 0.04, pz: 0.02, chRoll: -0.1, chYaw: 0.06, chPitch: 0.02, chX: 0.01 },
   sc17: { s: 'scar', roll: -0.32, yaw: 0.27, pitch: 0.08, px: -0.08, py: 0.075, pz: 0.04, chRoll: -0.3, chYaw: 0.14, chPitch: 0.1, chZ: 0.05 },
   mk14: { s: 'm14', hd: 0.135, roll: -0.38, yaw: 0.2, pitch: 0.13, px: -0.07, py: 0.07, pz: 0.03, chRoll: -0.1, chYaw: 0.06, chPitch: 0.04 },
-  kr98: { s: 'bolt', roll: -0.34, yaw: 0.18, pitch: 0.09, px: -0.07, py: 0.065, pz: 0.03 },
+  // v47: 내장 탄창 — 볼트를 열고(start) 배출구로 한 발씩(load) 밀어 넣은 뒤 볼트를 닫는다(end)
+  kr98: { s: 'bolt', roll: -0.34, yaw: 0.18, pitch: 0.09, px: -0.07, py: 0.065, pz: 0.03, startDur: 0.72, endDur: 0.62 },
   sa12: { s: 'saiga', roll: -0.4, yaw: 0.2, pitch: 0.07, px: -0.07, py: 0.05, pz: 0.03, heavy: 0.03, chRoll: -0.1, chYaw: 0.06, chPitch: -0.04 },
   aa12: { s: 'drum', roll: -0.42, yaw: 0.24, pitch: 0.1, px: -0.08, py: 0.05, pz: 0.03, heavy: 0.045, hx: -0.052, chRoll: -0.25, chYaw: 0.1, chPitch: 0.08 },
   p92: { s: 'release', roll: -0.32, yaw: 0.3, pitch: 0.05, px: -0.07, py: 0.05, pz: -0.07 },
@@ -801,6 +803,9 @@ const Guns = G.Guns = {
       }
     } else if (def.reloadType === 'revolver') {
       list = [[0.16, 'open'], [0.28, 'shell'], [0.6, 'magin'], [0.765, 'close']];
+    } else if (st.s === 'bolt') {
+      // 볼트액션 한 발씩: 볼트 열기 · 탄 밀어 넣기 · 볼트 닫기
+      list = phase === 'start' ? [[0.42, 'open']] : phase === 'load' ? [[0.5, 'magin']] : [[0.42, 'close']];
     } else if (phase === 'start') {
       list = def.reloadType === 'break' ? [[0.4, 'open'], [0.52, 'shell']]
         : port ? [[st.portOpen || 0.14, 'open'], [st.portSeat || 0.47, 'port'], [st.portClose || (st.s === 'semi' ? 0.63 : 0.68), 'close']] : [];
@@ -889,7 +894,14 @@ const Guns = G.Guns = {
     // 장전용 산탄 (왼손에 들고 장전구에 밀어 넣는다)
     if (def.reloadType === 'shell' || def.reloadType === 'break') {
       const sh = o.shell = new THREE.Group(); root.add(sh); sh.visible = false;
-      mc(sh, 0.0115 * s / 1.1, 0.05 * s / 1.1, 0, 0, 0, M.shell, 10); mc(sh, 0.012 * s / 1.1, 0.014 * s / 1.1, 0, 0, 0.026 * s / 1.1, M.brass, 10);
+      if (rstyle(id).s === 'bolt') {
+        // 7.62 mm 소총탄: 황동 탄피 + 구리 탄두 (탄두가 -Z, 앞쪽)
+        const k = s / 1.54;
+        mc(sh, 0.0062 * k, 0.05 * k, 0, 0, 0, M.brass, 10); mc(sh, 0.0042 * k, 0.012 * k, 0, 0, -0.03 * k, M.brass, 10);
+        mc(sh, 0.0039 * k, 0.022 * k, 0, 0, -0.045 * k, M.copper || M.brass, 10);
+      } else {
+        mc(sh, 0.0115 * s / 1.1, 0.05 * s / 1.1, 0, 0, 0, M.shell, 10); mc(sh, 0.012 * s / 1.1, 0.014 * s / 1.1, 0, 0, 0.026 * s / 1.1, M.brass, 10);
+      }
       // 중절식: 두 발을 한 번에 쥔다
       if (def.reloadType === 'break') { const s2 = o.shell2 = sh.clone(); root.add(s2); s2.visible = false; }
     }
@@ -1692,6 +1704,8 @@ const VM = G.VM = {
       if(T.taps&&p>T.seat&&p<T.taps[T.taps.length-1]+0.035)handPose(L,'press',[0,1,0],[0.2,0,1],0.12,0.18,0.12);
     }else if(rl.type==='revolver'){
       if(rl.p>0.12&&rl.p<0.83)handPose(L,rl.p<0.36?'cylinder':'loader',[1,0,0],[0,0.2,-1],0.57,0.66,0.45);
+    }else if(st.s==='bolt'){
+      // 왼손은 포엔드를 받친 채, 오른손 자세는 animBoltLoad 가 정한다
     }else{
       const c=rl.shellP,port=rl.phase==='start'&&rl.port&&rl.pp>(st.s==='semi'?0.38:0.24)&&rl.pp<(st.s==='pump'?0.5:0.57);
       const pair=rl.type==='break',normal=pair?[1,0,0]:[0,1,0],fingers=pair?[0,-0.1,-1]:[0.3,0,1];
@@ -1946,6 +1960,7 @@ const VM = G.VM = {
   //  S-12(펌프): 빈 총이면 펌프를 젖히고 배출구에 한 발 → 펌프를 밀어 닫고, 장전구가 왼손 쪽으로 오게 눕혀 한 발씩
   //  M-1014(반자동): 빈 총이면 노리쇠 손잡이를 젖혀 고정 → 배출구에 한 발 → 멈치 버튼, 총을 거의 뒤집어 장전구를 위로 하고 빠르게
   animShell(m, rl) {
+    if (m.keys.st.s === 'bolt') return this.animBoltLoad(m, rl);
     const K = m.keys, F = m.armL.tgt.clone(), semi = K.st.s === 'semi';
     if (!K.below) return;
     const LR = semi ? -0.95 : -0.55;
@@ -2046,16 +2061,89 @@ const VM = G.VM = {
     if (axis) { m.shell.quaternion.setFromUnitVectors(_c.set(0, 0, 1), axis); } else m.shell.rotation.set(0.15, 0, 0);
     if (m.shell2) { m.shell2.visible = on && two; m.shell2.quaternion.copy(m.shell.quaternion); m.shell2.position.copy(m.shell.position).add(m.shellOff2); }
   },
+  // 볼트를 lift(rad) 만큼 돌리고 back(뷰모델 m) 만큼 뺀다 → 손잡이 끝 위치(뷰모델)를 out 에
+  boltSet(m, lift, back, out) {
+    const P = m.parts, R = m.rest, K = m.keys, bolt = P.bolt;
+    bolt.rotation.z = lift; bolt.position.z = R.bolt.z + back;
+    if (!K.knob) K.knob = m.charge ? m.charge.clone().sub(R.bolt) : new V3(0.06, -0.02, 0);
+    // 손가락 안쪽이 손잡이 끝을 감싸도록 손잡이 끝보다 조금 안쪽·아래를 쥔다
+    return out.copy(K.knob).applyAxisAngle(_c.set(0, 0, 1), lift).add(bolt.position).add(_o.set(-0.04, -0.015, -0.01));
+  },
+  // 내장 탄창 장전 (v47): 오른손이 볼트를 열어 젖혀 두고 → 왼손이 탄입대에서 한 발씩 배출구로 눌러 넣고
+  //  → 오른손이 볼트를 밀어 닫는다. (오른쪽 어깨에서 배출구는 닿지 않는다: 왼손이 넣는 것이 자연스럽다)
+  animBoltLoad(m, rl) {
+    const P = m.parts, K = m.keys, R = m.armR, L = m.armL;
+    if (!P.bolt || !m.port) return;
+    const LIFT = 1.15, BACK = 0.09 * m.s;
+    const fore = L.tgt.clone();
+    if (!K.bl) {
+      const port = m.port;
+      K.bl = {
+        pouch: port.clone().add(new V3(-0.1, -0.28, 0.12)),       // 왼쪽 아래 탄입대
+        above: port.clone().add(new V3(-0.014, 0.05, 0.02)),      // 배출구 위
+        into: port.clone().add(new V3(-0.004, 0.014, 0.004)),     // 엄지로 눌러 넣은 곳
+        outside: new V3(0.075, -0.025, 0.035)
+      };
+    }
+    const B = K.bl, knob = _a, tgt = R.tgt;
+    let lift = LIFT, back = BACK, e = 1, onKnob = false, round = false, left = 0;
+    if (rl.phase === 'start') {
+      const p = rl.pp;
+      lift = LIFT * seg(p, 0.2, 0.42); back = BACK * seg(p, 0.42, 0.62);
+      this.boltSet(m, lift, back, knob);
+      if (p < 0.2) track([[0, m.grip], [0.1, knob.clone().add(B.outside)], [0.2, knob.clone()]], p, tgt);
+      else if (p < 0.66) { tgt.copy(knob); onKnob = true; }
+      else track([[0.66, knob.clone()], [0.78, knob.clone().add(B.outside)], [1, m.grip]], p, tgt);
+      // 볼트를 젖히는 동안 왼손은 포엔드에서 탄입대로
+      if (p > 0.6) { track([[0.6, fore], [1, B.pouch]], p, L.tgt); left = 1; }
+      e = ss(p / 0.3);
+      if (this.passed(0.42, p)) this.bump(-0.25, -0.04, 0.1, 0.1);
+    } else if (rl.phase === 'load') {
+      const c = rl.shellP;
+      this.boltSet(m, lift, back, knob);
+      tgt.copy(m.grip);
+      const j = _b.set(Math.sin(this.t * 1.3) * 0.003, Math.sin(this.t * 1.7) * 0.003, 0);
+      const pouch = B.pouch.clone().add(j);
+      if (c < 0.34) { track([[0, pouch], [0.34, B.above]], c, L.tgt); round = true; }
+      else if (c < 0.5) { track([[0.34, B.above], [0.5, B.into]], c, L.tgt); round = true; }
+      else track([[0.5, B.into], [0.6, B.above], [1, pouch]], c, L.tgt);
+      left = 1;
+      if (this.passed(0.48, c)) this.bump(-0.3, 0.06, -0.08, -0.12);
+    } else {
+      const p = rl.pp;
+      back = BACK * (1 - seg(p, 0.24, 0.46)); lift = LIFT * (1 - seg(p, 0.46, 0.62));
+      this.boltSet(m, lift, back, knob);
+      if (p < 0.22) track([[0, m.grip], [0.12, knob.clone().add(B.outside)], [0.22, knob.clone()]], p, tgt);
+      else if (p < 0.66) { tgt.copy(knob); onKnob = true; }
+      else track([[0.66, knob.clone()], [0.78, knob.clone().add(B.outside)], [1, m.grip]], p, tgt);
+      if (p < 0.4) { track([[0, B.pouch], [0.4, fore]], p, L.tgt); left = 1; }
+      e = 1 - ss((p - 0.6) / 0.4);
+      if (this.passed(0.46, p)) this.bump(0.5, 0.1, -0.2, -0.12);
+    }
+    // 오른손: 볼트 손잡이를 쥘 때만 자세를 바꾼다 (나머지는 손잡이)
+    if (onKnob || (tgt.distanceTo(knob) < 0.05 && tgt.distanceTo(m.grip) > 0.03)) {
+      handPose(R, 'bolt', [-0.9, -0.4, 0], [0, 0.5, -1], 0.8, 0.65, 0.75);
+      R.pole.set(1, -0.55, -0.25).normalize();
+    }
+    // 왼손: 탄을 집어 위에서 눌러 넣는다 (손바닥이 아래)
+    if (left) {
+      handPose(L, round ? 'shell' : 'shellReach', [0, -1, 0.1], [0.25, 0, -1], round ? 0.46 : 0.25, round ? 0.75 : 0.4, round ? 0.3 : 0.2);
+      L.pole.set(-0.6, -1, -0.2).normalize();
+    }
+    if (m.shell) {
+      m.shell.visible = round;
+      if (round) { m.shell.position.copy(L.tgt).add(_c.set(0.012, -0.016, -0.004)); m.shell.rotation.set(0.35, -0.08, 0); }
+    }
+    // 배출구가 위·왼쪽(왼손 쪽)을 보도록 총을 굴리고, 가운데 아래로 끌어와 총구를 조금 든다
+    // 배출구는 눈 바로 옆이라 그대로는 손이 화면 밖으로 나간다: 총을 앞으로 내밀어 장전하는 손이 보이게
+    POSE.rz -= 0.3 * e; POSE.rx += 0.16 * e; POSE.ry += 0.12 * e; POSE.x -= 0.08 * e; POSE.y -= 0.07 * e; POSE.z -= 0.2 * e;
+  },
   // 볼트액션: 오른손이 볼트를 들어 올려 당겼다 밀고 내린다
   animBolt(m, c) {
     const P = m.parts, R = m.rest, K = m.keys;
-    const bolt = P.bolt;
     const lift = 1.15 * seg(c, 0.12, 0.24) * (1 - seg(c, 0.58, 0.68));
     const back = 0.09 * m.s * seg(c, 0.24, 0.38) * (1 - seg(c, 0.44, 0.56));
-    bolt.rotation.z = lift; bolt.position.z = R.bolt.z + back;
-    // 손잡이 끝 (볼트 그룹 로컬 → 뷰모델)
-    if (!K.knob) K.knob = m.charge ? m.charge.clone().sub(R.bolt) : new V3(0.06, -0.02, 0);
-    _a.copy(K.knob).applyAxisAngle(_c.set(0, 0, 1), lift).add(bolt.position).add(_o.set(0.004,0.002,0));
+    this.boltSet(m, lift, back, _a);
     handPose(m.armR,'bolt',[-0.9,-0.4,0],[0,0.5,-1],0.8,0.65,0.75);
     m.armR.pole.set(1,-0.55,-0.25).normalize();
     const knob=_a.clone(),outside=knob.clone().add(new V3(0.075,-0.025,0.035));

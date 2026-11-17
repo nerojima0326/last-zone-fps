@@ -72,9 +72,9 @@
     "license": "CC0-1.0"
   },
   {
-    "file": "Sniper_Rifle_West.glb",
-    "url": "https://raw.githubusercontent.com/petroulacl/fps-asset-kit/a19b7458a593598211c95ec46ef4eb4b6d1f94d7/weapons/flat_guns_west/Flat%20Guns%20West/GLB/Sniper_Rifle_West.glb",
-    "sha256": "c757564169f2d72e9fb4677be425f617d575fd76808ec32d9730d769548fb0d5",
+    "file": "SniperRifle_1.fbx",
+    "url": "https://raw.githubusercontent.com/WingNut17/ps1-style/42b446d7983d87b6029f42d5e110861a80c6ebee/assets/models/props/items/weapons/Ultimate%20Gun%20Pack%20by%20Quaternius/SniperRifle_1.fbx",
+    "sha256": "d2191ecfe672362d20faaaed90639f34ea6c4ac6332c96d3b90e13518515d4a5",
     "license": "CC0-1.0"
   }
 ]
