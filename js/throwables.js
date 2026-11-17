@@ -136,6 +136,7 @@ const T = G.Throwables = {
         if (dmg > 1) Game.damage(a, dmg, o.owner, 'frag', false, _c, _d);
       }
       Game.onNoise(p, 140, o.owner);
+      if (G.Vehicles) G.Vehicles.blast(p, 8, 230, o.owner);
     } else if (o.kind === 'smoke') {
       G.Audio.smokePop(p);
       this.smokes.push({ pos: p.clone(), t: 0, r: 0, acc: 0, src: o });

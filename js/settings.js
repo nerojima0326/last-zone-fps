@@ -8,7 +8,7 @@ const DEF = { adsSens: 1, scopeSens: 1, fov: 80, invertY: false, vol: { master: 
 // 바꿀 수 있는 동작: 게임 코드가 쓰는 원래 키(논리 키) → 이름
 const ACTIONS = [
   ['KeyW', '앞으로'], ['KeyS', '뒤로'], ['KeyA', '왼쪽'], ['KeyD', '오른쪽'],
-  ['ShiftLeft', '달리기 · 숨 참기'], ['Space', '점프 · 넘기 · 브레이크'], ['KeyC', '앉기'], ['KeyZ', '엎드리기'],
+  ['ShiftLeft', '달리기 · 숨 참기'], ['Space', '점프 · 넘기 · 드리프트'], ['KeyC', '앉기'], ['KeyZ', '엎드리기'],
   ['KeyQ', '왼쪽 기울이기'], ['KeyE', '오른쪽 기울이기'], ['KeyR', '재장전'], ['KeyF', '줍기 · 상호작용'],
   ['KeyV', '조준경 교체'], ['KeyB', '사격 모드'], ['KeyG', '빠른 투척'], ['KeyH', '치료'],
   ['KeyL', '손전등'], ['KeyM', '지도'],
