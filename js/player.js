@@ -749,9 +749,11 @@ const P = G.Player = {
   flashed(amt) {
     if (amt <= 0.05) return;
     // 이미 하얗게 된 동안 또 맞으면 잔상은 처음 것을 그대로 둔다
-    if (amt >= 0.3 && this.flashAmt < 0.3) this.freezeReq = true;
+    // 잔상(멈춘 화면)은 세게 맞았을 때만
+    if (amt >= 0.5 && this.flashAmt < 0.3) this.freezeReq = true;
     this.flashAmt = Math.max(this.flashAmt, amt);
-    this.flashHold = Math.max(this.flashHold, amt * 2.4);
+    // 하얗게 유지되는 시간도 세기에 따라 (가까이 최대 2.6 초, 20 m 약 0.8 초)
+    this.flashHold = Math.max(this.flashHold, amt * amt * 2.6);
     G.Audio.ring(amt);
   },
   updateFlash(dt) {

@@ -5,7 +5,7 @@ const THREE = window.THREE, G = window.G, U = G.U;
 const V3 = THREE.Vector3;
 const GRAV = 18;
 const FUSE = { frag: 3.5, smoke: 1.6, flash: 1.8, molotov: 6 };
-const FLASH_R = 60;   // 섬광이 닿는 거리 (m, 시야가 트여 있을 때)
+const FLASH_R = 45;   // 섬광이 닿는 거리 (m, 시야가 트여 있을 때). v49: 멀수록 약하게
 const _d = new V3(), _v = new V3(), _c = new V3(), _e = new V3(), _f = new V3();
 
 const T = G.Throwables = {
@@ -167,10 +167,10 @@ const T = G.Throwables = {
         a.lookDir(_f);
         _d.copy(_e).sub(_c).normalize();
         const facing = _f.dot(_d);
-        // v46: 보고 있으면 멀어도 하얗게 (30 m 까지 그대로, 60 m 에서 3/4). 등지면 가까울 때만
-        const far = d < 30 ? 1 : 1 - (d - 30) / (FLASH_R - 30) * 0.25;
+        // v49: 거리에 따라 약해진다 — 8 m 까지 최대, 15 m 약 3/4, 20 m 절반, 30 m 1/4, 45 m 에서 0
+        const far = d < 8 ? 1 : Math.pow(Math.max(0, 1 - (d - 8) / (FLASH_R - 8)), 1.5);
         const look = facing > 0.45 ? 1 : facing > -0.2 ? 0.3 + 0.7 * (facing + 0.2) / 0.65 : 0.15;
-        let amt = far * look * 1.1;
+        let amt = far * look;
         if (d < 6) amt = Math.max(amt, 0.7);
         amt = U.clamp(amt, 0, 1);
         if (a.isPlayer) G.Player.flashed(amt);
