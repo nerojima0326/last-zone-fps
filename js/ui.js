@@ -292,7 +292,7 @@ const UI = G.UI = {
     el.zoneO.style.opacity = a.alive && a.state === 'ground' && !Game.inZone(a.pos) ? 1 : 0;
     el.knockO.style.opacity = a.knocked ? 1 : 0;
     // 섬광: 처음엔 새하얗고, 걷히면서 맞은 순간의 멈춘 화면(잔상)이 보였다가 사라진다
-    el.flash.style.opacity = P.flashAmt > 0 ? Math.pow(Math.min(1, P.flashAmt * 1.35), 1.6) : 0;
+    el.flash.style.opacity = P.flashAmt > 0 ? Math.pow(Math.min(1, P.flashAmt), 0.9) : 0;   // 약하게 맞으면 반투명
     if (el.freeze) el.freeze.style.opacity = this.freezeOn && P.flashAmt > 0 ? Math.min(1, P.flashAmt * 1.7) * 0.9 : 0;
     if (P.flashAmt <= 0) this.freezeOn = false;
     // 프롬프트 / 진행
