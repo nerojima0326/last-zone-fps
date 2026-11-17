@@ -34,7 +34,7 @@ for (const k of G.GUN_IDS) LOOT_NAMES[k] = G.WEAPONS[k].name;
 for (const t in G.AMMO_NAMES) LOOT_NAMES['ammo_' + t] = G.AMMO_NAMES[t] + ' 탄약';
 for (const t in G.SCOPES) LOOT_NAMES['scope_' + t] = G.SCOPES[t].name;
 for(const [k,v] of Object.entries(G.Attachments.catalog())) LOOT_NAMES[k]=v.name;
-const WEAPON_LABEL = { fists: '주먹', frag: '수류탄', molotov: '화염병', zone: '자기장', fall: '낙하', bleed: '출혈', vehicle: '차량' };
+const WEAPON_LABEL = { fists: '주먹', frag: '수류탄', molotov: '화염병', zone: '자기장', fall: '낙하', bleed: '출혈', vehicle: '차량', carbomb: '차량 폭발' };
 for (const k of G.GUN_IDS) WEAPON_LABEL[k] = G.WEAPONS[k].short;
 // 봇이 처음 받는 총: 같은 종류 안에서 낮은 등급일수록 자주
 function pickGun(cls) {

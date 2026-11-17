@@ -149,7 +149,7 @@ const T = G.Training = {
     const C = W.course;
     if (C && G.Vehicles) {
       G.Vehicles.reset();
-      for (const dz of [-2.2, 2.2]) G.Vehicles.spawnAt(C.spurX + 14, C.z1 + dz, -Math.PI / 2);   // 나란히 두 대
+      for (const dz of [-2.6, 2.6]) G.Vehicles.spawnAt(C.spurX + 14, C.z1 + dz, -Math.PI / 2, dz < 0 ? 'suv' : 'truck');   // 나란히 두 대
       // 출발선 (진입로가 코스에 닿는 곳)과 모서리 고깔
       const paint = new THREE.MeshBasicMaterial({ color: 0xf2efe6 }), cone = new THREE.MeshStandardMaterial({ color: 0xff6a1a, roughness: 0.6 });
       const line = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 8), paint);

@@ -542,6 +542,14 @@ const A = G.Audio = {
       src.connect(f); f.connect(mod); mod.connect(gain);
       const rumble = c.createBufferSource(); rumble.buffer = this.brownBuf; rumble.loop = true;
       const rg = c.createGain(); rg.gain.value = 0.8; rumble.connect(rg); rg.connect(gain); rumble.start();
+    } else if (name === 'skid') {
+      // 타이어 끼익: 좁은 대역 잡음 + 떨리는 높은 음
+      src.buffer = this.noiseBuf;
+      const f = c.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1250; f.Q.value = 3.5;
+      src.connect(f); f.connect(gain);
+      const o = c.createOscillator(); o.type = 'triangle'; o.frequency.value = 820;
+      const vib = c.createOscillator(); vib.frequency.value = 23; const vg = c.createGain(); vg.gain.value = 35; vib.connect(vg); vg.connect(o.frequency); vib.start();
+      const og = c.createGain(); og.gain.value = 0.18; o.connect(og); og.connect(gain); o.start();
     } else if (name === 'zone') {
       src.buffer = this.brownBuf;
       const f = c.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 300;

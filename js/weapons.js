@@ -1302,6 +1302,9 @@ const Ballistics = G.Ballistics = {
         const h = this.hitActor(a, p.pos, _d, best);
         if (h) { best = h.t; kind = 'actor'; target = a; head = h.head; }
       }
+      // 차량 (v48: 맞으면 부서지다 폭발)
+      let vh = null;
+      if (G.Vehicles && G.Vehicles.list.length) { vh = G.Vehicles.rayHit(p.pos, _d, best); if (vh) { best = vh.t; kind = 'vehicle'; } }
       // 훈련장 표적
       let th = null;
       if (Game.training && G.Training.active) { th = G.Training.hitTest(p.pos, _d, best); if (th) { best = th.t; kind = 'target'; } }
@@ -1328,6 +1331,13 @@ const Ballistics = G.Ballistics = {
         const dist = p.start.distanceTo(_p), def = p.def;
         const dmg = G.dmgAt(def, dist) * (th.head ? def.head : 1);
         G.Training.onHit(th, dmg, _p, _d, p.shot);
+        dead = true;
+      } else if (kind === 'vehicle' || (kind === 'world' && Wd.hit.box && Wd.hit.box.vehicle)) {
+        const v = vh ? vh.v : Wd.hit.box.vehicle, def = p.def;
+        G.Vehicles.damage(v, G.dmgAt(def, p.start.distanceTo(_p)) * 0.8, p.owner, 'bullet');
+        _h.copy(_d).negate();
+        G.FX.impact(_p, kind === 'world' ? Wd.hit.normal : _h, 'metal');
+        G.Audio.impact(_p, 'metal');
         dead = true;
       } else if (kind === 'world') {
         G.FX.impact(_p, Wd.hit.normal, Wd.hit.mat);
