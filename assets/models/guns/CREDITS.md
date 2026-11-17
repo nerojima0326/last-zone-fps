@@ -7,13 +7,13 @@
 | M-1911 / `m1911.glb` | Flat Guns East — Pistol Compact East | Pichuliru / [fps-asset-kit](https://github.com/petroulacl/fps-asset-kit) | CC0 1.0 |
 | DE-7 / `de7.glb` | Flat Guns East — Pistol Full East | Pichuliru / 같은 배포처 | CC0 1.0 |
 | MK-14 / `mk14.glb` | Flat Guns West — Sniper Material West | Pichuliru / 같은 배포처 | CC0 1.0 |
-| KR-98 / `kr98.glb` (v45) | Flat Guns West — Sniper Rifle West | Pichuliru / 같은 배포처 | CC0 1.0 |
+| KR-98 / `kr98.glb` (v47) | Ultimate Gun Pack — SniperRifle_1 (내장 탄창 볼트액션) | Quaternius / R-45와 같은 배포처 | CC0 1.0 |
 | R-45 / `r45.glb` | Ultimate Gun Pack — Revolver_2 | Quaternius / [원본](https://quaternius.com/packs/ultimategun.html), GitHub 사본 [WingNut17/ps1-style](https://github.com/WingNut17/ps1-style) (`assets/models/props/items/weapons/Ultimate Gun Pack by Quaternius/`) | CC0 1.0 |
 
 가공:
 - 권총 2종은 탄창(손잡이) 높이를 기존 설계와 같게 맞추고 같은 위치에 놓아 손 IK가 그대로 쥐게 했습니다. 슬라이드·탄창 분리, 조준·레일·슬라이드 당기는 점·탄창 빠지는 방향을 모델에서 계산합니다.
 - R-45는 한 덩어리 메시라 실린더를 기하(가장 넓은 원통 구간)로 떼어 냈습니다. 실린더 반지름을 기존 설계와 같게 맞추고, 실린더 안의 탄 6발은 기존 설계의 것을 실린더 축에 맞춰 넣었습니다. 원본은 색만 있는 재질이라 금속·나무 재질을 새로 지정했습니다.
-- KR-98(v45)은 볼트를 움직이는 부품으로 분리했습니다. 원본 볼트 손잡이는 탄창 앞쪽(방아쇠보다 약 15 cm 앞)에 거의 수평으로 붙어 있어 오른팔이 닿지 않으므로, 리시버 밖으로 나온 손잡이만 떼어 방아쇠 위(일반 볼트액션 자리)로 옮기고 오른쪽 아래로 내렸습니다. 볼트 몸통은 배출구를 채운 채 그대로 둡니다. 접이식 가늠자·가늠쇠는 허리 사격 시야를 가리지 않게 레일 위 높이를 40%로 낮췄고, 조준경을 달면 둘 다 숨깁니다. 길이(총구까지)는 이전 KR-98과 같습니다.
+- KR-98(v47)은 탄창을 갈아 끼우지 않는 내장 탄창 볼트액션 사냥총입니다 (`imported.js` `buildBoltRifle`). 원본의 일체형 조준경(경통·렌즈·링)은 빼서 게임의 조준경을 달 수 있게 했고, 기관부 오른쪽으로 나온 볼트 손잡이만 움직이는 부품으로 나눴습니다. 크기는 방아쇠~총구 0.766 m(이전 KR-98과 같음), 원점은 방아쇠입니다. 장전은 볼트를 열고 배출구로 한 발씩 밀어 넣은 뒤 닫습니다.
 - MK-14는 받치는 손 높이를 총열 덮개 아랫면에 맞추고, 장전 중 탄창을 쥐는 위치를 조금 낮춰(`RSTYLE.mk14.hd`) 팔이 탄창 멈치 부위를 스치지 않게 했습니다.
 - 원본 URL·SHA-256은 [`tools/guns/imported-sources.json`](../../../tools/guns/imported-sources.json)에 고정했습니다.
 
