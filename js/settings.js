@@ -120,6 +120,14 @@ const S = G.Settings = {
     // 실사 팔 (real-arms.js 가 따로 저장한다)
     const ra = $('setRealArms');
     if (ra) ra.addEventListener('click', () => { if (G.RealArms) G.RealArms.setEnabled(!G.RealArms.enabled); this.render(); });
+    // 레이트레이싱 (raytrace.js 가 따로 저장한다)
+    const rtb = $('setRT');
+    if (rtb) rtb.addEventListener('click', async () => {
+      if (!G.RT || G.RT.state === 'loading') return;
+      await G.RT.setEnabled(!G.RT.active());
+      $('setMsg').textContent = G.RT.msg || (G.RT.active() ? '레이트레이싱 켜짐 — 그림자·반사를 광선 추적으로 계산합니다 (나무·풀·파티클은 기존 방식)' : '');
+      this.render();
+    });
     // 키 목록
     const list = $('setKeys');
     list.addEventListener('click', e => {
@@ -155,6 +163,8 @@ const S = G.Settings = {
     inv.textContent = d.invertY ? '켜짐' : '꺼짐'; inv.classList.toggle('on', d.invertY);
     const ra = $('setRealArms');
     if (ra) { const on = !!(G.RealArms && G.RealArms.enabled); ra.textContent = on ? '켜짐' : '꺼짐'; ra.classList.toggle('on', on); }
+    const rtb = $('setRT');
+    if (rtb && G.RT) { rtb.textContent = G.RT.label(); rtb.classList.toggle('on', G.RT.active()); }
     let h = '';
     for (const [act, name] of ACTIONS) {
       const k = this.bound(act), changed = k !== act, wait = this.waiting === act;
