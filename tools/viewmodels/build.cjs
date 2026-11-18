@@ -21,6 +21,9 @@ const PACKS = {
   acr:       { file: 'scene.gltf', drop: /Silencer|Scope/ },
   xdm:       { file: 'scene.gltf' },
   p9mm:      { file: 'scene.gltf', drop: /Skybox|Aim/ },
+  // cut: 메시(이름) 안에서 무게중심이 상자(메시 좌표) 안인 삼각형을 지운다 — 저격소총의 붙박이 조준경(게임 조준경 부품을 대신 단다)
+  sniper:    { file: 'scene.gltf', cut: [{ mesh: /^base_sniper/, box: [[-10, 9.6, 0], [10, 30, 58]] }] },     // v56 DJMaesen 'sniper animated' (볼트액션 저격소총)
+  revolver:  { file: 'scene.gltf' },     // v56 DJMaesen 'revolver animated'
 };
 
 (async () => {
@@ -34,6 +37,20 @@ const PACKS = {
     const P = PACKS[id], file = path.join(src, id, P.file);
     const doc = await io.read(file), root = doc.getRoot();
     if (P.drop) for (const n of root.listNodes()) if (n.getMesh() && P.drop.test(n.getMesh().getName() + ' ' + n.getName() + ' ' + (n.getParentNode()?.getName() || ''))) { n.getMesh().dispose(); n.dispose(); }
+    for (const c of P.cut || []) for (const m of root.listMeshes()) {
+      if (!c.mesh.test(m.getName())) continue;
+      for (const prim of m.listPrimitives()) {
+        const pos = prim.getAttribute('POSITION'), idx = prim.getIndices(), keep = [], a = [], b = [], d = [];
+        for (let i = 0; i < idx.getCount(); i += 3) {
+          const t = [idx.getScalar(i), idx.getScalar(i + 1), idx.getScalar(i + 2)];
+          pos.getElement(t[0], a); pos.getElement(t[1], b); pos.getElement(t[2], d);
+          const ctr = [0, 1, 2].map(j => (a[j] + b[j] + d[j]) / 3);
+          if (!ctr.every((v, j) => v >= c.box[0][j] && v <= c.box[1][j])) keep.push(...t);
+        }
+        console.log(id, m.getName(), '삼각형', idx.getCount() / 3, '→', keep.length / 3);
+        idx.setArray(new Uint32Array(keep));
+      }
+    }
     // 가중치가 0 인 정점(원본 탄창 메시 일부)은 뼈대 원점으로 끌려가 가는 선으로 보인다 → 그 메시의 주 뼈에 묶는다
     for (const n of root.listNodes()) {
       if (!n.getSkin() || !n.getMesh()) continue;

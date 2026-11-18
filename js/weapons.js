@@ -31,7 +31,7 @@ G.WEAPONS = {
     spread: 0.026, ads: 0.0024, move: 0.04, bloom: 0.008, bloomMax: 0.04, recoilV: 0.024, recoilH: 0.008, vel: 790, adsFov: 46, kick: 0.85, range: 680, falloff: [130, 0.85], tracerLen: 9, sound: 'ak', tier: 3, scopes: ALL_SCOPES }),
   mk14: W({ key: 'mk14', name: 'MK-14 지정사수소총', short: 'MK-14', cls: 'rifle', ammo: '762', dmg: 47, head: 2.3, rpm: 320, mag: 20, reload: 2.7,
     spread: 0.022, ads: 0.0012, move: 0.045, bloom: 0.012, bloomMax: 0.03, recoilV: 0.032, recoilH: 0.008, vel: 860, adsFov: 44, kick: 1.05, range: 900, falloff: [220, 0.85], tracerLen: 10, sound: 'dmr', tier: 3, scopes: ALL_SCOPES, adsTime: 0.2 }),
-  kr98: W({ key: 'kr98', name: 'KR-98 저격소총', short: 'KR-98', cls: 'rifle', ammo: '762', dmg: 85, head: 2.5, rpm: 55, action: 'bolt', cycle: 0.95, mag: 5, reloadType: 'shell', reload: 0.62,
+  kr98: W({ key: 'kr98', name: 'KR-98 저격소총', short: 'KR-98', cls: 'rifle', ammo: '762', dmg: 85, head: 2.5, rpm: 55, action: 'bolt', cycle: 0.95, mag: 5, reloadType: 'mag', reload: 2.4,
     spread: 0.06, ads: 0.0004, move: 0.06, bloom: 0, bloomMax: 0, recoilV: 0.05, recoilH: 0.01, vel: 920, adsFov: 42, kick: 1.6, range: 1100, falloff: [350, 0.9], tracerLen: 12, sound: 'sniper', tier: 4, scopes: ALL_SCOPES, adsTime: 0.24 }),
   // ---- 산탄총 ----
   s12: W({ key: 's12', name: 'S-12 펌프 샷건', short: 'S-12', cls: 'shotgun', ammo: '12g', dmg: 15, head: 1.5, rpm: 72, action: 'pump', mag: 6, reloadType: 'shell', reload: 0.55,
@@ -53,7 +53,7 @@ G.WEAPONS = {
     spread: 0.016, ads: 0.0045, move: 0.022, bloom: 0.014, bloomMax: 0.035, recoilV: 0.036, recoilH: 0.01, vel: 270, adsFov: 64, kick: 1.0, range: 280, falloff: [30, 0.7], tracerLen: 5, sound: 'pistol45', tier: 1, scopes: ['reddot'] }),
   de7: W({ key: 'de7', name: 'DE-7 대형권총', short: 'DE-7', cls: 'pistol', len: 0.27, ammo: '45', dmg: 48, head: 2.1, rpm: 240, mag: 7, reload: 1.8,
     spread: 0.02, ads: 0.005, move: 0.025, bloom: 0.02, bloomMax: 0.04, recoilV: 0.06, recoilH: 0.014, vel: 450, adsFov: 62, kick: 1.5, range: 350, falloff: [45, 0.75], tracerLen: 6, sound: 'magnum', tier: 3, scopes: ['reddot'] }),
-  r45: W({ key: 'r45', name: 'R-45 리볼버', short: 'R-45', cls: 'pistol', len: 0.245, ammo: '45', dmg: 55, head: 2.1, rpm: 170, mag: 6, reloadType: 'revolver', reload: 2.6,
+  r45: W({ key: 'r45', name: 'R-45 리볼버', short: 'R-45', cls: 'pistol', len: 0.245, ammo: '45', dmg: 55, head: 2.1, rpm: 170, mag: 6, reloadType: 'revolver', reload: 3.0,
     spread: 0.017, ads: 0.0045, move: 0.024, bloom: 0.02, bloomMax: 0.04, recoilV: 0.065, recoilH: 0.015, vel: 440, adsFov: 62, kick: 1.6, range: 350, falloff: [45, 0.75], tracerLen: 6, sound: 'magnum', tier: 3, scopes: [] }),
   fists: { key: 'fists', name: '맨손', short: '맨손', dmg: 22, rpm: 110 }
 };
