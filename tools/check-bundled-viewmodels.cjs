@@ -110,6 +110,7 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
         if (AV.SWAP[id] && !(sw && sw.groups.length && sw.groups.every(h => h.visible) && P.gunMeshes.every(m => !m.visible))) throw Error('Swap gun not shown: ' + id);
         if (!AV.SWAP[id] && (P.gunMeshes.some(m => !m.visible) || Object.values(P.swaps).some(o => o.groups.some(h => h.visible)))) throw Error('Pack gun hidden: ' + id);
         const reloads = def.reloadType === 'mag' ? [{ type: 'mag', empty: false, p: .5 }, { type: 'mag', empty: true, p: .5 }]
+          : def.reloadType === 'revolver' ? [{ type: 'revolver', empty: false, p: .5 }]
           : [{ type: 'shell', phase: 'start', pp: .5, shellP: -1 }, { type: 'shell', phase: 'load', pp: 0, shellP: .5 }, { type: 'shell', phase: 'end', pp: .5, shellP: -1 }];
         for (const reload of reloads) {
           G.VM.update(.016, { ...state, reload });
@@ -118,7 +119,8 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
         const d = G.Guns.reloadDuration(id, false), ev = G.Guns.reloadEvents(id, true, 'load');
         if (!(d > .3 && d < 4) || !ev.length || ev.some(e => !(e[0] >= 0 && e[0] <= 1))) throw Error('Bad pack reload timing: ' + id + ' ' + d + ' ' + JSON.stringify(ev));
         G.VM.fireKick(1, false); G.VM.update(.016, state);
-        if (!P.acts.fire.action.enabled) throw Error('Missing pack fire: ' + id);
+        // v56 권총은 사격 클립 대신 손목 반동(절차적)
+        if (!(P.def.pistol ? P.shotT < 0.1 : P.acts.fire.action.enabled)) throw Error('Missing pack fire: ' + id);
         P.mountKey = null; G.VM.update(.3, { ...state, ads: 1, scope: 'reddot' });
         if (!P.mount || ![P.mount.t.x, P.mount.t.y, P.mount.t.z].every(Number.isFinite) || P.mount.t.length() > 1) throw Error('Bad pack ADS: ' + id);
         P.pivot.updateMatrixWorld(true);

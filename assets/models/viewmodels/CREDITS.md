@@ -49,3 +49,15 @@ AA-12 · MK-14 는 공개 라이선스의 실사 모델을 찾지 못해 게임�
 - This work is based on "Desert Eagle" (https://sketchfab.com/3d-models/desert-eagle-cabde59f5cf24effaf80536e35d04e95) by ELIZION (https://sketchfab.com/ELIZION) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 
 바꾼 내용: 스킨·애니메이션 제거(바인드 자세), 실제 길이로 크기 맞춤, 탄창·슬라이드 부위 분리, 텍스처 1024 px WebP, 위치·법선 양자화와 meshopt 압축. Colt M1911 은 삼각형을 8 % 로 줄였고, Desert Eagle 은 따로 떠 있던 낱개 탄을 뺐습니다.
+
+## v56 저격소총 · 리볼버 1인칭 팩 (CC-BY-4.0)
+
+| 게임 총 | 파일 | 원본 |
+|---|---|---|
+| KR-98 | `sniper.glb` | sniper animated (DJMaesen) — 사격+볼트, 탄창 장전 |
+| R-45 | `revolver.glb` | revolver animated (DJMaesen) — 실린더 열기·한 발씩 넣기·닫기 |
+
+- This work is based on "sniper animated" (https://sketchfab.com/3d-models/sniper-animated-d6b5bccd148540f0b722d05998c9af38) by DJMaesen (https://sketchfab.com/bumstrum) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+- This work is based on "revolver animated" (https://sketchfab.com/3d-models/revolver-animated-0b0eef627f7b4ca8b425096196213601) by DJMaesen (https://sketchfab.com/bumstrum) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+
+바꾼 내용: `tools/viewmodels/build.cjs` 로 텍스처 1024 px WebP, 양자화·meshopt 압축. 저격소총은 붙박이 조준경 메시를 지웠습니다(게임의 조준경 부품을 대신 답니다). 한 클립에 이어진 동작은 게임이 구간으로 잘라 씁니다. 모든 팩의 팔은 게임이 셰이더로 같은 장갑·소매 색으로 칠합니다(원본 텍스처의 명암만 씀).
