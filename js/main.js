@@ -216,8 +216,14 @@ G.boot = async function () {
   await new Promise(r => setTimeout(r, 30));
   renderer.compile(scene, camera);
   renderer.shadowMap.needsUpdate = true;
+  // 레이트레이싱을 켜 두었으면 로딩 화면에서 모듈을 받고 장면까지 미리 컴파일한다
+  if (G.RT) {
+    if (G.RT.wanted) progress(0.99, '레이트레이싱 준비 중...');
+    await G.RT.init();
+    if (G.RT.active()) { progress(0.99, '레이트레이싱 장면 준비 중... (몇 초 걸립니다)'); await G.RT.prepare('레이트레이싱 장면 준비 중... (몇 초 걸립니다)'); }
+    if (G.Settings) G.Settings.render();
+  }
   progress(1, '완료');
-  if (G.RT) G.RT.init().then(() => G.Settings && G.Settings.render());
   document.getElementById('loading').classList.add('hidden');
   G.UI.showMenu();
 
@@ -275,7 +281,6 @@ function basePixelRatio(q) {
 
 function applyQuality(q) {
   if (!QUALITY[q]) q = 'high';
-  if (G.RT) G.RT.invalidate();
   const Q = QUALITY[q];
   if (Q.post && (!composer || !QUALITY[G.quality] || QUALITY[G.quality].msaa !== Q.msaa || !QUALITY[G.quality].post)) setupComposer(Q.msaa);
   if (!composer) setupComposer(0);
@@ -304,7 +309,7 @@ const _db = new THREE.Vector2();
 function usePost() { const Q = QUALITY[G.quality]; return !Q || Q.post; }
 function renderFrame(dt) {
   // 레이트레이싱 (설정에서 켰고 지원되는 기기일 때)
-  if (G.RT && G.RT.active()) { G.RT.render(renderer, scene, camera, G.vmScene, G.vmCamera); return; }
+  if (G.RT && G.RT.drawing()) { G.RT.render(renderer, scene, camera, G.vmScene, G.vmCamera); return; }
   const Q = QUALITY[G.quality];
   if (!Q || Q.post) {
     const db = renderer.getDrawingBufferSize(_db);
@@ -366,9 +371,10 @@ G.startGame = function (opts) {
   G.World.setTimeOfDay(opts.tod);
   G.Game.start(opts);
   warmup();
-  if (G.RT) G.RT.invalidate();
   G.paused = false;
   G.Input.lock();
+  // 레이트레이싱: 새 판의 장면을 로딩 화면에서 미리 컴파일 (게임 중 멈춤 없음)
+  if (G.RT) { G.RT.invalidate(); G.RT.prepare(); }
 };
 G.resume = function () {
   G.Audio.init();
@@ -383,7 +389,7 @@ G.toMenu = function () {
   G.VM.set(null);
   G.UI.showMenu();
   camera.fov = 80; camera.updateProjectionMatrix();
-  if (G.RT) G.RT.invalidate();
+  if (G.RT) { G.RT.invalidate(); G.RT.prepare(); }
 };
 
 function frame(now) {
