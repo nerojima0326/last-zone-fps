@@ -29,3 +29,23 @@
 - This work is based on "[9mm Pistol] Ultimate FPS Animations" (https://sketchfab.com/3d-models/9mm-pistol-ultimate-fps-animations-c26d7f5aa72f4b01a6da4578caa8f07f) by 1Matzh licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 
 바꾼 내용: Specular-Glossiness 재질을 Metal-Rough 로 변환, 텍스처를 1024 px WebP 로 축소, 겹치는 애니메이션 키 정리, 위치·법선 양자화와 meshopt 압축. `acr.glb` 는 원본의 조준경·소음기 메시를 빼고, 가중치가 0 이라 뼈대 원점으로 끌려가던 탄창 정점 6개를 탄창 뼈에 묶었습니다. `p9mm.glb` 는 원본에 들어 있던 하늘 상자·조준 표시 메시를 뺐습니다. 모양과 애니메이션 자체는 바꾸지 않았습니다.
+
+## v55 총별 실사 총 모델 (CC-BY-4.0)
+
+같은 장전 동작 팩을 쓰는 두 총이 똑같아 보이지 않도록, 한쪽 총의 메시만 아래 실사 모델로 바꿔 끼웁니다 (`swap/*.glb`, `tools/viewmodels/build-swap.cjs`). 팔과 장전 동작은 위 팩 그대로입니다.
+
+| 게임 총 | 파일 | 원본 | 얹는 팩 |
+|---|---|---|---|
+| SC-17 | `swap/sc17.glb` | Scar H Assault Rifle Black - free (Rotuma) | ACR |
+| M-1014 | `swap/m1014.glb` | Low-Poly Benelli M4 Super 90 (TastyTony) | Remington |
+| M-1911 | `swap/m1911.glb` | Colt M1911 (b0ho) | 권총 팩 |
+| DE-7 | `swap/de7.glb` | Desert Eagle (ELIZION) | 권총 팩 |
+
+AA-12 · MK-14 는 공개 라이선스의 실사 모델을 찾지 못해 게임에 원래 있던 총 모델(`assets/models/guns/aa12.glb`, `mk14.glb`)을 각각 Saiga · ACR 팩의 손에 얹습니다.
+
+- This work is based on "Scar H Assault Rifle Black - free" (https://sketchfab.com/3d-models/scar-h-assault-rifle-black-free-55a0a5c139114747a31eb878ba19acc0) by Rotuma (https://sketchfab.com/Rotuma) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+- This work is based on "Low-Poly Benelli M4 Super 90" (https://sketchfab.com/3d-models/low-poly-benelli-m4-super-90-caea90a9470143b69e6042f75b9c59cc) by TastyTony (https://sketchfab.com/TastyTony) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+- This work is based on "Colt M1911" (https://sketchfab.com/3d-models/colt-m1911-6b20f04b583a4c4a9d009c0412f01678) by b0ho (https://sketchfab.com/b0ho) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+- This work is based on "Desert Eagle" (https://sketchfab.com/3d-models/desert-eagle-cabde59f5cf24effaf80536e35d04e95) by ELIZION (https://sketchfab.com/ELIZION) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+
+바꾼 내용: 스킨·애니메이션 제거(바인드 자세), 실제 길이로 크기 맞춤, 탄창·슬라이드 부위 분리, 텍스처 1024 px WebP, 위치·법선 양자화와 meshopt 압축. Colt M1911 은 삼각형을 8 % 로 줄였고, Desert Eagle 은 따로 떠 있던 낱개 탄을 뺐습니다.

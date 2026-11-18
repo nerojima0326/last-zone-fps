@@ -15,19 +15,19 @@ const _v = new V(), _q = new Q(), _e = new T.Euler(), _m = new T.Matrix4(), ID =
 //  spare: 장전 중에만 보이는 예비 탄창 뼈 (평소엔 0 크기로 접는다)
 const PACKS = {
   ak74: {
-    file: 'ak74', eye: 'Head_Cam', off: [0.08, 0.05, 0.15], pitch: 12, gun: 'PBody', len: 0.94, spare: ['Pmag2'],
+    file: 'ak74', magBone: 'Pmag', eye: 'Head_Cam', off: [0.08, 0.05, 0.15], pitch: 12, gun: 'PBody', len: 0.94, spare: ['Pmag2'],
     clips: { idle: 'Rig|AK_Idle', fire: 'Rig|AK_Shot', reload: 'Rig|AK_Reload', reloadEmpty: 'Rig|AK_Reload_full', draw: 'Rig|AK_Draw' },
     // AK 식: 새 탄창으로 헌 탄창을 쳐내고 → 끼우고 → (빈 총) 장전손잡이 당기기
     ev: { reload: [[1.2, 'magout'], [1.9, 'magin']], reloadEmpty: [[1.2, 'magout'], [1.9, 'magin'], [2.47, 'open'], [2.62, 'close']] }
   },
   saiga: {
-    file: 'saiga', eye: 'Head_Cam', off: [0.02, 0.0, 0.04], pitch: 4, gun: 'Saiga', len: 1.0,
+    file: 'saiga', magBone: 'Pmag', eye: 'Head_Cam', off: [0.02, 0.0, 0.04], pitch: 4, gun: 'Saiga', len: 1.0,
     clips: { idle: 'Armature|Saiga_Idle', fire: 'Armature|Saiga_Fire', reload: 'Armature|Saiga_Reload_Fast', reloadEmpty: 'Armature|Saiga_Reload_Full' },
     win: { reload: [0, 1.88] },
     ev: { reload: [[0.7, 'magout'], [1.13, 'magin']], reloadEmpty: [[0.63, 'magout'], [1.07, 'magin'], [1.83, 'open'], [1.97, 'close']] }
   },
   acr: {
-    file: 'acr', eye: 'Head_Cam', off: [0.01, 0.0, 0.02], pitch: 3, gun: 'ACRRifle', len: 0.9, adsLift: 0.03, adsDist: 0.33,   // 가늠자 없는 레일: 레일 위로 내려다본다
+    file: 'acr', magBone: 'Pmag', eye: 'Head_Cam', off: [0.01, 0.0, 0.02], pitch: 3, gun: 'ACRRifle', len: 0.9, adsLift: 0.03, adsDist: 0.33,   // 가늠자 없는 레일: 레일 위로 내려다본다
     clips: { idle: 'Armature|Arms_FPS_Anim_Idle', fire: 'Armature|Arms_FPS_Anim_Shoot', reload: 'Armature|Arms_FPS_Anim_Reload_Fast', draw: 'Armature|Arms_FPS_Anim_Draw' },
     win: { reload: [0, 1.55] },
     ev: { reload: [[0.47, 'magout'], [0.77, 'magin']], reloadEmpty: [[0.47, 'magout'], [0.77, 'magin'], [1.2, 'close']] }
@@ -39,12 +39,12 @@ const PACKS = {
     shell: { start: [0, 0.63], cycle: [0.63, 1.97], last: [4.67, 6.0], end: [6.0, 6.82], startDur: 0.5, endDur: 0.62, cycleDur: 0.85, endEv: [[0.06, 'open'], [0.3, 'close']] }
   },
   xdm: {
-    file: 'xdm', eye: 'Head_Cam', off: [0.0, -0.03, 0.12], pitch: 12, yaw: -3, gun: 'PBody', len: 0.19, pistol: true,
+    file: 'xdm', magBone: 'Pmag', slideBone: 'Rif', eye: 'Head_Cam', off: [0.0, -0.03, 0.12], pitch: 12, yaw: -3, gun: 'PBody', len: 0.19, pistol: true,
     clips: { idle: 'Armature|FPS_Pistol_Idle', fire: 'Armature|FPS_Pistol_Fire', reload: 'Armature|FPS_Pistol_Reload_easy', reloadEmpty: 'Armature|FPS_Pistol_Reload_full' },
     ev: { reload: [[0.37, 'magout'], [0.9, 'magin']], reloadEmpty: [[0.37, 'magout'], [0.9, 'magin'], [1.36, 'close']] }
   },
   p9mm: {
-    file: 'p9mm', eye: [0.0, 1.44, 0.08], pitch: 10, yaw: -2, gun: 'Weapon', len: 0.19, pistol: true, spare: ['Magazine_2', 'Bullet_2'],
+    file: 'p9mm', magBone: 'Magazine', slideBone: 'Slidder', eye: [0.0, 1.44, 0.08], pitch: 10, yaw: -2, gun: 'Weapon', len: 0.19, pistol: true, spare: ['Magazine_2', 'Bullet_2'],
     clips: { idle: 'Idle', fire: 'Fire', reload: 'Reload', reloadEmpty: 'Reload_Empty', draw: 'Equip' },
     win: { reload: [0, 2.6], reloadEmpty: [0, 3.6] },
     ev: { reload: [[0.43, 'magout'], [1.43, 'magin']], reloadEmpty: [[0.43, 'magout'], [1.43, 'magin'], [2.9, 'close']] }
@@ -54,10 +54,21 @@ const PACKS = {
 const GUNS = { ka47: 'ak74', sc17: 'acr', mk14: 'acr', sa12: 'saiga', aa12: 'saiga', s12: 'remington', m1014: 'remington', p92: 'p9mm', m1911: 'xdm', de7: 'xdm' };
 // 반자동 산탄총은 펌프 동작 앞(반동)까지만 쓰고 대기 자세로 돌아간다
 const FIRE_SPAN = { m1014: 0.36 };
+// v55 같은 팩(팔·동작)을 쓰는 두 번째 총은 총 메시만 다른 실사 총으로 바꿔 끼운다 (tools/viewmodels/build-swap.cjs)
+//  file: GLB 경로, shift: 가늠자 기준 총열 방향(앞 +) 보정 m, lift: 위 보정 m
+//  노드 이름이 mag… → 팩의 탄창 뼈, slide… → 팩의 슬라이드 뼈를 따라 움직인다
+const SWAP = {
+  sc17: { file: 'assets/models/viewmodels/swap/sc17.glb', shift: 0.08, lift: -0.015 },          // SCAR-H (Rotuma) on ACR 팩
+  m1014: { file: 'assets/models/viewmodels/swap/m1014.glb', shift: 0.04 },        // Benelli M4 (TastyTony) on Remington 팩
+  m1911: { file: 'assets/models/viewmodels/swap/m1911.glb' },        // Colt M1911 (b0ho) on XD 팩
+  de7: { file: 'assets/models/viewmodels/swap/de7.glb' },            // Desert Eagle (ELIZION) on XD 팩
+  aa12: { file: 'assets/models/guns/aa12.glb', shift: 0.12 },                     // 게임 자체 AA-12 모델 on Saiga 팩
+  mk14: { file: 'assets/models/guns/mk14.glb', shift: 0.12 }                      // 게임 자체 MK-14 모델 on ACR 팩
+};
 const ADS_DIST = { reddot: 0.32, holo: 0.3, x2: 0.25, x4: 0.22, x8: 0.2 };
 
 const AV = G.AssetVM = {
-  packs: {}, GUNS, PACKS,
+  packs: {}, GUNS, PACKS, SWAP,
   pack(id) { const P = this.packs[GUNS[id]]; return P && P.ready ? P : null; },
   owns(id) { return !!this.pack(id); },
   init() {
@@ -100,6 +111,10 @@ const AV = G.AssetVM = {
       try {
         const g = await gl.loadAsync('assets/models/viewmodels/' + PACKS[next].file + '.glb' + (v ? '?v=' + v : ''));
         this.install(P, g);
+        for (const id in SWAP) if (GUNS[id] === next) {
+          try { this.installSwap(P, id, await gl.loadAsync(SWAP[id].file + (v ? '?v=' + v : ''))); }
+          catch (e) { console.warn('[AssetVM] ' + id + ' 총 모델 실패 — 팩 총을 쓴다', e); }
+        }
       } catch (e) { P.failed = true; console.warn('[AssetVM] ' + next + ' 팩 실패', e); }
     }
   },
@@ -129,6 +144,7 @@ const AV = G.AssetVM = {
     }
     Object.assign(P, { def: C, model, pivot, frame, mixer, acts, gunBone, shotT: 99, drawT: 99, active: false, gunId: null, mountKey: null, flashes: {} });
     P.spare = (C.spare || []).map(find).filter(Boolean);
+    P.gunMeshes = []; P.swaps = {}; P.find = find;
     this.pose(P, [['idle', 0, 1]]);
     model.updateMatrixWorld(true);
     // 눈 위치 (모델 좌표)
@@ -143,6 +159,7 @@ const AV = G.AssetVM = {
       for (let i = 0; i < w.count; i++) for (let k = 0; k < 4; k++) { const x = w.getComponent(i, k); if (x > 0) { const b = ix.getComponent(i, k); tot.set(b, (tot.get(b) || 0) + x); } }
       const main = [...tot].sort((a, b) => b[1] - a[1])[0];
       if (!main || !under(o.skeleton.bones[main[0]])) { if (main && !P.spare.includes(o.skeleton.bones[main[0]])) arms.push(o); return; }
+      P.gunMeshes.push(o);
       const step = Math.max(1, Math.floor(w.count / 6000)), spare = new Set(P.spare.map(b => o.skeleton.bones.indexOf(b)).filter(i => i >= 0));
       for (let i = 0; i < w.count; i += step) {
         // 예비 탄창(평소 화면 밖에 둔다)은 빼고 잰다
@@ -183,16 +200,64 @@ const AV = G.AssetVM = {
       };
       m.customProgramCacheKey = () => 'vmArmCut';
     }
-    this.measure(P, pv, C.pistol);
+    P.sight = P.sight0 = this.measure(P, pv, C.pistol);
     P.gunRest = new T.Matrix4().copy(pivot.matrixWorld).invert().multiply(gunBone.matrixWorld);
     P.gunRestInv = P.gunRest.clone().invert();
-    P.muzzleLocal = P.sight.muzzle.clone().applyMatrix4(P.gunRestInv);
+    P.muzzleLocal = P.muzzle0 = P.sight.muzzle.clone().applyMatrix4(P.gunRestInv);
+    // 탄창·슬라이드 뼈의 휴식 자세 (바꿔 끼운 총의 탄창·슬라이드가 따라 움직이게)
+    P.boneRest = {};
+    for (const [k, nm] of [['mag', C.magBone], ['slide', C.slideBone]]) {
+      const b = nm && find(nm);
+      if (b) P.boneRest[k] = { bone: b, inv: new T.Matrix4().copy(pivot.matrixWorld).invert().multiply(b.matrixWorld).invert() };
+    }
     P.mount = null;
     G.VM.root.add(pivot);
     P.ready = true;
     console.info('[AssetVM] ' + P.key + ' 준비 (크기 ×' + k.toFixed(3) + ')');
   },
   // 휴식 자세의 총 정점(피벗 공간, 앞 = −Z)으로 총구·가늠쇠·가늠자·손잡이 자리를 잰다
+  // 팩의 총 대신 다른 총 메시를 같은 손·같은 동작에 끼운다: 두 총의 가늠선·위 방향을 맞추고 가늠자 위치를 맞춘다
+  installSwap(P, id, g) {
+    const C = SWAP[id], root = g.scene;
+    root.updateMatrixWorld(true);
+    const pts = [];
+    root.traverse(o => {
+      if (!o.isMesh) return;
+      o.frustumCulled = false; o.castShadow = false;
+      const m = o.material; if (m.metalness > 0.6 && !m.metalnessMap) m.metalness = 0.55; m.envMapIntensity = 0.6;
+      const pos = o.geometry.attributes.position, step = Math.max(1, Math.floor(pos.count / 3000)), w = new V();
+      for (let i = 0; i < pos.count; i += step) pts.push(w.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld).clone());
+    });
+    const Sp = P.sight0, Ss = this.measure(P, pts, P.def.pistol);
+    const basis = S => { const back = S.axis.clone().negate(), right = new V().crossVectors(S.up, back); return new T.Matrix4().makeBasis(right, S.up, back); };
+    const M = basis(Sp).multiply(basis(Ss).transpose());   // 바꿔 끼울 총 방향 → 팩 총 방향
+    const anchor = Ss.R.clone().applyMatrix4(M);
+    const t = Sp.R.clone().addScaledVector(Sp.axis, C.shift || 0).addScaledVector(Sp.up, C.lift || 0).sub(anchor);
+    M.setPosition(t);
+    // 부위마다 휴식 자세의 피벗 공간 변환 → 따라갈 뼈의 로컬로
+    const groups = [];
+    const kids = (root.children.length === 1 && !root.children[0].isMesh ? root.children[0].children : root.children).slice();
+    for (const child of kids) {
+      child.matrixWorld.decompose(child.position, child.quaternion, child.scale);   // 원래 부모 변환까지 굽는다 (root 는 원점)
+      const kind = /^mag/i.test(child.name) && P.boneRest.mag ? 'mag' : /^slide/i.test(child.name) && P.boneRest.slide ? 'slide' : 'body';
+      const bone = kind === 'body' ? P.gunBone : P.boneRest[kind].bone, inv = kind === 'body' ? P.gunRestInv : P.boneRest[kind].inv;
+      const holder = new T.Group(); holder.add(child);
+      new T.Matrix4().multiplyMatrices(inv, M).decompose(holder.position, holder.quaternion, holder.scale);
+      holder.visible = false; bone.add(holder); groups.push(holder);
+    }
+    const sight = this.measure(P, pts.map(p => p.clone().applyMatrix4(M)), P.def.pistol);
+    P.swaps[id] = { groups, sight, muzzleLocal: sight.muzzle.clone().applyMatrix4(P.gunRestInv) };
+    if (P.gunId === id) { this.useGun(P, id); P.mountKey = null; }   // 이미 이 총을 들고 있으면 바로 바꿔 보인다
+    console.info('[AssetVM] ' + id + ' 총 모델 → ' + P.key + ' 팩');
+  },
+  // 이번 총에 맞게 팩 총/바꿔 끼운 총을 보이고 조준 정보를 고른다
+  useGun(P, id) {
+    const sw = P.swaps[id];
+    for (const k in P.swaps) for (const h of P.swaps[k].groups) h.visible = k === id;
+    for (const m of P.gunMeshes) m.visible = !sw;
+    P.sight = sw ? sw.sight : P.sight0;
+    P.muzzleLocal = sw ? sw.muzzleLocal : P.muzzle0;
+  },
   measure(P, pv, pistol) {
     // v54 총의 몸 좌표를 정점 분포로 잡는다 (애니메이션 자세가 옆으로 기울어 있어도 가늠자·가늠쇠를 제대로 찾게)
     const n = pv.length, c = pv.reduce((sum, p) => sum.add(p), new V()).multiplyScalar(1 / n);
@@ -241,7 +306,7 @@ const AV = G.AssetVM = {
     const grip = c.clone().addScaledVector(len, gn ? ga / gn : 0).addScaledVector(u, gn ? gh : 0);
     grip.addScaledVector(right, _v.subVectors(muzzle, grip).dot(right));
     const side = grip.clone().addScaledVector(right, (gn ? gs : 0.03) + 0.012).addScaledVector(up, 0.035);
-    P.sight = { muzzle, F, R, axis, q, qInv: q.clone().invert(), grip, side, L, hTop, qH, posH, roll };
+    return { muzzle, F, R, axis, up, q, qInv: q.clone().invert(), grip, side, L, hTop, qH, posH, roll };
   },
   // 여러 클립을 가중치로 섞어 한 자세를 만든다 (모든 클립이 시간 t 를 따로 가진다)
   pose(P, list) {
@@ -283,7 +348,7 @@ const AV = G.AssetVM = {
     if (!P) return;
     const C = P.def, orig = vm.models[id];
     if (!orig) return;
-    if (!P.active || P.gunId !== id) { P.drawT = 0; P.shotT = 99; P.gunId = id; P.mountKey = null; }
+    if (!P.active || P.gunId !== id) { P.drawT = 0; P.shotT = 99; P.gunId = id; P.mountKey = null; this.useGun(P, id); }
     P.pivot.visible = !s.hideVM; orig.root.visible = false;
     P.shotT += dt; P.drawT += dt;
     const R = s.reload, list = [];

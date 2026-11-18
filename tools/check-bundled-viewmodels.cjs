@@ -105,6 +105,10 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
         if (!P) throw Error('Reload pack not ready: ' + id);
         G.VM.set(id); G.VM.update(1, state);
         if (!P.pivot.visible || G.VM.models[id].root.visible) throw Error('Reload pack not shown: ' + id);
+        // v55 같은 팩을 쓰는 총은 바꿔 낀 총 메시가 보여야 한다
+        const sw = P.swaps[id];
+        if (AV.SWAP[id] && !(sw && sw.groups.length && sw.groups.every(h => h.visible) && P.gunMeshes.every(m => !m.visible))) throw Error('Swap gun not shown: ' + id);
+        if (!AV.SWAP[id] && (P.gunMeshes.some(m => !m.visible) || Object.values(P.swaps).some(o => o.groups.some(h => h.visible)))) throw Error('Pack gun hidden: ' + id);
         const reloads = def.reloadType === 'mag' ? [{ type: 'mag', empty: false, p: .5 }, { type: 'mag', empty: true, p: .5 }]
           : [{ type: 'shell', phase: 'start', pp: .5, shellP: -1 }, { type: 'shell', phase: 'load', pp: 0, shellP: .5 }, { type: 'shell', phase: 'end', pp: .5, shellP: -1 }];
         for (const reload of reloads) {
@@ -125,7 +129,8 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
       }
       return { m4: G.M4Viewmodel.ready, glock: G.G17Pilot.ready, longGuns: Object.keys(expected), packs: packGuns };
     }, longGuns);
-    assert.equal(gunRequests.length, 10, 'Each long gun must load automatically on both visits');
+    // v55: 1인칭 팩이 AA-12 모델을 한 번 더 받아 쓴다 (다른 총 모양으로 바꿔 끼우기)
+    assert(gunRequests.length >= 10, 'Each long gun must load automatically on both visits ' + gunRequests.length);
     assert(gunRequests.every(r => r.status === 200 && new URL(r.url).searchParams.get('v') === build), JSON.stringify(gunRequests));
     assert.deepEqual(requests, [200, 200, 200, 200]);
     assert(packRequests.length >= 6 && packRequests.every(r => r.status === 200 && new URL(r.url).searchParams.get('v') === build), JSON.stringify(packRequests));
