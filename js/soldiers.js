@@ -7,6 +7,16 @@
 const THREE = window.THREE, G = window.G, U = G.U;
 
 const AVATARS = ['Military_Male_01', 'Military_Male_03', 'Military_Female_01'];
+// v53 현대 특수부대 (S.W.A.T. Operator, Mateusz Woliński, CC-BY-4.0 — tools/soldiers/build-swat.cjs)
+//  Mixamo 뼈대 · 위장 색 4가지 (같은 메시, 아틀라스만 다르다). 없으면 Rocketbox 군인을 쓴다.
+const SWAT = { file: 'assets/char/swat/swat.glb', variants: ['black', 'ranger', 'coyote', 'grey'] };
+const MIX = {
+  Spine: 'spine', Spine1: 'spine1', Spine2: 'chest', Neck: 'neck', Head: 'head',
+  LeftArm: 'armL', LeftForeArm: 'elbowL', RightArm: 'armR', RightForeArm: 'elbowR',
+  LeftUpLeg: 'legL', LeftLeg: 'kneeL', RightUpLeg: 'legR', RightLeg: 'kneeR'
+};
+const MIXCHILD = { LeftArm: 'LeftForeArm', LeftForeArm: 'LeftHand', RightArm: 'RightForeArm', RightForeArm: 'RightHand',
+  LeftUpLeg: 'LeftLeg', LeftLeg: 'LeftFoot', RightUpLeg: 'RightLeg', RightLeg: 'RightFoot' };
 // 아틀라스 칸 (UV 공간: u0, v0, 너비, 높이) — tools/convert-models.py 와 같은 배치
 const CELLS = { body: [0, 0.5, 0.5, 0.5], head: [0.5, 0.5, 0.5, 0.5], equipment: [0, 0.25, 0.5, 0.25], helmet: [0.5, 0, 0.5, 0.5] };
 const PARTS = ['equipment', 'helmet', 'head', 'body'];
@@ -78,6 +88,7 @@ const Soldiers = G.Soldiers = {
 
   async load(renderer, progress) {
     if (location.protocol === 'file:' || !THREE.FBXLoader) return;
+    if (await this.loadSwat(renderer)) return;
     const mgr = new THREE.LoadingManager();
     mgr.setURLModifier(u => /\.(tga|png|jpg|jpeg|psd|dds)$/i.test(u) && !/atlas_(diff|nor)\.jpg$/.test(u) ? BLANK : u);
     const tl = new THREE.TextureLoader();
@@ -96,6 +107,71 @@ const Soldiers = G.Soldiers = {
     this.ready = this.templates.length > 0;
     for (const t of this.templates) { renderer.initTexture(t.mat.map); if (t.mat.normalMap) renderer.initTexture(t.mat.normalMap); }
     console.info('[soldiers] 군인 모델 ' + this.templates.length + '/' + AVATARS.length + (this.templates.length ? ' (' + this.templates.map(t => t.name + ':' + t.tris).join(', ') + ')' : ''));
+  },
+
+  async loadSwat(renderer) {
+    if (!THREE.GLTFLoader) return false;
+    try {
+      const v = window.LZ_BUILD ? '?v=' + window.LZ_BUILD : '';
+      const gl = new THREE.GLTFLoader();
+      if (THREE.MeshoptDecoder) gl.setMeshoptDecoder(THREE.MeshoptDecoder);
+      const tl = new THREE.TextureLoader(), aniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+      const tex = (u, srgb) => new Promise(res => tl.load(u + v, t => { t.flipY = false; t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace; t.anisotropy = aniso; res(t); }, undefined, () => res(null)));
+      const base = 'assets/char/swat/';
+      const [g, nor, ...maps] = await Promise.all([gl.loadAsync(SWAT.file + v), tex(base + 'atlas_nor.webp', false), ...SWAT.variants.map(k => tex(base + 'atlas_' + k + '.webp', true))]);
+      SWAT.variants.forEach((k, i) => { if (maps[i]) this.templates.push(this.makeTemplateGLB('swat_' + k, g.scene, maps[i], nor)); });
+    } catch (e) { console.info('[soldiers] 특수부대 모델 없음 — Rocketbox 군인 사용', e && e.message); this.templates = []; }
+    this.ready = this.templates.length > 0;
+    if (!this.ready) return false;
+    for (const t of this.templates) renderer.initTexture(t.mat.map);
+    if (this.templates[0].mat.normalMap) renderer.initTexture(this.templates[0].mat.normalMap);
+    this.style = 'swat';
+    console.info('[soldiers] 특수부대 모델 ' + this.templates.length + '가지 (' + this.templates[0].tris + ' 삼각형)');
+    return true;
+  },
+
+  // glTF (Mixamo 뼈대) 템플릿: 뼈 위치·방향을 모두 root 공간에서 계산한다 (중간 노드의 크기·회전과 무관)
+  makeTemplateGLB(name, scene, map, nor) {
+    const model = THREE.SkeletonUtils.clone(scene);
+    const mat = new THREE.MeshStandardMaterial({ name: 'soldier_' + name, map, normalMap: nor, roughness: 0.84, metalness: 0.05 });
+    let body = null, helmet = null;
+    model.traverse(o => {
+      if (!o.isSkinnedMesh) return;
+      o.material = mat; o.castShadow = true; o.receiveShadow = true;
+      if (/helmet/.test(o.name)) { helmet = o; o.name = 'soldier_helmet'; } else { body = o; o.name = 'soldier_body'; }
+    });
+    if (!body) throw Error('no skinned mesh');
+    const root = new THREE.Group(); root.name = 'soldier';
+    model.rotation.set(0, Math.PI, 0);   // glTF 앞(+Z) → 게임 앞(−Z)
+    root.add(model);
+    root.updateMatrixWorld(true);
+    const inv = new THREE.Matrix4().copy(root.matrixWorld).invert(), byName = {};
+    model.traverse(o => { if (o.isBone) byName[o.name] = o; });
+    const rs = (o) => { const m = new THREE.Matrix4().multiplyMatrices(inv, o.matrixWorld); const p = new THREE.Vector3(), q = new THREE.Quaternion(), sc = new THREE.Vector3(); m.decompose(p, q, sc); return { p, q, s: sc.x }; };
+    const hips = byName.Hips;
+    const need = new Set();
+    for (const n in MIX) { let b = byName[n]; while (b && b.isBone) { need.add(b.name); b = b.parent; } }
+    const order = [];
+    model.traverse(o => { if (o.isBone && need.has(o.name)) order.push(o.name); });
+    const baseObj = byName[order[0]].parent, base = rs(baseObj);
+    const entries = order.map(n => {
+      const b = byName[n], w = rs(b), par = b.parent && b.parent.isBone ? rs(b.parent) : base;
+      const e = { name: n, key: MIX[n] || null, W: w.q, Lbind: b.quaternion.clone(), lp: w.p.clone().sub(par.p).applyQuaternion(par.q.clone().invert()),
+        parent: b.parent && b.parent.isBone ? order.indexOf(b.parent.name) : -1, C: new THREE.Quaternion() };
+      if (MIXCHILD[n] && byName[MIXCHILD[n]]) {
+        const d = rs(byName[MIXCHILD[n]]).p.sub(w.p);
+        e.len = d.length();
+        e.C.setFromUnitVectors(d.clone().normalize(), new THREE.Vector3(0, -1, 0));
+        e.dl = d.normalize().applyQuaternion(w.q.clone().invert());
+      }
+      return e;
+    });
+    const idx = (n) => order.indexOf(n);
+    const hp = rs(hips.parent);
+    const tris = Math.round((body.geometry.index ? body.geometry.index.count : 0) / 3 + (helmet && helmet.geometry.index ? helmet.geometry.index.count / 3 : 0));
+    return { name, root, mat, entries, ik: { L: [idx('LeftArm'), idx('LeftForeArm')], R: [idx('RightArm'), idx('RightForeArm')] },
+      fbxQ: base.q, baseP: base.p, unit: hp.s, hipName: 'Hips', hipIdx: idx('Hips'), hipBind: hips.position.clone(),
+      up: new THREE.Vector3(0, 1, 0).applyQuaternion(hp.q.clone().invert()), tris, hasHelmet: !!helmet };
   },
 
   makeTemplate(name, fbx, map, nor) {
@@ -188,15 +264,19 @@ const Soldiers = G.Soldiers = {
     qe(m.legL.rotation, Q('legL')); Q('kneeL').copy(P.legL).multiply(qe(m.kneeL.rotation, _q));
     qe(m.legR.rotation, Q('legR')); Q('kneeR').copy(P.legR).multiply(qe(m.kneeR.rotation, _q));
     const E = T.entries, O = s.O, X = s.X;
-    if (s.hip) s.hip.position.y = T.hipBindY * (m.hip.position.y / 0.95);
+    if (s.hip) {
+      if (T.up) s.hip.position.copy(T.hipBind).addScaledVector(T.up, T.hipBind.dot(T.up) * (m.hip.position.y / 0.95 - 1));
+      else s.hip.position.y = T.hipBindY * (m.hip.position.y / 0.95);
+    }
+    const hipI = T.hipIdx || 0;
     // 1) 뼈마다 root 공간 방향(O)과 위치(X)
     for (let i = 0; i < E.length; i++) {
       const e = E[i], parentO = e.parent >= 0 ? O[e.parent] : T.fbxQ, o = O[i];
       if (e.key) o.copy(P[e.key]).multiply(e.C).multiply(e.W);
       else o.copy(parentO).multiply(e.Lbind);
-      const lp = i === 0 && s.hip ? _v.copy(s.hip.position).multiplyScalar(T.unit) : e.lp; // 골반 높이(앉기)는 실제 위치로
+      const lp = i === hipI && s.hip ? _v.copy(s.hip.position).multiplyScalar(T.unit) : e.lp; // 골반 높이(앉기)는 실제 위치로
       if (e.parent >= 0) X[i].copy(lp).applyQuaternion(parentO).add(X[e.parent]);
-      else X[i].copy(lp).applyQuaternion(T.fbxQ);
+      else { X[i].copy(lp).applyQuaternion(T.fbxQ); if (T.baseP) X[i].add(T.baseP); }
     }
     // 2) 총을 든 자세면 두 손을 총 손잡이·총열 덮개로 (2관절 IK)
     const gp = m.ikGun && GRIP[m.ikGun];

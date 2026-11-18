@@ -9,13 +9,13 @@ const _support = new V3();
 const HALF_L = 1.9, HALF_W = 0.95, MAX = 21, REV = 6;
 const HP = 320;                 // 차량 내구도 (소총 약 12발, 수류탄 두 개)
 const RESPAWN = 25;             // 폭발한 차는 잔해로 이 시간(초)만큼 남았다가, 처음 놓였던 자리에 새 차로 다시 나온다
-const KINDS = ['suv', 'truck', 'sedan', 'van'];
-const S = 1.6;                  // Kenney 모델 → 미터
+// v53 실사 차량 (Sketchfab CC-BY-4.0, tools/vehicles/build-real.cjs): 현대 포터 II 탑차 · 마쓰다 E2200 트럭 · IZH-2715 픽업
+const KINDS = ['porter', 'e2200', 'izh'];
+const S = 1;                    // GLB 단위 = 미터
 const PAINT = {
-  suv: [0x4b5a35, 0x5a5242, 0x3d4a52],
-  truck: [0x7d6a48, 0x55603f, 0x6e2a22],
-  sedan: [0x7a1f1f, 0x2b3e5c, 0xa7a9ab, 0x26282b],
-  van: [0xcfcfc6, 0x4a5d6e, 0x5d6b3e]
+  porter: [0xd8d8d2],
+  e2200: [0xdedcd4, 0x4a5d6e, 0x5d6b3e, 0x8a2a22, 0x9a9890],   // 'Paint' 재질(차체 일부) 색
+  izh: [0xcfcfc6]
 };
 // 모델이 없을 때(예전 지프 상자) · 직접 만든 차량 객체의 기본 치수
 const JEEP = { hl: HALF_L, hw: HALF_W, top: 1.7, r: 0.42, wheelPts: [[-0.95, -1.25], [0.95, -1.25], [-0.95, 1.25], [0.95, 1.25]] };
@@ -105,7 +105,20 @@ const Vh = G.Vehicles = {
         d[i] = 0.62 * (1 - THREE.MathUtils.smoothstep(y, 0.12, 0.55));
       }
       g.setAttribute('dirt', new THREE.BufferAttribute(d, 1));
-      const swap = mm => this.mats[mm.name] || mm;
+      // Kenney 재질은 이름으로 바꾸고, 실사 차량 재질은 흙먼지만 입힌다 (금속도 1 로 바뀐 재질은 낮춘다)
+      const swap = mm => {
+        if (this.mats[mm.name]) return this.mats[mm.name];
+        if (/^paint/i.test(mm.name) || !mm.isMeshStandardMaterial) return mm;
+        const cache = this.mats.real || (this.mats.real = new Map());
+        if (!cache.has(mm)) {
+          const c = mm.clone();
+          if (!c.metalnessMap && c.metalness > 0.5 && !/metal|chrome|mirror/i.test(c.name)) c.metalness = 0.15;
+          if (c.transparent) { c.roughness = Math.min(c.roughness, 0.1); c.envMapIntensity = 1.4; }
+          else this.mats.dirty(c);
+          cache.set(mm, c);
+        }
+        return cache.get(mm);
+      };
       o.material = Array.isArray(o.material) ? o.material.map(swap) : swap(o.material);
     });
   },
@@ -122,7 +135,7 @@ const Vh = G.Vehicles = {
     const M = this.models[kind], g = new THREE.Group(), inner = M.root.clone(true);
     v.kind = kind;
     inner.scale.setScalar(S); inner.position.set(0, M.y0, M.cz);
-    const color = new THREE.Color(U.pick(PAINT[kind]));
+    const color = new THREE.Color(U.pick(PAINT[kind] || [0xcccccc]));
     const paint = new Map();
     inner.traverse(o => {
       if (!o.isMesh) return;
@@ -181,7 +194,7 @@ const Vh = G.Vehicles = {
   },
   // 정해진 자리에 한 대 (훈련장 운전 코스)
   spawnAt(x, z, yaw, kind) {
-    return this.newVehicle(x, G.World.heightAt(x, z), z, yaw, { home: { x, z, yaw }, kind: kind || 'suv' });
+    return this.newVehicle(x, G.World.heightAt(x, z), z, yaw, { home: { x, z, yaw }, kind: kind || 'izh' });
   },
   // 세워 둔 차는 충돌 상자를 둔다 (걸어서 통과·총알 관통 방지). 회전을 감안해 조금 줄인 축 정렬 상자
   block(v) {

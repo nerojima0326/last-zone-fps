@@ -97,7 +97,7 @@ function mats() {
   MM.steel = std(0x8d9298, 0.85, 0.32, { envMapIntensity: 0.8 });
   MM.chrome = std(0xc0c5cb, 0.95, 0.18, { envMapIntensity: 1.0 });
   // 실사 군인(ACU 위장복)을 쓸 때는 1인칭 소매·장갑 색도 맞춘다
-  const acu = G.Soldiers && G.Soldiers.ready;
+  const acu = G.Soldiers && G.Soldiers.ready && G.Soldiers.style !== 'swat';
   MM.glove = new THREE.MeshStandardMaterial({ color: acu ? 0x5e5a4c : 0x2c2b27, roughness: 0.92 });
   MM.sleeve = new THREE.MeshStandardMaterial({ color: acu ? 0xffffff : 0x4a5236, roughness: 0.95, map: acu ? acuCamo() : null });
   MM.brass = std(0xc9a040, 1, 0.3);
@@ -222,7 +222,7 @@ function armMats() {
   const lh = G.Tex.tileNoise(S, 24, 3, 913);
   const leatherN = G.Tex.normalMap(lh, S, 3.5);
   leatherN.repeat.set(2, 2);
-  const acu = G.Soldiers && G.Soldiers.ready;
+  const acu = G.Soldiers && G.Soldiers.ready && G.Soldiers.style !== 'swat';
   ARM_M = {
     sleeve: new THREE.MeshStandardMaterial({ color: M.sleeve.color, map: M.sleeve.map, roughness: 0.93, normalMap: fabricN, normalScale: new THREE.Vector2(0.9, 0.9) }),
     glove: new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.82, metalness: 0.01, normalMap: leatherN, normalScale: new THREE.Vector2(0.28, 0.28) }),
