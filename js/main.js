@@ -20,23 +20,42 @@ class ViewmodelPass extends THREE.Pass {
     renderer.autoClear = ac;
   }
 }
-// 색보정 (선형 HDR, 톤매핑 전): 그림자는 살짝 차갑게, 밝은 곳은 따뜻하게, 대비 약간, 채도 살짝 낮춤
+// 색보정 (선형 HDR, 톤매핑 전) — v52 '현대 군사 FPS' 톤
+//  · 가장자리 색수차 · 가벼운 선명화(이웃 밝기 범위로 묶어 테두리 번짐 없음)
+//  · 풀·나뭇잎 같은 쨍한 초록은 올리브·흙빛 쪽으로 눌러 전장 같은 칙칙한 색으로
+//  · 그림자 청록 / 밝은 곳 주황 분할 톤, 대비 올리고 채도 낮춤, 비네트, 움직이는 필름 그레인
 const GradeShader = {
-  uniforms: { tDiffuse: { value: null }, uVig: { value: 0.95 }, uSat: { value: 0.97 }, uKnock: { value: 0 }, uCon: { value: 1.07 },
-    uShadow: { value: new THREE.Vector3(0.93, 0.98, 1.07) }, uHigh: { value: new THREE.Vector3(1.05, 1.0, 0.93) } },
+  uniforms: { tDiffuse: { value: null }, uTexel: { value: new THREE.Vector2(1 / 1280, 1 / 720) }, uTime: { value: 0 },
+    uVig: { value: 1.2 }, uSat: { value: 0.83 }, uKnock: { value: 0 }, uCon: { value: 1.17 }, uGreen: { value: 0.45 },
+    uGrain: { value: 0.07 }, uCA: { value: 0.006 }, uSharp: { value: 0.2 },
+    uShadow: { value: new THREE.Vector3(0.9, 0.99, 1.1) }, uHigh: { value: new THREE.Vector3(1.08, 1.0, 0.88) } },
   vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-  fragmentShader: `uniform sampler2D tDiffuse; uniform float uVig; uniform float uSat; uniform float uKnock; uniform float uCon; uniform vec3 uShadow; uniform vec3 uHigh; varying vec2 vUv;
+  fragmentShader: `uniform sampler2D tDiffuse; uniform vec2 uTexel; uniform float uTime; uniform float uVig; uniform float uSat; uniform float uKnock; uniform float uCon;
+    uniform float uGreen; uniform float uGrain; uniform float uCA; uniform float uSharp; uniform vec3 uShadow; uniform vec3 uHigh; varying vec2 vUv;
+    float hash(vec2 p){ p = fract(p * vec2(443.897, 441.423)); p += dot(p, p.yx + 19.19); return fract((p.x + p.y) * p.x); }
+    float luma(vec3 c){ return dot(c, vec3(0.2126, 0.7152, 0.0722)); }
     void main(){
-      vec4 c = texture2D(tDiffuse, vUv);
-      float l = dot(c.rgb, vec3(0.2126, 0.7152, 0.0722));
-      c.rgb *= mix(uShadow, uHigh, smoothstep(0.02, 0.7, l));
-      c.rgb = 0.18 * pow(max(c.rgb, vec3(0.0)) / 0.18, vec3(uCon));
-      l = dot(c.rgb, vec3(0.2126, 0.7152, 0.0722));
-      c.rgb = mix(vec3(l), c.rgb, uSat * (1.0 - uKnock * 0.8));
-      c.rgb = mix(c.rgb, c.rgb * vec3(1.15, 0.7, 0.7), uKnock * 0.5);
-      vec2 d = vUv - 0.5;
-      c.rgb *= clamp(1.0 - dot(d, d) * uVig, 0.0, 1.0);
-      gl_FragColor = c;
+      vec2 d = vUv - 0.5; float r2 = dot(d, d);
+      vec2 ca = d * r2 * uCA;
+      vec3 c = texture2D(tDiffuse, vUv).rgb;
+      c.r = texture2D(tDiffuse, vUv + ca).r;
+      c.b = texture2D(tDiffuse, vUv - ca).b;
+      vec3 n = texture2D(tDiffuse, vUv + vec2(0.0, uTexel.y)).rgb, s = texture2D(tDiffuse, vUv - vec2(0.0, uTexel.y)).rgb;
+      vec3 e = texture2D(tDiffuse, vUv + vec2(uTexel.x, 0.0)).rgb, w = texture2D(tDiffuse, vUv - vec2(uTexel.x, 0.0)).rgb;
+      vec3 mn = min(c, min(min(n, s), min(e, w))), mx = max(c, max(max(n, s), max(e, w)));
+      c = clamp(c + (c * 4.0 - n - s - e - w) * uSharp, mn, mx);
+      c = max(c, vec3(0.0));
+      float l = luma(c);
+      float g = clamp((c.g - max(c.r, c.b)) / (c.g + 1e-4) * 2.2, 0.0, 1.0);
+      c = mix(c, l * vec3(1.1, 1.0, 0.78), g * uGreen);
+      c *= mix(uShadow, uHigh, smoothstep(0.02, 0.6, l));
+      c = 0.18 * pow(c / 0.18, vec3(uCon));
+      l = luma(c);
+      c = mix(vec3(l), c, uSat * (1.0 - uKnock * 0.8));
+      c = mix(c, c * vec3(1.15, 0.7, 0.7), uKnock * 0.5);
+      c *= clamp(1.0 - r2 * uVig, 0.0, 1.0);
+      c *= 1.0 + (hash(vUv / uTexel + fract(uTime) * vec2(61.3, 17.9)) - 0.5) * uGrain;
+      gl_FragColor = vec4(c, 1.0);
     }`
 };
 // 품질 프리셋
@@ -44,7 +63,7 @@ const GradeShader = {
 // far 시야 거리 · fog 안개 배율 · lod 건물 상세 거리 배율 · terr 지형 상세 거리 배율 · shEvery 그림자 갱신 주기(프레임)
 const QUALITY = {
   potato: { dpr: 0.6,  msaa: 0, shadow: 0,    range: 0,  bloom: false, post: false, far: 750,  fog: 1.45, lod: 0.6, terr: 0.5,  shEvery: 0 },
-  low:    { dpr: 0.75, msaa: 0, shadow: 1024, range: 42, bloom: false, post: false, far: 1100, fog: 1.2,  lod: 0.8, terr: 0.7,  shEvery: 3 },
+  low:    { dpr: 0.75, msaa: 0, shadow: 1024, range: 42, bloom: false, post: true,  far: 1100, fog: 1.2,  lod: 0.8, terr: 0.7,  shEvery: 3 },
   medium: { dpr: 1.0,  msaa: 2, shadow: 2048, range: 62, bloom: true,  post: true,  far: 2200, fog: 1.0,  lod: 1,   terr: 1,    shEvery: 2 },
   high:   { dpr: 1.25, msaa: 4, shadow: 2048, range: 75, bloom: true,  post: true,  far: 4000, fog: 1.0,  lod: 1,   terr: 1.25, shEvery: 2 }
 };
@@ -281,12 +300,17 @@ function applyQuality(q) {
   renderer.shadowMap.needsUpdate = true;
 }
 // 한 프레임 그리기: 후처리를 쓰면 composer, 아니면 화면에 바로 (본 장면 → 1인칭 총)
+const _db = new THREE.Vector2();
 function usePost() { const Q = QUALITY[G.quality]; return !Q || Q.post; }
 function renderFrame(dt) {
   // 레이트레이싱 (설정에서 켰고 지원되는 기기일 때)
   if (G.RT && G.RT.active()) { G.RT.render(renderer, scene, camera, G.vmScene, G.vmCamera); return; }
   const Q = QUALITY[G.quality];
-  if (!Q || Q.post) { composer.render(dt); return; }
+  if (!Q || Q.post) {
+    const db = renderer.getDrawingBufferSize(_db);
+    grade.uniforms.uTexel.value.set(1 / db.x, 1 / db.y); grade.uniforms.uTime.value = (grade.uniforms.uTime.value + 0.618) % 64;
+    composer.render(dt); return;
+  }
   renderer.setRenderTarget(null);
   renderer.autoClear = true;
   renderer.render(scene, camera);

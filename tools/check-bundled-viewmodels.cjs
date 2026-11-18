@@ -57,7 +57,7 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
       for (const id of ['sc17', 'sa12', 'aa12']) assert(bundled.find(g => g.id === id).parts.includes('mag'), id + ' missing movable magazine');
       assert(bundled.find(g => g.id === 'db2').parts.includes('barrel'), 'DB-2 missing break-action barrels');
       assert(!bundled.find(g => g.id === 'm1014').parts.includes('pump'), 'Semi-auto shotgun must use a fixed fore-end');
-      if (!visit) { await page.reload({ waitUntil: 'domcontentloaded' }); await ready(); }
+      if (!visit) { await page.reload({ waitUntil: 'domcontentloaded', timeout: 180000 }); await ready(); }
     }
     await page.click('#trainBtn');
     await page.waitForFunction(() => G.Game.training && G.Training.active, null, { timeout: 30000 });
@@ -134,7 +134,7 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
     await page.route('**/assets/models/viewmodels/**', r => r.fulfill({ status: 404, body: '' }));
     await page.route(/\/assets\/models\/guns\/(sc17|m1014|sa12|aa12|db2)\.glb/, r => r.fulfill({ status: 404, body: '' }));
     await page.route('**/assets/animations/reloads/motion.json*', r => r.fulfill({ status: 404, body: '' }));
-    await page.reload({ waitUntil: 'domcontentloaded' }); await ready();
+    await page.reload({ waitUntil: 'domcontentloaded', timeout: 180000 }); await ready();
     const fallback = await page.evaluate(() => !G.M4Viewmodel.ready && !G.G17Pilot.ready &&
       document.querySelector('#m4Status').textContent.includes('실패') && document.querySelector('#g17Status').textContent.includes('실패'));
     assert(fallback, 'Missing-file fallback failed');

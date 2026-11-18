@@ -68,8 +68,46 @@ const Vh = G.Vehicles = {
         hl: (bb.max.z - bb.min.z) / 2 * S, hw: Math.min(bb.max.x - bb.min.x, 2 * Math.max(...wx) + r) / 2 * S, top: (box.max.y - box.min.y) * S,
         wheelPts: wheels.map(n => { const w = root.getObjectByName(n), c = new THREE.Box3().setFromObject(w).getCenter(new V3()); return [c.x * S, (c.z - cz) * S]; })
       };
-      root.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; o.material.envMapIntensity = 0.7; } });
+      root.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+      this.realize(root, box);
     }).catch(e => console.info('[vehicle] ' + k + ' 모델 없음', e.message))));
+  },
+  // v52 실사 재질: 장난감 같은 원색 대신 짙은 색유리 · 무광 플라스틱 · 크롬 · 클리어코트 도장,
+  //  차체 아래쪽일수록 흙먼지 (정점 속성 dirt 를 모델 높이로 굽는다)
+  mats: null,
+  realize(root, box) {
+    if (!this.mats) {
+      const dirty = m => {
+        m.onBeforeCompile = sh => {
+          sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float dirt;\nvarying float vDirt;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvDirt = dirt;');
+          sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vDirt;')
+            .replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.30, 0.26, 0.20), vDirt);')
+            .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = mix(roughnessFactor, 0.95, vDirt);');
+        };
+        m.customProgramCacheKey = () => 'dirt';
+        return m;
+      };
+      this.mats = {
+        dirty,
+        window: new THREE.MeshPhysicalMaterial({ name: 'window', color: 0x0d1215, roughness: 0.05, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 1.5 }),
+        plastic: dirty(new THREE.MeshStandardMaterial({ name: 'plastic', color: 0x1c1e1e, roughness: 0.78, metalness: 0.05 })),
+        _defaultMat: dirty(new THREE.MeshStandardMaterial({ name: '_defaultMat', color: 0x8f918f, roughness: 0.32, metalness: 0.85 })),
+        carTire: dirty(new THREE.MeshStandardMaterial({ name: 'carTire', color: 0x131313, roughness: 0.95, metalness: 0 }))
+      };
+    }
+    const inv = new THREE.Matrix4().copy(root.matrixWorld).invert(), _p = new V3(), lo = box.min.y, hi = box.max.y;
+    root.traverse(o => {
+      if (!o.isMesh) return;
+      const g = o.geometry, pos = g.attributes.position, d = new Float32Array(pos.count);
+      const m = new THREE.Matrix4().multiplyMatrices(inv, o.matrixWorld);
+      for (let i = 0; i < pos.count; i++) {
+        const y = (_p.fromBufferAttribute(pos, i).applyMatrix4(m).y - lo) / (hi - lo);
+        d[i] = 0.62 * (1 - THREE.MathUtils.smoothstep(y, 0.12, 0.55));
+      }
+      g.setAttribute('dirt', new THREE.BufferAttribute(d, 1));
+      const swap = mm => this.mats[mm.name] || mm;
+      o.material = Array.isArray(o.material) ? o.material.map(swap) : swap(o.material);
+    });
   },
   burnt: null,
   // 차량 한 대의 메시: 모델이 있으면 복제(차체 색만 바꿔), 없으면 상자 지프
@@ -91,7 +129,11 @@ const Vh = G.Vehicles = {
       const mats = Array.isArray(o.material) ? o.material : [o.material];
       const out = mats.map(m => {
         if (!/^paint/i.test(m.name)) return m;
-        if (!paint.has(m)) { const c = m.clone(); c.color.copy(color); c.roughness = 0.45; c.metalness = 0.35; paint.set(m, c); }
+        if (!paint.has(m)) {
+          // 클리어코트 도장 (탁하게 바랜 색)
+          const c = this.mats.dirty(new THREE.MeshPhysicalMaterial({ name: m.name, color: color.clone().lerp(new THREE.Color(0x6b6558), 0.18), roughness: 0.42, metalness: 0.2, clearcoat: 0.55, clearcoatRoughness: 0.35 }));
+          paint.set(m, c);
+        }
         return paint.get(m);
       });
       o.material = Array.isArray(o.material) ? out : out[0];

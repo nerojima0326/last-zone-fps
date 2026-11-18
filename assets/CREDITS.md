@@ -41,6 +41,7 @@
 | AR-7 1인칭 모델·애니메이션 | M4 - FPS Weapon Animations Pack FREE (v.1), BarcodeGames | [Fab](https://www.fab.com/listings/38da8f1e-cb54-4cda-beb1-6e55642a55a9) | Fab Standard License ([상세](models/viewmodels/CREDITS.md)) |
 | G-18 1인칭 모델·애니메이션 | Glock 17 FPS 모델 (`glock17.fbx`) | 확인 필요 | 확인 필요 ([상세](models/viewmodels/CREDITS.md)) |
 | 총기별 1인칭 팔·장전 애니메이션 (v51) — KA-47 · SA-12/AA-12 · SC-17/MK-14 · S-12/M-1014 · M-1911/DE-7 · P-92 | FPS AK-74m / Saiga / rifle animation pack / remington / pistol animations (Cransh), [9mm Pistol] Ultimate FPS Animations (1Matzh) | Sketchfab, GitHub 사본 ([상세](models/viewmodels/CREDITS.md)) | CC-BY-4.0 |
+| HUD 숫자·제목 글꼴 (v52) | Barlow Condensed (Jeremy Tribby) — Google Fonts 에서 불러옴 | [Google Fonts](https://fonts.google.com/specimen/Barlow+Condensed) | SIL OFL 1.1 |
 | P-92 권총 | Service Pistol (Mateusz Sadek) | [Poly Haven](https://polyhaven.com/a/service_pistol) | CC0 |
 | 레이트레이싱 (v50, 설정에서 켤 때만) | three-realtime-rt 0.16.7 (Goldwin Stewart) + three-mesh-bvh 0.7.8 (Garrett Johnson) — jsDelivr CDN 에서 불러옴 | [three-realtime-rt](https://github.com/GoldwinXS/three-realtime-rt) · [three-mesh-bvh](https://github.com/gkjohnson/three-mesh-bvh) | MIT |
 | 나무 · 덤불 | EZ-Tree 생성기 (Daniel Greenheck, 나무껍질·잎 텍스처 포함) | [GitHub](https://github.com/dgreenheck/ez-tree) | MIT (`vendor/ez-tree.LICENSE.txt`) |
