@@ -182,6 +182,8 @@ G.boot = async function () {
   if (G.Settings) { G.Settings.apply(); G.Settings.initUI(); }
   progress(0.94, '총기 모델 자동 적용 중...');
   await Promise.all([G.G17Pilot?.init(),G.M4Viewmodel?.init()]);
+  // 총기별 실사 장전 동작 팩 (v51) — 뒤에서 하나씩 받고, 받기 전에는 절차적 모델을 쓴다
+  G.AssetVM?.init();
   // M4 팩의 실사 팔을 나머지 총기에도 (M4·Glock 이 준비된 뒤)
   G.RealArms?.init();
   if(G.Attachments)G.Attachments.initUI();

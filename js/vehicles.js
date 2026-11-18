@@ -8,6 +8,7 @@ const _f = new V3(), _r = new V3(), _c = new V3(), _e = new V3(), _d = new V3();
 const _support = new V3();
 const HALF_L = 1.9, HALF_W = 0.95, MAX = 21, REV = 6;
 const HP = 320;                 // 차량 내구도 (소총 약 12발, 수류탄 두 개)
+const RESPAWN = 25;             // 폭발한 차는 잔해로 이 시간(초)만큼 남았다가, 처음 놓였던 자리에 새 차로 다시 나온다
 const KINDS = ['suv', 'truck', 'sedan', 'van'];
 const S = 1.6;                  // Kenney 모델 → 미터
 const PAINT = {
@@ -104,6 +105,8 @@ const Vh = G.Vehicles = {
   newVehicle(x, y, z, yaw, extra) {
     if (!this.geo) { this.geo = build(); this.mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.7, metalness: 0.2 }); }
     const v = Object.assign({ kind: U.pick(KINDS), pos: new V3(x, y, z), yaw, speed: 0, lat: 0, steer: 0, pitch: 0, roll: 0, driver: null, box: null, hitT: new Map(), noiseT: 0, hp: HP, dead: false, burnT: 0, smokeT: 0, lastHit: null, skid: [null, null] }, extra || {});
+    if (!v.home) v.home = { x, z, yaw };
+    v.home.kind = v.kind;
     v.mesh = this.makeMesh(v);
     G.scene.add(v.mesh);
     this.list.push(v); this.place(v, 1); this.block(v);
@@ -487,7 +490,6 @@ const Vh = G.Vehicles = {
     const e = this.engine(v, _c);
     const hpK = v.hp / HP;
     if (v.dead) {
-      v.wreckT += dt;
       if (v.wreckT < 14) {         // 남은 불
         if (Math.random() < dt * 26) this.flame(this.center(v, _e).add(_o.set((Math.random() - 0.5) * v.dim.hw, 0.2, (Math.random() - 0.5) * v.dim.hl)), 0.8);
         if (Math.random() < dt * 9) G.FX.dust(_e.copy(this.center(v, _e)).add(_o.set(0, 0.8, 0)), 1, 0, 1.6, 0, 0.09, 0.085, 0.08, 2.4);
@@ -585,7 +587,20 @@ const Vh = G.Vehicles = {
     this.step(v, a, dt, slow ? 0 : thr, st, slow);
     return false;
   },
+  // 잔해를 치우고 처음 자리에 새 차 (사람·다른 차가 자리를 막고 있으면 비킬 때까지 기다린다)
+  respawn(v) {
+    const H = v.home;
+    for (const a of G.Game.actors) if (a.alive && Math.hypot(a.pos.x - H.x, a.pos.z - H.z) < 5) return false;
+    for (const o of this.list) if (o !== v && Math.hypot(o.pos.x - H.x, o.pos.z - H.z) < 5) return false;
+    G.scene.remove(v.mesh); this.unblock(v);
+    this.list.splice(this.list.indexOf(v), 1);
+    const n = this.newVehicle(H.x, G.World.heightAt(H.x, H.z), H.z, H.yaw, { home: H, kind: H.kind });
+    G.FX.dust(_e.copy(n.pos).add(_o.set(0, 0.4, 0)), 10, 0, 0.6, 0, 0.55, 0.52, 0.48, 1.6);
+    return true;
+  },
   update(dt) {
+    for (const v of this.list) if (v.dead) v.wreckT += dt;
+    for (const v of this.list.slice()) if (v.dead && v.wreckT > RESPAWN && (v.respawnT = (v.respawnT || 0) - dt) <= 0) { if (!this.respawn(v)) v.respawnT = 2; }
     // 봇이 운전하는 차 중 가장 가까운 차의 엔진 소리
     if (G.Audio.ctx) {
       let near = null, nd = 120;
