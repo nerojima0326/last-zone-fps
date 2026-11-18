@@ -71,23 +71,28 @@ const FIRE_SPAN = { m1014: 0.36 };
 //  file: GLB 경로, shift: 가늠자 기준 총열 방향(앞 +) 보정 m, lift: 위 보정 m
 //  노드 이름이 mag… → 팩의 탄창 뼈, slide… → 팩의 슬라이드 뼈를 따라 움직인다
 const SWAP = {
-  sc17: { file: 'assets/models/viewmodels/swap/sc17.glb', shift: 0.08, lift: -0.015 },          // SCAR-H (Rotuma) on ACR 팩
-  m1014: { file: 'assets/models/viewmodels/swap/m1014.glb', shift: 0.04 },        // Benelli M4 (TastyTony) on Remington 팩
+  sc17: { file: 'assets/models/viewmodels/swap/sc17.glb', shift: -0.04, lift: -0.015 },          // SCAR-H (Rotuma) on ACR 팩
+  m1014: { file: 'assets/models/viewmodels/swap/m1014.glb', shift: -0.05, lift: 0.015 },        // Benelli M4 (TastyTony) on Remington 팩
   m1911: { file: 'assets/models/viewmodels/swap/m1911.glb' },        // Colt M1911 (b0ho) on XD 팩
   de7: { file: 'assets/models/viewmodels/swap/de7.glb' },            // Desert Eagle (ELIZION) on XD 팩
-  aa12: { file: 'assets/models/guns/aa12.glb', shift: 0.12 },                     // 게임 자체 AA-12 모델 on Saiga 팩
-  mk14: { file: 'assets/models/guns/mk14.glb', shift: 0.12 }                      // 게임 자체 MK-14 모델 on ACR 팩
+  aa12: { file: 'assets/models/guns/aa12.glb', shift: -0.1, adsDist: 0.4, adsFwd: 0.12 },                     // 게임 자체 AA-12 모델 on Saiga 팩
+  mk14: { file: 'assets/models/guns/mk14.glb', shift: -0.01 }                      // 게임 자체 MK-14 모델 on ACR 팩
 };
 // v56 지향 자세: at = 가늠자 자리(카메라 공간 m, 오른쪽 +x · 위 +y · 앞 −z), yaw/pitch/roll(도) = 총구를 가운데로 · 살짝 위로 · 윗면을 안쪽으로
 // v56 모든 팩 공통 팔 색 (선형 RGB): 검은 전술 장갑 · 레인저 그린 소매
 const ARM_LOOK = { glove: [0.032, 0.032, 0.034], sleeve: [0.075, 0.08, 0.06] };
 const HIP = {
-  rifle: { at: [0.105, -0.095, -0.3], yaw: 4.5, pitch: 1.5, roll: 4 },
-  pistol: { at: [0.085, -0.095, -0.34], yaw: 3, pitch: 2, roll: 3 }
+  rifle: { at: [0.105, -0.095, -0.3], yaw: 4.5, pitch: 1.5, roll: 0 },
+  pistol: { at: [0.085, -0.095, -0.34], yaw: 3, pitch: 2, roll: 0 }
 };
 // v56 장전 중 들어 올리기 (m, 도)
 // v56 권총 반동 (도, m, 초): 오르는 시간 · 돌아오는 빠르기 · 흔들림
 const PISTOL_KICK = { pitch: 9, roll: 2.5, back: 0.022, lift: 0.006, rise: 0.035, ret: 13, wob: 9 };
+// v57 전력질주 자세 (도, m): pitch − = 총구 아래, yaw + = 총구 왼쪽(가운데), roll + = 윗면 왼쪽
+const SPRINT = {
+  rifle: { pitch: -7, yaw: 3, roll: 16, at: [0.0, -0.015, 0.01] },
+  pistol: { pitch: -8, yaw: 0, roll: 8, at: [0.0, -0.02, 0.01] }
+};
 const RELOAD_LIFT = { at: [-0.025, 0.04, -0.03], pitch: 4, yaw: 0, roll: 7 };
 const ADS_DIST = { reddot: 0.32, holo: 0.3, x2: 0.25, x4: 0.22, x8: 0.2 };
 
@@ -383,7 +388,8 @@ const AV = G.AssetVM = {
     const sw = P.swaps[id];
     for (const k in P.swaps) for (const h of P.swaps[k].groups) h.visible = k === id;
     for (const m of P.gunMeshes) m.visible = !sw;
-    P.sight = sw ? sw.sight : P.sight0;
+    // 지향 자세는 팩 총 기준 그대로 (팔 숨김 구역이 팩 총 자세로 계산돼 있다), 조준만 바꿔 낀 총의 가늠선으로
+    P.sight = sw ? Object.assign({}, sw.sight, { qH: P.sight0.qH, posH: P.sight0.posH }) : P.sight0;
     P.muzzleLocal = sw ? sw.muzzleLocal : P.muzzle0;
   },
   measure(P, pv, pistol) {
@@ -515,8 +521,10 @@ const AV = G.AssetVM = {
     // ADS: 총의 가늠선을 시선과 나란히 돌리고, 가늠쇠(또는 조준경 중심)를 화면 가운데로
     const aim = reload ? 0 : clamp(s.ads || 0, 0, 1), weight = 1 - aim * 0.85, M = P.mount;
     const sprint = (vm.sprint || 0) * (!reload && !draw ? 1 : 0);
-    _e.set((vm.sway?.y || 0) * weight - sprint * 0.2, (vm.sway?.x || 0) * weight + sprint * 0.5, (vm.kickRoll || 0) + sprint * 0.16);
+    // 흔들림·반동 기울기만 카메라 기준으로 돌린다 (전력질주 자세는 아래 sprintPose 에서 손잡이를 축으로)
+    _e.set((vm.sway?.y || 0) * weight, (vm.sway?.x || 0) * weight, vm.kickRoll || 0);
     this.place(P, aim, _e);
+    if (sprint > 0.001) this.sprintPose(P, sprint * sprint * (3 - 2 * sprint));
     // v56 장전할 때는 총을 화면 가운데 쪽으로 들어 올려 손동작이 보이게 (지향 자세가 오른쪽 아래라 그대로면 화면 밖에서 장전한다)
     P.rlB = (P.rlB || 0) + clamp((reload ? 1 : 0) - (P.rlB || 0), -dt * 5, dt * 5);
     if (P.rlB > 0) this.reloadLift(P, P.rlB * P.rlB * (3 - 2 * P.rlB));
@@ -554,6 +562,15 @@ const AV = G.AssetVM = {
     const S = P.slideKick;
     if (S) { const e = t < 0.02 ? t / 0.02 : Math.max(0, 1 - (t - 0.02) / 0.06); S.bone.position.addScaledVector(S.d, S.anim ? e : e - S.last); S.last = S.anim ? 0 : e; }
   },
+  // v57 전력질주: 총을 가늠자(총몸 뒤쪽, 오른손 가까이) 축으로 총구가 왼쪽 아래를 향하게 돌리고 조금 내린다 (이전: 카메라 축으로 돌려 총이 화면 옆으로 날아갔다)
+  sprintPose(P, b) {
+    const SP = Object.assign({}, P.def.pistol ? SPRINT.pistol : SPRINT.rifle, P.def.sprint);
+    const g = P.sight.R.clone().applyQuaternion(P.pivot.quaternion).add(P.pivot.position);
+    _q.setFromEuler(new T.Euler(SP.pitch * D * b, SP.yaw * D * b, SP.roll * D * b, 'YXZ'));
+    P.pivot.quaternion.premultiply(_q);
+    P.pivot.position.sub(g).applyQuaternion(_q).add(g);
+    P.pivot.position.x += SP.at[0] * b; P.pivot.position.y += SP.at[1] * b; P.pivot.position.z += SP.at[2] * b;
+  },
   reloadLift(P, b) {
     const RL = Object.assign({}, RELOAD_LIFT, P.def.reloadLift);
     P.pivot.position.x += RL.at[0] * b; P.pivot.position.y += RL.at[1] * b; P.pivot.position.z += RL.at[2] * b;
@@ -588,9 +605,9 @@ const AV = G.AssetVM = {
     const S = P.sight, A = G.Attachments, pistol = P.def.pistol, cls = G.WEAPONS[id].cls;
     const t = new V(), q = S.q.clone();
     const Fq = S.F.clone().applyQuaternion(q), Rq = S.R.clone().applyQuaternion(q);
-    t.set(-Fq.x, -Math.max(Fq.y, S.hTop) - 0.004 - (P.def.adsLift || 0), -(P.def.adsDist || (pistol ? 0.3 : 0.27)) - Rq.z);
+    t.set(-Fq.x, -Math.max(Fq.y, S.hTop) - 0.004 - (P.def.adsLift || 0), -(SWAP[id]?.adsDist || P.def.adsDist || (pistol ? 0.3 : 0.27)) - Rq.z);
     // 팔·총을 앞으로 너무 많이 밀면 원래 화면 밖이던 팔(소매 끝)이 들어온다 → 앞으로는 최대 7 cm 만
-    t.z = Math.max(t.z, -0.07);
+    t.z = Math.max(t.z, -(SWAP[id]?.adsFwd ?? 0.07));
     const fwd = new V(0, 0, -1).applyQuaternion(S.qInv);
     const metal = () => { const m = new T.MeshStandardMaterial({ color: 0x252b2d, metalness: 0.7, roughness: 0.45 }); P.mountDispose.push(m); return m; };
     if (scope && A) {
