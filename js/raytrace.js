@@ -47,10 +47,27 @@ const RT = G.RT = {
     return this.wanted && this.state === 'on' ? '켜짐' : '꺼짐';
   },
   active() { return this.wanted && this.state === 'on' && !!this.rt; },
+  // 이번 프레임을 RT 로 그릴지 (컴파일 준비 중에는 평소 방식)
+  drawing() { return this.active() && !this.preparing; },
   async setEnabled(on) {
     this.wanted = !!on; save(this.wanted);
-    if (this.wanted) await this.start(); else this.stop();
+    if (this.wanted) { await this.start(); await this.prepare(); } else this.stop();
     if (G.Settings) G.Settings.render();
+  },
+  // v54: 장면 컴파일(BVH 만들기)은 몇 초 걸려 게임이 멈춘 것처럼 보인다 → 로딩 화면을 띄운 채로 미리 한다.
+  //  게임 시작 로딩 · 판 시작 · 메뉴로 돌아갈 때 · 설정에서 켤 때 부른다. 게임 중에는 다시 컴파일하지 않는다.
+  preparing: false,
+  async prepare(text) {
+    if (!this.active() || !this.dirty || this.preparing) return;
+    this.preparing = true;
+    const L = document.getElementById('loading'), T = document.getElementById('loadText'), F = document.getElementById('loadFill');
+    const hidden = L.classList.contains('hidden'), oldText = T.textContent;
+    L.classList.remove('hidden'); T.textContent = text || '레이트레이싱 장면 준비 중... (몇 초 걸립니다)'; F.style.width = '100%';
+    await new Promise(r => setTimeout(r, 80));   // 로딩 화면이 먼저 그려지게
+    try { this.compile(G.scene); }
+    catch (e) { console.warn('[RT] 컴파일 실패', e); this.wanted = false; save(false); this.state = 'error'; this.msg = '레이트레이싱 장면을 준비하지 못해 껐습니다'; }
+    this.preparing = false;
+    if (hidden) L.classList.add('hidden'); else T.textContent = oldText;
   },
   async init() {
     // 그래픽 장치가 감당하지 못해 WebGL 이 끊기면 레이트레이싱을 끈 채로 저장 (다음 실행에서 또 끊기지 않게)
