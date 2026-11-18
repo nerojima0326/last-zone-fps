@@ -15,36 +15,36 @@ const _v = new V(), _q = new Q(), _e = new T.Euler(), _m = new T.Matrix4(), ID =
 //  spare: 장전 중에만 보이는 예비 탄창 뼈 (평소엔 0 크기로 접는다)
 const PACKS = {
   ak74: {
-    file: 'ak74', magBone: 'Pmag', eye: 'Head_Cam', off: [0.08, 0.05, 0.15], pitch: 12, gun: 'PBody', len: 0.94, spare: ['Pmag2'],
+    file: 'ak74', cutBones: /^UpArm_[LR]/, magBone: 'Pmag', eye: 'Head_Cam', off: [0.08, 0.05, 0.15], pitch: 12, gun: 'PBody', len: 0.94, spare: ['Pmag2'],
     clips: { idle: 'Rig|AK_Idle', fire: 'Rig|AK_Shot', reload: 'Rig|AK_Reload', reloadEmpty: 'Rig|AK_Reload_full', draw: 'Rig|AK_Draw' },
     // AK 식: 새 탄창으로 헌 탄창을 쳐내고 → 끼우고 → (빈 총) 장전손잡이 당기기
     ev: { reload: [[1.2, 'magout'], [1.9, 'magin']], reloadEmpty: [[1.2, 'magout'], [1.9, 'magin'], [2.47, 'open'], [2.62, 'close']] }
   },
   saiga: {
-    file: 'saiga', magBone: 'Pmag', eye: 'Head_Cam', off: [0.02, 0.0, 0.04], pitch: 4, gun: 'Saiga', len: 1.0,
+    file: 'saiga', cutBones: /^UpArm_[LR]/, magBone: 'Pmag', eye: 'Head_Cam', off: [0.02, 0.0, 0.04], pitch: 4, gun: 'Saiga', len: 1.0,
     clips: { idle: 'Armature|Saiga_Idle', fire: 'Armature|Saiga_Fire', reload: 'Armature|Saiga_Reload_Fast', reloadEmpty: 'Armature|Saiga_Reload_Full' },
     win: { reload: [0, 1.88] },
     ev: { reload: [[0.7, 'magout'], [1.13, 'magin']], reloadEmpty: [[0.63, 'magout'], [1.07, 'magin'], [1.83, 'open'], [1.97, 'close']] }
   },
   acr: {
-    file: 'acr', magBone: 'Pmag', eye: 'Head_Cam', off: [0.01, 0.0, 0.02], pitch: 3, gun: 'ACRRifle', len: 0.9, adsLift: 0.03, adsDist: 0.33,   // 가늠자 없는 레일: 레일 위로 내려다본다
+    file: 'acr', cutBones: /^UpArm_[LR]/, cutReloadOnly: true, magBone: 'Pmag', eye: 'Head_Cam', off: [0.01, 0.0, 0.02], pitch: 3, gun: 'ACRRifle', len: 0.9, adsLift: 0.03, adsDist: 0.33,   // 가늠자 없는 레일: 레일 위로 내려다본다
     clips: { idle: 'Armature|Arms_FPS_Anim_Idle', fire: 'Armature|Arms_FPS_Anim_Shoot', reload: 'Armature|Arms_FPS_Anim_Reload_Fast', draw: 'Armature|Arms_FPS_Anim_Draw' },
     win: { reload: [0, 1.55] },
     ev: { reload: [[0.47, 'magout'], [0.77, 'magin']], reloadEmpty: [[0.47, 'magout'], [0.77, 'magin'], [1.2, 'close']] }
   },
   remington: {
-    file: 'remington', eye: 'Head_Cam', off: [0.06, 0.04, -0.08], pitch: 8, gun: 'Body', len: 1.0, adsLift: 0.02, adsDist: 0.36,
+    file: 'remington', cutBones: /^UpArm_[LR]/, cutReloadOnly: true, eye: 'Head_Cam', off: [0.06, 0.04, -0.08], pitch: 8, gun: 'Body', len: 1.0, adsLift: 0.02, adsDist: 0.5, adsFwd: 0.16, reloadLift: { at: [0.01, -0.01, -0.11], pitch: 0, roll: 6 },
     clips: { idle: 'Armature|SG_FPS_Idle', fire: 'Armature|SG_FPS_Shot', reload: 'Armature|SG_FPS_Reload' },
     // 한 발씩: 시작(총 기울이기) → 한 발 주기(0.63~1.97 s, 1.37 s 에 밀어 넣음) 반복 → 마지막 한 발 → 펌프로 마무리
     shell: { start: [0, 0.63], cycle: [0.63, 1.97], last: [4.67, 6.0], end: [6.0, 6.82], startDur: 0.5, endDur: 0.62, cycleDur: 0.85, endEv: [[0.06, 'open'], [0.3, 'close']] }
   },
   xdm: {
-    file: 'xdm', magBone: 'Pmag', slideBone: 'Rif', eye: 'Head_Cam', off: [0.0, -0.03, 0.12], pitch: 12, yaw: -3, gun: 'PBody', len: 0.19, pistol: true,
+    file: 'xdm', cutBones: /^UpArm_[LR]/, magBone: 'Pmag', slideBone: 'Rif', eye: 'Head_Cam', off: [0.0, -0.03, 0.12], pitch: 12, yaw: -3, gun: 'PBody', len: 0.19, pistol: true, hip: { at: [0.11, -0.1, -0.37], yaw: 13, pitch: 4 },
     clips: { idle: 'Armature|FPS_Pistol_Idle', fire: 'Armature|FPS_Pistol_Fire', reload: 'Armature|FPS_Pistol_Reload_easy', reloadEmpty: 'Armature|FPS_Pistol_Reload_full' },
     ev: { reload: [[0.37, 'magout'], [0.9, 'magin']], reloadEmpty: [[0.37, 'magout'], [0.9, 'magin'], [1.36, 'close']] }
   },
   p9mm: {
-    file: 'p9mm', magBone: 'Magazine', slideBone: 'Slidder', eye: [0.0, 1.44, 0.08], pitch: 10, yaw: -2, gun: 'Weapon', len: 0.19, pistol: true, spare: ['Magazine_2', 'Bullet_2'],
+    file: 'p9mm', magBone: 'Magazine', slideBone: 'Slidder', eye: [0.0, 1.44, 0.08], pitch: 10, yaw: -2, gun: 'Weapon', len: 0.19, pistol: true, hip: { at: [0.11, -0.1, -0.37], yaw: 13, pitch: 4 }, spare: ['Magazine_2', 'Bullet_2'],
     clips: { idle: 'Idle', fire: 'Fire', reload: 'Reload', reloadEmpty: 'Reload_Empty', draw: 'Equip' },
     win: { reload: [0, 2.6], reloadEmpty: [0, 3.6] },
     ev: { reload: [[0.43, 'magout'], [1.43, 'magin']], reloadEmpty: [[0.43, 'magout'], [1.43, 'magin'], [2.9, 'close']] }
@@ -57,7 +57,7 @@ const PACKS = {
     ev: { reload: [[1.75, 'magout'], [2.55, 'magin'], [3.2, 'open'], [3.45, 'close']] }
   },
   revolver: {
-    file: 'revolver', eye: [6, 9, -40], pitch: 6, gun: 'revolver', len: 0.36, adsDist: 0.44, pistol: true, cutBones: /^[LR]_arm_\d+$/, hip: { at: [0.095, -0.13, -0.47], yaw: 6 }, src: 'allanims',
+    file: 'revolver', eye: [6, 9, -40], pitch: 6, gun: 'revolver', len: 0.36, adsDist: 0.44, pistol: true, ik: [{ bones: ['R_arm', 'R_elbow', 'R_wrist'], drop: [-0.03, -0.14, 0.12], pole: [-0.5, -1, 0] }], cutBones: /^[LR]_arm_\d+$/, hip: { at: [0.095, -0.13, -0.47], yaw: 6 }, src: 'allanims',
     cut: { idle: [0.45, 0.5], fire: [0, 0.45], reload: [0.5, 9.2] },
     clips: {},
     ev: { reload: [[1.0, 'open'], [1.4, 'shell'], [4.0, 'magin'], [7.6, 'close']] }
@@ -235,6 +235,8 @@ const AV = G.AssetVM = {
     const qCam = new Q().setFromEuler(new T.Euler((C.pitch || 0) * D, Math.PI + (C.yaw || 0) * D, 0));
     frame.quaternion.copy(qCam).invert();
     model.scale.setScalar(k); model.position.copy(eye).multiplyScalar(-k);
+    P.k = k;
+    if (C.ik) { this.pose(P, [['idle', 0, 1]]); }   // 팔 IK(어깨 내리기)를 넣은 자세로 다시
     pivot.updateMatrixWorld(true);
     const toPivot = p => p.clone().sub(eye).multiplyScalar(k).applyQuaternion(frame.quaternion);
     const pv = pts.map(toPivot);
@@ -252,12 +254,12 @@ const AV = G.AssetVM = {
         const along = clamp(d0.subVectors(w, mz).dot(back), 0, segL), gunD = d0.addScaledVector(back, -along).length();
         w.applyQuaternion(P.sight.qH).add(P.sight.posH);   // 지향 자세의 피벗 공간
         const dz = -w.z, onScreen = dz > 0.02 && Math.abs(w.y) < dz * tv * 1.3 && Math.abs(w.x) < dz * tv * 2.6;
-        rz[i] = !onScreen && gunD > far ? 1 : 0;
+        rz[i] = !onScreen && gunD > far ? 2 : 0;
         // cutBones: 위팔(소매) 뼈에 주로 묶인 정점은 화면 안이어도 숨긴다 (팔이 긴 팩)
         if (C.cutBones && o.isSkinnedMesh) {
           const sw = o.geometry.attributes.skinWeight, si = o.geometry.attributes.skinIndex;
           let bw = 0, bi = 0; for (let k = 0; k < 4; k++) if (sw.getComponent(i, k) > bw) { bw = sw.getComponent(i, k); bi = si.getComponent(i, k); }
-          if (C.cutBones.test(o.skeleton.bones[bi]?.name || '')) rz[i] = 3;   // 장전 중에도 숨긴다
+          if (C.cutBones.test(o.skeleton.bones[bi]?.name || '') && !rz[i]) rz[i] = 1;   // 위팔: cutReloadOnly 팩은 장전 중에만 숨긴다
         }
       }
       o.geometry.setAttribute('restZ', new T.BufferAttribute(rz, 1));
@@ -308,6 +310,8 @@ const AV = G.AssetVM = {
   unifyArm(o) {
     const g = o.geometry, n = g.attributes.position.count, hw = new Float32Array(n);
     const m = o.material = o.material.clone();
+    // 숨긴 어깨 쪽 정점 경계(소매 끝)가 화면에 들어와도 빈 구멍 대신 소매 안쪽이 보이게 양면으로
+    m.side = T.DoubleSide;
     const mn = (m.name || '') + ' ' + o.name;
     if (/glove/i.test(mn)) hw.fill(1);
     else if (o.isSkinnedMesh && !/uniform|sleeve/i.test(mn)) {
@@ -454,6 +458,7 @@ const AV = G.AssetVM = {
       A.enabled = true; A.play(); A.paused = true; A.time = clamp(t, 0, P.acts[k].dur - 1e-4); A.setEffectiveWeight(w);
     }
     P.mixer.update(0);
+    if (P.def.ik && P.k) for (const ik of P.def.ik) this.armIK(P, ik);
   },
   win(P, name) { const w = P.def.win && P.def.win[name]; return w || [0, P.acts[name].dur]; },
   reloadClip(P, empty) { return empty && P.acts.reloadEmpty ? 'reloadEmpty' : 'reload'; },
@@ -562,6 +567,40 @@ const AV = G.AssetVM = {
     const S = P.slideKick;
     if (S) { const e = t < 0.02 ? t / 0.02 : Math.max(0, 1 - (t - 0.02) / 0.06); S.bone.position.addScaledVector(S.d, S.anim ? e : e - S.last); S.last = S.anim ? 0 : e; }
   },
+  // v58 두 뼈 IK: 손(손목)은 그대로 두고 어깨를 옮긴 뒤 팔꿈치를 pole 쪽으로 굽힌다 (팩의 팔 자세가 화면에서 어색할 때)
+  //  ik: { bones: [위팔, 아래팔, 손], drop: [x, y, z] 어깨 이동(m, 모델 좌표), pole: [x, y, z] 팔꿈치가 향할 쪽(모델 좌표) }
+  armIK(P, ik) {
+    const f = P.find, B = ik._b || (ik._b = ik.bones.map(n => f(n)));
+    if (B.some(b => !b)) return;
+    const [U, F, H] = B, M = P.model;
+    // 위팔 위치가 클립에 없으면 지난 프레임에 옮긴 만큼이 남아 있다 → 처음 자리로 되돌린 뒤 계산
+    if (ik._anim === undefined) { ik._anim = Object.values(P.acts).some(x => x.action.getClip().tracks.some(tr => tr.name === U.name + '.position')); ik._p0 = U.position.clone(); }
+    if (!ik._anim) U.position.copy(ik._p0);
+    M.updateMatrixWorld(true);
+    const L = b => M.worldToLocal(b.getWorldPosition(new V()));
+    const S0 = L(U), E0 = L(F), W = L(H), hq = H.getWorldQuaternion(new Q());
+    const a = S0.distanceTo(E0), b = E0.distanceTo(W);
+    const S = S0.clone().add(_v.set(...ik.drop).multiplyScalar(1 / P.k));
+    const dv = W.clone().sub(S), d = Math.min(dv.length(), (a + b) * 0.999), u = dv.normalize();
+    const x = (a * a - b * b + d * d) / (2 * d), h = Math.sqrt(Math.max(0, a * a - x * x));
+    const pole = new V(...ik.pole); pole.addScaledVector(u, -pole.dot(u)).normalize();
+    const E = S.clone().addScaledVector(u, x).addScaledVector(pole, h);
+    const toW = p => M.localToWorld(p.clone());
+    // 어깨 옮기기
+    U.position.copy(U.parent.worldToLocal(toW(S)));
+    const aim = (bone, from, to, child) => {
+      bone.updateMatrixWorld(true);
+      const cur = child.getWorldPosition(new V()).sub(from), want = to.clone().sub(from);
+      const dq = new Q().setFromUnitVectors(cur.normalize(), want.normalize());
+      const wq = bone.getWorldQuaternion(new Q()), pq = bone.parent.getWorldQuaternion(new Q());
+      bone.quaternion.copy(pq.invert().multiply(dq.multiply(wq)));
+      bone.updateMatrixWorld(true);
+    };
+    aim(U, toW(S), toW(E), F);
+    aim(F, toW(E), toW(W), H);
+    H.quaternion.copy(H.parent.getWorldQuaternion(new Q()).invert().multiply(hq));
+    H.updateMatrixWorld(true);
+  },
   // v57 전력질주: 총을 가늠자(총몸 뒤쪽, 오른손 가까이) 축으로 총구가 왼쪽 아래를 향하게 돌리고 조금 내린다 (이전: 카메라 축으로 돌려 총이 화면 옆으로 날아갔다)
   sprintPose(P, b) {
     const SP = Object.assign({}, P.def.pistol ? SPRINT.pistol : SPRINT.rifle, P.def.sprint);
@@ -580,7 +619,8 @@ const AV = G.AssetVM = {
   place(P, aim, eul) {
     const S = P.sight, M = P.mount;
     // 잘린 소매 끝 숨기기 (장전 동작에서는 팔 전체가 보여야 한다)
-    if (P.armCut) P.armCut.value = 0.5;
+    // 2 = 화면 밖·총에서 먼 정점(늘 숨김), 1 = 위팔 뼈 정점 (cutReloadOnly 팩은 장전 중에만 숨김)
+    if (P.armCut) P.armCut.value = P.def.cutReloadOnly && !P.reloading ? 1.5 : 0.5;
     _q.copy(S.qH).slerp(M.q, aim);
     if (eul) P.pivot.quaternion.setFromEuler(eul).multiply(_q); else P.pivot.quaternion.copy(_q);
     P.pivot.position.copy(S.posH).lerp(M.t, aim);
@@ -607,7 +647,7 @@ const AV = G.AssetVM = {
     const Fq = S.F.clone().applyQuaternion(q), Rq = S.R.clone().applyQuaternion(q);
     t.set(-Fq.x, -Math.max(Fq.y, S.hTop) - 0.004 - (P.def.adsLift || 0), -(SWAP[id]?.adsDist || P.def.adsDist || (pistol ? 0.3 : 0.27)) - Rq.z);
     // 팔·총을 앞으로 너무 많이 밀면 원래 화면 밖이던 팔(소매 끝)이 들어온다 → 앞으로는 최대 7 cm 만
-    t.z = Math.max(t.z, -(SWAP[id]?.adsFwd ?? 0.07));
+    t.z = Math.max(t.z, -(SWAP[id]?.adsFwd ?? P.def.adsFwd ?? 0.07));
     const fwd = new V(0, 0, -1).applyQuaternion(S.qInv);
     const metal = () => { const m = new T.MeshStandardMaterial({ color: 0x252b2d, metalness: 0.7, roughness: 0.45 }); P.mountDispose.push(m); return m; };
     if (scope && A) {
