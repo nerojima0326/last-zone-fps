@@ -11,7 +11,7 @@
 <script>
 // 새 버전이 올라왔는데 휴대폰이 예전 페이지를 기억하고 있으면 새로 불러온다
 (function () {
-  var BUILD = '49';
+  var BUILD = '50';
   window.LZ_BUILD = BUILD;
   try {
     fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (v) {
@@ -106,7 +106,9 @@
 {
   "imports": {
     "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+    "three-mesh-bvh": "https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.7.8/build/index.module.js",
+    "three-realtime-rt": "https://cdn.jsdelivr.net/npm/three-realtime-rt@0.16.7/src/index.js"
   }
 }
 </script>
@@ -305,6 +307,7 @@
     <div class="set-row"><span>시야각 (FOV)</span><div class="range"><input type="range" id="setFov" min="70" max="100" step="1"><b id="setFovVal"></b></div></div>
     <div class="set-row"><span>마우스 상하 반전</span><button id="setInvert" class="tog">꺼짐</button></div>
     <div class="set-row"><span>실사 팔 <small>M4 팔·손을 모든 총에</small></span><button id="setRealArms" class="tog">켜짐</button></div>
+    <div class="set-row"><span>레이트레이싱 <small>실험 · ThreeRT · 고사양 그래픽카드</small></span><button id="setRT" class="tog">꺼짐</button></div>
     <div class="set-sec">소리</div>
     <div class="set-row"><span>전체 음량</span><div class="range"><input type="range" id="setVolMaster" min="0" max="1.5" step="0.05"><b id="setVolMasterVal"></b></div></div>
     <div class="set-row"><span>총소리 <small>사격 · 장전</small></span><div class="range"><input type="range" id="setVolWeapons" min="0" max="1.5" step="0.05"><b id="setVolWeaponsVal"></b></div></div>
@@ -349,7 +352,7 @@ try {
     try { window.EZTree = await import('./vendor/ez-tree.es.js'); } catch (e) { console.info('[veg] vendor/ez-tree.es.js 없음 — 기존 나무 사용'); }
   }
   loadFill.style.width = '15%';
-  const files = ['core', 'assets', 'range-props', 'vegetation', 'world', 'effects', 'ambient', 'plane', 'character', 'soldiers', 'gunlib', 'gunmodels', 'reload-assets', 'weapons','weapon-audio','attachments','g17-pilot','m4-viewmodel','real-arms', 'throwable-models', 'throwables', 'actor', 'player', 'bots', 'extras', 'vehicles', 'game', 'training', 'ui', 'settings', 'main', 'touch'];
+  const files = ['core', 'assets', 'range-props', 'vegetation', 'world', 'effects', 'ambient', 'plane', 'character', 'soldiers', 'gunlib', 'gunmodels', 'reload-assets', 'weapons','weapon-audio','attachments','g17-pilot','m4-viewmodel','real-arms', 'throwable-models', 'throwables', 'actor', 'player', 'bots', 'extras', 'vehicles', 'game', 'training', 'ui', 'settings', 'raytrace', 'main', 'touch'];
   for (let i = 0; i < files.length; i++) {
     loadText.textContent = '스크립트 불러오는 중... (' + files[i] + ')';
     await new Promise((res, rej) => {

@@ -129,6 +129,8 @@ const DRS = {
     this.fpsAcc += ms; this.fpsN++;
     if (now - this.fpsT > 500) { this.fps = 1000 / (this.fpsAcc / this.fpsN); this.fpsAcc = 0; this.fpsN = 0; this.fpsT = now; G.UI.fps(this.fps, this.applied, this.refresh); }
     if (G.Game.state !== 'playing' || G.paused) { this.acc = 0; this.cnt = 0; return; }
+    // 레이트레이싱은 자체 품질 조절을 한다: 동적 해상도·자동 품질은 쉰다
+    if (G.RT && G.RT.active()) { this.acc = 0; this.cnt = 0; return; }
     if (ms > 100) return; // 백그라운드 탭 / 일시적 멈춤은 무시
     this.acc += ms; this.cnt++;
     if (now - this.checkT < 500) return;
@@ -194,6 +196,7 @@ G.boot = async function () {
   renderer.compile(scene, camera);
   renderer.shadowMap.needsUpdate = true;
   progress(1, '완료');
+  if (G.RT) G.RT.init().then(() => G.Settings && G.Settings.render());
   document.getElementById('loading').classList.add('hidden');
   G.UI.showMenu();
 
@@ -251,6 +254,7 @@ function basePixelRatio(q) {
 
 function applyQuality(q) {
   if (!QUALITY[q]) q = 'high';
+  if (G.RT) G.RT.invalidate();
   const Q = QUALITY[q];
   if (Q.post && (!composer || !QUALITY[G.quality] || QUALITY[G.quality].msaa !== Q.msaa || !QUALITY[G.quality].post)) setupComposer(Q.msaa);
   if (!composer) setupComposer(0);
@@ -277,6 +281,8 @@ function applyQuality(q) {
 // 한 프레임 그리기: 후처리를 쓰면 composer, 아니면 화면에 바로 (본 장면 → 1인칭 총)
 function usePost() { const Q = QUALITY[G.quality]; return !Q || Q.post; }
 function renderFrame(dt) {
+  // 레이트레이싱 (설정에서 켰고 지원되는 기기일 때)
+  if (G.RT && G.RT.active()) { G.RT.render(renderer, scene, camera, G.vmScene, G.vmCamera); return; }
   const Q = QUALITY[G.quality];
   if (!Q || Q.post) { composer.render(dt); return; }
   renderer.setRenderTarget(null);
@@ -334,6 +340,7 @@ G.startGame = function (opts) {
   G.World.setTimeOfDay(opts.tod);
   G.Game.start(opts);
   warmup();
+  if (G.RT) G.RT.invalidate();
   G.paused = false;
   G.Input.lock();
 };
@@ -350,6 +357,7 @@ G.toMenu = function () {
   G.VM.set(null);
   G.UI.showMenu();
   camera.fov = 80; camera.updateProjectionMatrix();
+  if (G.RT) G.RT.invalidate();
 };
 
 function frame(now) {
