@@ -8,13 +8,14 @@ const _f = new V3(), _r = new V3(), _c = new V3(), _e = new V3(), _d = new V3();
 const _support = new V3();
 const HALF_L = 1.9, HALF_W = 0.95, MAX = 21, REV = 6;
 const HP = 320;                 // 차량 내구도 (소총 약 12발, 수류탄 두 개)
-const KINDS = ['suv', 'truck', 'sedan', 'van'];
-const S = 1.6;                  // Kenney 모델 → 미터
+const RESPAWN = 25;             // 폭발한 차는 잔해로 이 시간(초)만큼 남았다가, 처음 놓였던 자리에 새 차로 다시 나온다
+// v53 실사 차량 (Sketchfab CC-BY-4.0, tools/vehicles/build-real.cjs): 현대 포터 II 탑차 · 마쓰다 E2200 트럭 · IZH-2715 픽업
+const KINDS = ['porter', 'e2200', 'izh'];
+const S = 1;                    // GLB 단위 = 미터
 const PAINT = {
-  suv: [0x4b5a35, 0x5a5242, 0x3d4a52],
-  truck: [0x7d6a48, 0x55603f, 0x6e2a22],
-  sedan: [0x7a1f1f, 0x2b3e5c, 0xa7a9ab, 0x26282b],
-  van: [0xcfcfc6, 0x4a5d6e, 0x5d6b3e]
+  porter: [0xd8d8d2],
+  e2200: [0xdedcd4, 0x4a5d6e, 0x5d6b3e, 0x8a2a22, 0x9a9890],   // 'Paint' 재질(차체 일부) 색
+  izh: [0xcfcfc6]
 };
 // 모델이 없을 때(예전 지프 상자) · 직접 만든 차량 객체의 기본 치수
 const JEEP = { hl: HALF_L, hw: HALF_W, top: 1.7, r: 0.42, wheelPts: [[-0.95, -1.25], [0.95, -1.25], [-0.95, 1.25], [0.95, 1.25]] };
@@ -67,8 +68,59 @@ const Vh = G.Vehicles = {
         hl: (bb.max.z - bb.min.z) / 2 * S, hw: Math.min(bb.max.x - bb.min.x, 2 * Math.max(...wx) + r) / 2 * S, top: (box.max.y - box.min.y) * S,
         wheelPts: wheels.map(n => { const w = root.getObjectByName(n), c = new THREE.Box3().setFromObject(w).getCenter(new V3()); return [c.x * S, (c.z - cz) * S]; })
       };
-      root.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; o.material.envMapIntensity = 0.7; } });
+      root.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+      this.realize(root, box);
     }).catch(e => console.info('[vehicle] ' + k + ' 모델 없음', e.message))));
+  },
+  // v52 실사 재질: 장난감 같은 원색 대신 짙은 색유리 · 무광 플라스틱 · 크롬 · 클리어코트 도장,
+  //  차체 아래쪽일수록 흙먼지 (정점 속성 dirt 를 모델 높이로 굽는다)
+  mats: null,
+  realize(root, box) {
+    if (!this.mats) {
+      const dirty = m => {
+        m.onBeforeCompile = sh => {
+          sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float dirt;\nvarying float vDirt;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvDirt = dirt;');
+          sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vDirt;')
+            .replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.30, 0.26, 0.20), vDirt);')
+            .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = mix(roughnessFactor, 0.95, vDirt);');
+        };
+        m.customProgramCacheKey = () => 'dirt';
+        return m;
+      };
+      this.mats = {
+        dirty,
+        window: new THREE.MeshPhysicalMaterial({ name: 'window', color: 0x0d1215, roughness: 0.05, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 1.5 }),
+        plastic: dirty(new THREE.MeshStandardMaterial({ name: 'plastic', color: 0x1c1e1e, roughness: 0.78, metalness: 0.05 })),
+        _defaultMat: dirty(new THREE.MeshStandardMaterial({ name: '_defaultMat', color: 0x8f918f, roughness: 0.32, metalness: 0.85 })),
+        carTire: dirty(new THREE.MeshStandardMaterial({ name: 'carTire', color: 0x131313, roughness: 0.95, metalness: 0 }))
+      };
+    }
+    const inv = new THREE.Matrix4().copy(root.matrixWorld).invert(), _p = new V3(), lo = box.min.y, hi = box.max.y;
+    root.traverse(o => {
+      if (!o.isMesh) return;
+      const g = o.geometry, pos = g.attributes.position, d = new Float32Array(pos.count);
+      const m = new THREE.Matrix4().multiplyMatrices(inv, o.matrixWorld);
+      for (let i = 0; i < pos.count; i++) {
+        const y = (_p.fromBufferAttribute(pos, i).applyMatrix4(m).y - lo) / (hi - lo);
+        d[i] = 0.62 * (1 - THREE.MathUtils.smoothstep(y, 0.12, 0.55));
+      }
+      g.setAttribute('dirt', new THREE.BufferAttribute(d, 1));
+      // Kenney 재질은 이름으로 바꾸고, 실사 차량 재질은 흙먼지만 입힌다 (금속도 1 로 바뀐 재질은 낮춘다)
+      const swap = mm => {
+        if (this.mats[mm.name]) return this.mats[mm.name];
+        if (/^paint/i.test(mm.name) || !mm.isMeshStandardMaterial) return mm;
+        const cache = this.mats.real || (this.mats.real = new Map());
+        if (!cache.has(mm)) {
+          const c = mm.clone();
+          if (!c.metalnessMap && c.metalness > 0.5 && !/metal|chrome|mirror/i.test(c.name)) c.metalness = 0.15;
+          if (c.transparent) { c.roughness = Math.min(c.roughness, 0.1); c.envMapIntensity = 1.4; }
+          else this.mats.dirty(c);
+          cache.set(mm, c);
+        }
+        return cache.get(mm);
+      };
+      o.material = Array.isArray(o.material) ? o.material.map(swap) : swap(o.material);
+    });
   },
   burnt: null,
   // 차량 한 대의 메시: 모델이 있으면 복제(차체 색만 바꿔), 없으면 상자 지프
@@ -83,14 +135,18 @@ const Vh = G.Vehicles = {
     const M = this.models[kind], g = new THREE.Group(), inner = M.root.clone(true);
     v.kind = kind;
     inner.scale.setScalar(S); inner.position.set(0, M.y0, M.cz);
-    const color = new THREE.Color(U.pick(PAINT[kind]));
+    const color = new THREE.Color(U.pick(PAINT[kind] || [0xcccccc]));
     const paint = new Map();
     inner.traverse(o => {
       if (!o.isMesh) return;
       const mats = Array.isArray(o.material) ? o.material : [o.material];
       const out = mats.map(m => {
         if (!/^paint/i.test(m.name)) return m;
-        if (!paint.has(m)) { const c = m.clone(); c.color.copy(color); c.roughness = 0.45; c.metalness = 0.35; paint.set(m, c); }
+        if (!paint.has(m)) {
+          // 클리어코트 도장 (탁하게 바랜 색)
+          const c = this.mats.dirty(new THREE.MeshPhysicalMaterial({ name: m.name, color: color.clone().lerp(new THREE.Color(0x6b6558), 0.18), roughness: 0.42, metalness: 0.2, clearcoat: 0.55, clearcoatRoughness: 0.35 }));
+          paint.set(m, c);
+        }
         return paint.get(m);
       });
       o.material = Array.isArray(o.material) ? out : out[0];
@@ -104,6 +160,8 @@ const Vh = G.Vehicles = {
   newVehicle(x, y, z, yaw, extra) {
     if (!this.geo) { this.geo = build(); this.mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.7, metalness: 0.2 }); }
     const v = Object.assign({ kind: U.pick(KINDS), pos: new V3(x, y, z), yaw, speed: 0, lat: 0, steer: 0, pitch: 0, roll: 0, driver: null, box: null, hitT: new Map(), noiseT: 0, hp: HP, dead: false, burnT: 0, smokeT: 0, lastHit: null, skid: [null, null] }, extra || {});
+    if (!v.home) v.home = { x, z, yaw };
+    v.home.kind = v.kind;
     v.mesh = this.makeMesh(v);
     G.scene.add(v.mesh);
     this.list.push(v); this.place(v, 1); this.block(v);
@@ -136,7 +194,7 @@ const Vh = G.Vehicles = {
   },
   // 정해진 자리에 한 대 (훈련장 운전 코스)
   spawnAt(x, z, yaw, kind) {
-    return this.newVehicle(x, G.World.heightAt(x, z), z, yaw, { home: { x, z, yaw }, kind: kind || 'suv' });
+    return this.newVehicle(x, G.World.heightAt(x, z), z, yaw, { home: { x, z, yaw }, kind: kind || 'izh' });
   },
   // 세워 둔 차는 충돌 상자를 둔다 (걸어서 통과·총알 관통 방지). 회전을 감안해 조금 줄인 축 정렬 상자
   block(v) {
@@ -487,7 +545,6 @@ const Vh = G.Vehicles = {
     const e = this.engine(v, _c);
     const hpK = v.hp / HP;
     if (v.dead) {
-      v.wreckT += dt;
       if (v.wreckT < 14) {         // 남은 불
         if (Math.random() < dt * 26) this.flame(this.center(v, _e).add(_o.set((Math.random() - 0.5) * v.dim.hw, 0.2, (Math.random() - 0.5) * v.dim.hl)), 0.8);
         if (Math.random() < dt * 9) G.FX.dust(_e.copy(this.center(v, _e)).add(_o.set(0, 0.8, 0)), 1, 0, 1.6, 0, 0.09, 0.085, 0.08, 2.4);
@@ -585,7 +642,20 @@ const Vh = G.Vehicles = {
     this.step(v, a, dt, slow ? 0 : thr, st, slow);
     return false;
   },
+  // 잔해를 치우고 처음 자리에 새 차 (사람·다른 차가 자리를 막고 있으면 비킬 때까지 기다린다)
+  respawn(v) {
+    const H = v.home;
+    for (const a of G.Game.actors) if (a.alive && Math.hypot(a.pos.x - H.x, a.pos.z - H.z) < 5) return false;
+    for (const o of this.list) if (o !== v && Math.hypot(o.pos.x - H.x, o.pos.z - H.z) < 5) return false;
+    G.scene.remove(v.mesh); this.unblock(v);
+    this.list.splice(this.list.indexOf(v), 1);
+    const n = this.newVehicle(H.x, G.World.heightAt(H.x, H.z), H.z, H.yaw, { home: H, kind: H.kind });
+    G.FX.dust(_e.copy(n.pos).add(_o.set(0, 0.4, 0)), 10, 0, 0.6, 0, 0.55, 0.52, 0.48, 1.6);
+    return true;
+  },
   update(dt) {
+    for (const v of this.list) if (v.dead) v.wreckT += dt;
+    for (const v of this.list.slice()) if (v.dead && v.wreckT > RESPAWN && (v.respawnT = (v.respawnT || 0) - dt) <= 0) { if (!this.respawn(v)) v.respawnT = 2; }
     // 봇이 운전하는 차 중 가장 가까운 차의 엔진 소리
     if (G.Audio.ctx) {
       let near = null, nd = 120;

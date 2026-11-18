@@ -1,0 +1,124 @@
+/* mw.css — v52 '현대 군사 FPS' 테마 (style.css 위에 덮어쓴다)
+   흰 글자 + 얇은 선 + 각진 모서리 + 반투명 어두운 그라데이션, 강조색은 탁한 금색.
+   휴대폰(html.mobile)은 자리 배치를 그대로 두고 색·글꼴만 바뀐다. */
+:root {
+  --accent: #e6d27a;
+  --accent2: #b7a54f;
+  --red: #ff4a3d;
+  --panel: rgba(8, 10, 12, 0.55);
+  --line: rgba(255, 255, 255, 0.16);
+  --text: #f1f1ec;
+  --muted: #a3a8a6;
+  --num: 'Barlow Condensed', 'Rajdhani', 'Noto Sans KR', sans-serif;
+  --head: 'Barlow Condensed', 'Noto Sans KR', sans-serif;
+  --mw-shadow: 0 1px 2px rgba(0, 0, 0, 0.85), 0 0 10px rgba(0, 0, 0, 0.35);
+}
+html, body { background: #050606; }
+
+/* ---------- 로고 · 로딩 ---------- */
+.logo { font-family: var(--head); font-weight: 800; font-style: italic; letter-spacing: 4px; text-transform: uppercase; }
+.logo span { color: var(--accent); }
+.logo.big { font-size: 84px; letter-spacing: 6px; text-shadow: 0 4px 30px rgba(0, 0, 0, 0.6); }
+#loading { background: radial-gradient(ellipse at 50% 60%, #1a1d1c 0%, #050606 70%); }
+#loading::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 3px); }
+.load-bar { height: 2px; border-radius: 0; background: rgba(255, 255, 255, 0.1); }
+#loadFill { background: var(--text); }
+#loadText { font-family: var(--num); letter-spacing: 3px; text-transform: uppercase; }
+
+/* ---------- 메인 메뉴 ---------- */
+.menu-shade { background:
+  linear-gradient(90deg, rgba(4,5,6,0.96) 0%, rgba(4,5,6,0.78) 38%, rgba(4,5,6,0.18) 66%, rgba(4,5,6,0.62) 100%),
+  linear-gradient(180deg, rgba(0,0,0,0.5) 0%, transparent 18%, transparent 80%, rgba(0,0,0,0.6) 100%); }
+.menu-shade::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0 1px, transparent 1px 3px); }
+.tag { font-family: var(--head); font-weight: 600; letter-spacing: 5px; text-transform: uppercase; color: #8d938f; border-left: 3px solid var(--accent); padding-left: 10px; }
+.section-title, .card-title, .set-sec { font-family: var(--head); font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #d8d8d2; }
+.card-title, .set-sec { color: var(--accent); }
+.mode { border-radius: 0; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%); }
+.mode:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
+.mode.on { background: #ecebe4; border-color: #ecebe4; box-shadow: none; color: #0b0c0c; }
+.mode.on b, .mode.on small, .mode.on .ppl { color: #0b0c0c; }
+.mode b { font-family: var(--head); font-size: 19px; letter-spacing: 1px; }
+.seg, #optName { border-radius: 0; }
+.seg { background: rgba(255,255,255,0.03); }
+.seg button.on { background: #ecebe4; color: #0b0c0c; }
+#optName:focus { border-color: #ecebe4; }
+#startBtn { border-radius: 0; background: var(--accent); color: #0b0c0c; font-family: var(--head); font-weight: 800; font-style: italic; font-size: 26px; letter-spacing: 8px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%); }
+#startBtn:hover { background: #f3e39a; box-shadow: 0 10px 36px rgba(0,0,0,0.6); }
+.card { border-radius: 0; background: rgba(8,10,11,0.72); border: 0; border-left: 2px solid rgba(255,255,255,0.18); }
+kbd { border-radius: 2px; background: rgba(255,255,255,0.08); }
+.panel { border-radius: 0 !important; }
+.panel button { border-radius: 0; background: var(--accent); color: #0b0c0c; font-family: var(--head); letter-spacing: 3px; text-transform: uppercase; }
+.panel button.ghost { background: rgba(255,255,255,0.08); color: var(--text); }
+
+/* ---------- HUD 공통 ---------- */
+#hud { font-family: 'Noto Sans KR', sans-serif; text-shadow: var(--mw-shadow); }
+
+/* 나침반: 얇은 눈금 띠 */
+#compass { top: 14px; width: min(560px, 42vw); height: 30px; }
+#compassStrip .ct { background: rgba(255,255,255,0.5); height: 6px; }
+#compassStrip .ct.big { height: 10px; background: rgba(255,255,255,0.9); }
+#compassStrip .cl { font-weight: 600; font-size: 16px; letter-spacing: 1px; }
+#compassStrip .cl.n { color: var(--accent); }
+.compass-mark { border-bottom-color: #fff; }
+#compassDeg { top: 46px; font-size: 13px; letter-spacing: 1px; color: rgba(255,255,255,0.85); }
+
+/* 생존·팀·처치: 상자 없이 숫자만 */
+.pill { background: linear-gradient(90deg, transparent, rgba(0,0,0,0.45)); border: 0; border-radius: 0; border-right: 2px solid rgba(255,255,255,0.5); backdrop-filter: none; padding: 2px 10px 2px 16px; }
+.pill b { font-size: 26px; font-weight: 600; }
+.pill span { font-family: var(--head); text-transform: uppercase; letter-spacing: 2px; color: #c7c9c4; }
+.pill.kill { border-right-color: var(--accent); }
+
+/* 킬피드 */
+.kf { background: linear-gradient(90deg, transparent, rgba(0,0,0,0.5) 18%); border-radius: 0; padding: 3px 10px 3px 26px; font-size: 13px; }
+.kf .w { border-radius: 0; border-color: rgba(255,255,255,0.3); color: #e2e2dc; }
+
+/* 미니맵: 각진 테두리 */
+#minimap { border-radius: 0; border: 1px solid rgba(255,255,255,0.45); box-shadow: 0 0 0 3px rgba(0,0,0,0.35), 0 6px 24px rgba(0,0,0,0.45); }
+#zoneInfo { border-radius: 0; background: linear-gradient(90deg, rgba(0,0,0,0.6), rgba(0,0,0,0.25)); border: 0; border-left: 3px solid var(--zone); color: #dbe7f1; font-family: var(--head); letter-spacing: 1px; }
+#zoneInfo b { font-weight: 600; font-size: 20px; }
+
+/* 체력: 얇은 막대 + 숫자 */
+#hpBar { height: 8px; border-radius: 0; background: rgba(0,0,0,0.55); border: 0; box-shadow: 0 0 0 1px rgba(255,255,255,0.18); overflow: visible; }
+#hpFill { background: #f2f2ec; }
+#hpFill.low { background: #ff4a3d; }
+#hpLag { background: rgba(255, 74, 61, 0.7); }
+#hpText { top: -24px; right: 0; color: #fff; font-size: 20px; font-weight: 600; }
+.gear-i { border-radius: 0; font-family: var(--head); letter-spacing: 1px; }
+.gear-i.on { background: rgba(230, 210, 122, 0.22); border-color: rgba(230, 210, 122, 0.7); }
+
+/* 탄약: 큰 숫자, 이름은 대문자 */
+#ammoLine { text-shadow: var(--mw-shadow); }
+#ammoMag { font-size: 64px; font-weight: 600; letter-spacing: -1px; }
+#ammoRes { font-size: 26px; font-weight: 500; color: #b9bcb6; }
+#weaponName { font-family: var(--head); font-size: 17px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+#fireMode { font-weight: 600; letter-spacing: 3px; }
+.slot { border-radius: 0; background: rgba(0,0,0,0.35); border: 0; border-bottom: 2px solid rgba(255,255,255,0.15); font-family: var(--head); }
+.slot.cur { background: rgba(255,255,255,0.12); border-bottom-color: #fff; }
+.slot.cur .k { color: #fff; }
+
+/* 조준점: 가늘게 */
+#crosshair i { background: rgba(255,255,255,0.95); box-shadow: 0 0 1px rgba(0,0,0,1), 0 0 3px rgba(0,0,0,0.5); }
+#crosshair .t, #crosshair .b { width: 2px; height: 7px; }
+#crosshair .l, #crosshair .r { width: 7px; height: 2px; }
+
+/* 메시지 */
+#centerMsg, #killMsg, #pickupMsg, #prompt, #planeHint, #spectate { font-family: var(--head), 'Noto Sans KR', sans-serif; letter-spacing: 1px; }
+#prompt kbd, #planeHint kbd { background: #ecebe4; border-color: #fff; color: #0b0c0c; }
+#progressFill { background: #ecebe4; }
+
+/* 피격: 붉은 가장자리를 더 짙고 어둡게 */
+#vignette { background: radial-gradient(ellipse at center, transparent 42%, rgba(110, 0, 0, 0.55) 78%, rgba(60, 0, 0, 0.9) 100%); }
+
+/* ---------- 데스크톱 배치: 미니맵 왼쪽 위, 체력 왼쪽 아래, 탄약 오른쪽 아래 ---------- */
+html:not(.mobile) #mapWrap { right: auto; bottom: auto; left: 26px; top: 22px; width: 200px; }
+html:not(.mobile) #minimap { width: 200px; height: 200px; }
+html:not(.mobile) #zoneInfo { margin: 6px 0 0; }
+html:not(.mobile) #mapWrap { display: flex; flex-direction: column-reverse; }
+html:not(.mobile) #vitals { left: 28px; bottom: 30px; transform: none; width: 300px; }
+html:not(.mobile) #gear { justify-content: flex-start; }
+html:not(.mobile) #teamPanel { left: 28px; bottom: 96px; }
+html:not(.mobile) #weaponPanel { right: 34px; bottom: 26px; }
+html:not(.mobile) #fpsBox { left: 26px; top: auto; bottom: 4px; padding: 0 6px; border-radius: 0; font-size: 12px; background: rgba(0,0,0,0.35); }
+#trainBtn { border-radius: 0 !important; font-family: var(--head); letter-spacing: 3px; }
+#trainBtn:hover { background: rgba(255,255,255,0.12) !important; }
+#trainStats { border-radius: 0; border: 0; border-bottom: 2px solid rgba(255,255,255,0.3); background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.55)); }

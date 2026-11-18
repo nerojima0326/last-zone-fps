@@ -9,6 +9,15 @@ const GCELL = 10, GN = Math.ceil(SIZE / GCELL);
 const TS = 1536; // 지형 색상 텍스처 해상도
 const MK = HALF / 500; // 예전 맵 대비 배율
 const NC = { nc: true };
+// 가게 간판 (글자, 작은 글씨, 바탕색, 글자색)
+const SIGNS = [
+  ['편의점', '24시 · CU MART', '#2f8f4e', '#ffffff'], ['약국', '온누리 약국 · 02-312-4475', '#1d6fa5', '#ffffff'],
+  ['치킨 · 호프', '바삭 통닭 · 배달', '#c4472b', '#fff3d6'], ['부동산', '공인중개사 사무소', '#3b4a5c', '#f2e6b8'],
+  ['분식', '떡볶이 · 김밥 · 라면', '#d9a21b', '#2a1a08'], ['PC방', 'GAME ZONE · 24H', '#2c2f86', '#9ff3ff'],
+  ['노래연습장', '코인 노래방', '#7d2d86', '#ffe4fb'], ['세탁소', '수선 · 드라이', '#e6e3da', '#1e3d6e'],
+  ['정육점', '한우 · 한돈', '#8d1c1c', '#ffffff'], ['휴대폰', '010 · 개통 · 수리', '#d03e66', '#ffffff'],
+  ['마트', '식자재 할인', '#e2dccd', '#c23a2a'], ['미용실', 'HAIR SALON', '#2d2a28', '#e8d3a8']
+];
 // 건물 LOD: 청크 크기와 종류별 단계 (b: 가까이 상세 + 멀리 대역, n: 가까이만, 그 외: 항상)
 const LOD_CH = 125;
 const LOD_KIND = { house1: 'b', house2: 'b', apt: 'b', shop: 'b', warehouse: 'b', barracks: 'b', barn: 'b', cabin: 'b', shed: 'b', car: 'n', sandbags: 'n' };
@@ -75,7 +84,7 @@ const FOOT = {
   tank: [9, 9], chimney: [6, 6], shed: [5, 4], car: [5, 2.4], ruins: [10, 6, 2.5], cabin: [8, 7]
 };
 const TILE = { plaster: 2.5, brick: 2.0, wood: 2.0, floor: 2.0, roof: 2.5, concrete: 3.0, metal: 2.5, crate: 1.3, dark: 1.0, sandbag: 1.6, hay: 1.2, paint: 2.0, glass: 1.0 };
-const MATKIND = { plaster: 'hard', brick: 'hard', concrete: 'hard', roof: 'hard', wood: 'wood', floor: 'wood', crate: 'wood', hay: 'wood', metal: 'metal', paint: 'metal', glass: 'metal', dark: 'metal', sandbag: 'soft' };
+const MATKIND = { sign: 'metal', plaster: 'hard', brick: 'hard', concrete: 'hard', roof: 'hard', wood: 'wood', floor: 'wood', crate: 'wood', hay: 'wood', metal: 'metal', paint: 'metal', glass: 'metal', dark: 'metal', sandbag: 'soft' };
 const PLASTER = [0xe8dcc6, 0xd9cbb0, 0xc9c2b5, 0xe6e1d6, 0xb8c4c9, 0xd8b9a0, 0xa9b89a, 0xe0d0a8, 0xcfd6d9];
 const ROOFC = [0x7a3b2e, 0x4a4f57, 0x5b3a29, 0x3d4a3f, 0x6b2f2a, 0x2f3b4d];
 const CONT = [0xa83a2c, 0x2e5a8a, 0x3d7a4a, 0xc7782a, 0x6d7378, 0x8a2f5a, 0xb59a3a];
@@ -565,6 +574,27 @@ const W = G.World = {
     M.dark = std({ roughness: 0.6, metalness: 0.4 });
     M.paint = std({ roughness: 0.32, metalness: 0.45 });
     M.glass = std({ roughness: 0.08, metalness: 0.6 });
+    // v52 한글 간판 묶음 텍스처 (가게마다 한 줄씩): 밤에는 은은하게 빛난다
+    const signTex = T.canvas(1024, 1024, (c, w, h) => {
+      const rows = SIGNS.length, rh = h / rows;
+      SIGNS.forEach(([txt, sub, bg, fg], i) => {
+        const y = i * rh;
+        const g = c.createLinearGradient(0, y, 0, y + rh);
+        g.addColorStop(0, bg); g.addColorStop(1, '#' + new THREE.Color(bg).multiplyScalar(0.72).getHexString());
+        c.fillStyle = g; c.fillRect(0, y, w, rh);
+        c.fillStyle = 'rgba(255,255,255,0.12)'; c.fillRect(0, y + 3, w, 3);
+        c.fillStyle = 'rgba(0,0,0,0.35)'; c.fillRect(0, y + rh - 5, w, 5);
+        c.fillStyle = fg; c.textBaseline = 'middle';
+        c.font = '900 ' + Math.round(rh * 0.56) + "px 'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif";
+        c.fillText(txt, 40, y + rh * 0.52);
+        const tw = c.measureText(txt).width;
+        c.font = '700 ' + Math.round(rh * 0.24) + "px 'Noto Sans KR', 'Malgun Gothic', sans-serif";
+        c.globalAlpha = 0.85; c.fillText(sub, Math.min(w - 300, 40 + tw + 36), y + rh * 0.55); c.globalAlpha = 1;
+      });
+      speck(c, w, h, 10);
+    });
+    signTex.colorSpace = THREE.SRGBColorSpace; signTex.anisotropy = 4;
+    M.sign = std({ map: signTex, emissive: 0xffffff, emissiveMap: signTex, emissiveIntensity: 0.22, roughness: 0.45 });
     M.proxy = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92, metalness: 0 });
     // 거리별 표시 단계: 청크 상태 텍스처 (0 가구까지, 1 상세, 2 상세 아님·자동차 보임, 3 대역만)
     this.lodData = new Uint8Array(LOD_N * LOD_N);
@@ -963,6 +993,14 @@ const W = G.World = {
     this.boxMM(b, -Wd / 2, H, -D / 2, Wd / 2, H + 0.25, D / 2, 'concrete', C(0xb5b0a8));
     this.boxMM(b, -Wd / 2, H + 0.25, D / 2 - 0.2, Wd / 2, H + 0.75, D / 2, 'concrete', C(0xb5b0a8), NC);
     this.boxMM(b, -Wd / 2 + 0.6, H - 0.3, D / 2, Wd / 2 - 0.6, H + 0.6, D / 2 + 0.15, 'paint', C(U.pick(signs)), NC);
+    // 간판 앞면: 한글 간판 한 줄 (묶음 텍스처의 i 번째 줄)
+    {
+      const i = Math.floor(Math.random() * SIGNS.length), sw = Wd - 1.3, sh = 0.84, g = new THREE.PlaneGeometry(sw, sh);
+      const uv = g.attributes.uv, v0 = 1 - (i + 1) / SIGNS.length, v1 = 1 - i / SIGNS.length, u1 = Math.min(1, sw / (sh * 12));
+      for (let k = 0; k < uv.count; k++) uv.setXY(k, uv.getX(k) * u1, uv.getY(k) ? v1 - 0.004 : v0 + 0.004);
+      g.translate(0, H + 0.15, D / 2 + 0.152);
+      this.geo(b, g, 'sign', C(0xffffff), 0, D / 2);
+    }
     this.boxMM(b, -Wd / 2 + 0.8, 0, -1.3, 1.0, 1.0, -0.6, 'wood', C(0x7a5a3a));
     this.boxMM(b, -Wd / 2 + T + 0.05, 0, -D / 2 + T + 0.05, Wd / 2 - 2.5, 1.9, -D / 2 + T + 0.5, 'wood', C(0x8a6a4a));
     this.loot(b, -1, 0.05, 1.5); this.loot(b, 2.5, 0.05, -2.5); this.loot(b, -3, 0.05, -2.6);
@@ -1878,7 +1916,7 @@ const W = G.World = {
     this.tod = tod;
     // 시간대·날씨: 밤·안개·비는 사진 하늘 대신 계산한 하늘을 쓴다. vis = 봇 시야 배율
     const PRESET = {
-      day:    { elev: 38, az: 145, turb: 5, ray: 1.4, mie: 0.004, sunC: 0xffeed8, sunI: 3.2, hemiS: 0xc8dcff, hemiG: 0x5a4c38, hemiI: 1.0, fog: 0xb7cde0, fogD: 0.0017, exp: 0.6, cloud: 0xffffff, vis: 1 },
+      day:    { elev: 38, az: 145, turb: 5, ray: 1.4, mie: 0.004, sunC: 0xffe9cc, sunI: 3.6, hemiS: 0xc8dcff, hemiG: 0x4a4032, hemiI: 0.82, fog: 0xb7cde0, fogD: 0.0021, exp: 0.6, cloud: 0xffffff, vis: 1 },
       sunset: { elev: 6, az: 250, turb: 8, ray: 2.6, mie: 0.006, sunC: 0xffa868, sunI: 2.7, hemiS: 0x9eb4d8, hemiG: 0x5a4030, hemiI: 0.75, fog: 0xc9a58e, fogD: 0.002, exp: 0.62, cloud: 0xffc8a8, vis: 1 },
       night:  { elev: 42, az: 210, skyElev: -9, turb: 2, ray: 0.35, mie: 0.002, sunC: 0x9fb6e6, sunI: 1.5, hemiS: 0x6478a8, hemiG: 0x1c222e, hemiI: 1.5, fog: 0x101824, fogD: 0.0038, exp: 0.62, cloud: 0x202838, vis: 0.5, noCloud: true },
       fog:    { elev: 30, az: 145, turb: 18, ray: 0.9, mie: 0.02, sunC: 0xe8e4dc, sunI: 2.4, hemiS: 0xd4dce2, hemiG: 0x77736a, hemiI: 2.6, fog: 0xa9b3b8, fogD: 0.011, exp: 0.56, cloud: 0xd0d4d6, vis: 0.42, noCloud: true },

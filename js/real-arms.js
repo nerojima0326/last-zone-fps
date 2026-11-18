@@ -162,7 +162,7 @@ const R = G.RealArms = {
   },
   update(vm, s) {
     const m = vm.models[vm.cur];
-    const own = (vm.cur === 'ar7' && G.M4Viewmodel?.ready) || (vm.cur === 'g18' && G.G17Pilot?.ready);
+    const own = (vm.cur === 'ar7' && G.M4Viewmodel?.ready) || (vm.cur === 'g18' && G.G17Pilot?.ready) || G.AssetVM?.owns(vm.cur);
     const A = m && this.armsOf(m);
     const use = this.ready && this.enabled && A && (A.L || A.R) && !own && !s.hideVM;
     if (this.lastM && this.lastM !== m) this.procVisible(this.lastM, true);
