@@ -1,6 +1,7 @@
 // Bundled Glock viewmodel, with optional local file replacement.
 (function () {
 'use strict';
+const HIP_OFF=new window.THREE.Vector3();
 const G=window.G,T=window.THREE;
 const v=new T.Vector3();
 const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
@@ -52,6 +53,8 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
   this.syncAttachments(s.scope);
   const aim=T.MathUtils.clamp(s.ads||0,0,1),weight=1-aim*.8;
   this.pivot.position.copy(this.aimOffset).multiplyScalar(aim);
+  // v60 지향 자세를 다른 총들처럼 화면 오른쪽 아래·조금 앞으로 (손·총이 화면 가운데를 덮지 않게)
+  this.pivot.position.addScaledVector(HIP_OFF.set(.07,-.035,-.07),1-aim);
   this.pivot.position.x+=(vm.sway?.x||0)*.25*weight;
   this.pivot.position.y-=(1-(s.raise??1))*.28+(s.landDip||0)*.06;
   this.pivot.position.y+=Math.sin(s.phase||0)*.008*(s.moving||0)*weight;
@@ -82,7 +85,7 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
    }
   }
   if(parts.muzzle){
-   let o=parts.muzzle==='suppressor'?A.make('suppressor',100):null;
+   let o=parts.muzzle==='suppressor'?A.make('suppressor',100):parts.muzzle!=='choke'?A.make('brake',70):null;
    if(!o)o=new T.Mesh(new T.CylinderGeometry(1.2,1.3,3.8,12).rotateX(Math.PI/2),new T.MeshStandardMaterial({color:0x252b2d,metalness:.75,roughness:.45}));
    o.rotation.y=Math.PI;o.position.set(0,2.5,23.5);this.mount.add(o);
   }
@@ -117,6 +120,8 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
   this.unload();G.VM.root.add(pivot);
   Object.assign(this,{ready:true,model,pivot,mixer,actions,active:false,name:'Idle',main,mainRestMatrix,slide,slideRestZ:slide?.position.z,spare,flash,muzzleLocal,ironOffset,aimOffset:ironOffset.clone(),mount:null,mountKey:null,shotT:99});
   if(spare)spare.visible=false;
+  // v60 다른 1인칭 팩과 같은 장갑·소매 색
+  if(G.AssetVM?.tintArms)G.AssetVM.tintArms(model).catch(e=>console.warn('[G18] 팔 색',e));
  },
  unload(){
   if(this.pivot)this.pivot.removeFromParent();if(this.mixer)this.mixer.stopAllAction();

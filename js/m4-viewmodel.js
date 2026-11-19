@@ -1,6 +1,7 @@
 // Bundled BarcodeGames M4 pack, with optional browser-local replacement.
 (function () {
 'use strict';
+const HIP_OFF=new window.THREE.Vector3();
 const G=window.G,T=window.THREE,V=T.Vector3;
 const clamp=T.MathUtils.clamp,point=new V();
 const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
@@ -89,6 +90,8 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   }finally{for(const url of urls.values())URL.revokeObjectURL(url)}
  },
  install(model){
+  // v60 다른 1인칭 팩과 같은 장갑·소매 색
+  if(G.AssetVM?.tintArms)G.AssetVM.tintArms(model).catch(e=>console.warn('[M4] 팔 색',e));
   const clips=Object.fromEntries(model.animations.map(c=>[c.name,c]));
   for(const n of ['Idle','Fire','Reload','Reload_Empty','Draw'])if(!clips[n])throw Error(n+' 애니메이션이 없습니다');
   const eye=model.getObjectByName('FPS_Camera_j'),main=model.getObjectByName('Main_j'),body=model.getObjectByName('Main');
@@ -149,6 +152,8 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   this.syncAttachments(s.scope);
   const aim=reload?0:clamp(s.ads||0,0,1),weight=1-aim*.85;
   this.aim=aim;this.pivot.position.copy(this.aimOffset).multiplyScalar(aim);
+  // v60 지향 자세를 다른 총들처럼 화면 오른쪽 아래·조금 앞으로 (손·총이 화면 가운데를 덮지 않게)
+  this.pivot.position.addScaledVector(HIP_OFF.set(.035,-.02,-.05),1-aim);
   this.pivot.position.x+=(vm.sway?.x||0)*.2*weight+Math.sin((vm.t||0)*.8)*.001*weight;
   this.pivot.position.y+=Math.sin(s.phase||0)*.006*(s.moving||0)*weight-(s.landDip||0)*.05;
   if(!draw)this.pivot.position.y-=(1-(s.raise??1))*.22;

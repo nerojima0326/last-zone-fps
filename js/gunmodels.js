@@ -18,6 +18,8 @@ const BLANK = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAw
 const VMLEN = { rifle: 0.86, pistol: 0.145 };
 // 게임용 GLB (tools/guns/run.cjs build 로 생성)
 const GLB_IDS = ['ka47', 'sc17', 'mk14', 'kr98', 's12', 'm1014', 'db2', 'sa12', 'aa12', 'g18', 'm1911', 'de7', 'r45'];
+// v60 1인칭에서 바꿔 낀 실사 모델을 3인칭·전리품에도 (AA-12 · SC-17 · M-1014 · M-1911 · DE-7)
+const TP_SWAP = ['aa12', 'sc17', 'm1014', 'm1911', 'de7'];
 // 3인칭(손에 든 총·전리품) 방아쇠 위치
 const TPREF = { rifle: new V3(0, -0.035, 0.02), shotgun: new V3(0, -0.03, 0.0), pistol: new V3(0, -0.01, -0.01) };
 
@@ -25,6 +27,7 @@ function bboxOf(objs) { const b = new THREE.Box3(); for (const o of objs) b.expa
 function centerOf(o) { return new THREE.Box3().setFromObject(o).getCenter(new V3()); }
 
 const GM = G.GunModels = {
+  swapSrc: {},
   guns: {},   // type → { parts: {body, mag, slide, charge, pump, rear}, mat, trigger, muzzle, ... }
   TPREF,
   has(type) { return !!this.guns[type]; },
@@ -67,6 +70,13 @@ const GM = G.GunModels = {
       if (THREE.MeshoptDecoder) gl.setMeshoptDecoder(THREE.MeshoptDecoder);
       const v = (window.LZ_BUILD || '');
       for (const id of GLB_IDS) tasks.push(gl.loadAsync('assets/models/guns/' + id + '.glb' + (v ? '?v=' + v : '')).then(g => this.fromGLB(id, g)).catch(e => console.info('[guns] ' + id + ' 모델 없음', e.message)));
+    }
+    // v60 3인칭·전리품도 1인칭과 같은 실사 모델 (assets/models/viewmodels/swap) — 기준점은 원래 게임 모델 것을 쓰고 모양만 바꾼다
+    if (THREE.GLTFLoader) {
+      const gl = new THREE.GLTFLoader();
+      if (THREE.MeshoptDecoder) gl.setMeshoptDecoder(THREE.MeshoptDecoder);
+      const v = (window.LZ_BUILD || '');
+      for (const id of TP_SWAP) tasks.push(gl.loadAsync('assets/models/viewmodels/swap/' + id + '.glb' + (v ? '?v=' + v : '')).then(g => { this.swapSrc[id] = g.scene; }).catch(e => console.info('[guns] ' + id + ' 실사 3인칭 없음', e.message)));
     }
     await Promise.all(tasks);
     for (const k in this.guns) {
@@ -226,6 +236,35 @@ const GM = G.GunModels = {
     });
   },
 
+  // 실사 모델을 원래 모델의 총 공간에 맞춘다: 앞 끝 = 총구, 뒤쪽 절반의 윗면 높이를 같게 → 방아쇠·손잡이가 대략 같은 자리
+  swapTP(type, D) {
+    if (!D._swap) {
+      const src = this.swapSrc[type], geos = [], mats = [];
+      src.updateMatrixWorld(true);
+      src.traverse(o => { if (!o.isMesh) return; const g = unpack(o.geometry).applyMatrix4(o.matrixWorld); if (g.index) { const n = g.toNonIndexed(); geos.push(n); } else geos.push(g); mats.push(o.material); });
+      if (!geos.length) return null;
+      for (const m of mats) { m.envMapIntensity = 0.8; m.side = THREE.FrontSide; }
+      const geo = THREE.mergeGeometries(geos, true);
+      // 원래 모델: 총구 z, 뒤쪽 절반 윗면 y
+      const top = (gs, zCut) => { let y = -1e9; const v = new V3(); for (const g of gs) { const a = g.attributes.position; for (let i = 0; i < a.count; i++) { v.fromBufferAttribute(a, i); if (v.z > zCut && v.y > y) y = v.y; } } return y; };
+      const old = []; for (const p in D.data.parts) if (p !== 'rearsight') for (const mk in D.data.parts[p]) old.push(D.data.parts[p][mk]);
+      const oldBox = bboxOf(old.map(g => new THREE.Mesh(g)));
+      const mz = D.data.muzzle ? D.data.muzzle.z : oldBox.min.z;
+      geo.computeBoundingBox();
+      const b = geo.boundingBox, L = b.max.z - b.min.z, oldL = oldBox.max.z - mz;
+      // 길이는 원래 모델 길이에 맞춘다 (tpSize 가 무기 길이로 한 번 더 맞춘다)
+      const k = oldL > 0.05 ? oldL / L : 1;
+      geo.scale(k, k, k); geo.computeBoundingBox();
+      const b2 = geo.boundingBox, cut = (b2.min.z + b2.max.z) / 2, cutOld = (mz + oldBox.max.z) / 2;
+      geo.translate(0, top(old, cutOld) - top([geo], cut), mz - b2.min.z);
+      geo.translate(TPREF[D.cls].x, TPREF[D.cls].y, TPREF[D.cls].z);
+      geo.computeBoundingSphere();
+      D._swap = { geo, mats };
+    }
+    const m = new THREE.Mesh(D._swap.geo, D._swap.mats);
+    m.castShadow = true;
+    return m;
+  },
   // 3인칭·전리품용: 실제 크기, 방아쇠를 TPREF 로
   //  full = 전리품(가까이서 보는 것): 재질 그대로 / 아니면 재질이 여럿인 모델은 정점 색 하나로 구워 그리기 호출 1번
   tpMesh(type, full) {
@@ -241,6 +280,7 @@ const GM = G.GunModels = {
       m.castShadow = true;
       return m;
     }
+    if (this.swapSrc[type]) { const m = this.swapTP(type, D); if (m) return m; }
     const ref = TPREF[D.cls], keys = Object.keys(D.mats);
     const bake = !full && keys.length > 2;
     const key = bake ? '_tpBake' : '_tpFull';

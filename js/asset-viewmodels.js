@@ -278,25 +278,7 @@ const AV = G.AssetVM = {
         }
       }
       o.geometry.setAttribute('restZ', new T.BufferAttribute(rz, 1));
-      const m = o.material;
-      const tint = m.userData.armTint;
-      m.onBeforeCompile = sh => {
-        sh.uniforms.uArmCut = P.armCut;
-        sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float restZ;\nattribute float handW;\nvarying float vRestZ;\nvarying float vHandW;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvRestZ = restZ;\nvHandW = handW;');
-        sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vRestZ;\nvarying float vHandW;\nuniform float uArmCut;').replace('void main() {', 'void main() {\n  if (vRestZ > uArmCut) discard;');
-        if (tint) {
-          // v56 모든 팩의 팔을 같은 장갑·소매 색으로: 원래 텍스처의 밝기 무늬만 남기고(구역별 평균으로 나눠) 정해진 색을 곱한다
-          sh.uniforms.uGlove = { value: new T.Vector4(...ARM_LOOK.glove, tint[0]) };
-          sh.uniforms.uSleeve = { value: new T.Vector4(...ARM_LOOK.sleeve, tint[1]) };
-          sh.fragmentShader = sh.fragmentShader.replace('uniform float uArmCut;', 'uniform float uArmCut;\nuniform vec4 uGlove;\nuniform vec4 uSleeve;')
-            .replace('#include <map_fragment>', `#include <map_fragment>
-  { float lum = dot(diffuseColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-    float h = smoothstep(0.35, 0.65, vHandW);
-    float det = clamp(pow(lum / mix(uSleeve.w, uGlove.w, h), 0.6), 0.45, mix(1.45, 1.15, h));
-    diffuseColor.rgb = mix(uSleeve.rgb, uGlove.rgb, h) * det; }`);
-        }
-      };
-      m.customProgramCacheKey = () => 'vmArmCut' + (tint ? 'T' : '');
+      for (const m of [].concat(o.material)) this.armShader(m, P.armCut);
     }
     P.gunRest = new T.Matrix4().copy(pivot.matrixWorld).invert().multiply(gunBone.matrixWorld);
     P.gunRestInv = P.gunRest.clone().invert();
@@ -324,12 +306,18 @@ const AV = G.AssetVM = {
   // v56 팔 메시마다 정점의 '손(장갑) 비율' handW 와 구역별 텍스처 평균 밝기를 구한다 → 셰이더에서 같은 색으로 칠한다
   unifyArm(o) {
     const g = o.geometry, n = g.attributes.position.count, hw = new Float32Array(n);
-    const m = o.material = o.material.clone();
-    // 숨긴 어깨 쪽 정점 경계(소매 끝)가 화면에 들어와도 빈 구멍 대신 소매 안쪽이 보이게 양면으로
-    m.side = T.DoubleSide;
-    const mn = (m.name || '') + ' ' + o.name;
-    if (/glove/i.test(mn)) hw.fill(1);
-    else if (o.isSkinnedMesh && !/uniform|sleeve/i.test(mn)) {
+    // 재질이 여럿(손 + 장갑)인 메시도 다룬다: 재질마다 그 그룹의 정점 목록
+    const multi = Array.isArray(o.material);
+    const mats = (multi ? o.material : [o.material]).map(m0 => m0.clone());
+    o.material = multi ? mats : mats[0];
+    const vertsOf = mi => {
+      if (!multi) return null;
+      const out = new Set(), idx = g.index;
+      for (const gr of g.groups) if (gr.materialIndex === mi) for (let i = gr.start; i < gr.start + gr.count; i++) out.add(idx ? idx.getX(i) : i);
+      return out;
+    };
+    const nameAll = mats.map(m => m.name || '').join(' ') + ' ' + o.name;
+    if (o.isSkinnedMesh && !/uniform|sleeve/i.test(nameAll) && !(!multi && /glove/i.test(nameAll))) {
       // 손 뼈 = 손가락 사슬(자식 뼈가 2개 이상 이어진 가지)을 4개 이상 거느린 뼈. 그 아래 뼈들에 묶인 가중치 합이 손 비율
       const bones = o.skeleton.bones, set = new Set(bones), size = new Map();
       const count = b => { if (size.has(b)) return size.get(b); let c = 0; for (const ch of b.children) if (set.has(ch)) c += 1 + count(ch); size.set(b, c); return c; };
@@ -342,31 +330,48 @@ const AV = G.AssetVM = {
       const isH = bones.map(b => hand.has(b)), sw = g.attributes.skinWeight, si = g.attributes.skinIndex;
       for (let i = 0; i < n; i++) { let h = 0; for (let k = 0; k < 4; k++) if (isH[si.getComponent(i, k)]) h += sw.getComponent(i, k); hw[i] = h; }
     }
+    // 장갑 재질의 정점은 모두 손
+    mats.forEach((m, mi) => { if (!/glove/i.test((m.name || '') + (multi ? '' : ' ' + o.name))) return; const vs = vertsOf(mi); if (!vs) hw.fill(1); else for (const i of vs) hw[i] = 1; });
     g.setAttribute('handW', new T.BufferAttribute(hw, 1));
-    // 구역별 평균 밝기 (선형) — 텍스처를 작게 그려 정점 UV 에서 읽는다
-    const img = m.map && m.map.image, uv = g.attributes.uv;
+    mats.forEach((m, mi) => this.armTint(m, g, hw, vertsOf(mi)));
+  },
+  // 재질 하나의 구역별(손·소매) 평균 밝기 (선형) — 텍스처를 작게 그려 정점 UV 에서 읽는다
+  armTint(m, g, hw, verts) {
+    // 숨긴 어깨 쪽 정점 경계(소매 끝)가 화면에 들어와도 빈 구멍 대신 소매 안쪽이 보이게 양면으로
+    m.side = T.DoubleSide;
+    const n = g.attributes.position.count, img = m.map && m.map.image, uv = g.attributes.uv;
     let tint = null;
     try {
       if (img && uv && typeof document !== 'undefined') {
-        const S = 128, cv = document.createElement('canvas'); cv.width = cv.height = S;
-        const cx = cv.getContext('2d', { willReadFrequently: true }); cx.drawImage(img, 0, 0, S, S);
-        const px = cx.getImageData(0, 0, S, S).data, lin = c => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+        let S = 128, px;
+        if (img.data && img.width) {
+          // TGA 등 DataTexture: 픽셀 배열에서 128×128 로 건너뛰며 읽는다 (RGBA 또는 RGB)
+          const W = img.width, H = img.height, ch = img.data.length / (W * H) | 0; px = new Uint8ClampedArray(S * S * 4);
+          for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) { const j = ((y * H / S | 0) * W + (x * W / S | 0)) * ch; for (let c = 0; c < 3; c++) px[(y * S + x) * 4 + c] = img.data[j + c]; }
+          // DataTexture 는 flipY 를 하지 않는다 → 아래 flip 계산이 맞게 행 순서를 맞춘다
+          if (!m.map.flipY) { const t = new Uint8ClampedArray(px); for (let y = 0; y < S; y++) px.set(t.subarray((S - 1 - y) * S * 4, (S - y) * S * 4), y * S * 4); }
+        } else {
+          const cv = document.createElement('canvas'); cv.width = cv.height = S;
+          const cx = cv.getContext('2d', { willReadFrequently: true }); cx.drawImage(img, 0, 0, S, S);
+          px = cx.getImageData(0, 0, S, S).data;
+        }
+        const lin = c => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
         const acc = [[0, 0], [0, 0]], flip = m.map.flipY;
-        for (let i = 0; i < n; i += 3) {
+        const each = f => { if (verts) { let k = 0; for (const i of verts) if (k++ % 3 === 0) f(i); } else for (let i = 0; i < n; i += 3) f(i); };
+        each(i => {
           let u = uv.getX(i) % 1, v = uv.getY(i) % 1; if (u < 0) u++; if (v < 0) v++;
           const x = Math.min(S - 1, u * S | 0), y = Math.min(S - 1, (flip ? 1 - v : v) * S | 0), j = (y * S + x) * 4;
           const L = 0.2126 * lin(px[j]) + 0.7152 * lin(px[j + 1]) + 0.0722 * lin(px[j + 2]), z = hw[i] > 0.5 ? 0 : 1;
           acc[z][0] += L; acc[z][1]++;
-        }
+        });
         tint = acc.map(([a, c]) => c ? Math.max(0.01, a / c) : 0.2);
-      } else if (!img) {
+      } else if (!m.map) {
         const c = m.color; tint = [Math.max(0.01, 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b), 0]; tint[1] = tint[0];
-        m.map = null;
       }
     } catch (e) { tint = null; }
-    if (tint && !img) m.color.setRGB(1, 1, 1);
+    if (tint && !m.map) m.color.setRGB(1, 1, 1);
     m.userData.armTint = tint;
-    if (tint) { m.roughness = Math.max(m.roughness, 0.75); m.metalness = 0; }
+    if (tint) { m.roughness = Math.max(m.roughness, 0.75); m.metalness = 0; if (m.emissive) { m.emissive.setRGB(0, 0, 0); m.emissiveMap = null; } }   // v60 9mm 팩 장갑의 흰 발광 줄무늬 끄기
   },
   // 휴식 자세의 총 정점(피벗 공간, 앞 = −Z)으로 총구·가늠쇠·가늠자·손잡이 자리를 잰다
   // 팩의 총 대신 다른 총 메시를 같은 손·같은 동작에 끼운다: 두 총의 가늠선·위 방향을 맞추고 가늠자 위치를 맞춘다
@@ -610,6 +615,44 @@ const AV = G.AssetVM = {
       b.updateMatrixWorld(true);
     }
   },
+  // 팔 재질 셰이더: restZ 로 소매 끝 숨기기(cut 유니폼) + armTint 가 있으면 공통 장갑·소매 색
+  armShader(m, cut) {
+    const tint = m.userData.armTint;
+    m.onBeforeCompile = sh => {
+      sh.uniforms.uArmCut = cut;
+      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float restZ;\nattribute float handW;\nvarying float vRestZ;\nvarying float vHandW;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvRestZ = restZ;\nvHandW = handW;');
+      sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vRestZ;\nvarying float vHandW;\nuniform float uArmCut;').replace('void main() {', 'void main() {\n  if (vRestZ > uArmCut) discard;');
+      if (tint) {
+        // v56 모든 팩의 팔을 같은 장갑·소매 색으로: 원래 텍스처의 밝기 무늬만 남기고(구역별 평균으로 나눠) 정해진 색을 곱한다
+        sh.uniforms.uGlove = { value: new T.Vector4(...ARM_LOOK.glove, tint[0]) };
+        sh.uniforms.uSleeve = { value: new T.Vector4(...ARM_LOOK.sleeve, tint[1]) };
+        sh.fragmentShader = sh.fragmentShader.replace('uniform float uArmCut;', 'uniform float uArmCut;\nuniform vec4 uGlove;\nuniform vec4 uSleeve;')
+          .replace('#include <map_fragment>', `#include <map_fragment>
+{ float lum = dot(diffuseColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+  float h = smoothstep(0.35, 0.65, vHandW);
+  float det = clamp(pow(lum / mix(uSleeve.w, uGlove.w, h), 0.6), 0.45, mix(1.45, 1.15, h));
+  diffuseColor.rgb = mix(uSleeve.rgb, uGlove.rgb, h) * det; }`);
+      }
+    };
+    m.customProgramCacheKey = () => 'vmArmCut' + (tint ? 'T' : '');
+    m.needsUpdate = true;
+  },
+  // v60 AR-7(M4 팩)·G-18(Glock 팩)·DB-2(실사 팔 복사) 처럼 이 파일 밖의 1인칭 팔도 같은 장갑·소매 색으로
+  //  손·장갑 재질(Hand_D · Glove_D)의 스킨 메시만 고른다. 텍스처가 다 읽힌 뒤 색 평균을 잰다
+  async tintArms(root) {
+    const list = [];
+    root.traverse(o => { if (o.isSkinnedMesh && !o.userData.lzTinted && [].concat(o.material).some(m => /hand|glove|arm|sleeve/i.test(m.name || ''))) list.push(o); });
+    for (const o of list) {
+      for (const m of [].concat(o.material)) {
+        // 텍스처가 아직 내려받는 중이면(image 없음·불완전) 최대 8 초 기다린다
+        for (let t = 0; m.map && !(m.map.image && m.map.image.width > 0 && m.map.image.complete !== false) && t < 160; t++) await new Promise(r => setTimeout(r, 50));
+      }
+      this.unifyArm(o); o.userData.lzTinted = true;
+      if (!o.geometry.attributes.restZ) o.geometry.setAttribute('restZ', new T.BufferAttribute(new Float32Array(o.geometry.attributes.position.count), 1));
+      for (const m of [].concat(o.material)) this.armShader(m, { value: 99 });
+    }
+    return list.length;
+  },
   // v58 두 뼈 IK: 손(손목)은 그대로 두고 어깨를 옮긴 뒤 팔꿈치를 pole 쪽으로 굽힌다 (팩의 팔 자세가 화면에서 어색할 때)
   //  ik: { bones: [위팔, 아래팔, 손], drop: [x, y, z] 어깨 이동(m, 모델 좌표), pole: [x, y, z] 팔꿈치가 향할 쪽(모델 좌표) }
   armIK(P, ik) {
@@ -725,7 +768,7 @@ const AV = G.AssetVM = {
       const at = S.muzzle.clone().addScaledVector(fwd, 0.01);
       if (parts.muzzle === 'suppressor') { const o = A.make('suppressor', 1); if (o) this.onBone(P, o, at, S.qInv); }
       else if ((parts.muzzle === 'compensator' || parts.muzzle === 'flash') && A.models.brake) {
-        const o = A.make('brake', 1); if (parts.muzzle === 'flash') o.scale.z *= 0.75; this.onBone(P, o, at, S.qInv);
+        const o = A.make('brake', pistol ? 0.7 : 1); if (parts.muzzle === 'flash') o.scale.z *= 0.75; this.onBone(P, o, at, S.qInv);
       } else if (parts.muzzle) {
         const g = new T.CylinderGeometry(0.012, 0.014, 0.038, 12).rotateX(Math.PI / 2); P.mountDispose.push(g);
         this.onBone(P, new T.Mesh(g, metal()), at.clone().addScaledVector(fwd, 0.015), S.qInv);
