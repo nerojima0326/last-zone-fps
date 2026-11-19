@@ -61,3 +61,13 @@ AA-12 · MK-14 는 공개 라이선스의 실사 모델을 찾지 못해 게임�
 - This work is based on "revolver animated" (https://sketchfab.com/3d-models/revolver-animated-0b0eef627f7b4ca8b425096196213601) by DJMaesen (https://sketchfab.com/bumstrum) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 
 바꾼 내용: `tools/viewmodels/build.cjs` 로 텍스처 1024 px WebP, 양자화·meshopt 압축. 저격소총은 붙박이 조준경 메시를 지웠습니다(게임의 조준경 부품을 대신 답니다). 한 클립에 이어진 동작은 게임이 구간으로 잘라 씁니다. 모든 팩의 팔은 게임이 셰이더로 같은 장갑·소매 색으로 칠합니다(원본 텍스처의 명암만 씀).
+
+## v58 AA-12 1인칭 모델 교체 (CC-BY-4.0)
+
+| 게임 총 | 파일 | 원본 | 얹는 팩 |
+|---|---|---|---|
+| AA-12 | `swap/aa12.glb` | AA-12 Redesign (Naudaff3D) | Saiga |
+
+- This work is based on "AA-12 Redesign" (https://sketchfab.com/3d-models/aa-12-redesign-c68a127798084ca7b302d6066bc23a25) by Naudaff3D (https://sketchfab.com/Naudaff3D) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+
+바꾼 내용: 붙박이 도트사이트(Red_Dot_Sight · Lense · Red_Dot · Scope_Color_2 재질)를 지움, 삼각형 40 %로 단순화, 실제 길이(0.97 m)로 크기 맞춤, 탄창 부위 분리, meshopt 압축 (`tools/viewmodels/build-swap.cjs`). 전에는 공개 모델이 없어 게임 자체 AA-12 모델을 썼습니다.

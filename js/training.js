@@ -165,6 +165,19 @@ const T = G.Training = {
         }
       }
     }
+    // ---- v58 사격대 지붕 아래 조명 (레이트레이싱을 켜면 지붕 그늘이 너무 어두워 스폰 자리가 잘 안 보인다) ----
+    this.lampSpots = [];
+    const lampMat = this.lampMat || (this.lampMat = new THREE.MeshStandardMaterial({ color: 0xf4f1e8, emissive: 0xfff3dc, emissiveIntensity: 2.2, roughness: 0.4 }));
+    const houseMat = M.dark, tubeGeo = new THREE.BoxGeometry(1.3, 0.05, 0.12), houseGeo = new THREE.BoxGeometry(1.42, 0.06, 0.22);
+    for (const lx of [-12, -4, 4, 12]) for (const lz of [2.6, 7.4]) {
+      const x = R.x + lx, z = R.line + lz, y = R.y + 3.4;
+      const g = new THREE.Group(); g.position.set(x, y, z);
+      const house = new THREE.Mesh(houseGeo, houseMat); house.position.y = -0.03; g.add(house);
+      const tube = new THREE.Mesh(tubeGeo, lampMat); tube.position.y = -0.085; g.add(tube);
+      G.scene.add(g); this.objs.push(g);
+      this.lampSpots.push(new THREE.Vector3(x, y - 0.2, z));
+    }
+    this.syncLamps();
     // ---- 화면 ----
     this.ui();
     this.refill();
@@ -186,9 +199,22 @@ const T = G.Training = {
     this.items.splice(i, 1);
     this.respawns.push({ kind: it.kind, slot: it.train, at: G.Game.time + 0.4 });
   },
+  // 조명은 레이트레이싱을 켰을 때만 실제 광원으로 넣는다 (평소 렌더러에서는 광원이 늘면 모든 재질이 무거워진다 — 평소엔 지붕 아래도 충분히 밝다)
+  lamps: [],
+  syncLamps() {
+    const want = this.active && !!(G.RT && G.RT.wanted && G.RT.state === 'on') ? (this.lampSpots || []) : [];
+    if (want.length === this.lamps.length) return;
+    for (const l of this.lamps) G.scene.remove(l);
+    this.lamps = want.map(p => {
+      const l = new THREE.PointLight(0xfff1d8, 14, 14, 2);
+      l.position.copy(p); l.castShadow = false; l.userData.rtRadius = 0.35;
+      G.scene.add(l); return l;
+    });
+  },
   stop() {
     if (!this.active && !this.objs.length) return;
     this.active = false;
+    this.syncLamps();
     const geometries = new Set(), materials = new Set();
     const shared = new Set(Object.values(this.mats));
     for (const o of this.objs) {

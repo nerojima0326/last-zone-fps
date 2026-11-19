@@ -106,6 +106,7 @@ const RT = G.RT = {
   },
   stop() {
     this.untag();
+    if (G.Training && G.Training.syncLamps) setTimeout(() => G.Training.syncLamps(), 0);   // state 가 바뀐 뒤 훈련장 조명 광원 빼기
     if (this.rt) { try { this.rt.releaseTargets && this.rt.releaseTargets(); } catch (e) { /* 무시 */ } }
     if (this.state === 'on') this.state = 'off';
   },
@@ -145,7 +146,8 @@ const RT = G.RT = {
     // 훈련장 표적 (좌우로 움직이고, 맞으면 넘어간다)
     const T = G.Training;
     if (T && T.active) for (const t of T.targets || []) if (t.root) t.root.traverse(o => { if (o.isMesh && !o.userData.rtExclude) this.dyn.push(o); });
-    // 조명 목록
+    // 조명 목록 (훈련장 지붕 조명은 RT 일 때만 광원으로)
+    if (G.Training && G.Training.syncLamps) G.Training.syncLamps();
     this.lights = [];
     scene.traverse(o => { if (o.isLight) this.lights.push(o); });
     const t0 = performance.now();

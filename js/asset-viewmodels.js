@@ -75,7 +75,7 @@ const SWAP = {
   m1014: { file: 'assets/models/viewmodels/swap/m1014.glb', shift: -0.05, lift: 0.015, tilt: -7 },        // Benelli M4 (TastyTony) on Remington 팩
   m1911: { file: 'assets/models/viewmodels/swap/m1911.glb', lift: -0.022 },   // 손잡이가 주먹 안에 들어오게 내림        // Colt M1911 (b0ho) on XD 팩
   de7: { file: 'assets/models/viewmodels/swap/de7.glb', lift: -0.022 },            // Desert Eagle (ELIZION) on XD 팩
-  aa12: { file: 'assets/models/guns/aa12.glb', shift: -0.1, adsDist: 0.4, adsFwd: 0.12 },                     // 게임 자체 AA-12 모델 on Saiga 팩
+  aa12: { file: 'assets/models/viewmodels/swap/aa12.glb', shift: -0.07 },          // v58 AA-12 Redesign (Naudaff3D) on Saiga 팩
   mk14: { file: 'assets/models/guns/mk14.glb', shift: -0.01 }                      // 게임 자체 MK-14 모델 on ACR 팩
 };
 // v56 지향 자세: at = 가늠자 자리(카메라 공간 m, 오른쪽 +x · 위 +y · 앞 −z), yaw/pitch/roll(도) = 총구를 가운데로 · 살짝 위로 · 윗면을 안쪽으로
@@ -380,7 +380,7 @@ const AV = G.AssetVM = {
       const pos = o.geometry.attributes.position, step = Math.max(1, Math.floor(pos.count / 3000)), w = new V();
       for (let i = 0; i < pos.count; i += step) pts.push(w.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld).clone());
     });
-    const Sp = P.sight0, Ss = this.measure(P, pts, P.def.pistol);
+    const Sp = P.sight0, Ss = this.measure(P, pts, P.def.pistol, new V(0, 1, 0));
     const basis = S => { const back = S.axis.clone().negate(), right = new V().crossVectors(S.up, back); return new T.Matrix4().makeBasis(right, S.up, back); };
     const M = basis(Sp).multiply(basis(Ss).transpose());   // 바꿔 끼울 총 방향 → 팩 총 방향
     const anchor = Ss.R.clone().applyMatrix4(M);
@@ -403,7 +403,7 @@ const AV = G.AssetVM = {
       new T.Matrix4().multiplyMatrices(inv, M).decompose(holder.position, holder.quaternion, holder.scale);
       holder.visible = false; bone.add(holder); groups.push(holder);
     }
-    const sight = this.measure(P, pts.map(p => p.clone().applyMatrix4(M)), P.def.pistol);
+    const sight = this.measure(P, pts.map(p => p.clone().applyMatrix4(M)), P.def.pistol, Sp.up);
     P.swaps[id] = { groups, sight, muzzleLocal: sight.muzzle.clone().applyMatrix4(P.gunRestInv) };
     if (P.gunId === id) { this.useGun(P, id); P.mountKey = null; }   // 이미 이 총을 들고 있으면 바로 바꿔 보인다
     console.info('[AssetVM] ' + id + ' 총 모델 → ' + P.key + ' 팩');
@@ -417,7 +417,7 @@ const AV = G.AssetVM = {
     P.sight = sw ? Object.assign({}, sw.sight, { qH: P.sight0.qH, posH: P.sight0.posH }) : P.sight0;
     P.muzzleLocal = sw ? sw.muzzleLocal : P.muzzle0;
   },
-  measure(P, pv, pistol) {
+  measure(P, pv, pistol, upHint) {
     // v54 총의 몸 좌표를 정점 분포로 잡는다 (애니메이션 자세가 옆으로 기울어 있어도 가늠자·가늠쇠를 제대로 찾게)
     const n = pv.length, c = pv.reduce((sum, p) => sum.add(p), new V()).multiplyScalar(1 / n);
     const C = [0, 0, 0, 0, 0, 0];   // xx xy xz yy yz zz
@@ -434,7 +434,7 @@ const AV = G.AssetVM = {
     const u = e1.clone().multiplyScalar(Math.cos(th)).addScaledVector(e2, Math.sin(th));
     let hiP = 0, hiN = 0;
     for (const p of pv) { const h = _v.subVectors(p, c).dot(u); hiP = Math.max(hiP, h); hiN = Math.max(hiN, -h); }
-    if (hiP > hiN) u.negate();
+    if (upHint ? u.dot(upHint) < 0 : hiP > hiN) u.negate();   // upHint: 바꿔 낀 총은 모델의 +Y 가 위 (손잡이가 길어 분포로 헷갈릴 때)
     // 몸 좌표: along(앞 +), h(위 +)
     let amin = Infinity, amax = -Infinity;
     const A = pv.map(p => { const d = _v.subVectors(p, c), al = d.dot(len); amin = Math.min(amin, al); amax = Math.max(amax, al); return [al, d.dot(u)]; });
