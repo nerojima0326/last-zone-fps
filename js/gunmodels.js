@@ -26,6 +26,12 @@ const TPREF = { rifle: new V3(0, -0.035, 0.02), shotgun: new V3(0, -0.03, 0.0), 
 function bboxOf(objs) { const b = new THREE.Box3(); for (const o of objs) b.expandByObject(o); return b; }
 function centerOf(o) { return new THREE.Box3().setFromObject(o).getCenter(new V3()); }
 
+// v61 같은 GLB 를 여러 곳(1인칭 팩 · 3인칭)에서 쓸 때 한 번만 내려받는다 (해석은 쓰는 곳마다 따로 — 서로 장면을 바꾸므로)
+const _bin = {};
+G.loadGLB = G.loadGLB || function (loader, url) {
+  const p = _bin[url] || (_bin[url] = fetch(url).then(r => { if (!r.ok) throw Error(url + ' ' + r.status); return r.arrayBuffer(); }));
+  return p.then(buf => loader.parseAsync(buf, url.replace(/[^/]*$/, '')));
+};
 const GM = G.GunModels = {
   swapSrc: {},
   guns: {},   // type → { parts: {body, mag, slide, charge, pump, rear}, mat, trigger, muzzle, ... }
@@ -76,7 +82,7 @@ const GM = G.GunModels = {
       const gl = new THREE.GLTFLoader();
       if (THREE.MeshoptDecoder) gl.setMeshoptDecoder(THREE.MeshoptDecoder);
       const v = (window.LZ_BUILD || '');
-      for (const id of TP_SWAP) tasks.push(gl.loadAsync('assets/models/viewmodels/swap/' + id + '.glb' + (v ? '?v=' + v : '')).then(g => { this.swapSrc[id] = g.scene; }).catch(e => console.info('[guns] ' + id + ' 실사 3인칭 없음', e.message)));
+      for (const id of TP_SWAP) tasks.push(G.loadGLB(gl, 'assets/models/viewmodels/swap/' + id + '.glb' + (v ? '?v=' + v : '')).then(g => { this.swapSrc[id] = g.scene; }).catch(e => console.info('[guns] ' + id + ' 실사 3인칭 없음', e.message)));
     }
     await Promise.all(tasks);
     for (const k in this.guns) {

@@ -3,7 +3,8 @@
 const G=window.G,T=window.THREE;
 // v59 실사 부착물 (Sketchfab CC-BY-4.0, tools/attachments/build-real.cjs): 도트 = Aimpoint 류, 홀로 = EOTech EXPS3, x2 = ACOG, x4·x8 = 저격 조준경, 소음기 · 제퇴기 · 수직 손잡이 · 레이저(Perst-4)
 //  권총 미니 도트(micro)만 예전 Flat 모델. 조준선 높이는 모델의 extras.eye (바닥 기준 m)
-const files={micro:'micro-dot',reddot:'rd-aimpoint',holo:'holo-eotech',x2:'scope-acog',x4:'scope-sniper',x8:'scope-sniper',suppressor:'sup-rifle',brake:'brake-rifle',grip:'grip-vertical',laser:'laser-perst'};
+// v61 권총 미니 도트 = RMR 꼴, 산탄총 초크 = 연장 초크 (tools/attachments/build-procedural.mjs, 직접 만든 모델)
+const files={choke:'choke',micro:'rmr',reddot:'rd-aimpoint',holo:'holo-eotech',x2:'scope-acog',x4:'scope-sniper',x8:'scope-sniper',suppressor:'sup-rifle',brake:'brake-rifle',grip:'grip-vertical',laser:'laser-perst'};
 const A=G.Attachments={models:{},open:false,
  async load(){if(!T.GLTFLoader)return;await Promise.all(Object.entries(files).map(async([id,file])=>{try{const L=new T.GLTFLoader();if(T.MeshoptDecoder)L.setMeshoptDecoder(T.MeshoptDecoder);const m=await L.loadAsync('assets/models/attachments/'+file+'.glb?v=59');this.models[id]=m.scene;const e=m.scene.children[0]?.userData?.eye;if(e)m.scene.userData.eye=e}catch(e){console.info('Attachment unavailable',id)}}))},
  options(def){
@@ -86,7 +87,8 @@ const A=G.Attachments={models:{},open:false,
   if(m.accessories)m.accessories.removeFromParent();m.accessories=new T.Group();m.gun.add(m.accessories);
   const a=inst?.attachments||{};if(a.muzzle==='suppressor'&&m.cls!=='shotgun'&&m.id!=='r45'){const o=this.make('suppressor',m.s);if(o){o.position.copy(m.muzzle).add(new T.Vector3(0,0,.025));m.accessories.add(o)}}
   if(['grip','angled','light','half'].includes(a.under)&&m.cls==='rifle'){const o=this.make('grip',m.s);if(o){o.position.copy(m.fore).add(new T.Vector3(.01,-.01,-.09));if(a.under==='angled')o.rotation.x=-.5;if(a.under==='light'||a.under==='half')o.scale.y*=a.under==='light'?.7:.85;m.accessories.add(o)}}
-  if((a.muzzle==='compensator'||a.muzzle==='flash')&&this.models.brake){const o=this.make('brake',m.s);if(a.muzzle==='flash')o.scale.z*=.75;o.position.copy(m.muzzle).add(new T.Vector3(0,0,.012));m.accessories.add(o)}
+  if(a.muzzle==='choke'&&this.models.choke){const o=this.make('choke',m.s);o.position.copy(m.muzzle).add(new T.Vector3(0,0,.012));m.accessories.add(o)}
+  else if((a.muzzle==='compensator'||a.muzzle==='flash')&&this.models.brake){const o=this.make('brake',m.s);if(a.muzzle==='flash')o.scale.z*=.75;o.position.copy(m.muzzle).add(new T.Vector3(0,0,.012));m.accessories.add(o)}
   else if(['compensator','flash','choke'].includes(a.muzzle)){const g=new T.CylinderGeometry(.012*m.s,.014*m.s,.038*m.s,12),mat=new T.MeshStandardMaterial({color:0x252b2d,metalness:.75,roughness:.42}),o=new T.Mesh(g,mat);o.rotation.x=Math.PI/2;o.position.copy(m.muzzle).add(new T.Vector3(0,0,-.012*m.s));m.accessories.add(o)}
   if(['tactical','cheek'].includes(a.stock)){const g=new T.BoxGeometry(.024*m.s,.018*m.s,.08*m.s),mat=new T.MeshStandardMaterial({color:0x292e2d,roughness:.8}),o=new T.Mesh(g,mat);o.position.copy(m.grip).add(new T.Vector3(0,.055*m.s,.23*m.s));m.accessories.add(o)}
   if(a.side==='laser'){const o=this.make('laser',m.s);if(o){o.position.copy(m.fore).add(new T.Vector3(.045,.015,-.08));m.accessories.add(o)}}

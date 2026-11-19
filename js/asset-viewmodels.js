@@ -21,7 +21,7 @@ const PACKS = {
     ev: { reload: [[1.2, 'magout'], [1.9, 'magin']], reloadEmpty: [[1.2, 'magout'], [1.9, 'magin'], [2.47, 'open'], [2.62, 'close']] }
   },
   saiga: {
-    file: 'saiga', cutBones: /^UpArm_[LR]/, magBone: 'Pmag', eye: 'Head_Cam', off: [0.02, 0.0, 0.04], pitch: 4, gun: 'Saiga', len: 1.0,
+    file: 'saiga', handScale: 0.88, cutBones: /^UpArm_[LR]/, magBone: 'Pmag', eye: 'Head_Cam', off: [0.02, 0.0, 0.04], pitch: 4, gun: 'Saiga', len: 1.0,
     clips: { idle: 'Armature|Saiga_Idle', fire: 'Armature|Saiga_Fire', reload: 'Armature|Saiga_Reload_Fast', reloadEmpty: 'Armature|Saiga_Reload_Full' },
     win: { reload: [0, 1.88] },
     ev: { reload: [[0.7, 'magout'], [1.13, 'magin']], reloadEmpty: [[0.63, 'magout'], [1.07, 'magin'], [1.83, 'open'], [1.97, 'close']] }
@@ -142,7 +142,7 @@ const AV = G.AssetVM = {
         const g = await gl.loadAsync('assets/models/viewmodels/' + PACKS[next].file + '.glb' + (v ? '?v=' + v : ''));
         this.install(P, g);
         for (const id in SWAP) if (GUNS[id] === next) {
-          try { this.installSwap(P, id, await gl.loadAsync(SWAP[id].file + (v ? '?v=' + v : ''))); }
+          try { this.installSwap(P, id, await G.loadGLB(gl, SWAP[id].file + (v ? '?v=' + v : ''))); }
           catch (e) { console.warn('[AssetVM] ' + id + ' 총 모델 실패 — 팩 총을 쓴다', e); }
         }
       } catch (e) { P.failed = true; console.warn('[AssetVM] ' + next + ' 팩 실패', e); }
@@ -371,7 +371,7 @@ const AV = G.AssetVM = {
     } catch (e) { tint = null; }
     if (tint && !m.map) m.color.setRGB(1, 1, 1);
     m.userData.armTint = tint;
-    if (tint) { m.roughness = Math.max(m.roughness, 0.75); m.metalness = 0; if (m.emissive) { m.emissive.setRGB(0, 0, 0); m.emissiveMap = null; } }   // v60 9mm 팩 장갑의 흰 발광 줄무늬 끄기
+    if (tint) { m.roughness = Math.max(m.roughness, 0.75); m.metalness = 0; m.envMapIntensity = Math.min(m.envMapIntensity ?? 1, 0.45); if (m.emissive) { m.emissive.setRGB(0, 0, 0); m.emissiveMap = null; } }   // v60 9mm 팩 장갑의 흰 발광 줄무늬 끄기
   },
   // 휴식 자세의 총 정점(피벗 공간, 앞 = −Z)으로 총구·가늠쇠·가늠자·손잡이 자리를 잰다
   // 팩의 총 대신 다른 총 메시를 같은 손·같은 동작에 끼운다: 두 총의 가늠선·위 방향을 맞추고 가늠자 위치를 맞춘다
@@ -767,6 +767,7 @@ const AV = G.AssetVM = {
     if (A && cls !== 'shotgun') {
       const at = S.muzzle.clone().addScaledVector(fwd, 0.01);
       if (parts.muzzle === 'suppressor') { const o = A.make('suppressor', 1); if (o) this.onBone(P, o, at, S.qInv); }
+      else if (parts.muzzle === 'choke' && A.models.choke) this.onBone(P, A.make('choke', 1), at, S.qInv);
       else if ((parts.muzzle === 'compensator' || parts.muzzle === 'flash') && A.models.brake) {
         const o = A.make('brake', pistol ? 0.7 : 1); if (parts.muzzle === 'flash') o.scale.z *= 0.75; this.onBone(P, o, at, S.qInv);
       } else if (parts.muzzle) {

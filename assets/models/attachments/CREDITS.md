@@ -24,6 +24,15 @@
 - This work is based on "low-poly AK-74M Zenitco" (https://sketchfab.com/3d-models/low-poly-ak-74m-zenitco-35ad8e37a513453cbbbd04064fa5fb79) by D_U (https://sketchfab.com/D_U) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 - This work is based on "Zenitco / Зенит Perst 4 Laser Sight Attachment" (https://sketchfab.com/3d-models/zenitco-perst-4-laser-sight-attachment-3ebaa8bc75c34a538f4dd28e33eda119) by valterjherson1 (https://sketchfab.com/valterjherson1) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 
+## v61 직접 만든 부착물
+
+`tools/attachments/build-procedural.mjs` 로 이 저장소에서 직접 만든 모델입니다 (외부 원본 없음).
+
+| 파일 | 게임에서 |
+|---|---|
+| `rmr.glb` | 권총 미니 도트 (RMR 꼴 — 사다리꼴 후드, 렌즈, 조절 나사, LED) |
+| `choke.glb` | 산탄총 연장 초크 (관 + 세로 홈 고리 + 가스 포트) |
+
 ## 예전 모델 (CC0)
 
-- `micro-dot.glb` (권총 미니 도트): [Flat Gun Attachments](https://pichuliru.itch.io/flat-gun-attachments) by Pichuliru, CC0.
+- `micro-dot.glb` (v60 까지 권총 미니 도트, 지금은 쓰지 않음): [Flat Gun Attachments](https://pichuliru.itch.io/flat-gun-attachments) by Pichuliru, CC0.

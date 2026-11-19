@@ -1224,7 +1224,7 @@ const Guns = G.Guns = {
       const full = G.Game.training || (G.quality !== 'low' && G.quality !== 'potato');
       const m = this.tpModel(kind, full); m.rotation.set(0, 0, Math.PI / 2); m.position.y = 0.04; m.scale.multiplyScalar(def.cls === 'pistol' ? 1.6 : 1.15); g.add(m);
     } else if (kind.startsWith('att_') && G.Attachments) {
-      const info=G.Attachments.catalog()[kind],id=info?.slot==='under'?'grip':info?.slot==='side'?'laser':info?.slot==='muzzle'?(info.value==='suppressor'?'suppressor':info.value==='choke'?null:'brake'):null;
+      const info=G.Attachments.catalog()[kind],id=info?.slot==='under'?'grip':info?.slot==='side'?'laser':info?.slot==='muzzle'?(info.value==='suppressor'?'suppressor':info.value==='choke'?'choke':'brake'):null;
       const m=id&&G.Attachments.make(id,1.5);
       if(m){m.rotation.x=Math.PI/2;m.position.y=.07;g.add(m)}else{const mat=new THREE.MeshStandardMaterial({color:0x45514a,metalness:.4,roughness:.65});const m=new THREE.Mesh(new THREE.BoxGeometry(.16,.05,.09),mat);m.position.y=.025;g.add(m)}
     } else if (kind.startsWith('scope_')) {

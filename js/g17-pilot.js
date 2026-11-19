@@ -24,10 +24,13 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
   reset.addEventListener('click',()=>{pilot.unload();status.textContent='기본 G-18 모델 사용 중';reset.hidden=true});
   input.disabled=true;status.textContent='Glock 모델 자동 적용 중…';
   try{
-   const response=await fetch('assets/models/viewmodels/glock17.fbx',{signal:AbortSignal.timeout(30000)});
-   if(!response.ok)throw Error('모델 다운로드 실패 ('+response.status+')');
-   const {TGALoader}=await import('three/addons/loaders/TGALoader.js');
-   await pilot.load(await response.arrayBuffer(),TGALoader);
+   // v61 기본 모델은 미리 변환한 GLB (22 MB FBX → 1 MB). 직접 고른 FBX 는 위 load() 로 그대로
+   const L=new T.GLTFLoader();if(T.MeshoptDecoder)L.setMeshoptDecoder(T.MeshoptDecoder);
+   const g=await L.loadAsync('assets/models/viewmodels/glock17.glb?v='+(window.LZ_BUILD||''));
+   g.scene.animations=g.animations;
+   // FBX 의 Phong 재질을 glTF 로 옮기면 금속도가 기본값 1 이 된다 → 원래처럼 무광에 가깝게
+   g.scene.traverse(o=>{if(o.isMesh){o.frustumCulled=false;for(const m of [].concat(o.material))if(m.metalness>=.99){m.metalness=/hand|glove/i.test(m.name)?0:.35;m.roughness=/hand|glove/i.test(m.name)?.85:.55}}});
+   pilot.setup(g.scene);
    status.textContent='G-18에 Glock 자동 적용됨';reset.hidden=false;
   }catch(e){status.textContent='Glock 자동 적용 실패 · 기본 모델 사용 중';console.warn('[G18 Glock]',e)}
   finally{input.disabled=false}
@@ -98,7 +101,10 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
  },
  async load(bytes,TGALoader){
   const manager=new T.LoadingManager();if(TGALoader)manager.addHandler(/\.tga$/i,new TGALoader(manager));
-  const model=new T.FBXLoader(manager).parse(bytes,''),clips=Object.fromEntries(model.animations.map(c=>[c.name,c]));
+  this.setup(new T.FBXLoader(manager).parse(bytes,''));
+ },
+ setup(model){
+  const clips=Object.fromEntries(model.animations.map(c=>[c.name,c]));
   for(const name of ['Reload','ReloadEmpty','Idle','Fire'])if(!clips[name])throw Error(name+' 클립이 필요합니다');
   model.updateMatrixWorld(true);const eye=model.getObjectByName('FPS_Camera_j'),main=model.getObjectByName('Main_j'),slideMesh=model.getObjectByName('Slide');
   if(!eye||!main||!slideMesh)throw Error('글록의 기준 뼈대가 없습니다');

@@ -71,3 +71,7 @@ AA-12 · MK-14 는 공개 라이선스의 실사 모델을 찾지 못해 게임�
 - This work is based on "AA-12 Redesign" (https://sketchfab.com/3d-models/aa-12-redesign-c68a127798084ca7b302d6066bc23a25) by Naudaff3D (https://sketchfab.com/Naudaff3D) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 
 바꾼 내용: 붙박이 도트사이트(Red_Dot_Sight · Lense · Red_Dot · Scope_Color_2 재질)를 지움, 삼각형 40 %로 단순화, 실제 길이(0.97 m)로 크기 맞춤, 탄창 부위 분리, meshopt 압축 (`tools/viewmodels/build-swap.cjs`). 전에는 공개 모델이 없어 게임 자체 AA-12 모델을 썼습니다.
+
+## v61 변환본
+
+- `m4.glb` · `glock17.glb` 는 위 `m4_animations.zip` · `glock17.fbx` 를 게임용으로 바꾼 것입니다 (`tools/viewmodels/convert-fbx-packs.cjs` — 같은 메시·뼈대·애니메이션, 텍스처 1024 px WebP, meshopt 압축). 출처·라이선스는 원본과 같습니다. 게임은 변환본만 읽고, 원본은 출처 보관과 다시 만들기용으로 둡니다.

@@ -34,9 +34,11 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   reset.addEventListener('click',async()=>{M.unload();reset.hidden=true;status.textContent='기본 AR-7 모델 사용 중';try{await M.cache('delete')}catch(e){status.textContent+=' · 저장 파일 삭제 실패'}});
   input.disabled=true;status.textContent='M4 모델 자동 적용 중…';
   try{
-   const response=await fetch('assets/models/viewmodels/m4_animations.zip',{signal:AbortSignal.timeout(30000)});
-   if(!response.ok)throw Error('모델 다운로드 실패 ('+response.status+')');
-   await importFile(await response.arrayBuffer(),false,true);
+   // v61 기본 모델은 미리 변환한 GLB (12 MB ZIP+FBX → 1.3 MB, WebP·meshopt). 직접 고른 ZIP 은 아래 importFile 로 그대로
+   const L=new T.GLTFLoader();if(T.MeshoptDecoder)L.setMeshoptDecoder(T.MeshoptDecoder);
+   const g=await L.loadAsync('assets/models/viewmodels/m4.glb?v='+(window.LZ_BUILD||''));
+   const model=g.scene;model.animations=g.animations;model.traverse(o=>{if(o.isMesh)o.frustumCulled=false});
+   this.install(model);reset.hidden=false;status.textContent='AR-7에 M4 적용됨 · 자동 적용됨';
   }catch(e){status.textContent='M4 자동 적용 실패 · 기본 모델 사용 중';console.warn('[M4]',e)}
   finally{input.disabled=false}
   // A previously chosen custom ZIP remains an override; bundled files need no device storage.
