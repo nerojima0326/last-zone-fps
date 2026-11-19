@@ -39,7 +39,7 @@ const PACKS = {
     shell: { start: [0, 0.63], cycle: [0.63, 1.97], last: [4.67, 6.0], end: [6.0, 6.82], startDur: 0.5, endDur: 0.62, cycleDur: 0.85, endEv: [[0.06, 'open'], [0.3, 'close']] }
   },
   xdm: {
-    file: 'xdm', cutBones: /^UpArm_[LR]/, magBone: 'Pmag', slideBone: 'Rif', eye: 'Head_Cam', off: [0.0, -0.03, 0.12], pitch: 12, yaw: -3, gun: 'PBody', len: 0.19, pistol: true, hip: { at: [0.11, -0.1, -0.37], yaw: 13, pitch: 4 },
+    file: 'xdm', fore0: ['Forearm_R', 'BoneTwist_01R'], foreTarget: 0.13, thin: ['BoneTwist_03L', 'BoneTwist_03R'], cutBones: /^UpArm_[LR]/, magBone: 'Pmag', slideBone: 'Rif', eye: 'Head_Cam', off: [0.0, -0.03, 0.12], pitch: 12, yaw: -3, gun: 'PBody', len: 0.19, pistol: true, hip: { at: [0.11, -0.08, -0.37], yaw: 13, pitch: 4 },   // 바꿔 낀 권총을 2 cm 내린 만큼 올림
     clips: { idle: 'Armature|FPS_Pistol_Idle', fire: 'Armature|FPS_Pistol_Fire', reload: 'Armature|FPS_Pistol_Reload_easy', reloadEmpty: 'Armature|FPS_Pistol_Reload_full' },
     ev: { reload: [[0.37, 'magout'], [0.9, 'magin']], reloadEmpty: [[0.37, 'magout'], [0.9, 'magin'], [1.36, 'close']] }
   },
@@ -72,9 +72,9 @@ const FIRE_SPAN = { m1014: 0.36 };
 //  노드 이름이 mag… → 팩의 탄창 뼈, slide… → 팩의 슬라이드 뼈를 따라 움직인다
 const SWAP = {
   sc17: { file: 'assets/models/viewmodels/swap/sc17.glb', shift: -0.04, lift: -0.015 },          // SCAR-H (Rotuma) on ACR 팩
-  m1014: { file: 'assets/models/viewmodels/swap/m1014.glb', shift: -0.05, lift: 0.015 },        // Benelli M4 (TastyTony) on Remington 팩
-  m1911: { file: 'assets/models/viewmodels/swap/m1911.glb' },        // Colt M1911 (b0ho) on XD 팩
-  de7: { file: 'assets/models/viewmodels/swap/de7.glb' },            // Desert Eagle (ELIZION) on XD 팩
+  m1014: { file: 'assets/models/viewmodels/swap/m1014.glb', shift: -0.05, lift: 0.015, tilt: -7 },        // Benelli M4 (TastyTony) on Remington 팩
+  m1911: { file: 'assets/models/viewmodels/swap/m1911.glb', lift: -0.022 },   // 손잡이가 주먹 안에 들어오게 내림        // Colt M1911 (b0ho) on XD 팩
+  de7: { file: 'assets/models/viewmodels/swap/de7.glb', lift: -0.022 },            // Desert Eagle (ELIZION) on XD 팩
   aa12: { file: 'assets/models/guns/aa12.glb', shift: -0.1, adsDist: 0.4, adsFwd: 0.12 },                     // 게임 자체 AA-12 모델 on Saiga 팩
   mk14: { file: 'assets/models/guns/mk14.glb', shift: -0.01 }                      // 게임 자체 MK-14 모델 on ACR 팩
 };
@@ -211,7 +211,15 @@ const AV = G.AssetVM = {
       const w = o.geometry.attributes.skinWeight, ix = o.geometry.attributes.skinIndex, tot = new Map();
       for (let i = 0; i < w.count; i++) for (let k = 0; k < 4; k++) { const x = w.getComponent(i, k); if (x > 0) { const b = ix.getComponent(i, k); tot.set(b, (tot.get(b) || 0) + x); } }
       const main = [...tot].sort((a, b) => b[1] - a[1])[0];
-      if (!main || !under(o.skeleton.bones[main[0]])) { if (main && !P.spare.includes(o.skeleton.bones[main[0]])) arms.push(o); return; }
+      if (!main || !under(o.skeleton.bones[main[0]])) {
+        if (!main || P.spare.includes(o.skeleton.bones[main[0]])) return;
+        // v58 팔 메시 = 여러 뼈(손가락·손목·팔)에 나눠 묶인 메시. 뼈 하나에만 묶인 메시는 손에 드는 총 부품(탄창·낱개 탄)이다
+        //  → 팔로 칠하거나 숨기지 않는다. 탄창 뼈에 묶인 탄창은 총 메시로 쳐서 바꿔 낀 총에서는 숨긴다 (예전: ACR 탄창이 SC-17 옆에 하나 더 보였다)
+        const used = [...tot].filter(([, x]) => x > 1).length;
+        if (used >= 4) arms.push(o);
+        else if (C.magBone && o.skeleton.bones[main[0]].name.startsWith(C.magBone)) P.gunMeshes.push(o);
+        return;
+      }
       P.gunMeshes.push(o);
       const step = Math.max(1, Math.floor(w.count / 6000)), spare = new Set(P.spare.map(b => o.skeleton.bones.indexOf(b)).filter(i => i >= 0));
       for (let i = 0; i < w.count; i += step) {
@@ -244,6 +252,12 @@ const AV = G.AssetVM = {
     //  휴식 자세(지향 화면)에서 화면 밖(아래·옆·눈 뒤)이면서 눈에서 가까운(어깨·위팔 쪽) 정점은 그리지 않는다.
     P.sight = P.sight0 = this.measure(P, pv, C.pistol);
     for (const o of arms) this.unifyArm(o);
+    // v58 손 크기 맞추기: 팩마다 팔이 총에 비해 크거나 작다 (같은 팔 리그인데 팩마다 1.5배까지 차이) → 손을 주먹 가운데 기준으로 줄이거나 키운다
+    P.hands = [...new Set(arms.flatMap(o => o.userData.handRoots || []))].map(b => ({ bone: b, s0: b.scale.clone(), p0: b.position.clone(),
+      anim: Object.values(P.acts).some(x => x.action.getClip().tracks.some(tr => tr.name === b.name + '.position')),
+      animS: Object.values(P.acts).some(x => x.action.getClip().tracks.some(tr => tr.name === b.name + '.scale')) }));
+    P.handScale = C.handScale ?? 1;
+    if (C.foreTarget && C.fore0) { const a = find(C.fore0[0]), b = find(C.fore0[1]); if (a && b) P.handScale = C.foreTarget / a.getWorldPosition(new V()).distanceTo(b.getWorldPosition(_v)) * (C.handScale ?? 1); }   // 월드 = 이미 k 배
     P.armCut = { value: 0.5 };
     // v56 지향 자세에서 화면 밖이고 총에서 먼(손이 아닌 위팔·어깨 쪽) 정점만 그리지 않는다
     const far = C.armFar ?? 0.22, tv = Math.tan(27 * D), mz = P.sight.muzzle, back = P.sight.axis.clone().negate(), segL = P.sight.L * 1.05, d0 = new V();
@@ -323,6 +337,7 @@ const AV = G.AssetVM = {
       const roots = cand.filter(r => !cand.some(o2 => o2 !== r && below(r, o2)));   // 가장 깊은 것만 (뿌리 뼈 제외)
       const hand = new Set(); const add = b => { hand.add(b); for (const ch of b.children) if (set.has(ch)) add(ch); };
       roots.forEach(add);
+      (o.userData.handRoots = roots);
       const isH = bones.map(b => hand.has(b)), sw = g.attributes.skinWeight, si = g.attributes.skinIndex;
       for (let i = 0; i < n; i++) { let h = 0; for (let k = 0; k < 4; k++) if (isH[si.getComponent(i, k)]) h += sw.getComponent(i, k); hw[i] = h; }
     }
@@ -371,6 +386,12 @@ const AV = G.AssetVM = {
     const anchor = Ss.R.clone().applyMatrix4(M);
     const t = Sp.R.clone().addScaledVector(Sp.axis, C.shift || 0).addScaledVector(Sp.up, C.lift || 0).sub(anchor);
     M.setPosition(t);
+    // tilt(도): 앞손(앞쪽 손잡이) 자리를 축으로 총을 숙이거나(−) 든다(+) — 총마다 손잡이 높이가 팩 총과 달라 손이 뜰 때
+    if (C.tilt) {
+      const ax = new V().crossVectors(Sp.up, Sp.axis.clone().negate()).normalize(), pt = Sp.grip;
+      const R = new T.Matrix4().makeRotationAxis(ax, C.tilt * D);
+      M.premultiply(new T.Matrix4().makeTranslation(-pt.x, -pt.y, -pt.z)).premultiply(R).premultiply(new T.Matrix4().makeTranslation(pt.x, pt.y, pt.z));
+    }
     // 부위마다 휴식 자세의 피벗 공간 변환 → 따라갈 뼈의 로컬로
     const groups = [];
     const kids = (root.children.length === 1 && !root.children[0].isMesh ? root.children[0].children : root.children).slice();
@@ -459,6 +480,7 @@ const AV = G.AssetVM = {
     }
     P.mixer.update(0);
     if (P.def.ik && P.k) for (const ik of P.def.ik) this.armIK(P, ik);
+    if (P.hands && Math.abs(P.handScale - 1) > 0.01) this.scaleHands(P, P.handScale);
   },
   win(P, name) { const w = P.def.win && P.def.win[name]; return w || [0, P.acts[name].dur]; },
   reloadClip(P, empty) { return empty && P.acts.reloadEmpty ? 'reloadEmpty' : 'reload'; },
@@ -566,6 +588,26 @@ const AV = G.AssetVM = {
     // 슬라이드: 0.02 초에 끝까지 물러났다가 0.06 초에 돌아온다
     const S = P.slideKick;
     if (S) { const e = t < 0.02 ? t / 0.02 : Math.max(0, 1 - (t - 0.02) / 0.06); S.bone.position.addScaledVector(S.d, S.anim ? e : e - S.last); S.last = S.anim ? 0 : e; }
+  },
+  // 손 뼈(손가락 사슬의 뿌리)를 주먹 가운데(손가락 뼈 평균)를 축으로 s 배 — 총을 쥔 자리는 그대로, 손만 작아진다
+  scaleHands(P, s) {
+    // 아래팔도 굵기만 같이 (뼈 길이 방향 = 로컬 Y 는 그대로 두어 손목이 떨어지지 않게)
+    for (const t of P.thin || (P.thin = (P.def.thin || []).map(n => P.find(n)).filter(Boolean).map(b => ({ b, s0: b.scale.clone() })))) t.b.scale.set(t.s0.x * s, t.s0.y, t.s0.z * s);
+    P.model.updateMatrixWorld(true);
+    for (const h of P.hands) {
+      const b = h.bone;
+      if (!h.anim) b.position.copy(h.p0);
+      if (!h.animS) b.scale.copy(h.s0);
+      b.updateMatrixWorld(true);
+      const c = new V(), w = new V(); let n = 0;
+      b.traverse(x => { if (x !== b && x.isBone) { c.add(x.getWorldPosition(w)); n++; } });
+      if (!n) continue;
+      c.multiplyScalar(1 / n);
+      const hw = b.getWorldPosition(new V());
+      b.scale.multiplyScalar(s);
+      b.position.copy(b.parent.worldToLocal(c.clone().add(hw.sub(c).multiplyScalar(s))));
+      b.updateMatrixWorld(true);
+    }
   },
   // v58 두 뼈 IK: 손(손목)은 그대로 두고 어깨를 옮긴 뒤 팔꿈치를 pole 쪽으로 굽힌다 (팩의 팔 자세가 화면에서 어색할 때)
   //  ik: { bones: [위팔, 아래팔, 손], drop: [x, y, z] 어깨 이동(m, 모델 좌표), pole: [x, y, z] 팔꿈치가 향할 쪽(모델 좌표) }
