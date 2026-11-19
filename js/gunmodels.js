@@ -19,7 +19,7 @@ const VMLEN = { rifle: 0.86, pistol: 0.145 };
 // 게임용 GLB (tools/guns/run.cjs build 로 생성)
 const GLB_IDS = ['ka47', 'sc17', 'mk14', 'kr98', 's12', 'm1014', 'db2', 'sa12', 'aa12', 'g18', 'm1911', 'de7', 'r45'];
 // v60 1인칭에서 바꿔 낀 실사 모델을 3인칭·전리품에도 (AA-12 · SC-17 · M-1014 · M-1911 · DE-7)
-const TP_SWAP = ['aa12', 'sc17', 'm1014', 'm1911', 'de7'];
+const TP_SWAP = ['aa12', 'sc17', 'm1014', 'm1911', 'de7', 'kr98'];   // v63 KR-98 = Kar98k
 // 3인칭(손에 든 총·전리품) 방아쇠 위치
 const TPREF = { rifle: new V3(0, -0.035, 0.02), shotgun: new V3(0, -0.03, 0.0), pistol: new V3(0, -0.01, -0.01) };
 
@@ -247,7 +247,7 @@ const GM = G.GunModels = {
     if (!D._swap) {
       const src = this.swapSrc[type], geos = [], mats = [];
       src.updateMatrixWorld(true);
-      src.traverse(o => { if (!o.isMesh) return; const g = unpack(o.geometry).applyMatrix4(o.matrixWorld); if (g.index) { const n = g.toNonIndexed(); geos.push(n); } else geos.push(g); mats.push(o.material); });
+      src.traverse(o => { if (!o.isMesh || /^round/.test(o.name)) return; const g = unpack(o.geometry).applyMatrix4(o.matrixWorld); if (g.index) { const n = g.toNonIndexed(); geos.push(n); } else geos.push(g); mats.push(o.material); });
       if (!geos.length) return null;
       for (const m of mats) { m.envMapIntensity = 0.8; m.side = THREE.FrontSide; }
       const geo = THREE.mergeGeometries(geos, true);

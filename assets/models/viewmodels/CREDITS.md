@@ -75,3 +75,13 @@ AA-12 · MK-14 는 공개 라이선스의 실사 모델을 찾지 못해 게임�
 ## v61 변환본
 
 - `m4.glb` · `glock17.glb` 는 위 `m4_animations.zip` · `glock17.fbx` 를 게임용으로 바꾼 것입니다 (`tools/viewmodels/convert-fbx-packs.cjs` — 같은 메시·뼈대·애니메이션, 텍스처 1024 px WebP, meshopt 압축). 출처·라이선스는 원본과 같습니다. 게임은 변환본만 읽고, 원본은 출처 보관과 다시 만들기용으로 둡니다.
+
+## v63 KR-98 = Kar98k (CC-BY-4.0)
+
+| 게임 총 | 파일 | 원본 | 얹는 팩 |
+|---|---|---|---|
+| KR-98 | `swap/kr98.glb` | Kar98k (Kvark025) — 노리쇠·손잡이가 따로 움직이는 모델 | 저격 팩 (팔·대기 자세) |
+
+- This work is based on "Kar98k" (https://sketchfab.com/3d-models/kar98k-a13963489aff4e1485491e1dcff70d92) by Kvark025 (https://sketchfab.com/Kvark025) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+
+바꾼 내용 (`tools/viewmodels/build-kar98.cjs` → `tools/viewmodels/pack-glb.cjs`): 붙박이 조준경·마운트 제거, 노리쇠(닫힌 자세)·손잡이·내부 탄 4발·탄 견본을 따로 나눈 노드, 원본 애니메이션에서 손잡이 올림·내림 회전과 노리쇠 이동 거리를 뽑아 노드 extras 로, 텍스처 1024 px WebP, meshopt 압축. 클립(탄 5발 묶음)은 게임이 탄 견본으로 만든다. 볼트 조작·한 발 장전·클립 장전 손동작은 게임에서 오른팔 IK 로 만든다.

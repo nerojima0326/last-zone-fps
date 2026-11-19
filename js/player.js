@@ -411,7 +411,12 @@ const P = G.Player = {
     } else {
       const pd = this.phaseDur(R, def);
       // 한 번에 넣을 탄 수 (더블배럴은 두 발이 비면 두 발을 한꺼번에)
-      const cycle = () => { R.per = R.pair && def.mag - inst.mag >= 2 && a.ammo[def.ammo] >= 2 ? 2 : 1; R.cyc = G.Guns.reloadDuration(inst.id,R.empty) * (R.per === 2 ? 1.3 : 1); };
+      // v63 클립 장전(KR-98): 탄창이 비어 있으면 클립 하나(5발)를 한 번에
+      const cycle = () => {
+        R.clip = !!def.clip && inst.mag === 0 && a.ammo[def.ammo] >= 2;
+        R.per = R.clip ? def.clip : R.pair && def.mag - inst.mag >= 2 && a.ammo[def.ammo] >= 2 ? 2 : 1;
+        R.cyc = R.clip ? def.clipReload * G.Guns.reloadFactor(R.empty) / (G.RELOAD_SPEED || 1) : G.Guns.reloadDuration(inst.id,R.empty) * (R.per === 2 ? 1.3 : 1);
+      };
       const phaseP = R.phase === 'load' ? (R.shellT + dt) / R.cyc : R.t / pd;
       if (R.eventPhase !== R.phase) { R.eventPhase = R.phase; R.sounds = G.Guns.reloadEvents(inst.id, R.empty, R.phase, R.port); }
       this.reloadSounds(R, phaseP, R.sounds, R.phase + ':' + (R.cycle || 0));
