@@ -177,15 +177,15 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   if(scope){
    const optic=A.make(scope,100);if(optic){
     let eye=scope==='reddot'?3.2:scope==='holo'?4.4:scope==='x2'?5:2.64;
-    if(scope==='x4'||scope==='x8'){optic.rotation.y=Math.PI;optic.scale.multiplyScalar(scope==='x8'?1.35:1.05);eye*=scope==='x8'?1.35:1.05}
+    if(scope==='x4'||scope==='x8'){optic.rotation.y=Math.PI;optic.scale.multiplyScalar(scope==='x8'?1.05:1.05);eye*=scope==='x8'?1.05:1.05}
     const box=new T.Box3().setFromObject(optic);optic.position.y-=box.min.y;
     if(['reddot','holo','x2'].includes(scope)){
      const glass=new T.Box3();optic.updateMatrixWorld(true);
      optic.traverse(x=>{if(x.isMesh&&/glass/i.test(x.material?.name||''))glass.union(new T.Box3().setFromObject(x))});
      if(!glass.isEmpty())eye=glass.getCenter(new V()).y;
     }
-    eye=A.eyeOf(optic,eye,scope==='x8'?1.35:scope==='x4'?1.05:1);
-    const half=(box.max.z-box.min.z)/2,push=['x2','x4','x8'].includes(scope)?Math.max(0,half-4.5):0;
+    eye=A.eyeOf(optic,eye,scope==='x8'?1.05:scope==='x4'?1.05:1);
+    const half=(box.max.z-box.min.z)/2,push=['x2','x4','x8'].includes(scope)?Math.max(0,half-4.5)+(scope==='x2'?0:3):0;
     const holder=new T.Group();holder.rotation.y=Math.PI;holder.position.set(.344,5.1,-3+push);holder.add(optic);this.mount.add(holder);
     if(scope==='reddot'||scope==='holo'){
      optic.traverse(x=>{if(x.isMesh&&/glass|blue/i.test(x.material?.name||'')){x.material=x.material.clone();this.mountMaterials.push(x.material);x.material.transparent=true;x.material.opacity=.15;x.material.depthWrite=false}});

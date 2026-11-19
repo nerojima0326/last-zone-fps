@@ -54,8 +54,8 @@ const A=G.Attachments={models:{},open:false,
  make(id,scale){const source=this.models[id];if(!source)return null;const obj=source.clone(true);obj.scale.setScalar(scale);
   // x2(ACOG)는 x4·x8 처럼 앞 = +Z 로 만들어져 있어, 돌리지 않는 x2 자리에서는 미리 돌려 둔다
   if(id==='x2'){const w=new T.Group();obj.rotation.y=Math.PI;w.add(obj);w.userData.lzEye=(source.userData.eye||0)*scale;return w}
-  // x4 는 x8 과 같은 조준경을 0.8 배로 (소총 위에서 덜 크게)
-  if(id==='x4'){obj.scale.multiplyScalar(.8);if(source.userData.eye)obj.userData.lzEye=source.userData.eye*scale*.8;return obj}
+  // x4 는 x8 과 같은 조준경을 0.75 배로 (소총 위에서 덜 크게) · v62 x8 도 1.35 → 1.05 배 (지향 때 화면 가운데를 덮었다)
+  if(id==='x4'){obj.scale.multiplyScalar(.75);if(source.userData.eye)obj.userData.lzEye=source.userData.eye*scale*.75;return obj}
   if(source.userData.eye)obj.userData.lzEye=source.userData.eye*scale;return obj},
  // 조준선 높이: 모델에 적힌 값이 있으면 그것 (x4·x8 는 부르는 쪽이 키운 배율 k 를 곱한다)
  eyeOf(obj,fallback,k=1){return obj?.userData?.lzEye?obj.userData.lzEye*k:fallback},
@@ -73,13 +73,13 @@ const A=G.Attachments={models:{},open:false,
     asset.traverse(x=>{if(x.isMesh&&/glass/i.test(x.material?.name||''))glass.union(new T.Box3().setFromObject(x))});
     if(!glass.isEmpty())eye=glass.getCenter(new T.Vector3()).y/m.s;
    }
-   if(id==='x4'||id==='x8'){asset.rotation.y=Math.PI;asset.scale.multiplyScalar(id==='x8'?1.35:1.05);asset.position.y=-box.min.y*(id==='x8'?1.35:1.05)}
-   eye=this.eyeOf(asset,eye*m.s,id==='x8'?1.35:id==='x4'?1.05:1)/m.s/(id==='x8'?1.35:id==='x4'?1.05:1);
+   if(id==='x4'||id==='x8'){asset.rotation.y=Math.PI;asset.scale.multiplyScalar(id==='x8'?1.05:1.05);asset.position.y=-box.min.y*(id==='x8'?1.05:1.05)}
+   eye=this.eyeOf(asset,eye*m.s,id==='x8'?1.05:id==='x4'?1.05:1)/m.s/(id==='x8'?1.05:id==='x4'?1.05:1);
    if(id==='reddot'||id==='holo'){
     asset.traverse(x=>{if(x.isMesh&&/glass|blue/i.test(x.material?.name||'')){x.material=x.material.clone();x.material.transparent=true;x.material.opacity=.15;x.material.depthWrite=false}});
     const dot=new T.Mesh(new T.CircleGeometry(.0009*m.s,16),new T.MeshBasicMaterial({color:0xff2415,depthTest:false}));dot.position.set(0,eye*m.s,.029*m.s);dot.renderOrder=10;g.add(dot);
    }
-   old.group.removeFromParent();g.visible=false;host.add(g);const sight=base.clone().add(new T.Vector3(0,eye*m.s*(id==='x8'?1.35:id==='x4'?1.05:1),.02*m.s));
+   old.group.removeFromParent();g.visible=false;host.add(g);const sight=base.clone().add(new T.Vector3(0,eye*m.s*(id==='x8'?1.05:id==='x4'?1.05:1),.02*m.s));
    m.scopes[id]={group:g,sight,ads:new T.Vector3(0,0,-({reddot:.34,holo:.32,x2:.24,x4:.2,x8:.17}[id])).sub(sight)};
   }
  },

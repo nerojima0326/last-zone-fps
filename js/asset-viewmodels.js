@@ -484,6 +484,11 @@ const AV = G.AssetVM = {
       const A = P.acts[k].action;
       A.enabled = true; A.play(); A.paused = true; A.time = clamp(t, 0, P.acts[k].dur - 1e-4); A.setEffectiveWeight(w);
     }
+    // v62 손 크기·팔 IK 가 옮긴 뼈를 매 프레임 처음 자리로 되돌린 뒤 클립을 입힌다.
+    //  이번 클립에 그 뼈 트랙이 없으면 지난 프레임에 옮긴 값이 남아 프레임마다 쌓였다
+    //  (M-1911·DE-7 왼손이 2 m 넘게 날아가 조준 때 길게 늘어난 팔이 보이고, 총·손이 떨리던 원인)
+    for (const h of P.hands || []) { h.bone.position.copy(h.p0); h.bone.scale.copy(h.s0); }
+    for (const ik of P.def.ik || []) if (ik._rest) for (const r of ik._rest) { r.b.position.copy(r.p); r.b.quaternion.copy(r.q); }
     P.mixer.update(0);
     if (P.def.ik && P.k) for (const ik of P.def.ik) this.armIK(P, ik);
     if (P.hands && Math.abs(P.handScale - 1) > 0.01) this.scaleHands(P, P.handScale);
@@ -543,7 +548,9 @@ const AV = G.AssetVM = {
     } else if (drawLen && P.drawT < drawLen && (s.ads || 0) < 0.05) {
       list.push(['draw', P.drawT, 1]); draw = true;
     } else {
-      P.idleT = ((P.idleT || 0) + dt) % P.acts.idle.dur;
+      // v62 대기 클립이 0.05 초짜리(한 클립을 잘라 쓰는 KR-98·R-45 팩)면 돌리지 않고 첫 자세로 멈춘다
+      //  (3 프레임마다 되감기며 총이 4 cm 씩 앞뒤로 떨렸다 — 그 구간 끝이 사격 동작의 시작이라)
+      P.idleT = P.acts.idle.dur < 0.25 ? 0 : ((P.idleT || 0) + dt) % P.acts.idle.dur;
       list.push(['idle', P.idleT, 1]);
     }
     if (s.ads > 0.05 || reload) P.drawT = 99;
@@ -658,6 +665,7 @@ const AV = G.AssetVM = {
   armIK(P, ik) {
     const f = P.find, B = ik._b || (ik._b = ik.bones.map(n => f(n)));
     if (B.some(b => !b)) return;
+    if (!ik._rest) ik._rest = B.map(b => ({ b, p: b.position.clone(), q: b.quaternion.clone() }));
     const [U, F, H] = B, M = P.model;
     // 위팔 위치가 클립에 없으면 지난 프레임에 옮긴 만큼이 남아 있다 → 처음 자리로 되돌린 뒤 계산
     if (ik._anim === undefined) { ik._anim = Object.values(P.acts).some(x => x.action.getClip().tracks.some(tr => tr.name === U.name + '.position')); ik._p0 = U.position.clone(); }
@@ -740,7 +748,7 @@ const AV = G.AssetVM = {
       const optic = A.make(scope === 'reddot' && pistol ? 'micro' : scope, 1);
       if (optic) {
         let eye = scope === 'reddot' ? 0.032 : scope === 'holo' ? 0.044 : scope === 'x2' ? 0.05 : 0.0264;
-        if (scope === 'x4' || scope === 'x8') { optic.rotation.y = Math.PI; optic.scale.multiplyScalar(scope === 'x8' ? 1.35 : 1.05); eye *= scope === 'x8' ? 1.35 : 1.05; }
+        if (scope === 'x4' || scope === 'x8') { optic.rotation.y = Math.PI; optic.scale.multiplyScalar(scope === 'x8' ? 1.05 : 1.05); eye *= scope === 'x8' ? 1.05 : 1.05; }
         optic.updateMatrixWorld(true);
         const box = new T.Box3().setFromObject(optic); optic.position.y -= box.min.y;
         if (['reddot', 'holo', 'x2'].includes(scope)) {
@@ -748,7 +756,7 @@ const AV = G.AssetVM = {
           optic.traverse(x => { if (x.isMesh && /glass/i.test(x.material?.name || '')) glass.union(new T.Box3().setFromObject(x)); });
           if (!glass.isEmpty()) eye = glass.getCenter(new V()).y;
         }
-        eye = A.eyeOf(optic, eye, scope === 'x8' ? 1.35 : scope === 'x4' ? 1.05 : 1);   // v59 실사 조준경은 모델에 적힌 조준선 높이
+        eye = A.eyeOf(optic, eye, scope === 'x8' ? 1.05 : scope === 'x4' ? 1.05 : 1);   // v59 실사 조준경은 모델에 적힌 조준선 높이
         const holder = new T.Group(); holder.add(optic);
         if (scope === 'reddot' || scope === 'holo') {
           optic.traverse(x => { if (x.isMesh && /glass|blue/i.test(x.material?.name || '')) { x.material = x.material.clone(); P.mountDispose.push(x.material); x.material.transparent = true; x.material.opacity = 0.15; x.material.depthWrite = false; } });
@@ -757,16 +765,17 @@ const AV = G.AssetVM = {
         }
         // 가늠자 바로 앞, 조금 낮춰 레일·덮개 위에 얹는다
         // v59 긴 배율 조준경은 접안렌즈(뒤 끝)가 가늠자 근처에 오도록 반 길이만큼 앞으로 (화면을 덮지 않게)
-        const half = (box.max.z - box.min.z) / 2, push = ['x2', 'x4', 'x8'].includes(scope) ? Math.max(0, half - 0.045) : 0;
+        const half = (box.max.z - box.min.z) / 2, push = ['x2', 'x4', 'x8'].includes(scope) ? Math.max(0, half - 0.045) + (scope === 'x2' ? 0 : 0.03) : 0;   // v62 x4·x8 은 3 cm 더 앞으로 (접안렌즈가 눈앞을 덮지 않게)
         const base = S.R.clone().add(_v.set(0, (pistol ? -0.003 : -0.006) - (push ? P.def.scopeDrop || 0 : 0), 0)).addScaledVector(fwd, (pistol ? 0.012 : 0.03) + push);
         this.onBone(P, holder, base, S.qInv);
         const O = base.clone().add(new V(0, eye, 0).applyQuaternion(S.qInv)).applyQuaternion(q);
         t.set(-O.x, -O.y, -(ADS_DIST[scope] || 0.3) - O.z);
       }
     }
-    if (A && cls !== 'shotgun') {
+    // v62 산탄총 초크도 실사 모델로 (예전 조건 cls !== 'shotgun' 때문에 늘 단순 원통이 나왔다)
+    if (A && (cls !== 'shotgun' || (parts.muzzle === 'choke' && A.models.choke))) {
       const at = S.muzzle.clone().addScaledVector(fwd, 0.01);
-      if (parts.muzzle === 'suppressor') { const o = A.make('suppressor', 1); if (o) this.onBone(P, o, at, S.qInv); }
+      if (parts.muzzle === 'suppressor') { const o = A.make('suppressor', pistol ? 0.75 : 1); if (o) this.onBone(P, o, at, S.qInv); }
       else if (parts.muzzle === 'choke' && A.models.choke) this.onBone(P, A.make('choke', 1), at, S.qInv);
       else if ((parts.muzzle === 'compensator' || parts.muzzle === 'flash') && A.models.brake) {
         const o = A.make('brake', pistol ? 0.7 : 1); if (parts.muzzle === 'flash') o.scale.z *= 0.75; this.onBone(P, o, at, S.qInv);

@@ -89,9 +89,10 @@ const R = G.RealArms = {
       const drop = [];
       copy.traverse(o => { if ((o.isMesh && !o.isSkinnedMesh) || o.isCamera || o.isLight) drop.push(o); });
       for (const o of drop) o.removeFromParent();
-      const mesh = copy.getObjectByName('Hand_Mesh');
-      if (!mesh || !mesh.isSkinnedMesh) throw Error('Hand_Mesh 없음');
-      mesh.frustumCulled = false;
+      // v62 GLB 변환본은 재질이 둘이라 Hand_Mesh 가 스킨 메시 둘을 담은 그룹이다
+      const node = copy.getObjectByName('Hand_Mesh'), mesh = node?.isSkinnedMesh ? node : node?.children.find(o => o.isSkinnedMesh);
+      if (!mesh) throw Error('Hand_Mesh 없음');
+      node.traverse(o => { if (o.isSkinnedMesh) o.frustumCulled = false; });
       if (G.AssetVM && G.AssetVM.tintArms) G.AssetVM.tintArms(copy).catch(() => {});   // v60 공통 장갑·소매 색
       const S = {};
       for (const sd of SIDES) {
