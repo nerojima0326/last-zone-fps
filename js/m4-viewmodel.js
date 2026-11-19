@@ -1,6 +1,7 @@
 // Bundled BarcodeGames M4 pack, with optional browser-local replacement.
 (function () {
 'use strict';
+const HIP_OFF=new window.THREE.Vector3();
 const G=window.G,T=window.THREE,V=T.Vector3;
 const clamp=T.MathUtils.clamp,point=new V();
 const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
@@ -33,9 +34,11 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   reset.addEventListener('click',async()=>{M.unload();reset.hidden=true;status.textContent='기본 AR-7 모델 사용 중';try{await M.cache('delete')}catch(e){status.textContent+=' · 저장 파일 삭제 실패'}});
   input.disabled=true;status.textContent='M4 모델 자동 적용 중…';
   try{
-   const response=await fetch('assets/models/viewmodels/m4_animations.zip',{signal:AbortSignal.timeout(30000)});
-   if(!response.ok)throw Error('모델 다운로드 실패 ('+response.status+')');
-   await importFile(await response.arrayBuffer(),false,true);
+   // v61 기본 모델은 미리 변환한 GLB (12 MB ZIP+FBX → 1.3 MB, WebP·meshopt). 직접 고른 ZIP 은 아래 importFile 로 그대로
+   const L=new T.GLTFLoader();if(T.MeshoptDecoder)L.setMeshoptDecoder(T.MeshoptDecoder);
+   const g=await L.loadAsync('assets/models/viewmodels/m4.glb?v='+(window.LZ_BUILD||''));
+   const model=g.scene;model.animations=g.animations;model.traverse(o=>{if(o.isMesh)o.frustumCulled=false});
+   this.install(model);reset.hidden=false;status.textContent='AR-7에 M4 적용됨 · 자동 적용됨';
   }catch(e){status.textContent='M4 자동 적용 실패 · 기본 모델 사용 중';console.warn('[M4]',e)}
   finally{input.disabled=false}
   // A previously chosen custom ZIP remains an override; bundled files need no device storage.
@@ -89,6 +92,8 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   }finally{for(const url of urls.values())URL.revokeObjectURL(url)}
  },
  install(model){
+  // v60 다른 1인칭 팩과 같은 장갑·소매 색
+  if(G.AssetVM?.tintArms)G.AssetVM.tintArms(model).catch(e=>console.warn('[M4] 팔 색',e));
   const clips=Object.fromEntries(model.animations.map(c=>[c.name,c]));
   for(const n of ['Idle','Fire','Reload','Reload_Empty','Draw'])if(!clips[n])throw Error(n+' 애니메이션이 없습니다');
   const eye=model.getObjectByName('FPS_Camera_j'),main=model.getObjectByName('Main_j'),body=model.getObjectByName('Main');
@@ -149,6 +154,8 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   this.syncAttachments(s.scope);
   const aim=reload?0:clamp(s.ads||0,0,1),weight=1-aim*.85;
   this.aim=aim;this.pivot.position.copy(this.aimOffset).multiplyScalar(aim);
+  // v60 지향 자세를 다른 총들처럼 화면 오른쪽 아래·조금 앞으로 (손·총이 화면 가운데를 덮지 않게)
+  this.pivot.position.addScaledVector(HIP_OFF.set(.035,-.02,-.05),1-aim);
   this.pivot.position.x+=(vm.sway?.x||0)*.2*weight+Math.sin((vm.t||0)*.8)*.001*weight;
   this.pivot.position.y+=Math.sin(s.phase||0)*.006*(s.moving||0)*weight-(s.landDip||0)*.05;
   if(!draw)this.pivot.position.y-=(1-(s.raise??1))*.22;
@@ -177,7 +184,9 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
      optic.traverse(x=>{if(x.isMesh&&/glass/i.test(x.material?.name||''))glass.union(new T.Box3().setFromObject(x))});
      if(!glass.isEmpty())eye=glass.getCenter(new V()).y;
     }
-    const holder=new T.Group();holder.rotation.y=Math.PI;holder.position.set(.344,5.1,-3);holder.add(optic);this.mount.add(holder);
+    eye=A.eyeOf(optic,eye,scope==='x8'?1.35:scope==='x4'?1.05:1);
+    const half=(box.max.z-box.min.z)/2,push=['x2','x4','x8'].includes(scope)?Math.max(0,half-4.5):0;
+    const holder=new T.Group();holder.rotation.y=Math.PI;holder.position.set(.344,5.1,-3+push);holder.add(optic);this.mount.add(holder);
     if(scope==='reddot'||scope==='holo'){
      optic.traverse(x=>{if(x.isMesh&&/glass|blue/i.test(x.material?.name||'')){x.material=x.material.clone();this.mountMaterials.push(x.material);x.material.transparent=true;x.material.opacity=.15;x.material.depthWrite=false}});
      const dot=new T.Mesh(new T.CircleGeometry(.09,16),new T.MeshBasicMaterial({color:0xff2415,depthTest:false}));dot.position.set(0,eye,3);dot.renderOrder=10;holder.add(dot);
@@ -191,6 +200,7 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   const add=(o,x,y,z,turn=true)=>{if(o){if(turn)o.rotation.y=Math.PI;o.position.set(x,y,z);this.mount.add(o)}};
   const metal=()=>{const m=new T.MeshStandardMaterial({color:0x252c2e,metalness:.6,roughness:.48});this.mountMaterials.push(m);return m};
   if(parts.muzzle==='suppressor')add(A.make('suppressor',100),.344,1.8,52.5);
+  else if((parts.muzzle==='compensator'||parts.muzzle==='flash')&&A.models.brake){const o=A.make('brake',100);if(parts.muzzle==='flash')o.scale.z*=.75;add(o,.344,1.8,52.5)}
   else if(parts.muzzle){const o=new T.Mesh(new T.CylinderGeometry(1.2,1.4,3.8,12).rotateX(Math.PI/2),metal());this.mountGeometries.push(o.geometry);add(o,.344,1.8,52.5)}
   if(parts.under){const o=A.make('grip',100);if(o){if(parts.under==='angled')o.rotation.x=-.5;if(parts.under==='light'||parts.under==='half')o.scale.y*=parts.under==='light'?.7:.85;add(o,.344,-3.1,23)}}
   if(parts.side==='laser')add(A.make('laser',100),-3.6,1.8,25);

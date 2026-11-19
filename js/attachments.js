@@ -1,9 +1,12 @@
 (function(){
 'use strict';
 const G=window.G,T=window.THREE;
-const files={micro:'micro-dot',reddot:'red-dot',holo:'holo',x2:'magnifier',x4:'weathered-scope',x8:'weathered-scope',suppressor:'suppressor',grip:'vertical-grip',laser:'laser'};
+// v59 실사 부착물 (Sketchfab CC-BY-4.0, tools/attachments/build-real.cjs): 도트 = Aimpoint 류, 홀로 = EOTech EXPS3, x2 = ACOG, x4·x8 = 저격 조준경, 소음기 · 제퇴기 · 수직 손잡이 · 레이저(Perst-4)
+//  권총 미니 도트(micro)만 예전 Flat 모델. 조준선 높이는 모델의 extras.eye (바닥 기준 m)
+// v61 권총 미니 도트 = RMR 꼴, 산탄총 초크 = 연장 초크 (tools/attachments/build-procedural.mjs, 직접 만든 모델)
+const files={choke:'choke',micro:'rmr',reddot:'rd-aimpoint',holo:'holo-eotech',x2:'scope-acog',x4:'scope-sniper',x8:'scope-sniper',suppressor:'sup-rifle',brake:'brake-rifle',grip:'grip-vertical',laser:'laser-perst'};
 const A=G.Attachments={models:{},open:false,
- async load(){if(!T.GLTFLoader)return;await Promise.all(Object.entries(files).map(async([id,file])=>{try{const m=await new T.GLTFLoader().loadAsync('assets/models/attachments/'+file+'.glb?v=21');this.models[id]=m.scene}catch(e){console.info('Attachment unavailable',id)}}))},
+ async load(){if(!T.GLTFLoader)return;await Promise.all(Object.entries(files).map(async([id,file])=>{try{const L=new T.GLTFLoader();if(T.MeshoptDecoder)L.setMeshoptDecoder(T.MeshoptDecoder);const m=await L.loadAsync('assets/models/attachments/'+file+'.glb?v=59');this.models[id]=m.scene;const e=m.scene.children[0]?.userData?.eye;if(e)m.scene.userData.eye=e}catch(e){console.info('Attachment unavailable',id)}}))},
  options(def){
   const mag=def.reloadType==='mag'&&def.key!=='kr98';
   return {
@@ -48,7 +51,14 @@ const A=G.Attachments={models:{},open:false,
   return {v,h,hip,spread,ads,reload};
  },
  optic(inst,def){return inst.iron?null:(inst.scope||def.baseSight||null)},
- make(id,scale){const source=this.models[id];if(!source)return null;const obj=source.clone(true);obj.scale.setScalar(scale);return obj},
+ make(id,scale){const source=this.models[id];if(!source)return null;const obj=source.clone(true);obj.scale.setScalar(scale);
+  // x2(ACOG)는 x4·x8 처럼 앞 = +Z 로 만들어져 있어, 돌리지 않는 x2 자리에서는 미리 돌려 둔다
+  if(id==='x2'){const w=new T.Group();obj.rotation.y=Math.PI;w.add(obj);w.userData.lzEye=(source.userData.eye||0)*scale;return w}
+  // x4 는 x8 과 같은 조준경을 0.8 배로 (소총 위에서 덜 크게)
+  if(id==='x4'){obj.scale.multiplyScalar(.8);if(source.userData.eye)obj.userData.lzEye=source.userData.eye*scale*.8;return obj}
+  if(source.userData.eye)obj.userData.lzEye=source.userData.eye*scale;return obj},
+ // 조준선 높이: 모델에 적힌 값이 있으면 그것 (x4·x8 는 부르는 쪽이 키운 배율 k 를 곱한다)
+ eyeOf(obj,fallback,k=1){return obj?.userData?.lzEye?obj.userData.lzEye*k:fallback},
  install(m,def,D,P){
   if(!D.rail)return;
   const base=P(new T.Vector3(0,D.rail.y,D.rail.z));const host=D.rail.on==='slide'&&m.parts.slide?m.parts.slide:(m.id==='db2'&&m.parts.barrel?m.parts.barrel:m.gun);
@@ -64,6 +74,7 @@ const A=G.Attachments={models:{},open:false,
     if(!glass.isEmpty())eye=glass.getCenter(new T.Vector3()).y/m.s;
    }
    if(id==='x4'||id==='x8'){asset.rotation.y=Math.PI;asset.scale.multiplyScalar(id==='x8'?1.35:1.05);asset.position.y=-box.min.y*(id==='x8'?1.35:1.05)}
+   eye=this.eyeOf(asset,eye*m.s,id==='x8'?1.35:id==='x4'?1.05:1)/m.s/(id==='x8'?1.35:id==='x4'?1.05:1);
    if(id==='reddot'||id==='holo'){
     asset.traverse(x=>{if(x.isMesh&&/glass|blue/i.test(x.material?.name||'')){x.material=x.material.clone();x.material.transparent=true;x.material.opacity=.15;x.material.depthWrite=false}});
     const dot=new T.Mesh(new T.CircleGeometry(.0009*m.s,16),new T.MeshBasicMaterial({color:0xff2415,depthTest:false}));dot.position.set(0,eye*m.s,.029*m.s);dot.renderOrder=10;g.add(dot);
@@ -76,7 +87,9 @@ const A=G.Attachments={models:{},open:false,
   if(m.accessories)m.accessories.removeFromParent();m.accessories=new T.Group();m.gun.add(m.accessories);
   const a=inst?.attachments||{};if(a.muzzle==='suppressor'&&m.cls!=='shotgun'&&m.id!=='r45'){const o=this.make('suppressor',m.s);if(o){o.position.copy(m.muzzle).add(new T.Vector3(0,0,.025));m.accessories.add(o)}}
   if(['grip','angled','light','half'].includes(a.under)&&m.cls==='rifle'){const o=this.make('grip',m.s);if(o){o.position.copy(m.fore).add(new T.Vector3(.01,-.01,-.09));if(a.under==='angled')o.rotation.x=-.5;if(a.under==='light'||a.under==='half')o.scale.y*=a.under==='light'?.7:.85;m.accessories.add(o)}}
-  if(['compensator','flash','choke'].includes(a.muzzle)){const g=new T.CylinderGeometry(.012*m.s,.014*m.s,.038*m.s,12),mat=new T.MeshStandardMaterial({color:0x252b2d,metalness:.75,roughness:.42}),o=new T.Mesh(g,mat);o.rotation.x=Math.PI/2;o.position.copy(m.muzzle).add(new T.Vector3(0,0,-.012*m.s));m.accessories.add(o)}
+  if(a.muzzle==='choke'&&this.models.choke){const o=this.make('choke',m.s);o.position.copy(m.muzzle).add(new T.Vector3(0,0,.012));m.accessories.add(o)}
+  else if((a.muzzle==='compensator'||a.muzzle==='flash')&&this.models.brake){const o=this.make('brake',m.s);if(a.muzzle==='flash')o.scale.z*=.75;o.position.copy(m.muzzle).add(new T.Vector3(0,0,.012));m.accessories.add(o)}
+  else if(['compensator','flash','choke'].includes(a.muzzle)){const g=new T.CylinderGeometry(.012*m.s,.014*m.s,.038*m.s,12),mat=new T.MeshStandardMaterial({color:0x252b2d,metalness:.75,roughness:.42}),o=new T.Mesh(g,mat);o.rotation.x=Math.PI/2;o.position.copy(m.muzzle).add(new T.Vector3(0,0,-.012*m.s));m.accessories.add(o)}
   if(['tactical','cheek'].includes(a.stock)){const g=new T.BoxGeometry(.024*m.s,.018*m.s,.08*m.s),mat=new T.MeshStandardMaterial({color:0x292e2d,roughness:.8}),o=new T.Mesh(g,mat);o.position.copy(m.grip).add(new T.Vector3(0,.055*m.s,.23*m.s));m.accessories.add(o)}
   if(a.side==='laser'){const o=this.make('laser',m.s);if(o){o.position.copy(m.fore).add(new T.Vector3(.045,.015,-.08));m.accessories.add(o)}}
  },

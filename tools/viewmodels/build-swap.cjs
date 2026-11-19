@@ -22,7 +22,9 @@ const SWAPS = {
   de7:   { src: 'deagle', len: 0.27, turn: 180, parts: { slide: { mat: /^Slide$/ }, mag: { mat: /^Magazine$/ } }, drop: /^Bullet$/ },
   m1911: { src: 'm1911b', len: 0.216, turn: 0, simplify: 0.08, parts: { slide: { node: /^slid_/ }, mag: { node: /^maguzin/ } } },
   sc17:  { src: 'scar', len: 0.97, turn: 180, parts: { mag: { box: [[-0.1, -0.5, -0.075], [0.1, -0.045, 0.045]] } } },
-  m1014: { src: 'benelli', len: 1.01, turn: 0, parts: {} }
+  m1014: { src: 'benelli', len: 1.01, turn: 0, parts: {} },
+  // v58 AA-12 Redesign (Naudaff3D) — 붙박이 도트사이트는 뺀다 (게임 조준경 부품을 단다), 손잡이·드럼 대신 상자 탄창
+  aa12:  { src: 'aa12nd', file: 'scene.glb', len: 0.97, turn: 0, simplify: 0.4, drop: /^(Red_Dot_Sight|Scope_Color_2|Lense|Red_Dot)$/, parts: { mag: { mat: /^Magazine$/ } } }
 };
 
 function rotY(deg) { const a = deg * Math.PI / 180, c = Math.cos(a), s = Math.sin(a); return [c, 0, -s, 0, 0, 1, 0, 0, s, 0, c, 0, 0, 0, 0, 1]; }
@@ -50,7 +52,7 @@ function subPrim(doc, prim, tris) {
   const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({ 'meshopt.encoder': MeshoptEncoder });
   fs.mkdirSync(OUT, { recursive: true });
   for (const id of only) {
-    const C = SWAPS[id], doc = await io.read(path.join(src, C.src, 'scene.gltf')), root = doc.getRoot();
+    const C = SWAPS[id], doc = await io.read(path.join(src, C.src, C.file || 'scene.gltf')), root = doc.getRoot();
     for (const a of root.listAnimations()) a.dispose();
     if (root.listExtensionsUsed().some(e => e.extensionName === 'KHR_materials_pbrSpecularGlossiness')) await doc.transform(metalRough());
     // 스킨: 정점마다 가장 크게 묶인 뼈 이름을 기억해 두고 (부위 나누기용) 스킨은 지운다

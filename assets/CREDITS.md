@@ -44,6 +44,7 @@
 | 총기별 1인칭 팔·장전 애니메이션 (v51) — KA-47 · SA-12/AA-12 · SC-17/MK-14 · S-12/M-1014 · M-1911/DE-7 · P-92 | FPS AK-74m / Saiga / rifle animation pack / remington / pistol animations (Cransh), [9mm Pistol] Ultimate FPS Animations (1Matzh) | Sketchfab, GitHub 사본 ([상세](models/viewmodels/CREDITS.md)) | CC-BY-4.0 |
 | 1인칭 총 모델 교체 (v55) — SC-17 · M-1014 · M-1911 · DE-7 | Scar H Assault Rifle Black - free (Rotuma) · Low-Poly Benelli M4 Super 90 (TastyTony) · Colt M1911 (b0ho) · Desert Eagle (ELIZION) | Sketchfab, GitHub 사본 ([상세](models/viewmodels/CREDITS.md)) | CC-BY-4.0 |
 | 저격소총·리볼버 1인칭 팔·장전 애니메이션 (v56) — KR-98 · R-45 | sniper animated · revolver animated (DJMaesen) | Sketchfab, GitHub 사본 ([상세](models/viewmodels/CREDITS.md)) | CC-BY-4.0 |
+| AA-12 1인칭 모델 (v58) | AA-12 Redesign (Naudaff3D) | Sketchfab, GitHub 사본 ([상세](models/viewmodels/CREDITS.md)) | CC-BY-4.0 |
 | HUD 숫자·제목 글꼴 (v52) | Barlow Condensed (Jeremy Tribby) — Google Fonts 에서 불러옴 | [Google Fonts](https://fonts.google.com/specimen/Barlow+Condensed) | SIL OFL 1.1 |
 | P-92 권총 | Service Pistol (Mateusz Sadek) | [Poly Haven](https://polyhaven.com/a/service_pistol) | CC0 |
 | 레이트레이싱 (v50, 설정에서 켤 때만) | three-realtime-rt 0.16.7 (Goldwin Stewart) + three-mesh-bvh 0.7.8 (Garrett Johnson) — jsDelivr CDN 에서 불러옴 | [three-realtime-rt](https://github.com/GoldwinXS/three-realtime-rt) · [three-mesh-bvh](https://github.com/gkjohnson/three-mesh-bvh) | MIT |
@@ -73,4 +74,4 @@ Cransh의 **FPS AK-74m animations**와 **FPS Arms remington (shotgun)** (CC BY 4
 
 ## 조준경 · 총기 부착물 (v21)
 
-조준경과 부착물은 LonesomeDucky의 [Rifle Scope](https://opengameart.org/content/rifle-scope)와 Pichuliru의 [Flat Gun Attachments](https://pichuliru.itch.io/flat-gun-attachments)를 사용합니다. 모두 CC0이며, 모델별 출처와 가공 내용은 [부착물 출처](models/attachments/CREDITS.md)에 기록했습니다.
+v59부터 조준경·부착물은 Sketchfab 실사 모델(레드닷 · EOTech 홀로 · ACOG · 저격 조준경 · 소음기 · 제퇴기 · 수직 손잡이 · Perst-4 레이저 — valterjherson1, GC_3D_ART, SpatialNeglect, The WarVet, D_U, 모두 CC-BY-4.0)을 씁니다. 권총 미니 도트만 Pichuliru의 [Flat Gun Attachments](https://pichuliru.itch.io/flat-gun-attachments)(CC0). 모델별 출처와 가공 내용은 [부착물 출처](models/attachments/CREDITS.md)에 기록했습니다.

@@ -22,7 +22,7 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
     page.on('request', r => { if (/\/js\/[^/]+\.js\?/.test(r.url())) scripts.push(r.url()); });
     page.on('pageerror', e => errors.push(e.message));
     const packRequests = [];
-    page.on('response', r => { if (/\/models\/viewmodels\/(m4_animations\.zip|glock17\.fbx)/.test(r.url())) requests.push(r.status()); });
+    page.on('response', r => { if (/\/models\/viewmodels\/(m4|glock17)\.glb/.test(r.url())) requests.push(r.status()); if (/\/models\/viewmodels\/(m4_animations\.zip|glock17\.fbx)/.test(r.url())) errors.push('v61: old ZIP/FBX must not load ' + r.url()); });
     page.on('response', r => { if (/\/models\/viewmodels\/[a-z0-9]+\.glb/.test(r.url())) packRequests.push({ url: r.url(), status: r.status() }); });
     page.on('response', r => { if (/\/models\/guns\/(sc17|m1014|sa12|aa12|db2)\.glb/.test(r.url())) gunRequests.push({ url: r.url(), status: r.status() }); });
     await page.route('https://fonts.googleapis.com/**', r => r.abort());
@@ -131,6 +131,7 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
       }
       return { m4: G.M4Viewmodel.ready, glock: G.G17Pilot.ready, longGuns: Object.keys(expected), packs: packGuns };
     }, longGuns);
+    // v61: AR-7·G-18 은 미리 바꾼 GLB 만 받는다 (ZIP 12 MB · FBX 22 MB 대신)
     // v55: 1인칭 팩이 AA-12 모델을 한 번 더 받아 쓴다 (다른 총 모양으로 바꿔 끼우기)
     assert(gunRequests.length >= 10, 'Each long gun must load automatically on both visits ' + gunRequests.length);
     assert(gunRequests.every(r => r.status === 200 && new URL(r.url).searchParams.get('v') === build), JSON.stringify(gunRequests));

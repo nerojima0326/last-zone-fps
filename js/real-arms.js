@@ -92,6 +92,7 @@ const R = G.RealArms = {
       const mesh = copy.getObjectByName('Hand_Mesh');
       if (!mesh || !mesh.isSkinnedMesh) throw Error('Hand_Mesh 없음');
       mesh.frustumCulled = false;
+      if (G.AssetVM && G.AssetVM.tintArms) G.AssetVM.tintArms(copy).catch(() => {});   // v60 공통 장갑·소매 색
       const S = {};
       for (const sd of SIDES) {
         const b = this.bonesOf(copy, sd);

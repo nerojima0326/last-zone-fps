@@ -15,49 +15,50 @@ const _v = new V(), _q = new Q(), _e = new T.Euler(), _m = new T.Matrix4(), ID =
 //  spare: 장전 중에만 보이는 예비 탄창 뼈 (평소엔 0 크기로 접는다)
 const PACKS = {
   ak74: {
-    file: 'ak74', magBone: 'Pmag', eye: 'Head_Cam', off: [0.08, 0.05, 0.15], pitch: 12, gun: 'PBody', len: 0.94, spare: ['Pmag2'],
+    file: 'ak74', cutBones: /^UpArm_[LR]/, magBone: 'Pmag', eye: 'Head_Cam', off: [0.08, 0.05, 0.15], pitch: 12, gun: 'PBody', len: 0.94, spare: ['Pmag2'],
     clips: { idle: 'Rig|AK_Idle', fire: 'Rig|AK_Shot', reload: 'Rig|AK_Reload', reloadEmpty: 'Rig|AK_Reload_full', draw: 'Rig|AK_Draw' },
     // AK 식: 새 탄창으로 헌 탄창을 쳐내고 → 끼우고 → (빈 총) 장전손잡이 당기기
     ev: { reload: [[1.2, 'magout'], [1.9, 'magin']], reloadEmpty: [[1.2, 'magout'], [1.9, 'magin'], [2.47, 'open'], [2.62, 'close']] }
   },
   saiga: {
-    file: 'saiga', magBone: 'Pmag', eye: 'Head_Cam', off: [0.02, 0.0, 0.04], pitch: 4, gun: 'Saiga', len: 1.0,
+    file: 'saiga', handScale: 0.88, cutBones: /^UpArm_[LR]/, magBone: 'Pmag', eye: 'Head_Cam', off: [0.02, 0.0, 0.04], pitch: 4, gun: 'Saiga', len: 1.0,
     clips: { idle: 'Armature|Saiga_Idle', fire: 'Armature|Saiga_Fire', reload: 'Armature|Saiga_Reload_Fast', reloadEmpty: 'Armature|Saiga_Reload_Full' },
     win: { reload: [0, 1.88] },
     ev: { reload: [[0.7, 'magout'], [1.13, 'magin']], reloadEmpty: [[0.63, 'magout'], [1.07, 'magin'], [1.83, 'open'], [1.97, 'close']] }
   },
   acr: {
-    file: 'acr', magBone: 'Pmag', eye: 'Head_Cam', off: [0.01, 0.0, 0.02], pitch: 3, gun: 'ACRRifle', len: 0.9, adsLift: 0.03, adsDist: 0.33,   // 가늠자 없는 레일: 레일 위로 내려다본다
+    file: 'acr', cutBones: /^UpArm_[LR]/, cutReloadOnly: true, magBone: 'Pmag', eye: 'Head_Cam', off: [0.01, 0.0, 0.02], pitch: 3, gun: 'ACRRifle', len: 0.9, adsLift: 0.03, adsDist: 0.33,   // 가늠자 없는 레일: 레일 위로 내려다본다
     clips: { idle: 'Armature|Arms_FPS_Anim_Idle', fire: 'Armature|Arms_FPS_Anim_Shoot', reload: 'Armature|Arms_FPS_Anim_Reload_Fast', draw: 'Armature|Arms_FPS_Anim_Draw' },
     win: { reload: [0, 1.55] },
     ev: { reload: [[0.47, 'magout'], [0.77, 'magin']], reloadEmpty: [[0.47, 'magout'], [0.77, 'magin'], [1.2, 'close']] }
   },
   remington: {
-    file: 'remington', eye: 'Head_Cam', off: [0.06, 0.04, -0.08], pitch: 8, gun: 'Body', len: 1.0, adsLift: 0.02, adsDist: 0.36,
+    file: 'remington', cutBones: /^UpArm_[LR]/, cutReloadOnly: true, eye: 'Head_Cam', off: [0.06, 0.04, -0.08], pitch: 8, gun: 'Body', len: 1.0, adsLift: 0.02, adsDist: 0.5, adsFwd: 0.16, reloadLift: { at: [0.01, -0.01, -0.11], pitch: 0, roll: 6 },
     clips: { idle: 'Armature|SG_FPS_Idle', fire: 'Armature|SG_FPS_Shot', reload: 'Armature|SG_FPS_Reload' },
     // 한 발씩: 시작(총 기울이기) → 한 발 주기(0.63~1.97 s, 1.37 s 에 밀어 넣음) 반복 → 마지막 한 발 → 펌프로 마무리
     shell: { start: [0, 0.63], cycle: [0.63, 1.97], last: [4.67, 6.0], end: [6.0, 6.82], startDur: 0.5, endDur: 0.62, cycleDur: 0.85, endEv: [[0.06, 'open'], [0.3, 'close']] }
   },
   xdm: {
-    file: 'xdm', magBone: 'Pmag', slideBone: 'Rif', eye: 'Head_Cam', off: [0.0, -0.03, 0.12], pitch: 12, yaw: -3, gun: 'PBody', len: 0.19, pistol: true,
+    file: 'xdm', fore0: ['Forearm_R', 'BoneTwist_01R'], foreTarget: 0.13, thin: ['BoneTwist_03L', 'BoneTwist_03R'], cutBones: /^UpArm_[LR]/, magBone: 'Pmag', slideBone: 'Rif', eye: 'Head_Cam', off: [0.0, -0.03, 0.12], pitch: 12, yaw: -3, gun: 'PBody', len: 0.19, pistol: true, hip: { at: [0.11, -0.08, -0.37], yaw: 13, pitch: 4 },   // 바꿔 낀 권총을 2 cm 내린 만큼 올림
     clips: { idle: 'Armature|FPS_Pistol_Idle', fire: 'Armature|FPS_Pistol_Fire', reload: 'Armature|FPS_Pistol_Reload_easy', reloadEmpty: 'Armature|FPS_Pistol_Reload_full' },
     ev: { reload: [[0.37, 'magout'], [0.9, 'magin']], reloadEmpty: [[0.37, 'magout'], [0.9, 'magin'], [1.36, 'close']] }
   },
   p9mm: {
-    file: 'p9mm', magBone: 'Magazine', slideBone: 'Slidder', eye: [0.0, 1.44, 0.08], pitch: 10, yaw: -2, gun: 'Weapon', len: 0.19, pistol: true, spare: ['Magazine_2', 'Bullet_2'],
+    file: 'p9mm', magBone: 'Magazine', slideBone: 'Slidder', eye: [0.0, 1.44, 0.08], pitch: 10, yaw: -2, gun: 'Weapon', len: 0.19, pistol: true, hip: { at: [0.11, -0.1, -0.37], yaw: 13, pitch: 4 }, spare: ['Magazine_2', 'Bullet_2'],
     clips: { idle: 'Idle', fire: 'Fire', reload: 'Reload', reloadEmpty: 'Reload_Empty', draw: 'Equip' },
     win: { reload: [0, 2.6], reloadEmpty: [0, 3.6] },
     ev: { reload: [[0.43, 'magout'], [1.43, 'magin']], reloadEmpty: [[0.43, 'magout'], [1.43, 'magin'], [2.9, 'close']] }
   },
   // v56 DJMaesen 팩: 클립 하나(allanims)에 모든 동작이 이어져 있어 cut 구간으로 나눈다. 총은 뼈가 아닌 노드(스킨 없는 메시)
   sniper: {
-    file: 'sniper', magBone: 'clip', eye: [8, 12, -42], pitch: 4, gun: 'sniper', len: 1.12, cutBones: /^[LR]_arm_\d+$/, adsDist: 0.42, adsLift: 0.006, src: 'allanims', fireFit: true,
+    file: 'sniper', magBone: 'clip', eye: [8, 12, -42], pitch: 4, gun: 'sniper', len: 1.12, scopeDrop: 0.03,   // 배율 조준경 마운트를 레일까지 내림
+    cutBones: /^[LR]_arm_\d+$/, adsDist: 0.42, adsLift: 0.006, src: 'allanims', fireFit: true,
     cut: { idle: [0, 0.05], fire: [0.02, 1.5], reload: [1.5, 3.75] },
     clips: {},
     ev: { reload: [[1.75, 'magout'], [2.55, 'magin'], [3.2, 'open'], [3.45, 'close']] }
   },
   revolver: {
-    file: 'revolver', eye: [6, 9, -40], pitch: 6, gun: 'revolver', len: 0.36, adsDist: 0.44, pistol: true, cutBones: /^[LR]_arm_\d+$/, hip: { at: [0.095, -0.13, -0.47], yaw: 6 }, src: 'allanims',
+    file: 'revolver', eye: [6, 9, -40], pitch: 6, gun: 'revolver', len: 0.36, adsDist: 0.44, pistol: true, ik: [{ bones: ['R_arm', 'R_elbow', 'R_wrist'], drop: [-0.03, -0.14, 0.12], pole: [-0.5, -1, 0] }], cutBones: /^[LR]_arm_\d+$/, hip: { at: [0.095, -0.13, -0.47], yaw: 6 }, src: 'allanims',
     cut: { idle: [0.45, 0.5], fire: [0, 0.45], reload: [0.5, 9.2] },
     clips: {},
     ev: { reload: [[1.0, 'open'], [1.4, 'shell'], [4.0, 'magin'], [7.6, 'close']] }
@@ -71,23 +72,28 @@ const FIRE_SPAN = { m1014: 0.36 };
 //  file: GLB 경로, shift: 가늠자 기준 총열 방향(앞 +) 보정 m, lift: 위 보정 m
 //  노드 이름이 mag… → 팩의 탄창 뼈, slide… → 팩의 슬라이드 뼈를 따라 움직인다
 const SWAP = {
-  sc17: { file: 'assets/models/viewmodels/swap/sc17.glb', shift: 0.08, lift: -0.015 },          // SCAR-H (Rotuma) on ACR 팩
-  m1014: { file: 'assets/models/viewmodels/swap/m1014.glb', shift: 0.04 },        // Benelli M4 (TastyTony) on Remington 팩
-  m1911: { file: 'assets/models/viewmodels/swap/m1911.glb' },        // Colt M1911 (b0ho) on XD 팩
-  de7: { file: 'assets/models/viewmodels/swap/de7.glb' },            // Desert Eagle (ELIZION) on XD 팩
-  aa12: { file: 'assets/models/guns/aa12.glb', shift: 0.12 },                     // 게임 자체 AA-12 모델 on Saiga 팩
-  mk14: { file: 'assets/models/guns/mk14.glb', shift: 0.12 }                      // 게임 자체 MK-14 모델 on ACR 팩
+  sc17: { file: 'assets/models/viewmodels/swap/sc17.glb', shift: -0.04, lift: -0.015 },          // SCAR-H (Rotuma) on ACR 팩
+  m1014: { file: 'assets/models/viewmodels/swap/m1014.glb', shift: -0.05, lift: 0.015, tilt: -7 },        // Benelli M4 (TastyTony) on Remington 팩
+  m1911: { file: 'assets/models/viewmodels/swap/m1911.glb', lift: -0.022 },   // 손잡이가 주먹 안에 들어오게 내림        // Colt M1911 (b0ho) on XD 팩
+  de7: { file: 'assets/models/viewmodels/swap/de7.glb', lift: -0.022 },            // Desert Eagle (ELIZION) on XD 팩
+  aa12: { file: 'assets/models/viewmodels/swap/aa12.glb', shift: -0.07 },          // v58 AA-12 Redesign (Naudaff3D) on Saiga 팩
+  mk14: { file: 'assets/models/guns/mk14.glb', shift: -0.01 }                      // 게임 자체 MK-14 모델 on ACR 팩
 };
 // v56 지향 자세: at = 가늠자 자리(카메라 공간 m, 오른쪽 +x · 위 +y · 앞 −z), yaw/pitch/roll(도) = 총구를 가운데로 · 살짝 위로 · 윗면을 안쪽으로
 // v56 모든 팩 공통 팔 색 (선형 RGB): 검은 전술 장갑 · 레인저 그린 소매
 const ARM_LOOK = { glove: [0.032, 0.032, 0.034], sleeve: [0.075, 0.08, 0.06] };
 const HIP = {
-  rifle: { at: [0.105, -0.095, -0.3], yaw: 4.5, pitch: 1.5, roll: 4 },
-  pistol: { at: [0.085, -0.095, -0.34], yaw: 3, pitch: 2, roll: 3 }
+  rifle: { at: [0.105, -0.095, -0.3], yaw: 4.5, pitch: 1.5, roll: 0 },
+  pistol: { at: [0.085, -0.095, -0.34], yaw: 3, pitch: 2, roll: 0 }
 };
 // v56 장전 중 들어 올리기 (m, 도)
 // v56 권총 반동 (도, m, 초): 오르는 시간 · 돌아오는 빠르기 · 흔들림
 const PISTOL_KICK = { pitch: 9, roll: 2.5, back: 0.022, lift: 0.006, rise: 0.035, ret: 13, wob: 9 };
+// v57 전력질주 자세 (도, m): pitch − = 총구 아래, yaw + = 총구 왼쪽(가운데), roll + = 윗면 왼쪽
+const SPRINT = {
+  rifle: { pitch: -7, yaw: 3, roll: 16, at: [0.0, -0.015, 0.01] },
+  pistol: { pitch: -8, yaw: 0, roll: 8, at: [0.0, -0.02, 0.01] }
+};
 const RELOAD_LIFT = { at: [-0.025, 0.04, -0.03], pitch: 4, yaw: 0, roll: 7 };
 const ADS_DIST = { reddot: 0.32, holo: 0.3, x2: 0.25, x4: 0.22, x8: 0.2 };
 
@@ -136,7 +142,7 @@ const AV = G.AssetVM = {
         const g = await gl.loadAsync('assets/models/viewmodels/' + PACKS[next].file + '.glb' + (v ? '?v=' + v : ''));
         this.install(P, g);
         for (const id in SWAP) if (GUNS[id] === next) {
-          try { this.installSwap(P, id, await gl.loadAsync(SWAP[id].file + (v ? '?v=' + v : ''))); }
+          try { this.installSwap(P, id, await G.loadGLB(gl, SWAP[id].file + (v ? '?v=' + v : ''))); }
           catch (e) { console.warn('[AssetVM] ' + id + ' 총 모델 실패 — 팩 총을 쓴다', e); }
         }
       } catch (e) { P.failed = true; console.warn('[AssetVM] ' + next + ' 팩 실패', e); }
@@ -206,7 +212,15 @@ const AV = G.AssetVM = {
       const w = o.geometry.attributes.skinWeight, ix = o.geometry.attributes.skinIndex, tot = new Map();
       for (let i = 0; i < w.count; i++) for (let k = 0; k < 4; k++) { const x = w.getComponent(i, k); if (x > 0) { const b = ix.getComponent(i, k); tot.set(b, (tot.get(b) || 0) + x); } }
       const main = [...tot].sort((a, b) => b[1] - a[1])[0];
-      if (!main || !under(o.skeleton.bones[main[0]])) { if (main && !P.spare.includes(o.skeleton.bones[main[0]])) arms.push(o); return; }
+      if (!main || !under(o.skeleton.bones[main[0]])) {
+        if (!main || P.spare.includes(o.skeleton.bones[main[0]])) return;
+        // v58 팔 메시 = 여러 뼈(손가락·손목·팔)에 나눠 묶인 메시. 뼈 하나에만 묶인 메시는 손에 드는 총 부품(탄창·낱개 탄)이다
+        //  → 팔로 칠하거나 숨기지 않는다. 탄창 뼈에 묶인 탄창은 총 메시로 쳐서 바꿔 낀 총에서는 숨긴다 (예전: ACR 탄창이 SC-17 옆에 하나 더 보였다)
+        const used = [...tot].filter(([, x]) => x > 1).length;
+        if (used >= 4) arms.push(o);
+        else if (C.magBone && o.skeleton.bones[main[0]].name.startsWith(C.magBone)) P.gunMeshes.push(o);
+        return;
+      }
       P.gunMeshes.push(o);
       const step = Math.max(1, Math.floor(w.count / 6000)), spare = new Set(P.spare.map(b => o.skeleton.bones.indexOf(b)).filter(i => i >= 0));
       for (let i = 0; i < w.count; i += step) {
@@ -230,6 +244,8 @@ const AV = G.AssetVM = {
     const qCam = new Q().setFromEuler(new T.Euler((C.pitch || 0) * D, Math.PI + (C.yaw || 0) * D, 0));
     frame.quaternion.copy(qCam).invert();
     model.scale.setScalar(k); model.position.copy(eye).multiplyScalar(-k);
+    P.k = k;
+    if (C.ik) { this.pose(P, [['idle', 0, 1]]); }   // 팔 IK(어깨 내리기)를 넣은 자세로 다시
     pivot.updateMatrixWorld(true);
     const toPivot = p => p.clone().sub(eye).multiplyScalar(k).applyQuaternion(frame.quaternion);
     const pv = pts.map(toPivot);
@@ -237,6 +253,12 @@ const AV = G.AssetVM = {
     //  휴식 자세(지향 화면)에서 화면 밖(아래·옆·눈 뒤)이면서 눈에서 가까운(어깨·위팔 쪽) 정점은 그리지 않는다.
     P.sight = P.sight0 = this.measure(P, pv, C.pistol);
     for (const o of arms) this.unifyArm(o);
+    // v58 손 크기 맞추기: 팩마다 팔이 총에 비해 크거나 작다 (같은 팔 리그인데 팩마다 1.5배까지 차이) → 손을 주먹 가운데 기준으로 줄이거나 키운다
+    P.hands = [...new Set(arms.flatMap(o => o.userData.handRoots || []))].map(b => ({ bone: b, s0: b.scale.clone(), p0: b.position.clone(),
+      anim: Object.values(P.acts).some(x => x.action.getClip().tracks.some(tr => tr.name === b.name + '.position')),
+      animS: Object.values(P.acts).some(x => x.action.getClip().tracks.some(tr => tr.name === b.name + '.scale')) }));
+    P.handScale = C.handScale ?? 1;
+    if (C.foreTarget && C.fore0) { const a = find(C.fore0[0]), b = find(C.fore0[1]); if (a && b) P.handScale = C.foreTarget / a.getWorldPosition(new V()).distanceTo(b.getWorldPosition(_v)) * (C.handScale ?? 1); }   // 월드 = 이미 k 배
     P.armCut = { value: 0.5 };
     // v56 지향 자세에서 화면 밖이고 총에서 먼(손이 아닌 위팔·어깨 쪽) 정점만 그리지 않는다
     const far = C.armFar ?? 0.22, tv = Math.tan(27 * D), mz = P.sight.muzzle, back = P.sight.axis.clone().negate(), segL = P.sight.L * 1.05, d0 = new V();
@@ -247,34 +269,16 @@ const AV = G.AssetVM = {
         const along = clamp(d0.subVectors(w, mz).dot(back), 0, segL), gunD = d0.addScaledVector(back, -along).length();
         w.applyQuaternion(P.sight.qH).add(P.sight.posH);   // 지향 자세의 피벗 공간
         const dz = -w.z, onScreen = dz > 0.02 && Math.abs(w.y) < dz * tv * 1.3 && Math.abs(w.x) < dz * tv * 2.6;
-        rz[i] = !onScreen && gunD > far ? 1 : 0;
+        rz[i] = !onScreen && gunD > far ? 2 : 0;
         // cutBones: 위팔(소매) 뼈에 주로 묶인 정점은 화면 안이어도 숨긴다 (팔이 긴 팩)
         if (C.cutBones && o.isSkinnedMesh) {
           const sw = o.geometry.attributes.skinWeight, si = o.geometry.attributes.skinIndex;
           let bw = 0, bi = 0; for (let k = 0; k < 4; k++) if (sw.getComponent(i, k) > bw) { bw = sw.getComponent(i, k); bi = si.getComponent(i, k); }
-          if (C.cutBones.test(o.skeleton.bones[bi]?.name || '')) rz[i] = 3;   // 장전 중에도 숨긴다
+          if (C.cutBones.test(o.skeleton.bones[bi]?.name || '') && !rz[i]) rz[i] = 1;   // 위팔: cutReloadOnly 팩은 장전 중에만 숨긴다
         }
       }
       o.geometry.setAttribute('restZ', new T.BufferAttribute(rz, 1));
-      const m = o.material;
-      const tint = m.userData.armTint;
-      m.onBeforeCompile = sh => {
-        sh.uniforms.uArmCut = P.armCut;
-        sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float restZ;\nattribute float handW;\nvarying float vRestZ;\nvarying float vHandW;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvRestZ = restZ;\nvHandW = handW;');
-        sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vRestZ;\nvarying float vHandW;\nuniform float uArmCut;').replace('void main() {', 'void main() {\n  if (vRestZ > uArmCut) discard;');
-        if (tint) {
-          // v56 모든 팩의 팔을 같은 장갑·소매 색으로: 원래 텍스처의 밝기 무늬만 남기고(구역별 평균으로 나눠) 정해진 색을 곱한다
-          sh.uniforms.uGlove = { value: new T.Vector4(...ARM_LOOK.glove, tint[0]) };
-          sh.uniforms.uSleeve = { value: new T.Vector4(...ARM_LOOK.sleeve, tint[1]) };
-          sh.fragmentShader = sh.fragmentShader.replace('uniform float uArmCut;', 'uniform float uArmCut;\nuniform vec4 uGlove;\nuniform vec4 uSleeve;')
-            .replace('#include <map_fragment>', `#include <map_fragment>
-  { float lum = dot(diffuseColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-    float h = smoothstep(0.35, 0.65, vHandW);
-    float det = clamp(pow(lum / mix(uSleeve.w, uGlove.w, h), 0.6), 0.45, mix(1.45, 1.15, h));
-    diffuseColor.rgb = mix(uSleeve.rgb, uGlove.rgb, h) * det; }`);
-        }
-      };
-      m.customProgramCacheKey = () => 'vmArmCut' + (tint ? 'T' : '');
+      for (const m of [].concat(o.material)) this.armShader(m, P.armCut);
     }
     P.gunRest = new T.Matrix4().copy(pivot.matrixWorld).invert().multiply(gunBone.matrixWorld);
     P.gunRestInv = P.gunRest.clone().invert();
@@ -302,10 +306,18 @@ const AV = G.AssetVM = {
   // v56 팔 메시마다 정점의 '손(장갑) 비율' handW 와 구역별 텍스처 평균 밝기를 구한다 → 셰이더에서 같은 색으로 칠한다
   unifyArm(o) {
     const g = o.geometry, n = g.attributes.position.count, hw = new Float32Array(n);
-    const m = o.material = o.material.clone();
-    const mn = (m.name || '') + ' ' + o.name;
-    if (/glove/i.test(mn)) hw.fill(1);
-    else if (o.isSkinnedMesh && !/uniform|sleeve/i.test(mn)) {
+    // 재질이 여럿(손 + 장갑)인 메시도 다룬다: 재질마다 그 그룹의 정점 목록
+    const multi = Array.isArray(o.material);
+    const mats = (multi ? o.material : [o.material]).map(m0 => m0.clone());
+    o.material = multi ? mats : mats[0];
+    const vertsOf = mi => {
+      if (!multi) return null;
+      const out = new Set(), idx = g.index;
+      for (const gr of g.groups) if (gr.materialIndex === mi) for (let i = gr.start; i < gr.start + gr.count; i++) out.add(idx ? idx.getX(i) : i);
+      return out;
+    };
+    const nameAll = mats.map(m => m.name || '').join(' ') + ' ' + o.name;
+    if (o.isSkinnedMesh && !/uniform|sleeve/i.test(nameAll) && !(!multi && /glove/i.test(nameAll))) {
       // 손 뼈 = 손가락 사슬(자식 뼈가 2개 이상 이어진 가지)을 4개 이상 거느린 뼈. 그 아래 뼈들에 묶인 가중치 합이 손 비율
       const bones = o.skeleton.bones, set = new Set(bones), size = new Map();
       const count = b => { if (size.has(b)) return size.get(b); let c = 0; for (const ch of b.children) if (set.has(ch)) c += 1 + count(ch); size.set(b, c); return c; };
@@ -314,34 +326,52 @@ const AV = G.AssetVM = {
       const roots = cand.filter(r => !cand.some(o2 => o2 !== r && below(r, o2)));   // 가장 깊은 것만 (뿌리 뼈 제외)
       const hand = new Set(); const add = b => { hand.add(b); for (const ch of b.children) if (set.has(ch)) add(ch); };
       roots.forEach(add);
+      (o.userData.handRoots = roots);
       const isH = bones.map(b => hand.has(b)), sw = g.attributes.skinWeight, si = g.attributes.skinIndex;
       for (let i = 0; i < n; i++) { let h = 0; for (let k = 0; k < 4; k++) if (isH[si.getComponent(i, k)]) h += sw.getComponent(i, k); hw[i] = h; }
     }
+    // 장갑 재질의 정점은 모두 손
+    mats.forEach((m, mi) => { if (!/glove/i.test((m.name || '') + (multi ? '' : ' ' + o.name))) return; const vs = vertsOf(mi); if (!vs) hw.fill(1); else for (const i of vs) hw[i] = 1; });
     g.setAttribute('handW', new T.BufferAttribute(hw, 1));
-    // 구역별 평균 밝기 (선형) — 텍스처를 작게 그려 정점 UV 에서 읽는다
-    const img = m.map && m.map.image, uv = g.attributes.uv;
+    mats.forEach((m, mi) => this.armTint(m, g, hw, vertsOf(mi)));
+  },
+  // 재질 하나의 구역별(손·소매) 평균 밝기 (선형) — 텍스처를 작게 그려 정점 UV 에서 읽는다
+  armTint(m, g, hw, verts) {
+    // 숨긴 어깨 쪽 정점 경계(소매 끝)가 화면에 들어와도 빈 구멍 대신 소매 안쪽이 보이게 양면으로
+    m.side = T.DoubleSide;
+    const n = g.attributes.position.count, img = m.map && m.map.image, uv = g.attributes.uv;
     let tint = null;
     try {
       if (img && uv && typeof document !== 'undefined') {
-        const S = 128, cv = document.createElement('canvas'); cv.width = cv.height = S;
-        const cx = cv.getContext('2d', { willReadFrequently: true }); cx.drawImage(img, 0, 0, S, S);
-        const px = cx.getImageData(0, 0, S, S).data, lin = c => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+        let S = 128, px;
+        if (img.data && img.width) {
+          // TGA 등 DataTexture: 픽셀 배열에서 128×128 로 건너뛰며 읽는다 (RGBA 또는 RGB)
+          const W = img.width, H = img.height, ch = img.data.length / (W * H) | 0; px = new Uint8ClampedArray(S * S * 4);
+          for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) { const j = ((y * H / S | 0) * W + (x * W / S | 0)) * ch; for (let c = 0; c < 3; c++) px[(y * S + x) * 4 + c] = img.data[j + c]; }
+          // DataTexture 는 flipY 를 하지 않는다 → 아래 flip 계산이 맞게 행 순서를 맞춘다
+          if (!m.map.flipY) { const t = new Uint8ClampedArray(px); for (let y = 0; y < S; y++) px.set(t.subarray((S - 1 - y) * S * 4, (S - y) * S * 4), y * S * 4); }
+        } else {
+          const cv = document.createElement('canvas'); cv.width = cv.height = S;
+          const cx = cv.getContext('2d', { willReadFrequently: true }); cx.drawImage(img, 0, 0, S, S);
+          px = cx.getImageData(0, 0, S, S).data;
+        }
+        const lin = c => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
         const acc = [[0, 0], [0, 0]], flip = m.map.flipY;
-        for (let i = 0; i < n; i += 3) {
+        const each = f => { if (verts) { let k = 0; for (const i of verts) if (k++ % 3 === 0) f(i); } else for (let i = 0; i < n; i += 3) f(i); };
+        each(i => {
           let u = uv.getX(i) % 1, v = uv.getY(i) % 1; if (u < 0) u++; if (v < 0) v++;
           const x = Math.min(S - 1, u * S | 0), y = Math.min(S - 1, (flip ? 1 - v : v) * S | 0), j = (y * S + x) * 4;
           const L = 0.2126 * lin(px[j]) + 0.7152 * lin(px[j + 1]) + 0.0722 * lin(px[j + 2]), z = hw[i] > 0.5 ? 0 : 1;
           acc[z][0] += L; acc[z][1]++;
-        }
+        });
         tint = acc.map(([a, c]) => c ? Math.max(0.01, a / c) : 0.2);
-      } else if (!img) {
+      } else if (!m.map) {
         const c = m.color; tint = [Math.max(0.01, 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b), 0]; tint[1] = tint[0];
-        m.map = null;
       }
     } catch (e) { tint = null; }
-    if (tint && !img) m.color.setRGB(1, 1, 1);
+    if (tint && !m.map) m.color.setRGB(1, 1, 1);
     m.userData.armTint = tint;
-    if (tint) { m.roughness = Math.max(m.roughness, 0.75); m.metalness = 0; }
+    if (tint) { m.roughness = Math.max(m.roughness, 0.75); m.metalness = 0; m.envMapIntensity = Math.min(m.envMapIntensity ?? 1, 0.45); if (m.emissive) { m.emissive.setRGB(0, 0, 0); m.emissiveMap = null; } }   // v60 9mm 팩 장갑의 흰 발광 줄무늬 끄기
   },
   // 휴식 자세의 총 정점(피벗 공간, 앞 = −Z)으로 총구·가늠쇠·가늠자·손잡이 자리를 잰다
   // 팩의 총 대신 다른 총 메시를 같은 손·같은 동작에 끼운다: 두 총의 가늠선·위 방향을 맞추고 가늠자 위치를 맞춘다
@@ -356,12 +386,18 @@ const AV = G.AssetVM = {
       const pos = o.geometry.attributes.position, step = Math.max(1, Math.floor(pos.count / 3000)), w = new V();
       for (let i = 0; i < pos.count; i += step) pts.push(w.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld).clone());
     });
-    const Sp = P.sight0, Ss = this.measure(P, pts, P.def.pistol);
+    const Sp = P.sight0, Ss = this.measure(P, pts, P.def.pistol, new V(0, 1, 0));
     const basis = S => { const back = S.axis.clone().negate(), right = new V().crossVectors(S.up, back); return new T.Matrix4().makeBasis(right, S.up, back); };
     const M = basis(Sp).multiply(basis(Ss).transpose());   // 바꿔 끼울 총 방향 → 팩 총 방향
     const anchor = Ss.R.clone().applyMatrix4(M);
     const t = Sp.R.clone().addScaledVector(Sp.axis, C.shift || 0).addScaledVector(Sp.up, C.lift || 0).sub(anchor);
     M.setPosition(t);
+    // tilt(도): 앞손(앞쪽 손잡이) 자리를 축으로 총을 숙이거나(−) 든다(+) — 총마다 손잡이 높이가 팩 총과 달라 손이 뜰 때
+    if (C.tilt) {
+      const ax = new V().crossVectors(Sp.up, Sp.axis.clone().negate()).normalize(), pt = Sp.grip;
+      const R = new T.Matrix4().makeRotationAxis(ax, C.tilt * D);
+      M.premultiply(new T.Matrix4().makeTranslation(-pt.x, -pt.y, -pt.z)).premultiply(R).premultiply(new T.Matrix4().makeTranslation(pt.x, pt.y, pt.z));
+    }
     // 부위마다 휴식 자세의 피벗 공간 변환 → 따라갈 뼈의 로컬로
     const groups = [];
     const kids = (root.children.length === 1 && !root.children[0].isMesh ? root.children[0].children : root.children).slice();
@@ -373,7 +409,7 @@ const AV = G.AssetVM = {
       new T.Matrix4().multiplyMatrices(inv, M).decompose(holder.position, holder.quaternion, holder.scale);
       holder.visible = false; bone.add(holder); groups.push(holder);
     }
-    const sight = this.measure(P, pts.map(p => p.clone().applyMatrix4(M)), P.def.pistol);
+    const sight = this.measure(P, pts.map(p => p.clone().applyMatrix4(M)), P.def.pistol, Sp.up);
     P.swaps[id] = { groups, sight, muzzleLocal: sight.muzzle.clone().applyMatrix4(P.gunRestInv) };
     if (P.gunId === id) { this.useGun(P, id); P.mountKey = null; }   // 이미 이 총을 들고 있으면 바로 바꿔 보인다
     console.info('[AssetVM] ' + id + ' 총 모델 → ' + P.key + ' 팩');
@@ -383,10 +419,11 @@ const AV = G.AssetVM = {
     const sw = P.swaps[id];
     for (const k in P.swaps) for (const h of P.swaps[k].groups) h.visible = k === id;
     for (const m of P.gunMeshes) m.visible = !sw;
-    P.sight = sw ? sw.sight : P.sight0;
+    // 지향 자세는 팩 총 기준 그대로 (팔 숨김 구역이 팩 총 자세로 계산돼 있다), 조준만 바꿔 낀 총의 가늠선으로
+    P.sight = sw ? Object.assign({}, sw.sight, { qH: P.sight0.qH, posH: P.sight0.posH }) : P.sight0;
     P.muzzleLocal = sw ? sw.muzzleLocal : P.muzzle0;
   },
-  measure(P, pv, pistol) {
+  measure(P, pv, pistol, upHint) {
     // v54 총의 몸 좌표를 정점 분포로 잡는다 (애니메이션 자세가 옆으로 기울어 있어도 가늠자·가늠쇠를 제대로 찾게)
     const n = pv.length, c = pv.reduce((sum, p) => sum.add(p), new V()).multiplyScalar(1 / n);
     const C = [0, 0, 0, 0, 0, 0];   // xx xy xz yy yz zz
@@ -403,7 +440,7 @@ const AV = G.AssetVM = {
     const u = e1.clone().multiplyScalar(Math.cos(th)).addScaledVector(e2, Math.sin(th));
     let hiP = 0, hiN = 0;
     for (const p of pv) { const h = _v.subVectors(p, c).dot(u); hiP = Math.max(hiP, h); hiN = Math.max(hiN, -h); }
-    if (hiP > hiN) u.negate();
+    if (upHint ? u.dot(upHint) < 0 : hiP > hiN) u.negate();   // upHint: 바꿔 낀 총은 모델의 +Y 가 위 (손잡이가 길어 분포로 헷갈릴 때)
     // 몸 좌표: along(앞 +), h(위 +)
     let amin = Infinity, amax = -Infinity;
     const A = pv.map(p => { const d = _v.subVectors(p, c), al = d.dot(len); amin = Math.min(amin, al); amax = Math.max(amax, al); return [al, d.dot(u)]; });
@@ -448,6 +485,8 @@ const AV = G.AssetVM = {
       A.enabled = true; A.play(); A.paused = true; A.time = clamp(t, 0, P.acts[k].dur - 1e-4); A.setEffectiveWeight(w);
     }
     P.mixer.update(0);
+    if (P.def.ik && P.k) for (const ik of P.def.ik) this.armIK(P, ik);
+    if (P.hands && Math.abs(P.handScale - 1) > 0.01) this.scaleHands(P, P.handScale);
   },
   win(P, name) { const w = P.def.win && P.def.win[name]; return w || [0, P.acts[name].dur]; },
   reloadClip(P, empty) { return empty && P.acts.reloadEmpty ? 'reloadEmpty' : 'reload'; },
@@ -515,8 +554,10 @@ const AV = G.AssetVM = {
     // ADS: 총의 가늠선을 시선과 나란히 돌리고, 가늠쇠(또는 조준경 중심)를 화면 가운데로
     const aim = reload ? 0 : clamp(s.ads || 0, 0, 1), weight = 1 - aim * 0.85, M = P.mount;
     const sprint = (vm.sprint || 0) * (!reload && !draw ? 1 : 0);
-    _e.set((vm.sway?.y || 0) * weight - sprint * 0.2, (vm.sway?.x || 0) * weight + sprint * 0.5, (vm.kickRoll || 0) + sprint * 0.16);
+    // 흔들림·반동 기울기만 카메라 기준으로 돌린다 (전력질주 자세는 아래 sprintPose 에서 손잡이를 축으로)
+    _e.set((vm.sway?.y || 0) * weight, (vm.sway?.x || 0) * weight, vm.kickRoll || 0);
     this.place(P, aim, _e);
+    if (sprint > 0.001) this.sprintPose(P, sprint * sprint * (3 - 2 * sprint));
     // v56 장전할 때는 총을 화면 가운데 쪽으로 들어 올려 손동작이 보이게 (지향 자세가 오른쪽 아래라 그대로면 화면 밖에서 장전한다)
     P.rlB = (P.rlB || 0) + clamp((reload ? 1 : 0) - (P.rlB || 0), -dt * 5, dt * 5);
     if (P.rlB > 0) this.reloadLift(P, P.rlB * P.rlB * (3 - 2 * P.rlB));
@@ -554,6 +595,107 @@ const AV = G.AssetVM = {
     const S = P.slideKick;
     if (S) { const e = t < 0.02 ? t / 0.02 : Math.max(0, 1 - (t - 0.02) / 0.06); S.bone.position.addScaledVector(S.d, S.anim ? e : e - S.last); S.last = S.anim ? 0 : e; }
   },
+  // 손 뼈(손가락 사슬의 뿌리)를 주먹 가운데(손가락 뼈 평균)를 축으로 s 배 — 총을 쥔 자리는 그대로, 손만 작아진다
+  scaleHands(P, s) {
+    // 아래팔도 굵기만 같이 (뼈 길이 방향 = 로컬 Y 는 그대로 두어 손목이 떨어지지 않게)
+    for (const t of P.thin || (P.thin = (P.def.thin || []).map(n => P.find(n)).filter(Boolean).map(b => ({ b, s0: b.scale.clone() })))) t.b.scale.set(t.s0.x * s, t.s0.y, t.s0.z * s);
+    P.model.updateMatrixWorld(true);
+    for (const h of P.hands) {
+      const b = h.bone;
+      if (!h.anim) b.position.copy(h.p0);
+      if (!h.animS) b.scale.copy(h.s0);
+      b.updateMatrixWorld(true);
+      const c = new V(), w = new V(); let n = 0;
+      b.traverse(x => { if (x !== b && x.isBone) { c.add(x.getWorldPosition(w)); n++; } });
+      if (!n) continue;
+      c.multiplyScalar(1 / n);
+      const hw = b.getWorldPosition(new V());
+      b.scale.multiplyScalar(s);
+      b.position.copy(b.parent.worldToLocal(c.clone().add(hw.sub(c).multiplyScalar(s))));
+      b.updateMatrixWorld(true);
+    }
+  },
+  // 팔 재질 셰이더: restZ 로 소매 끝 숨기기(cut 유니폼) + armTint 가 있으면 공통 장갑·소매 색
+  armShader(m, cut) {
+    const tint = m.userData.armTint;
+    m.onBeforeCompile = sh => {
+      sh.uniforms.uArmCut = cut;
+      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float restZ;\nattribute float handW;\nvarying float vRestZ;\nvarying float vHandW;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvRestZ = restZ;\nvHandW = handW;');
+      sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vRestZ;\nvarying float vHandW;\nuniform float uArmCut;').replace('void main() {', 'void main() {\n  if (vRestZ > uArmCut) discard;');
+      if (tint) {
+        // v56 모든 팩의 팔을 같은 장갑·소매 색으로: 원래 텍스처의 밝기 무늬만 남기고(구역별 평균으로 나눠) 정해진 색을 곱한다
+        sh.uniforms.uGlove = { value: new T.Vector4(...ARM_LOOK.glove, tint[0]) };
+        sh.uniforms.uSleeve = { value: new T.Vector4(...ARM_LOOK.sleeve, tint[1]) };
+        sh.fragmentShader = sh.fragmentShader.replace('uniform float uArmCut;', 'uniform float uArmCut;\nuniform vec4 uGlove;\nuniform vec4 uSleeve;')
+          .replace('#include <map_fragment>', `#include <map_fragment>
+{ float lum = dot(diffuseColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+  float h = smoothstep(0.35, 0.65, vHandW);
+  float det = clamp(pow(lum / mix(uSleeve.w, uGlove.w, h), 0.6), 0.45, mix(1.45, 1.15, h));
+  diffuseColor.rgb = mix(uSleeve.rgb, uGlove.rgb, h) * det; }`);
+      }
+    };
+    m.customProgramCacheKey = () => 'vmArmCut' + (tint ? 'T' : '');
+    m.needsUpdate = true;
+  },
+  // v60 AR-7(M4 팩)·G-18(Glock 팩)·DB-2(실사 팔 복사) 처럼 이 파일 밖의 1인칭 팔도 같은 장갑·소매 색으로
+  //  손·장갑 재질(Hand_D · Glove_D)의 스킨 메시만 고른다. 텍스처가 다 읽힌 뒤 색 평균을 잰다
+  async tintArms(root) {
+    const list = [];
+    root.traverse(o => { if (o.isSkinnedMesh && !o.userData.lzTinted && [].concat(o.material).some(m => /hand|glove|arm|sleeve/i.test(m.name || ''))) list.push(o); });
+    for (const o of list) {
+      for (const m of [].concat(o.material)) {
+        // 텍스처가 아직 내려받는 중이면(image 없음·불완전) 최대 8 초 기다린다
+        for (let t = 0; m.map && !(m.map.image && m.map.image.width > 0 && m.map.image.complete !== false) && t < 160; t++) await new Promise(r => setTimeout(r, 50));
+      }
+      this.unifyArm(o); o.userData.lzTinted = true;
+      if (!o.geometry.attributes.restZ) o.geometry.setAttribute('restZ', new T.BufferAttribute(new Float32Array(o.geometry.attributes.position.count), 1));
+      for (const m of [].concat(o.material)) this.armShader(m, { value: 99 });
+    }
+    return list.length;
+  },
+  // v58 두 뼈 IK: 손(손목)은 그대로 두고 어깨를 옮긴 뒤 팔꿈치를 pole 쪽으로 굽힌다 (팩의 팔 자세가 화면에서 어색할 때)
+  //  ik: { bones: [위팔, 아래팔, 손], drop: [x, y, z] 어깨 이동(m, 모델 좌표), pole: [x, y, z] 팔꿈치가 향할 쪽(모델 좌표) }
+  armIK(P, ik) {
+    const f = P.find, B = ik._b || (ik._b = ik.bones.map(n => f(n)));
+    if (B.some(b => !b)) return;
+    const [U, F, H] = B, M = P.model;
+    // 위팔 위치가 클립에 없으면 지난 프레임에 옮긴 만큼이 남아 있다 → 처음 자리로 되돌린 뒤 계산
+    if (ik._anim === undefined) { ik._anim = Object.values(P.acts).some(x => x.action.getClip().tracks.some(tr => tr.name === U.name + '.position')); ik._p0 = U.position.clone(); }
+    if (!ik._anim) U.position.copy(ik._p0);
+    M.updateMatrixWorld(true);
+    const L = b => M.worldToLocal(b.getWorldPosition(new V()));
+    const S0 = L(U), E0 = L(F), W = L(H), hq = H.getWorldQuaternion(new Q());
+    const a = S0.distanceTo(E0), b = E0.distanceTo(W);
+    const S = S0.clone().add(_v.set(...ik.drop).multiplyScalar(1 / P.k));
+    const dv = W.clone().sub(S), d = Math.min(dv.length(), (a + b) * 0.999), u = dv.normalize();
+    const x = (a * a - b * b + d * d) / (2 * d), h = Math.sqrt(Math.max(0, a * a - x * x));
+    const pole = new V(...ik.pole); pole.addScaledVector(u, -pole.dot(u)).normalize();
+    const E = S.clone().addScaledVector(u, x).addScaledVector(pole, h);
+    const toW = p => M.localToWorld(p.clone());
+    // 어깨 옮기기
+    U.position.copy(U.parent.worldToLocal(toW(S)));
+    const aim = (bone, from, to, child) => {
+      bone.updateMatrixWorld(true);
+      const cur = child.getWorldPosition(new V()).sub(from), want = to.clone().sub(from);
+      const dq = new Q().setFromUnitVectors(cur.normalize(), want.normalize());
+      const wq = bone.getWorldQuaternion(new Q()), pq = bone.parent.getWorldQuaternion(new Q());
+      bone.quaternion.copy(pq.invert().multiply(dq.multiply(wq)));
+      bone.updateMatrixWorld(true);
+    };
+    aim(U, toW(S), toW(E), F);
+    aim(F, toW(E), toW(W), H);
+    H.quaternion.copy(H.parent.getWorldQuaternion(new Q()).invert().multiply(hq));
+    H.updateMatrixWorld(true);
+  },
+  // v57 전력질주: 총을 가늠자(총몸 뒤쪽, 오른손 가까이) 축으로 총구가 왼쪽 아래를 향하게 돌리고 조금 내린다 (이전: 카메라 축으로 돌려 총이 화면 옆으로 날아갔다)
+  sprintPose(P, b) {
+    const SP = Object.assign({}, P.def.pistol ? SPRINT.pistol : SPRINT.rifle, P.def.sprint);
+    const g = P.sight.R.clone().applyQuaternion(P.pivot.quaternion).add(P.pivot.position);
+    _q.setFromEuler(new T.Euler(SP.pitch * D * b, SP.yaw * D * b, SP.roll * D * b, 'YXZ'));
+    P.pivot.quaternion.premultiply(_q);
+    P.pivot.position.sub(g).applyQuaternion(_q).add(g);
+    P.pivot.position.x += SP.at[0] * b; P.pivot.position.y += SP.at[1] * b; P.pivot.position.z += SP.at[2] * b;
+  },
   reloadLift(P, b) {
     const RL = Object.assign({}, RELOAD_LIFT, P.def.reloadLift);
     P.pivot.position.x += RL.at[0] * b; P.pivot.position.y += RL.at[1] * b; P.pivot.position.z += RL.at[2] * b;
@@ -563,7 +705,8 @@ const AV = G.AssetVM = {
   place(P, aim, eul) {
     const S = P.sight, M = P.mount;
     // 잘린 소매 끝 숨기기 (장전 동작에서는 팔 전체가 보여야 한다)
-    if (P.armCut) P.armCut.value = 0.5;
+    // 2 = 화면 밖·총에서 먼 정점(늘 숨김), 1 = 위팔 뼈 정점 (cutReloadOnly 팩은 장전 중에만 숨김)
+    if (P.armCut) P.armCut.value = P.def.cutReloadOnly && !P.reloading ? 1.5 : 0.5;
     _q.copy(S.qH).slerp(M.q, aim);
     if (eul) P.pivot.quaternion.setFromEuler(eul).multiply(_q); else P.pivot.quaternion.copy(_q);
     P.pivot.position.copy(S.posH).lerp(M.t, aim);
@@ -588,9 +731,9 @@ const AV = G.AssetVM = {
     const S = P.sight, A = G.Attachments, pistol = P.def.pistol, cls = G.WEAPONS[id].cls;
     const t = new V(), q = S.q.clone();
     const Fq = S.F.clone().applyQuaternion(q), Rq = S.R.clone().applyQuaternion(q);
-    t.set(-Fq.x, -Math.max(Fq.y, S.hTop) - 0.004 - (P.def.adsLift || 0), -(P.def.adsDist || (pistol ? 0.3 : 0.27)) - Rq.z);
+    t.set(-Fq.x, -Math.max(Fq.y, S.hTop) - 0.004 - (P.def.adsLift || 0), -(SWAP[id]?.adsDist || P.def.adsDist || (pistol ? 0.3 : 0.27)) - Rq.z);
     // 팔·총을 앞으로 너무 많이 밀면 원래 화면 밖이던 팔(소매 끝)이 들어온다 → 앞으로는 최대 7 cm 만
-    t.z = Math.max(t.z, -0.07);
+    t.z = Math.max(t.z, -(SWAP[id]?.adsFwd ?? P.def.adsFwd ?? 0.07));
     const fwd = new V(0, 0, -1).applyQuaternion(S.qInv);
     const metal = () => { const m = new T.MeshStandardMaterial({ color: 0x252b2d, metalness: 0.7, roughness: 0.45 }); P.mountDispose.push(m); return m; };
     if (scope && A) {
@@ -605,6 +748,7 @@ const AV = G.AssetVM = {
           optic.traverse(x => { if (x.isMesh && /glass/i.test(x.material?.name || '')) glass.union(new T.Box3().setFromObject(x)); });
           if (!glass.isEmpty()) eye = glass.getCenter(new V()).y;
         }
+        eye = A.eyeOf(optic, eye, scope === 'x8' ? 1.35 : scope === 'x4' ? 1.05 : 1);   // v59 실사 조준경은 모델에 적힌 조준선 높이
         const holder = new T.Group(); holder.add(optic);
         if (scope === 'reddot' || scope === 'holo') {
           optic.traverse(x => { if (x.isMesh && /glass|blue/i.test(x.material?.name || '')) { x.material = x.material.clone(); P.mountDispose.push(x.material); x.material.transparent = true; x.material.opacity = 0.15; x.material.depthWrite = false; } });
@@ -612,7 +756,9 @@ const AV = G.AssetVM = {
           dot.position.set(0, eye, 0.03); dot.renderOrder = 10; holder.add(dot); P.mountDispose.push(dot.geometry, dot.material);
         }
         // 가늠자 바로 앞, 조금 낮춰 레일·덮개 위에 얹는다
-        const base = S.R.clone().add(_v.set(0, pistol ? -0.003 : -0.006, 0)).addScaledVector(fwd, pistol ? 0.012 : 0.03);
+        // v59 긴 배율 조준경은 접안렌즈(뒤 끝)가 가늠자 근처에 오도록 반 길이만큼 앞으로 (화면을 덮지 않게)
+        const half = (box.max.z - box.min.z) / 2, push = ['x2', 'x4', 'x8'].includes(scope) ? Math.max(0, half - 0.045) : 0;
+        const base = S.R.clone().add(_v.set(0, (pistol ? -0.003 : -0.006) - (push ? P.def.scopeDrop || 0 : 0), 0)).addScaledVector(fwd, (pistol ? 0.012 : 0.03) + push);
         this.onBone(P, holder, base, S.qInv);
         const O = base.clone().add(new V(0, eye, 0).applyQuaternion(S.qInv)).applyQuaternion(q);
         t.set(-O.x, -O.y, -(ADS_DIST[scope] || 0.3) - O.z);
@@ -621,7 +767,10 @@ const AV = G.AssetVM = {
     if (A && cls !== 'shotgun') {
       const at = S.muzzle.clone().addScaledVector(fwd, 0.01);
       if (parts.muzzle === 'suppressor') { const o = A.make('suppressor', 1); if (o) this.onBone(P, o, at, S.qInv); }
-      else if (parts.muzzle) {
+      else if (parts.muzzle === 'choke' && A.models.choke) this.onBone(P, A.make('choke', 1), at, S.qInv);
+      else if ((parts.muzzle === 'compensator' || parts.muzzle === 'flash') && A.models.brake) {
+        const o = A.make('brake', pistol ? 0.7 : 1); if (parts.muzzle === 'flash') o.scale.z *= 0.75; this.onBone(P, o, at, S.qInv);
+      } else if (parts.muzzle) {
         const g = new T.CylinderGeometry(0.012, 0.014, 0.038, 12).rotateX(Math.PI / 2); P.mountDispose.push(g);
         this.onBone(P, new T.Mesh(g, metal()), at.clone().addScaledVector(fwd, 0.015), S.qInv);
       }
