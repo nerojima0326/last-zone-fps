@@ -88,11 +88,14 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
    }
   }
   if(parts.muzzle){
-   let o=parts.muzzle==='suppressor'?A.make('suppressor',100):parts.muzzle!=='choke'?A.make('brake',70):null;
+   // v62 총구 위치는 슬라이드에서 잰 muzzleLocal 기준 (예전 고정값 z 23.5 는 총구보다 11 cm 앞이라 소염기가 허공에 떠 있었다)
+   let o=parts.muzzle==='suppressor'?A.make('suppressor',75):parts.muzzle!=='choke'?A.make('brake',70):null;
    if(!o)o=new T.Mesh(new T.CylinderGeometry(1.2,1.3,3.8,12).rotateX(Math.PI/2),new T.MeshStandardMaterial({color:0x252b2d,metalness:.75,roughness:.45}));
-   o.rotation.y=Math.PI;o.position.set(0,2.5,23.5);this.mount.add(o);
+   if(parts.muzzle==='flash')o.scale.z*=.75;
+   o.rotation.y=Math.PI;o.position.set(this.muzzleLocal.x,this.muzzleLocal.y,this.muzzleLocal.z+.3);this.mount.add(o);
   }
-  if(parts.side==='laser'){const o=A.make('laser',100);if(o){o.rotation.y=Math.PI;o.position.set(-2,-1,15);this.mount.add(o)}}
+  // 레이저는 총열 아래 레일 (총구에서 4.5 cm 뒤, 3.2 cm 아래)
+  if(parts.side==='laser'){const o=A.make('laser',100);if(o){o.rotation.y=Math.PI;o.position.set(this.muzzleLocal.x,this.muzzleLocal.y-3.2,this.muzzleLocal.z-4.5);this.mount.add(o)}}
  },
  preview(scope){
   this.syncAttachments(scope);const result=this.pivot.clone(true),remove=[];

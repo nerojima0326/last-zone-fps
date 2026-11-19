@@ -114,13 +114,17 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
           : [{ type: 'shell', phase: 'start', pp: .5, shellP: -1 }, { type: 'shell', phase: 'load', pp: 0, shellP: .5 }, { type: 'shell', phase: 'end', pp: .5, shellP: -1 }];
         for (const reload of reloads) {
           G.VM.update(.016, { ...state, reload });
-          if (!P.acts[reload.type === 'mag' && reload.empty && P.acts.reloadEmpty ? 'reloadEmpty' : 'reload'].action.enabled) throw Error('Missing pack reload: ' + id);
+          // v63 KR-98(Kar98k)은 팩 장전 클립 대신 볼트·오른팔 IK: 탄 넣는 동안 노리쇠가 열려 있어야 한다
+          const kar = P.swaps[id]?.kar;
+          if (kar) { if (reload.phase === 'load' && kar.bolt.position.distanceTo(kar.closed) < 0.08) throw Error('Kar98k bolt not open while loading'); }
+          else if (!P.acts[reload.type === 'mag' && reload.empty && P.acts.reloadEmpty ? 'reloadEmpty' : 'reload'].action.enabled) throw Error('Missing pack reload: ' + id);
         }
         const d = G.Guns.reloadDuration(id, false), ev = G.Guns.reloadEvents(id, true, 'load');
         if (!(d > .3 && d < 4) || !ev.length || ev.some(e => !(e[0] >= 0 && e[0] <= 1))) throw Error('Bad pack reload timing: ' + id + ' ' + d + ' ' + JSON.stringify(ev));
         G.VM.fireKick(1, false); G.VM.update(.016, state);
         // v56 권총은 사격 클립 대신 손목 반동(절차적)
-        if (!(P.def.pistol ? P.shotT < 0.1 : P.acts.fire.action.enabled)) throw Error('Missing pack fire: ' + id);
+        // v63 KR-98 은 사격 클립 대신 볼트 조작(IK) — 쏜 직후 shotT 로 확인
+        if (!(P.def.pistol || P.swaps[id]?.kar ? P.shotT < 0.1 : P.acts.fire.action.enabled)) throw Error('Missing pack fire: ' + id);
         P.mountKey = null; G.VM.update(.3, { ...state, ads: 1, scope: 'reddot' });
         if (!P.mount || ![P.mount.t.x, P.mount.t.y, P.mount.t.z].every(Number.isFinite) || P.mount.t.length() > 1) throw Error('Bad pack ADS: ' + id);
         P.pivot.updateMatrixWorld(true);
