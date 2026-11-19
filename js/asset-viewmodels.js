@@ -51,7 +51,8 @@ const PACKS = {
   },
   // v56 DJMaesen 팩: 클립 하나(allanims)에 모든 동작이 이어져 있어 cut 구간으로 나눈다. 총은 뼈가 아닌 노드(스킨 없는 메시)
   sniper: {
-    file: 'sniper', magBone: 'clip', eye: [8, 12, -42], pitch: 4, gun: 'sniper', len: 1.12, cutBones: /^[LR]_arm_\d+$/, adsDist: 0.42, adsLift: 0.006, src: 'allanims', fireFit: true,
+    file: 'sniper', magBone: 'clip', eye: [8, 12, -42], pitch: 4, gun: 'sniper', len: 1.12, scopeDrop: 0.03,   // 배율 조준경 마운트를 레일까지 내림
+    cutBones: /^[LR]_arm_\d+$/, adsDist: 0.42, adsLift: 0.006, src: 'allanims', fireFit: true,
     cut: { idle: [0, 0.05], fire: [0.02, 1.5], reload: [1.5, 3.75] },
     clips: {},
     ev: { reload: [[1.75, 'magout'], [2.55, 'magin'], [3.2, 'open'], [3.45, 'close']] }
@@ -704,6 +705,7 @@ const AV = G.AssetVM = {
           optic.traverse(x => { if (x.isMesh && /glass/i.test(x.material?.name || '')) glass.union(new T.Box3().setFromObject(x)); });
           if (!glass.isEmpty()) eye = glass.getCenter(new V()).y;
         }
+        eye = A.eyeOf(optic, eye, scope === 'x8' ? 1.35 : scope === 'x4' ? 1.05 : 1);   // v59 실사 조준경은 모델에 적힌 조준선 높이
         const holder = new T.Group(); holder.add(optic);
         if (scope === 'reddot' || scope === 'holo') {
           optic.traverse(x => { if (x.isMesh && /glass|blue/i.test(x.material?.name || '')) { x.material = x.material.clone(); P.mountDispose.push(x.material); x.material.transparent = true; x.material.opacity = 0.15; x.material.depthWrite = false; } });
@@ -711,7 +713,9 @@ const AV = G.AssetVM = {
           dot.position.set(0, eye, 0.03); dot.renderOrder = 10; holder.add(dot); P.mountDispose.push(dot.geometry, dot.material);
         }
         // 가늠자 바로 앞, 조금 낮춰 레일·덮개 위에 얹는다
-        const base = S.R.clone().add(_v.set(0, pistol ? -0.003 : -0.006, 0)).addScaledVector(fwd, pistol ? 0.012 : 0.03);
+        // v59 긴 배율 조준경은 접안렌즈(뒤 끝)가 가늠자 근처에 오도록 반 길이만큼 앞으로 (화면을 덮지 않게)
+        const half = (box.max.z - box.min.z) / 2, push = ['x2', 'x4', 'x8'].includes(scope) ? Math.max(0, half - 0.045) : 0;
+        const base = S.R.clone().add(_v.set(0, (pistol ? -0.003 : -0.006) - (push ? P.def.scopeDrop || 0 : 0), 0)).addScaledVector(fwd, (pistol ? 0.012 : 0.03) + push);
         this.onBone(P, holder, base, S.qInv);
         const O = base.clone().add(new V(0, eye, 0).applyQuaternion(S.qInv)).applyQuaternion(q);
         t.set(-O.x, -O.y, -(ADS_DIST[scope] || 0.3) - O.z);
@@ -720,7 +724,9 @@ const AV = G.AssetVM = {
     if (A && cls !== 'shotgun') {
       const at = S.muzzle.clone().addScaledVector(fwd, 0.01);
       if (parts.muzzle === 'suppressor') { const o = A.make('suppressor', 1); if (o) this.onBone(P, o, at, S.qInv); }
-      else if (parts.muzzle) {
+      else if ((parts.muzzle === 'compensator' || parts.muzzle === 'flash') && A.models.brake) {
+        const o = A.make('brake', 1); if (parts.muzzle === 'flash') o.scale.z *= 0.75; this.onBone(P, o, at, S.qInv);
+      } else if (parts.muzzle) {
         const g = new T.CylinderGeometry(0.012, 0.014, 0.038, 12).rotateX(Math.PI / 2); P.mountDispose.push(g);
         this.onBone(P, new T.Mesh(g, metal()), at.clone().addScaledVector(fwd, 0.015), S.qInv);
       }

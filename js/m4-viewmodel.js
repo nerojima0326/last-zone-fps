@@ -177,7 +177,9 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
      optic.traverse(x=>{if(x.isMesh&&/glass/i.test(x.material?.name||''))glass.union(new T.Box3().setFromObject(x))});
      if(!glass.isEmpty())eye=glass.getCenter(new V()).y;
     }
-    const holder=new T.Group();holder.rotation.y=Math.PI;holder.position.set(.344,5.1,-3);holder.add(optic);this.mount.add(holder);
+    eye=A.eyeOf(optic,eye,scope==='x8'?1.35:scope==='x4'?1.05:1);
+    const half=(box.max.z-box.min.z)/2,push=['x2','x4','x8'].includes(scope)?Math.max(0,half-4.5):0;
+    const holder=new T.Group();holder.rotation.y=Math.PI;holder.position.set(.344,5.1,-3+push);holder.add(optic);this.mount.add(holder);
     if(scope==='reddot'||scope==='holo'){
      optic.traverse(x=>{if(x.isMesh&&/glass|blue/i.test(x.material?.name||'')){x.material=x.material.clone();this.mountMaterials.push(x.material);x.material.transparent=true;x.material.opacity=.15;x.material.depthWrite=false}});
      const dot=new T.Mesh(new T.CircleGeometry(.09,16),new T.MeshBasicMaterial({color:0xff2415,depthTest:false}));dot.position.set(0,eye,3);dot.renderOrder=10;holder.add(dot);
@@ -191,6 +193,7 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   const add=(o,x,y,z,turn=true)=>{if(o){if(turn)o.rotation.y=Math.PI;o.position.set(x,y,z);this.mount.add(o)}};
   const metal=()=>{const m=new T.MeshStandardMaterial({color:0x252c2e,metalness:.6,roughness:.48});this.mountMaterials.push(m);return m};
   if(parts.muzzle==='suppressor')add(A.make('suppressor',100),.344,1.8,52.5);
+  else if((parts.muzzle==='compensator'||parts.muzzle==='flash')&&A.models.brake){const o=A.make('brake',100);if(parts.muzzle==='flash')o.scale.z*=.75;add(o,.344,1.8,52.5)}
   else if(parts.muzzle){const o=new T.Mesh(new T.CylinderGeometry(1.2,1.4,3.8,12).rotateX(Math.PI/2),metal());this.mountGeometries.push(o.geometry);add(o,.344,1.8,52.5)}
   if(parts.under){const o=A.make('grip',100);if(o){if(parts.under==='angled')o.rotation.x=-.5;if(parts.under==='light'||parts.under==='half')o.scale.y*=parts.under==='light'?.7:.85;add(o,.344,-3.1,23)}}
   if(parts.side==='laser')add(A.make('laser',100),-3.6,1.8,25);
