@@ -9,3 +9,4 @@ Thumbs.db
 tools/guns/src/*.glb
 tools/guns/src/imported/
 tools/_reload-src/
+bench-out/
