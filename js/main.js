@@ -58,12 +58,54 @@ const GradeShader = {
       gl_FragColor = vec4(c, 1.0);
     }`
 };
+// v67 FXAA: 장면 해상도에서 (화소 중심이 맞아야 글자 같은 촘촘한 곳이 뭉개지지 않는다). OutputPass 뒤라 sRGB 값에서 계단을 찾는다.
+//  FXAA 3.11 콘솔판 (가장자리 방향 찾기 + 방향 따라 두 번 섞기)
+const FXAAShader = {
+  uniforms: { tDiffuse: { value: null }, uIn: { value: new THREE.Vector2(1 / 640, 1 / 360) } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+  fragmentShader: `
+    uniform sampler2D tDiffuse; uniform vec2 uIn; varying vec2 vUv;
+    float lum(vec3 c){ return dot(c, vec3(0.299, 0.587, 0.114)); }
+    void main(){
+      vec3 rgbM = texture2D(tDiffuse, vUv).rgb;
+      float lNW = lum(texture2D(tDiffuse, vUv + vec2(-0.5, 0.5) * uIn).rgb), lNE = lum(texture2D(tDiffuse, vUv + vec2(0.5, 0.5) * uIn).rgb);
+      float lSW = lum(texture2D(tDiffuse, vUv + vec2(-0.5,-0.5) * uIn).rgb), lSE = lum(texture2D(tDiffuse, vUv + vec2(0.5,-0.5) * uIn).rgb);
+      float lM = lum(rgbM);
+      float lMin = min(lM, min(min(lNW, lNE), min(lSW, lSE))), lMax = max(lM, max(max(lNW, lNE), max(lSW, lSE)));
+      if (lMax - lMin < max(0.05, lMax * 0.125)) { gl_FragColor = vec4(rgbM, 1.0); return; }
+      vec2 dir = vec2(-((lNW + lNE) - (lSW + lSE)), ((lNW + lSW) - (lNE + lSE)));
+      float rcp = 1.0 / (min(abs(dir.x), abs(dir.y)) + max((lNW + lNE + lSW + lSE) * 0.03125, 1.0 / 128.0));
+      dir = clamp(dir * rcp, vec2(-8.0), vec2(8.0)) * uIn;
+      vec3 a = 0.5 * (texture2D(tDiffuse, vUv - dir * (1.0 / 6.0)).rgb + texture2D(tDiffuse, vUv + dir * (1.0 / 6.0)).rgb);
+      vec3 b = a * 0.5 + 0.25 * (texture2D(tDiffuse, vUv - dir * 0.5).rgb + texture2D(tDiffuse, vUv + dir * 0.5).rgb);
+      float lB = lum(b);
+      gl_FragColor = vec4((lB < lMin || lB > lMax) ? a : b, 1.0);
+    }`
+};
+// v67 업스케일: 낮은 해상도 화면을 화면 해상도로 늘리며 (선형 보간) 흐려진 만큼만 가볍게 또렷하게
+const UpscaleShader = {
+  uniforms: { tDiffuse: { value: null }, uIn: { value: new THREE.Vector2(1 / 640, 1 / 360) }, uSharp: { value: 0.2 } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+  fragmentShader: `
+    uniform sampler2D tDiffuse; uniform vec2 uIn; uniform float uSharp; varying vec2 vUv;
+    void main(){
+      vec3 c = texture2D(tDiffuse, vUv).rgb;
+      if (uSharp > 0.0) {
+        vec3 n = texture2D(tDiffuse, vUv + vec2(0.0, uIn.y)).rgb, s = texture2D(tDiffuse, vUv - vec2(0.0, uIn.y)).rgb;
+        vec3 e = texture2D(tDiffuse, vUv + vec2(uIn.x, 0.0)).rgb, w = texture2D(tDiffuse, vUv - vec2(uIn.x, 0.0)).rgb;
+        vec3 mn = min(c, min(min(n, s), min(e, w))), mx = max(c, max(max(n, s), max(e, w)));
+        c = clamp(c + (c - (n + s + e + w) * 0.25) * uSharp, mn, mx);   // 이웃 범위로 묶어 테두리 번쩍임 없음
+      }
+      gl_FragColor = vec4(c, 1.0);
+    }`
+};
 // 품질 프리셋
 // dpr 해상도 배율 상한 · msaa · shadow 그림자 맵(0 = 끔) · range 그림자 범위 · bloom · post 후처리(끄면 화면에 바로 그림)
 // far 시야 거리 · fog 안개 배율 · lod 건물 상세 거리 배율 · terr 지형 상세 거리 배율 · shEvery 그림자 갱신 주기(프레임)
 const QUALITY = {
-  potato: { dpr: 0.6,  msaa: 0, shadow: 0,    range: 0,  bloom: false, post: false, far: 750,  fog: 1.45, lod: 0.6, terr: 0.5,  shEvery: 0 },
-  low:    { dpr: 0.75, msaa: 0, shadow: 1024, range: 42, bloom: false, post: true,  far: 1100, fog: 1.2,  lod: 0.8, terr: 0.7,  shEvery: 3 },
+  // v67 최저도 후처리(가벼운 길)를 쓴다: 장면은 낮은 해상도로 그리고, 화면 해상도로 늘리며 FXAA (fxaa)
+  potato: { dpr: 0.6,  msaa: 0, shadow: 0,    range: 0,  bloom: false, post: true,  far: 750,  fog: 1.45, lod: 0.6, terr: 0.5,  shEvery: 0, fxaa: true, lite: true },
+  low:    { dpr: 0.75, msaa: 0, shadow: 1024, range: 42, bloom: false, post: true,  far: 1100, fog: 1.2,  lod: 0.8, terr: 0.7,  shEvery: 3, fxaa: true },
   medium: { dpr: 1.0,  msaa: 2, shadow: 2048, range: 62, bloom: true,  post: true,  far: 2200, fog: 1.0,  lod: 1,   terr: 1,    shEvery: 2 },
   high:   { dpr: 1.25, msaa: 4, shadow: 2048, range: 75, bloom: true,  post: true,  far: 4000, fog: 1.0,  lod: 1,   terr: 1.25, shEvery: 2 }
 };
@@ -116,8 +158,16 @@ function setTier(q) {
   if (G.UI && G.UI.toast) G.UI.toast('그래픽 자동 조절: ' + TIER_NAME[q]);
 }
 const MAX_PIXELS = 2560 * 1440;
+// v67 화면(캔버스) 해상도: 후처리를 쓰면 장면 해상도와 따로 — 마지막 패스만 이 해상도로 그린다
+function outputPixelRatio() {
+  const Q = QUALITY[G.quality];
+  let pr = Math.min(devicePixelRatio || 1, Q && !Q.msaa ? 1 : 1.5);   // 저사양은 화면 1 배까지 (그 위는 브라우저가 늘린다)
+  const px = innerWidth * innerHeight * pr * pr;
+  if (px > MAX_PIXELS) pr *= Math.sqrt(MAX_PIXELS / px);
+  return pr;
+}
 
-let renderer, scene, camera, composer, bloom, grade, last = 0, menuAng = 0, frameNo = 0;
+let renderer, scene, camera, composer, bloom, grade, fxaa, upAA, last = 0, menuAng = 0, frameNo = 0;
 G.paused = false;
 
 /* ------------------------------------------------------------------ */
@@ -130,10 +180,13 @@ const DRS = {
   reset(base) { this.base = base; this.scale = 1; this.lastDown = -1e9; this.apply(true); },
   apply(force) {
     const pr = Math.max(0.35, this.base * this.scale);
-    if (!force && Math.abs(pr - this.applied) < 0.01) return;
-    this.applied = pr;
-    renderer.setPixelRatio(pr);
+    // 레이트레이싱은 캔버스 크기로 자기 버퍼를 잡는다 → 그때는 예전처럼 캔버스 자체를 줄인다
+    const split = composer && usePost() && !(G.RT && G.RT.active()), out = split ? outputPixelRatio() : pr;
+    if (!force && Math.abs(pr - this.applied) < 0.01 && split === this.split) return;
+    this.applied = pr; this.split = split;
+    if (Math.abs(renderer.getPixelRatio() - out) > 1e-3) renderer.setPixelRatio(out);
     if (composer && usePost()) composer.setPixelRatio(pr);
+    if (upAA) syncUpAA();
   },
   frame(now, ms) {
     // 모니터 주사율 추정 (최근 프레임 간격의 하위 20%)
@@ -149,7 +202,9 @@ const DRS = {
     if (now - this.fpsT > 500) { this.fps = 1000 / (this.fpsAcc / this.fpsN); this.fpsAcc = 0; this.fpsN = 0; this.fpsT = now; G.UI.fps(this.fps, this.applied, this.refresh); }
     if (G.Game.state !== 'playing' || G.paused) { this.acc = 0; this.cnt = 0; return; }
     // 레이트레이싱은 자체 품질 조절을 한다: 동적 해상도·자동 품질은 쉰다
-    if (G.RT && G.RT.active()) { this.acc = 0; this.cnt = 0; return; }
+    const rt = !!(G.RT && G.RT.active());
+    if (rt !== !!this.rtWas) { this.rtWas = rt; this.apply(true); }
+    if (rt) { this.acc = 0; this.cnt = 0; return; }
     if (ms > 100) return; // 백그라운드 탭 / 일시적 멈춤은 무시
     this.acc += ms; this.cnt++;
     if (now - this.checkT < 500) return;
@@ -268,10 +323,30 @@ function setupComposer(samples) {
   grade = new THREE.ShaderPass(GradeShader);
   composer.addPass(grade);
   composer.addPass(new THREE.OutputPass());
+  // v67 FXAA (장면 해상도) → 업스케일 (화면 해상도, 마지막)
+  fxaa = G.fxaaPass = new THREE.ShaderPass(FXAAShader);
+  composer.addPass(fxaa);
+  upAA = G.upAA = new THREE.ShaderPass(UpscaleShader);
+  composer.addPass(upAA);
   composer.setSize(innerWidth, innerHeight);
   G.renderNow = () => renderFrame(0.016);
 }
 
+// 업스케일 패스: 장면 해상도와 화면 해상도가 같고 FXAA 도 필요 없으면 꺼서 한 패스를 아낀다
+function syncUpAA() {
+  const Q = QUALITY[G.quality] || QUALITY.high, rt = composer.renderTarget1;
+  upAA.uniforms.uIn.value.set(1 / Math.max(1, rt.width), 1 / Math.max(1, rt.height));
+  fxaa.uniforms.uIn.value.copy(upAA.uniforms.uIn.value);
+  const ratio = DRS.applied / Math.max(1e-3, renderer.getPixelRatio());
+  fxaa.enabled = !!Q.fxaa;
+  upAA.uniforms.uSharp.value = ratio < 0.95 ? U.clamp((1 - ratio) * 0.5, 0.06, 0.25) : 0;
+  upAA.enabled = !!Q.fxaa || ratio < 0.95;   // FXAA 를 쓰면 늘 마지막에 (FXAA 가 화면 해상도에서 돌지 않게)
+  // 장면 해상도가 낮을 때는 필름 그레인·색수차·선명화를 줄인다 (늘리면 큰 점으로 번져 '점점이' 보였다)
+  const k = U.clamp((ratio - 0.55) / 0.4, 0, 1);
+  grade.uniforms.uGrain.value = 0.07 * k * (Q.lite ? 0 : 1);
+  grade.uniforms.uSharp.value = 0.2 * k;
+  grade.uniforms.uCA.value = 0.006 * (Q.lite ? 0 : 1);
+}
 function basePixelRatio(q) {
   let pr = Math.min(devicePixelRatio || 1, QUALITY[q].dpr);
   const px = innerWidth * innerHeight * pr * pr;
@@ -294,6 +369,7 @@ function applyQuality(q) {
   }
   if (Q.range) { const sc = sun.shadow.camera; sc.left = -Q.range; sc.right = Q.range; sc.top = Q.range; sc.bottom = -Q.range; sc.updateProjectionMatrix(); }
   bloom.enabled = Q.bloom;
+  grade.enabled = true;
   G.World.setupGrass(q);
   G.World.lodDist = Q.lod; G.World.terrDist = Q.terr; G.World.lodT = 0;
   if (G.World.setFogScale) G.World.setFogScale(Q.fog);
@@ -312,8 +388,8 @@ function renderFrame(dt) {
   if (G.RT && G.RT.drawing()) { G.RT.render(renderer, scene, camera, G.vmScene, G.vmCamera); return; }
   const Q = QUALITY[G.quality];
   if (!Q || Q.post) {
-    const db = renderer.getDrawingBufferSize(_db);
-    grade.uniforms.uTexel.value.set(1 / db.x, 1 / db.y); grade.uniforms.uTime.value = (grade.uniforms.uTime.value + 0.618) % 64;
+    const rt = composer.renderTarget1;   // 색보정은 장면 해상도에서 돈다
+    grade.uniforms.uTexel.value.set(1 / rt.width, 1 / rt.height); grade.uniforms.uTime.value = (grade.uniforms.uTime.value + 0.618) % 64;
     composer.render(dt); return;
   }
   renderer.setRenderTarget(null);
@@ -332,7 +408,7 @@ function onResize() {
   camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
   G.vmCamera.aspect = innerWidth / innerHeight; G.vmCamera.updateProjectionMatrix();
   if (G.quality) { DRS.base = basePixelRatio(G.quality); DRS.apply(true); }
-  if (composer && usePost()) composer.setSize(innerWidth, innerHeight);
+  if (composer && usePost()) { composer.setSize(innerWidth, innerHeight); if (upAA) syncUpAA(); }
 }
 
 // 매치 시작 시 사용될 셰이더를 미리 컴파일해 첫 사용 시 끊김을 없앤다
@@ -352,6 +428,14 @@ function warmup() {
   G.VM.root.traverse(o => { if (o !== G.VM.root) show(o); });
   renderer.compile(scene, camera);
   renderer.compile(G.vmScene, G.vmCamera);
+  // v67 처음 보는 텍스처를 GPU 로 올리느라 게임 중에 멈칫하던 것 (숲에 처음 들어갈 때 등) → 판이 시작되면
+  //  프레임마다 3 ms 안에서 조금씩 미리 올린다 (한 번에 다 올리면 저사양에서 시작 화면이 수 초 멈춘다)
+  const texs = new Set();
+  for (const root of [scene, G.vmScene]) root.traverse(o => {
+    if (!o.material) return;
+    for (const m of [].concat(o.material)) for (const k in m) { const v = m[k]; if (v && v.isTexture && !v.isRenderTargetTexture && v.image) texs.add(v); }
+  });
+  G.prewarmTex = [...texs];
   for (const o of shown) o.visible = false;
   for (const t of temp) scene.remove(t);
   G.VM.set(null);
@@ -427,6 +511,8 @@ function frame(now) {
   // 그림자 맵 갱신 주기: 중간·높음은 2프레임마다(느리면 매 프레임), 낮음은 3프레임마다, 최저는 그림자 없음
   const se = (QUALITY[G.quality] || QUALITY.high).shEvery;
   if (se && (frameNo % se === 0 || (se === 2 && ms > 14))) renderer.shadowMap.needsUpdate = true;
+  // v67 텍스처 미리 올리기 (warmup 이 모은 목록을 프레임당 3 ms 까지)
+  if (G.prewarmTex && G.prewarmTex.length) { const t0 = performance.now(); while (G.prewarmTex.length && performance.now() - t0 < 3) { try { renderer.initTexture(G.prewarmTex.pop()); } catch (e) { /* 무시 */ } } }
   renderFrame(dt);
   // 섬광: 맞은 순간의 화면을 잔상으로 붙잡는다 (그린 직후라야 WebGL 캔버스를 복사할 수 있다)
   if (G.Player && G.Player.freezeReq) { G.Player.freezeReq = false; G.UI.freezeFrame && G.UI.freezeFrame(renderer.domElement); }

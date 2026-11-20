@@ -266,7 +266,7 @@ const FX = G.FX = {
     const i = this.shellIdx++ % this.shells.length, m = this.shells[i];
     this.shellIM.setColorAt(i, red ? this.shellColors.red : this.shellColors.brass);
     this.shellIM.instanceColor.needsUpdate = true;
-    m.position.copy(pos); m.userData.vel.copy(vel); m.userData.life = 2.5; m.userData.bounced = false;
+    m.position.copy(pos); m.userData.vel.copy(vel); m.userData.life = 2.5; m.userData.bounced = false; m.userData.rest = false;
     m.userData.spin.set(Math.random() * 20, Math.random() * 20, Math.random() * 20);
     m.scale.setScalar(red ? 2.4 : 1);
     m.visible = true;
@@ -278,20 +278,28 @@ const FX = G.FX = {
       const u = l.userData;
       if (u.t > 0) { u.t -= dt; l.intensity = u.t > 0 ? u.i0 * (u.t / u.dur) * (u.flicker ? 0.7 + Math.random() * 0.6 : 1) : 0; }
     }
-    // 예광탄 인스턴스 갱신
+    // 예광탄 인스턴스 갱신 (v67: 하나도 없던 프레임이 이어지면 건너뛴다 — 행렬 수백 개를 매 프레임 다시 올리던 것)
     const tim = this.tracerIM;
-    for (let i = 0; i < this.tracers.length; i++) {
-      const h = this.tracers[i];
-      if (h.visible) { h.updateMatrix(); tim.setMatrixAt(i, h.matrix); } else tim.setMatrixAt(i, ZERO);
+    let nT = 0;
+    for (const h of this.tracers) if (h.visible) nT++;
+    if (nT || this.lastT) {
+      for (let i = 0; i < this.tracers.length; i++) {
+        const h = this.tracers[i];
+        if (h.visible) { h.updateMatrix(); tim.setMatrixAt(i, h.matrix); } else tim.setMatrixAt(i, ZERO);
+      }
+      tim.instanceMatrix.needsUpdate = true;
     }
-    tim.instanceMatrix.needsUpdate = true;
+    this.lastT = nT;
     const sim = this.shellIM;
-    for (let i = 0; i < this.shells.length; i++) {
+    let nS = 0;
+    for (const m of this.shells) if (m.visible) nS++;
+    if (nS || this.lastS) for (let i = 0; i < this.shells.length; i++) {
       const m = this.shells[i];
       if (!m.visible) { sim.setMatrixAt(i, ZERO); continue; }
       const u = m.userData;
       u.life -= dt;
-      if (u.life <= 0) { m.visible = false; sim.setMatrixAt(i, ZERO); continue; }
+      if (u.life <= 0) { m.visible = false; u.rest = false; sim.setMatrixAt(i, ZERO); continue; }
+      if (u.rest) continue;   // 바닥에 멈춘 탄피는 그대로 (지면 검사·행렬 쓰기 생략)
       u.vel.y -= 9.8 * dt;
       m.position.addScaledVector(u.vel, dt);
       m.rotation.x += u.spin.x * dt; m.rotation.y += u.spin.y * dt; m.rotation.z += u.spin.z * dt;
@@ -299,11 +307,12 @@ const FX = G.FX = {
       if (m.position.y < g + 0.006) {
         m.position.y = g + 0.006;
         if (u.vel.y < -0.5) { u.vel.y *= -0.35; u.vel.x *= 0.5; u.vel.z *= 0.5; if (!u.bounced) { u.bounced = true; G.Audio.shellDrop(m.position); } }
-        else { u.vel.set(0, 0, 0); u.spin.multiplyScalar(0.9); }
+        else { u.vel.set(0, 0, 0); u.spin.multiplyScalar(0.9); if (u.spin.lengthSq() < 0.05) u.rest = true; }
       }
       m.updateMatrix(); sim.setMatrixAt(i, m.matrix);
     }
-    sim.instanceMatrix.needsUpdate = true;
+    if (nS || this.lastS) sim.instanceMatrix.needsUpdate = true;
+    this.lastS = nS;
     this.shakeAmt = Math.max(0, this.shakeAmt - dt * 1.8);
   }
 };
