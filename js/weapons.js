@@ -947,9 +947,16 @@ const Guns = G.Guns = {
       o.hip = new V3(0, 0, 0); o.muzzle = new V3(0, 0, -0.3);
     } else {
       const hand = o.parts.hand = new THREE.Group(); hand.position.set(0.18, -0.2, -0.46); root.add(hand);
-      o.staticArms = { L: null, R: armVM(hand, new V3(0, -0.03, 0.02), new V3(0.05, -0.16, 0.28), new V3(0.16, -0.34, 0.58), null, 1, { curl: 0.62, thumb: 0.55, palm: new V3(-0.7, 0.4, 0) }) };
+      // v65 왼손: 들고 있는 동안 앞으로 내밀고, R(핀 뽑기) 때 수류탄 고리를 잡아 당긴다 (실사 팔은 real-arms.js 가 이 자리에 맞춘다)
+      const left = o.parts.left = new THREE.Group(); left.position.set(-0.26, -0.5, -0.3); root.add(left);
+      o.staticArms = { L: armVM(left, new V3(0, -0.03, 0.02), new V3(-0.05, -0.16, 0.28), new V3(-0.16, -0.34, 0.58), null, -1, { curl: 0.35, thumb: 0.4, palm: new V3(0.7, 0.4, 0) }),
+        R: armVM(hand, new V3(0, -0.03, 0.02), new V3(0.05, -0.16, 0.28), new V3(0.16, -0.34, 0.58), null, 1, { curl: 0.62, thumb: 0.55, palm: new V3(-0.7, 0.4, 0) }) };
       o.items = {};
       for (const k of G.THROW_ORDER) { const m = Guns.throwModel(k, true); m.visible = false; hand.add(m); o.items[k] = m; }
+      // 핀 고리 자리 (손 그룹 좌표) · 뽑은 핀 (왼손을 따라간다)
+      hand.updateMatrixWorld(true);
+      for (const k of G.THROW_ORDER) { const pin = o.items[k].userData.pin; if (pin) { const w = pin.getWorldPosition(new V3()); o.items[k].userData.pinLocal = hand.worldToLocal(w); } }
+      const pfree = o.items.frag?.userData.pin; if (pfree) { o.pinFree = pfree.clone(); o.pinFree.visible = false; o.pinFree.userData.keep = true; root.add(o.pinFree); o.pinFree.scale.copy(pfree.getWorldScale(new V3())); }
       o.hip = new V3(0, 0, 0); o.muzzle = new V3(0.15, -0.1, -0.35);
     }
     o.iron = { sight: new V3(), ads: new V3(0, 0, -0.3) };
@@ -1436,7 +1443,7 @@ function track(keys, p, out) {
 // 부드러운 시작·끝 (smootherstep)
 const ss = t => t <= 0 ? 0 : t >= 1 ? 1 : t * t * t * (t * (t * 6 - 15) + 10);
 function env(p, a, b, c, d) { return ss((p - a) / (b - a)) * (1 - ss((p - c) / (d - c))); }
-const _a = new V3(), _b = new V3(), _c = new V3(), _o = new V3(), _eu = new THREE.Euler(), _m4 = new THREE.Matrix4();
+const _a = new V3(), _b = new V3(), _c = new V3(), _o = new V3(), _tE = new V3(), _eu = new THREE.Euler(), _m4 = new THREE.Matrix4();
 const POSE = { x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0 };
 
 const VM = G.VM = {
@@ -1591,8 +1598,29 @@ const VM = G.VM = {
         else { const k = (q - 0.65) / 0.35; hand.position.add(_a.set(-0.04, 0.02 - 0.25 * k, -0.23 + 0.1 * k)); hand.rotation.x = -0.9; }
         for (const k in m.items) if (m.items[k].visible && q > 0.55) m.items[k].visible = false;
       }
-      // 안전핀: 들어 올리는 동안 뽑는다
-      for (const k in m.items) { const pin = m.items[k].userData.pin; if (pin) pin.visible = q < 0.2; }
+      // v65 안전핀: R 로 뽑는다 (pinP: 0 → 1). 안 뽑고 던지면 손을 놓는 순간 빠진다
+      const pp = s.pinP || 0;
+      for (const k in m.items) { const pin = m.items[k].userData.pin; if (pin) pin.visible = pp < 0.6; }
+      const L = m.parts.left, LA = m.staticArms && m.staticArms.L;
+      if (L) {
+        // 내밀기: 들어 올리는 동안 앞으로, 던지는 순간 내린다
+        const up = q < 0 ? 0 : q <= 0.37 ? q / 0.37 : U.clamp(1 - (q - 0.45) / 0.2, 0, 1), e = up * up * (3 - 2 * up);
+        L.position.set(-0.26, -0.5, -0.3).lerp(_a.set(-0.15, -0.21, -0.43), e); L.rotation.set(0.25 * e, 0, -0.2 * e);
+        let curl = 0.35;
+        const kind = Object.keys(m.items).find(k => m.items[k].visible), pl = kind && m.items[kind].userData.pinLocal;
+        if (pl && pp > 0 && pp < 1 && q <= 0.37) {
+          hand.updateMatrix();
+          const ring = _b.copy(pl).applyMatrix4(hand.matrix), sm = x => x * x * (3 - 2 * x);
+          const pull = _c.copy(ring).add(_d.set(-0.15, 0.03, 0.07));
+          if (pp < 0.45) L.position.lerp(_d.copy(ring).add(_tE.set(-0.02, -0.01, 0.02)), sm(pp / 0.45));
+          else if (pp < 0.6) L.position.copy(ring).add(_tE.set(-0.02, -0.01, 0.02));
+          else if (pp < 0.85) L.position.copy(ring).add(_tE.set(-0.02, -0.01, 0.02)).lerp(pull, sm((pp - 0.6) / 0.25));
+          else L.position.lerp(pull, 1 - sm((pp - 0.85) / 0.15));
+          curl = pp > 0.38 && pp < 0.88 ? 0.85 : 0.5;
+          if (m.pinFree) { m.pinFree.visible = pp >= 0.6 && pp < 0.9; if (m.pinFree.visible) m.pinFree.position.copy(L.position).add(_tE.set(0.02, 0.01, -0.02)); }
+        } else if (m.pinFree) m.pinFree.visible = false;
+        if (LA) { LA.curl = curl; LA.thumb = curl > 0.6 ? 0.8 : 0.4; LA.trig = curl; }
+      }
       const it = m.items.molotov;
       if (it && it.userData.flame) { const f = it.userData.flame; f.scale.set(1 + Math.random() * 0.3, 1.5 + Math.random() * 0.6, 1); }
     }

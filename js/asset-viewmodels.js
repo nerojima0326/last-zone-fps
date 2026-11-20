@@ -299,9 +299,7 @@ const AV = G.AssetVM = {
       // 피벗이 아직 원점(단위 변환)이라 월드 = 피벗 공간 (m)
       const b = P.boneRest.slide.bone, wp = b.getWorldPosition(new V()), back = P.sight.axis.clone().negate().multiplyScalar(0.022);
       const p0 = b.parent.worldToLocal(wp.clone()), p1 = b.parent.worldToLocal(wp.clone().add(back));
-      // 대기 클립이 이 뼈 위치를 매 프레임 다시 쓰는지 (아니면 지난 프레임에 더한 만큼 빼야 한다)
-      const anim = Object.values(P.acts).some(a => a.action.getClip().tracks.some(tr => tr.name === b.name + '.position'));
-      P.slideKick = { bone: b, d: p1.sub(p0), anim, last: 0 };
+      P.slideKick = { bone: b, d: p1.sub(p0), p0: b.position.clone() };
     }
     P.mount = null;
     G.VM.root.add(pivot);
@@ -500,6 +498,9 @@ const AV = G.AssetVM = {
     //  (M-1911·DE-7 왼손이 2 m 넘게 날아가 조준 때 길게 늘어난 팔이 보이고, 총·손이 떨리던 원인)
     for (const h of P.hands || []) { h.bone.position.copy(h.p0); h.bone.scale.copy(h.s0); }
     for (const ik of P.def.ik || []) if (ik._rest) for (const r of ik._rest) { r.b.position.copy(r.p); r.b.quaternion.copy(r.q); }
+    // v65 권총 슬라이드도: 장전 클립에만 슬라이드 트랙이 있으면 대기 중엔 아무도 되돌리지 않아 쏠 때마다 뒤로 쌓였다
+    //  (사격하면 슬라이드가 뒤로 간 채 남고, 빈 탄창 장전 클립이 돌 때만 제자리로 왔다)
+    if (P.slideKick) P.slideKick.bone.position.copy(P.slideKick.p0);
     P.mixer.update(0);
     if (P.def.ik && P.k) for (const ik of P.def.ik) this.armIK(P, ik);
     if (P.hands && Math.abs(P.handScale - 1) > 0.01) this.scaleHands(P, P.handScale);
@@ -597,7 +598,7 @@ const AV = G.AssetVM = {
     P.pivot.position.y += Math.sin(s.phase || 0) * 0.006 * (s.moving || 0) * weight - (s.landDip || 0) * 0.05;
     if (!draw) P.pivot.position.y -= (1 - (s.raise ?? 1)) * 0.22;
     P.pivot.position.z += vm.kick * (C.pistol ? 0.006 : 0.02);
-    if (C.pistol && !reload) this.pistolKick(P, P.shotT, aim);
+    if (C.pistol && !reload) this.pistolKick(P, P.shotT, aim, !!s.empty);
     P.pivot.updateMatrixWorld(true);
     // 총구 불꽃
     const fl = P.flashes[id];
@@ -612,8 +613,12 @@ const AV = G.AssetVM = {
     P.active = true;
   },
   // v56 권총 반동: 팩의 사격 클립(총이 크게 뒤집힌다) 대신 손목을 축으로 짧게 튀었다가 스프링처럼 돌아온다 + 슬라이드 후퇴
-  pistolKick(P, t, aim) {
-    if (t > 0.6) { const S = P.slideKick; if (S && S.last) { S.bone.position.addScaledVector(S.d, -S.last); S.last = 0; } return; }
+  pistolKick(P, t, aim, empty) {
+    const S = P.slideKick;
+    // 슬라이드: 0.025 초에 끝까지 물러났다가 0.07 초에 돌아온다 (pose() 가 매 프레임 제자리로 되돌린 뒤 더한다).
+    //  탄창이 비면 마지막 발 뒤 슬라이드가 뒤로 걸린 채 (슬라이드 멈춤)
+    if (S) { const e = empty && t > 0.025 ? 1 : t < 0.025 ? t / 0.025 : Math.max(0, 1 - (t - 0.025) / 0.07); if (e > 0) S.bone.position.addScaledVector(S.d, e); }
+    if (t > 0.6) return;
     const K = Object.assign({}, PISTOL_KICK, P.def.kick);
     const up = t < K.rise ? t / K.rise : Math.exp(-(t - K.rise) * K.ret) * Math.cos((t - K.rise) * K.wob);
     const w = 1 - aim * 0.45, ang = K.pitch * D * up * w;
@@ -623,9 +628,6 @@ const AV = G.AssetVM = {
     P.pivot.quaternion.premultiply(_q);
     P.pivot.position.sub(g).applyQuaternion(_q).add(g);
     P.pivot.position.z += K.back * Math.max(0, up) * w; P.pivot.position.y += K.lift * Math.max(0, up) * w;
-    // 슬라이드: 0.02 초에 끝까지 물러났다가 0.06 초에 돌아온다
-    const S = P.slideKick;
-    if (S) { const e = t < 0.02 ? t / 0.02 : Math.max(0, 1 - (t - 0.02) / 0.06); S.bone.position.addScaledVector(S.d, S.anim ? e : e - S.last); S.last = S.anim ? 0 : e; }
   },
   // 손 뼈(손가락 사슬의 뿌리)를 주먹 가운데(손가락 뼈 평균)를 축으로 s 배 — 총을 쥔 자리는 그대로, 손만 작아진다
   scaleHands(P, s) {
