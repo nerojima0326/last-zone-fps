@@ -508,7 +508,7 @@ const AV = G.AssetVM = {
   reloadClip(P, empty) { return empty && P.acts.reloadEmpty ? 'reloadEmpty' : 'reload'; },
   reloadDuration(P, id, empty) {
     const S = P.def.shell, f = G.Guns.reloadFactor(empty), base = G.WEAPONS[id].reload * f;
-    if (P.def.boltLoad && P.swaps[id]?.kar) return base / (G.RELOAD_SPEED || 1);   // v63 한 발 넣는 시간
+    if (P.def.boltLoad && P.swaps[id]?.kar) return base;   // v63 한 발 넣는 시간 (W() 가 이미 RELOAD_SPEED 로 나눠 둔 값 — v64 두 번 나누던 것 수정)
     if (S) return S.cycleDur * f / (G.RELOAD_SPEED || 1);
     // 게임 장전 시간을 기준으로 하되, 동작이 너무 빨리 감기지 않게 최대 1.3 배까지 늘린다
     const w = this.win(P, this.reloadClip(P, empty));
@@ -517,7 +517,11 @@ const AV = G.AssetVM = {
   reloadEvents(P, id, empty, phase, port) {
     const S = P.def.shell;
     // v63 KR-98: 볼트 올리기·당기기 / 탄(또는 클립 5발) 밀어 넣기 / 볼트 밀기·내리기
-    if (P.def.boltLoad && P.swaps[id]?.kar) return phase === 'start' ? [[0.45, 'open'], [0.8, 'open']] : phase === 'load' ? (empty ? [[0.56, 'magin'], [0.68, 'shell'], [0.74, 'shell'], [0.8, 'shell']] : [[0.66, 'shell']]) : [[0.25, 'close'], [0.55, 'close']];
+    //  v64 올림·당김은 'open' 한 번(무기 소리가 올림+당김을 함께 낸다), 닫기도 한 번. 클립은 실제로 클립을 쓸 때만 (예비탄 2 발 이상)
+    if (P.def.boltLoad && P.swaps[id]?.kar) {
+      const pl = G.Game?.player, clip = empty && (pl?.ammo?.[G.WEAPONS[id].ammo] ?? 5) >= 2;
+      return phase === 'start' ? [[0.45, 'open']] : phase === 'load' ? (clip ? [[0.56, 'magin'], [0.68, 'shell'], [0.74, 'shell'], [0.8, 'shell']] : [[0.66, 'shell']]) : [[0.3, 'close']];
+    }
     if (S) {
       const list = phase === 'start' ? (port ? [[0.3, 'open'], [0.6, 'port'], [0.85, 'close']] : []) : phase === 'load' ? [[0.55, 'shell']] : S.endEv;
       return list.map(e => e.slice());
@@ -726,6 +730,8 @@ const AV = G.AssetVM = {
     const knobAt = (lift, pull) => { setBolt(lift, pull); return toF(k.handle.localToWorld(k.knob.clone())); };
     const a = G.Game?.player, inst = a?.weapons ? Object.values(a.weapons).find(w => w && w.id === id) : null;
     const mag = inst ? inst.mag : 5, st = k.state;
+    // v64 총을 꺼낼 때 지난번 장전에서 남은 클립 상태를 지운다 (클립을 꽂은 채 무기를 바꾼 경우)
+    if (P.drawT < 0.05) { k.clip.visible = false; st.clipOut = -1; for (const r of k.clipRounds) { r.position.y = r.userData.y0 ?? r.position.y; r.visible = true; } }
     let lift = 0, pull = 0, key = null, extra = 0, held = false, clipOn = false;
     const cyc = G.WEAPONS[id].cycle || 0.95;
     const gripP = grip.clone().addScaledVector(d0, L);   // 대기 자세의 쥔 점
@@ -749,7 +755,9 @@ const AV = G.AssetVM = {
           if (u < 0.55) { k.clip.position.copy(key[0]).sub(new V(0, k.clipStep * 5.4, k.rlen * 0.42)); k.clip.rotation.set(0, 0, 0.35 * (1 - ss(0.24, 0.55, u))); }
           else { k.clip.position.copy(k.seat); k.clip.rotation.set(0, 0, 0); }
           const dn = ss(0.64, 0.84, u) * k.clipStep * 5.6;
-          for (const r of k.clipRounds) { const y = r.userData.y0 ?? (r.userData.y0 = r.position.y); r.position.y = y - dn; r.visible = k.clip.position.y + r.position.y > k.top.y + k.rdia * 0.3; if (!r.visible) extra++; }
+          // v64 예비탄이 5 발보다 적으면 클립에도 그만큼만 (위에서부터 비운다)
+          const have = Math.min(k.clipRounds.length, a?.ammo?.[G.WEAPONS[id].ammo] ?? 5);
+          k.clipRounds.forEach((r, i) => { const y = r.userData.y0 ?? (r.userData.y0 = r.position.y); r.position.y = y - dn; r.visible = i < have && k.clip.position.y + r.position.y > k.top.y + k.rdia * 0.3; if (i < have && !r.visible) extra++; });
         } else {
           // 한 발: 주머니 → 배출구 위 → 눌러 넣기 → 손잡이
           key = this.karPath([[0, ...kn], [0.2, ...pk], [0.32, ...pk], [0.56, port, dCarry], [0.7, press, dPush], [0.8, port, dPush], [1, ...kn]], u);
@@ -761,11 +769,12 @@ const AV = G.AssetVM = {
         pull = 1 - ss(0.05, 0.4, pp); lift = 1 - ss(0.42, 0.6, pp);
         key = toKnob(1 - ss(0.64, 0.95, pp), lift, pull);
       }
-    } else if (P.shotT < cyc) {
-      // 사격 뒤 볼트 조작 (게임의 다음 발 준비 시간 안에)
+    } else if (P.shotT < cyc && mag > 0) {
+      // 사격 뒤 볼트 조작 (게임의 다음 발 준비 시간 안에). v64 소리에 맞춤: 올림 0.24 · 탄피 0.4 · 닫힘 0.58 (player.js cycleT)
+      //  마지막 발을 쏘면 게임도 볼트를 돌리지 않는다 → 장전 때 연다
       const t = P.shotT / cyc;
-      lift = ss(0.24, 0.36, t) * (1 - ss(0.62, 0.72, t)); pull = ss(0.36, 0.48, t) * (1 - ss(0.5, 0.62, t));
-      key = toKnob(ss(0.1, 0.24, t) * (1 - ss(0.72, 0.9, t)), lift, pull);
+      lift = ss(0.2, 0.3, t) * (1 - ss(0.58, 0.68, t)); pull = ss(0.3, 0.42, t) * (1 - ss(0.47, 0.58, t));
+      key = toKnob(ss(0.06, 0.2, t) * (1 - ss(0.7, 0.88, t)), lift, pull);
     }
     setBolt(lift, pull);
     if (key) {
@@ -895,7 +904,7 @@ const AV = G.AssetVM = {
       const optic = A.make(scope === 'reddot' && pistol ? 'micro' : scope, 1);
       if (optic) {
         let eye = scope === 'reddot' ? 0.032 : scope === 'holo' ? 0.044 : scope === 'x2' ? 0.05 : 0.0264;
-        if (scope === 'x4' || scope === 'x8') { optic.rotation.y = Math.PI; optic.scale.multiplyScalar(scope === 'x8' ? 1.05 : 1.05); eye *= scope === 'x8' ? 1.05 : 1.05; }
+        if (scope === 'x4' || scope === 'x8') { optic.rotation.y = Math.PI; optic.scale.multiplyScalar(1.05); eye *= 1.05; }
         optic.updateMatrixWorld(true);
         const box = new T.Box3().setFromObject(optic); optic.position.y -= box.min.y;
         if (['reddot', 'holo', 'x2'].includes(scope)) {
