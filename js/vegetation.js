@@ -62,8 +62,9 @@ function waitTextures(texs, ms) {
   });
 }
 
+const _fwd = new THREE.Vector3();
 const Veg = G.Veg = {
-  variants: [], range: RANGE.high, last: new THREE.Vector3(1e9, 0, 0), lastT: -1e9, time: { value: 0 }, cam: { value: new THREE.Vector3() }, uR: { value: 130 }, uRB: { value: 65 },
+  variants: [], lastFx: 0, lastFz: 0, lastCos: -2, range: RANGE.high, last: new THREE.Vector3(1e9, 0, 0), lastT: -1e9, time: { value: 0 }, cam: { value: new THREE.Vector3() }, uR: { value: 130 }, uRB: { value: 65 },
   available() { return !!(window.EZTree && window.EZTree.Tree); },
 
   // 한 변형의 지오메트리·재질·임포스터를 만든다
@@ -213,7 +214,62 @@ const Veg = G.Veg = {
     console.info('[veg] EZ-Tree 변형 ' + this.variants.length + '개, 인스턴스 ' + total + '개, 삼각형/그루 ' + this.variants.map(v => v.def.preset + ':' + v.tris).join(', '));
   },
 
+  // v68 나무 재질을 싼 램버트로 (높음 제외): 측정상 나무가 많은 화면에서 장면 시간이 35~45% 줄었다.
+  //  표준(PBR) 재질의 밝기 대부분을 차지하는 환경맵 간접광은 시간대가 바뀔 때 한 번 재서(calibrate) 상수로 더해 준다
+  ambEnv: { value: new THREE.Color(0, 0, 0) }, lamOK: false, q: 'high',
+  lambertOf(std) {
+    const m = new THREE.MeshLambertMaterial({ map: std.map, normalMap: std.normalMap || null, aoMap: std.aoMap || null, color: std.color, alphaTest: std.alphaTest, side: std.side });
+    if (std.normalMap && std.normalScale) m.normalScale.copy(std.normalScale);
+    const amb = this.ambEnv, key = std.customProgramCacheKey.bind(std);
+    m.onBeforeCompile = (sh, r) => {
+      std.onBeforeCompile(sh, r);
+      sh.uniforms.uAmbEnv = amb;
+      sh.fragmentShader = 'uniform vec3 uAmbEnv;\n' + sh.fragmentShader.replace('#include <lights_fragment_maps>', '#include <lights_fragment_maps>\n  irradiance += uAmbEnv;');
+    };
+    m.customProgramCacheKey = () => key() + '|lamb';
+    return m;
+  },
+  // 흰 면(위·옆)을 환경맵만으로 비춰 간접광 세기를 잰다 → 램버트 재질에 더할 값
+  calibrate(renderer, env) {
+    let rt = null, mat = null, geo = [];
+    const prev = renderer.getRenderTarget(), prevC = renderer.getClearColor(new THREE.Color()), prevA = renderer.getClearAlpha();
+    try {
+      rt = new THREE.WebGLRenderTarget(2, 1, { type: THREE.FloatType, depthBuffer: false });
+      const sc = new THREE.Scene(); sc.environment = env;
+      mat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1, metalness: 0 });
+      const cam = new THREE.OrthographicCamera(-1, 1, 0.5, -0.5, 0.1, 10); cam.position.set(0, 0, 5);
+      [[0, 1, 0], [0.7071, 0, 0.7071]].forEach((n, i) => {
+        const g = new THREE.PlaneGeometry(1, 1); geo.push(g);
+        const na = g.attributes.normal; for (let k = 0; k < na.count; k++) na.setXYZ(k, n[0], n[1], n[2]);
+        const me = new THREE.Mesh(g, mat); me.position.x = i ? 0.5 : -0.5; sc.add(me);
+      });
+      renderer.setRenderTarget(rt); renderer.setClearColor(0x000000, 0); renderer.clear();
+      renderer.render(sc, cam);
+      const px = new Float32Array(8);
+      renderer.readRenderTargetPixels(rt, 0, 0, 2, 1, px);
+      const c = [0, 1, 2].map(k => (px[k] + px[4 + k]) * 0.5 * Math.PI);
+      if (c.some(v => !isFinite(v) || v < 0) || c[0] + c[1] + c[2] <= 1e-5) throw new Error('bad probe ' + px.join(','));
+      this.ambEnv.value.setRGB(c[0], c[1], c[2]);
+      this.lamOK = true;
+    } catch (e) { console.info('[veg] 간접광 측정 실패 — 표준 재질 유지', e.message); this.lamOK = false; }
+    finally {
+      renderer.setRenderTarget(prev); renderer.setClearColor(prevC, prevA);
+      if (rt) rt.dispose(); if (mat) mat.dispose(); for (const g of geo) g.dispose();
+    }
+    if (this.variants.length) this.applyMats();
+  },
+  applyMats() {
+    const lam = this.lamOK && this.q !== 'high' && !G.noLam;   // G.noLam: 비교 측정용
+    for (const v of this.variants) {
+      if (!v.near) continue;
+      if (lam && !v.lam) v.lam = { b: this.lambertOf(v.bark), l: this.lambertOf(v.leaf), f: this.lambertOf(v.imp.mat) };
+      v.near.material = lam ? v.lam.b : v.bark; v.nearLeaf.material = lam ? v.lam.l : v.leaf; v.far.material = lam ? v.lam.f : v.imp.mat;
+    }
+  },
+
   setQuality(q) {
+    this.q = q;
+    this.applyMats();
     this.range = RANGE[q] || RANGE.high;
     // 낮음·최저: 나무 그림자 생략 (그림자 패스에서 나무를 다시 그리는 비용이 크다)
     this.treeShadow = q === 'medium' || q === 'high';
@@ -222,14 +278,39 @@ const Veg = G.Veg = {
     this.lastT = -1e9;
   },
 
-  update(dt, camPos) {
+  update(dt, camPos, cam) {
     if (!this.variants.length) return;
     this.time.value += dt;
     this.cam.value.copy(camPos);
     this.lastT += dt;
+    // v68 시야 밖(뒤쪽) 나무는 상세 모델에서 뺀다 — 둘레를 다 그리던 것을 앞쪽 부채꼴 + 발밑 + 그림자가 시야로 드리우는 것만
+    let fx = 0, fz = 0, cosL = -2;
+    if (cam && !G.noCull) {   // G.noCull: 비교 측정용 (예전처럼 둘레 전부)
+      cam.getWorldDirection(_fwd);
+      const hl = Math.hypot(_fwd.x, _fwd.z);
+      if (hl > 0.35) {   // 거의 바로 아래·위를 볼 때는 자르지 않는다
+        fx = _fwd.x / hl; fz = _fwd.z / hl;
+        const half = Math.atan(Math.tan(THREE.MathUtils.degToRad(cam.fov) / 2) * cam.aspect);
+        cosL = Math.cos(Math.min(Math.PI, half + 0.45));
+      }
+    }
+    const turned = cosL > -2 ? (this.lastCos < -1.5 || fx * this.lastFx + fz * this.lastFz < 0.985 || cosL < this.lastCos - 0.01) : this.lastCos > -1.5;   // 돌거나 시야가 넓어지면 (조준 해제) 다시
     const dx = camPos.x - this.last.x, dz = camPos.z - this.last.z;
-    if (dx * dx + dz * dz < 9 && this.lastT < 1) return;
-    this.last.copy(camPos); this.lastT = 0;
+    if (dx * dx + dz * dz < 9 && this.lastT < 1 && !turned) return;
+    this.last.copy(camPos); this.lastT = 0; this.lastFx = fx; this.lastFz = fz; this.lastCos = cosL;
+    // 해 반대쪽으로 떨어지는 그림자 (나무 높이 ~14 m 기준, 30 m 까지)
+    const W = G.World, sd = W && W.sunDir, sh = this.treeShadow && sd && sd.y > 0.05 ? Math.min(30, 14 * Math.hypot(sd.x, sd.z) / sd.y) : 0;
+    const sx = sd ? -sd.x / Math.max(1e-3, Math.hypot(sd.x, sd.z)) * sh : 0, sz = sd ? -sd.z / Math.max(1e-3, Math.hypot(sd.x, sd.z)) * sh : 0;
+    const inView = (ex, ez) => {
+      if (cosL < -1.5) return true;
+      const d2 = ex * ex + ez * ez;
+      if (d2 < 196) return true;   // 14 m 안은 늘 (돌아서는 순간·발밑)
+      const d = Math.sqrt(d2);
+      if (fx * ex + fz * ez > cosL * d - 7) return true;   // 7 m 여유 (나무 폭)
+      if (!sh) return false;
+      const gx = ex + sx, gz = ez + sz, g = Math.hypot(gx, gz);
+      return fx * gx + fz * gz > cosL * g - 7;
+    };
     // 반경 안 그루 수가 예산을 넘으면 반경을 줄인다 (그 밖은 임포스터가 그린다)
     const count = (bush, R) => {
       const R2 = R * R; let c = 0;
@@ -251,10 +332,12 @@ const Veg = G.Veg = {
       let c = 0;
       for (let i = 0, n = v.items.length; i < n; i++) {
         const ex = M[i * 16 + 12] - camPos.x, ez = M[i * 16 + 14] - camPos.z;
-        if (ex * ex + ez * ez < R2) { arr.set(M.subarray(i * 16, i * 16 + 16), c * 16); c++; }
+        if (ex * ex + ez * ez < R2 && inView(ex, ez)) { arr.set(M.subarray(i * 16, i * 16 + 16), c * 16); c++; }
       }
       v.near.count = v.nearLeaf.count = c;
-      v.near.instanceMatrix.needsUpdate = true;
+      const im = v.near.instanceMatrix;
+      if (im.addUpdateRange) { im.clearUpdateRanges(); im.addUpdateRange(0, Math.max(16, c * 16)); }   // 쓴 만큼만 GPU 로
+      im.needsUpdate = true;
     }
   }
 };

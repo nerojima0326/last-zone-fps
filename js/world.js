@@ -2063,6 +2063,7 @@ const W = G.World = {
     this.scene.environment = this.envRT.texture;
     if (G.vmScene) G.vmScene.environment = this.envRT.texture;
     pm.dispose();
+    if (G.Veg && G.Veg.calibrate) G.Veg.calibrate(this.renderer, this.envRT.texture);   // v68 나무 램버트 재질의 간접광
     this.syncGrassLight();
     if (G.FX) G.FX.setFog(this.fogColor, P.fogD);
     if (this.fogK && this.fogK !== 1) this.setFogScale(this.fogK);
@@ -2217,14 +2218,25 @@ const W = G.World = {
       const y = r(); m.compose(ps, q, sc); t.setRGB(0.85 + y * 0.35, 0.85 + r() * 0.25, 0.7 + r() * 0.25);
       this.addCollider(it[0] - 0.32 * s, it[1] - 0.5, it[2] - 0.32 * s, it[0] + 0.32 * s, it[1] + 3.4 * s, it[2] + 0.32 * s, 'wood');
     });
-    build(list.rock, rockGeo, rockMat, true, (it, m, t) => {
-      const s = 0.6 + Math.pow(r(), 2) * 2.6;
-      const sx = s * (0.8 + r() * 0.6), sy = s * (0.5 + r() * 0.5), sz = s * (0.8 + r() * 0.6);
-      q.setFromAxisAngle(up, r() * 6.28); sc.set(sx, sy, sz); ps.set(it[0], it[1] - sy * 0.25, it[2]);
-      m.compose(ps, q, sc); const v = 0.75 + r() * 0.3; t.setRGB(v, v * 0.98, v * 0.94);
-      const e = Math.min(sx, sz) * 0.75;
-      if (s > 0.9) this.addCollider(it[0] - e, it[1] - 1, it[2] - e, it[0] + e, it[1] + sy * 0.7, it[2] + e, 'hard');
-    });
+    // v68 바위: 구역별로 전부 그리던 것을 한 덩어리로 두고, 카메라 둘레 (품질별 거리 + 시야 부채꼴) 안의 것만 그린다
+    {
+      const n = list.rock.length, mats = new Float32Array(n * 16), cols = new Float32Array(n * 3), size = new Float32Array(n);
+      list.rock.forEach((it, i) => {
+        const s = 0.6 + Math.pow(r(), 2) * 2.6;
+        const sx = s * (0.8 + r() * 0.6), sy = s * (0.5 + r() * 0.5), sz = s * (0.8 + r() * 0.6);
+        q.setFromAxisAngle(up, r() * 6.28); sc.set(sx, sy, sz); ps.set(it[0], it[1] - sy * 0.25, it[2]);
+        m4.compose(ps, q, sc); m4.toArray(mats, i * 16); const v = 0.75 + r() * 0.3; cols[i * 3] = v; cols[i * 3 + 1] = v * 0.98; cols[i * 3 + 2] = v * 0.94;
+        size[i] = Math.max(sx, sz);
+        const e = Math.min(sx, sz) * 0.75;
+        if (s > 0.9) this.addCollider(it[0] - e, it[1] - 1, it[2] - e, it[0] + e, it[1] + sy * 0.7, it[2] + e, 'hard');
+      });
+      const im = new THREE.InstancedMesh(rockGeo, rockMat, Math.max(1, n));
+      im.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      im.setColorAt(0, tint.setRGB(1, 1, 1)); im.instanceColor.setUsage(THREE.DynamicDrawUsage);
+      im.count = 0; im.frustumCulled = false; im.castShadow = true; im.receiveShadow = true;
+      this.scene.add(im);
+      this.rocks = { im, mats, cols, size, n, last: new THREE.Vector3(1e9, 0, 0), fx: 0, fz: 0, t: 0, dist: 450, cos: -2 };
+    }
     if (!ez) build(list.bush, bushGeo, vegMat, false, (it, m, t) => {
       const s = 0.7 + r() * 0.8;
       q.setFromAxisAngle(up, r() * 6.28); sc.set(s, s * (0.8 + r() * 0.4), s); ps.set(it[0], it[1] - 0.1, it[2]);
@@ -2233,6 +2245,7 @@ const W = G.World = {
   },
   setupGrass(quality) {
     if (G.Veg) G.Veg.setQuality(quality);
+    if (this.rocks) { this.rocks.dist = { potato: 170, low: 230, medium: 340, high: 460 }[quality] || 460; this.rocks.dirty = true; }
     if (this.grass) { this.scene.remove(this.grass); this.grass.geometry.dispose(); this.grass.material.dispose(); this.grass = null; }
     if (quality === 'low' || quality === 'potato') return;
     const count = quality === 'high' ? 40000 : 16000, PS = quality === 'high' ? 74 : 56;
@@ -2268,7 +2281,7 @@ const W = G.World = {
     const mat = new THREE.ShaderMaterial({
       side: THREE.DoubleSide,
       uniforms: {
-        uCenter: { value: new THREE.Vector3() }, uPS: { value: PS }, uTime: { value: 0 },
+        uCenter: { value: new THREE.Vector3() }, uCamF: { value: new THREE.Vector2(1, 0) }, uCamCos: { value: -2 }, uPS: { value: PS }, uTime: { value: 0 },
         uHeight: { value: this.heightTex }, uMask: { value: maskTex }, uMap: { value: SIZE }, uRes: { value: RES },
         uFogColor: { value: this.fogColor ? this.fogColor.clone() : new THREE.Color(0xb7cde0) }, uFogD: { value: this.fogD || 0.0014 },
         // 선형 색: 뿌리 쪽 / 잎끝 / 마른 풀
@@ -2276,7 +2289,7 @@ const W = G.World = {
         uSunDir: { value: this.sunDir.clone() }, uSunCol: { value: new THREE.Color(3, 2.9, 2.7) }, uAmb: { value: new THREE.Color(0.9, 1.0, 1.15) }
       },
       vertexShader: `
-        uniform vec3 uCenter; uniform float uPS; uniform float uTime; uniform sampler2D uHeight; uniform sampler2D uMask;
+        uniform vec3 uCenter; uniform vec2 uCamF; uniform float uCamCos; uniform float uPS; uniform float uTime; uniform sampler2D uHeight; uniform sampler2D uMask;
         uniform float uMap; uniform float uRes; uniform vec3 uColA; uniform vec3 uColB; uniform vec3 uColDry;
         attribute vec4 aOff; attribute vec2 aT;
         varying vec3 vCol; varying float vT; varying float vDepth; varying vec3 vWorld; varying float vFlower;
@@ -2297,6 +2310,11 @@ const W = G.World = {
           float patchN = vnoise(wp * 0.07);
           float tall = 0.75 + patchN * 0.55;
           float s = (0.6 + aOff.z * 0.55) * tall * smoothstep(0.25, 0.7, mask) * fade;
+          // v68 안 보이는 풀 묶음은 계산 전에 버린다 (풀이 없는 곳·둘레 밖·시야 뒤) → 정점 비용 절약
+          vec2 toG = wp - uCenter.xz; float dG = length(toG);
+          if (s < 0.02 || (dG > 2.5 && dot(toG, uCamF) < uCamCos * dG - 1.0)) {
+            gl_Position = vec4(0.0, 0.0, -2.0, 1.0); vCol = vec3(0.0); vT = 0.0; vDepth = 0.0; vWorld = vec3(0.0); vFlower = 0.0; return;
+          }
           float flower = 0.0;
           float rot = aOff.w * 6.2831;
           vec3 p = position;
@@ -2480,6 +2498,39 @@ const W = G.World = {
     return this.rayBoxes(x, y, z, 0, 1, 0, 25, null) < Infinity;
   },
 
+  // v68 바위 인스턴스 목록 갱신 (움직였거나 돌았을 때만)
+  updateRocks(dt, camPos, cam) {
+    const R = this.rocks;
+    R.t += dt;
+    let fx = 0, fz = 0, cosL = -2;
+    if (cam && !G.noCull) {
+      cam.getWorldDirection(_gF);
+      const hl = Math.hypot(_gF.x, _gF.z);
+      if (hl > 0.35) { fx = _gF.x / hl; fz = _gF.z / hl; cosL = Math.cos(Math.min(Math.PI, Math.atan(Math.tan(THREE.MathUtils.degToRad(cam.fov) / 2) * cam.aspect) + 0.45)); }
+    }
+    const dx = camPos.x - R.last.x, dz = camPos.z - R.last.z;
+    const turned = cosL > -2 ? (R.cos < -1.5 || fx * R.fx + fz * R.fz < 0.985 || cosL < R.cos - 0.01) : R.cos > -1.5;
+    if (!!G.noCull !== !!R.noCull) { R.noCull = !!G.noCull; R.dirty = true; }
+    if (dx * dx + dz * dz < 16 && R.t < 1 && !turned && !R.dirty) return;
+    R.last.copy(camPos); R.t = 0; R.fx = fx; R.fz = fz; R.cos = cosL; R.dirty = false;
+    const D = G.noCull ? 1e9 : R.dist * (G.lodZoom || 1), M = R.mats, C = R.cols, A = R.im.instanceMatrix.array, CA = R.im.instanceColor.array;
+    let c = 0;
+    for (let i = 0; i < R.n; i++) {
+      const ex = M[i * 16 + 12] - camPos.x, ez = M[i * 16 + 14] - camPos.z, d2 = ex * ex + ez * ez;
+      // 작은 바위는 더 가까이에서만 (크기 비례)
+      const lim = D * Math.min(1, 0.45 + R.size[i] * 0.25);
+      if (d2 > lim * lim) continue;
+      if (cosL > -1.5 && d2 > 144) { const d = Math.sqrt(d2); if (fx * ex + fz * ez < cosL * d - 6) continue; }
+      A.set(M.subarray(i * 16, i * 16 + 16), c * 16);
+      CA[c * 3] = C[i * 3]; CA[c * 3 + 1] = C[i * 3 + 1]; CA[c * 3 + 2] = C[i * 3 + 2];
+      c++;
+    }
+    R.im.count = c;
+    const ia = R.im.instanceMatrix, ic = R.im.instanceColor;
+    if (ia.addUpdateRange) { ia.clearUpdateRanges(); ia.addUpdateRange(0, Math.max(16, c * 16)); ic.clearUpdateRanges(); ic.addUpdateRange(0, Math.max(3, c * 3)); }
+    ia.needsUpdate = true; ic.needsUpdate = true;
+  },
+
   update(dt, camPos, cam) {
     this.time += dt;
     this.lodT = (this.lodT || 0) - dt;
@@ -2488,11 +2539,19 @@ const W = G.World = {
     if (this.lodT <= 0 && this.lod.length) { this.lodT = 0.2; this.updateLOD(camPos); }
     this.updateTerrainLOD(camPos);
     if (this.windTime) this.windTime.value = this.time;
-    if (G.Veg) G.Veg.update(dt, camPos);
+    if (G.Veg) G.Veg.update(dt, camPos, cam);
+    if (this.rocks) this.updateRocks(dt, camPos, cam);
     if (G.Ambient) G.Ambient.update(dt, camPos, this);
     if (this.grass) {
       const u = this.grass.material.uniforms;
       u.uCenter.value.copy(camPos); u.uTime.value = this.time;
+      // 시야 부채꼴 (가로 반시야 + 20°). 거의 바로 아래를 보면 자르지 않는다
+      if (cam && !G.noCull) {
+        cam.getWorldDirection(_gF);
+        const hl = Math.hypot(_gF.x, _gF.z);
+        if (hl > 0.3) { u.uCamF.value.set(_gF.x / hl, _gF.z / hl); u.uCamCos.value = Math.cos(Math.min(Math.PI, Math.atan(Math.tan(THREE.MathUtils.degToRad(cam.fov) / 2) * cam.aspect) + 0.35)); }
+        else u.uCamCos.value = -2;
+      } else u.uCamCos.value = -2;
       this.grass.visible = camPos.y - this.heightAt(camPos.x, camPos.z) < 60;
     }
     this.waterNormal.offset.x += dt * 0.004; this.waterNormal.offset.y += dt * 0.0025;
@@ -2507,6 +2566,7 @@ const W = G.World = {
   }
 };
 
+const _gF = new THREE.Vector3();
 function tick() { return new Promise(r => setTimeout(r, 0)); }
 function segIntersect(ax, az, bx, bz, cx, cz, dx, dz) {
   const rX = bx - ax, rZ = bz - az, sX = dx - cx, sZ = dz - cz;
