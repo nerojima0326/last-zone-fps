@@ -122,3 +122,16 @@ html:not(.mobile) #fpsBox { left: 26px; top: auto; bottom: 4px; padding: 0 6px; 
 #trainBtn { border-radius: 0 !important; font-family: var(--head); letter-spacing: 3px; }
 #trainBtn:hover { background: rgba(255,255,255,0.12) !important; }
 #trainStats { border-radius: 0; border: 0; border-bottom: 2px solid rgba(255,255,255,0.3); background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.55)); }
+
+/* v65 투척물 핀·타이머 (조준점 아래) */
+#cookTimer { position: absolute; left: 50%; top: calc(50% + 46px); transform: translateX(-50%); display: none; pointer-events: none; text-align: center; }
+#cookTimer svg { width: 58px; height: 58px; display: block; margin: 0 auto; transform: rotate(-90deg); }
+#cookTimer circle { fill: rgba(0,0,0,0.35); stroke-width: 3.5; }
+#cookTimer circle.bg { stroke: rgba(255,255,255,0.18); }
+#cookTimer circle.fg { fill: none; stroke: #ffd36b; stroke-linecap: round; stroke-dasharray: 113.1; transition: stroke 0.15s; }
+#cookTimer b { position: absolute; left: 0; right: 0; top: 17px; font: 700 20px 'Barlow Condensed', Rajdhani, sans-serif; color: #fff; text-shadow: 0 1px 3px #000; }
+#cookTimer span { display: block; margin-top: 4px; font: 600 12px Rajdhani, 'Noto Sans KR', sans-serif; letter-spacing: 1px; color: rgba(255,255,255,0.85); text-shadow: 0 1px 2px #000; white-space: nowrap; }
+#cookTimer.idle circle.fg { stroke: rgba(255,255,255,0.35); }
+#cookTimer.idle b { font-size: 15px; top: 19px; color: rgba(255,255,255,0.8); }
+#cookTimer.hot circle.fg { stroke: #ff5a4a; }
+#cookTimer.hot b { color: #ff8a7a; }

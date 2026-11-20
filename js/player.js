@@ -185,7 +185,7 @@ const P = G.Player = {
     this.indoor = U.damp(this.indoor, this.indoorTarget || 0, 4, dt);
 
     if (!a.knocked) this.weaponsLogic(dt, now);
-    else { this.ads = 0; this.scopeView = 0; this.reload = null; this.throwSt = null; this.heal = null; this.cycleT = -1; }
+    else { this.ads = 0; this.scopeView = 0; this.reload = null; this.abortThrow(); this.heal = null; this.cycleT = -1; }
     this.interact(dt);
     this.healLogic(dt);
     this.updateCamera(dt);
@@ -196,7 +196,7 @@ const P = G.Player = {
     if (I.hit('Digit1')) this.switchTo('rifle');
     if (I.hit('Digit2')) this.switchTo('shotgun');
     if (I.hit('Digit3')) this.switchTo('pistol');
-    if (I.hit('Digit4')) { if (a.cur === 'throw') this.cycleThrow(); else this.switchTo('throw'); }
+    if (I.hit('Digit4') && !this.throwSt) { if (a.cur === 'throw') this.cycleThrow(); else this.switchTo('throw'); }
     if (I.wheel !== 0 && !this.throwSt) {
       const avail = SLOT_ORDER.filter(s => s === 'throw' ? a.throwCount() > 0 : !!a.weapons[s]);
       if (avail.length) {
@@ -205,13 +205,15 @@ const P = G.Player = {
         this.switchTo(avail[i]);
       }
     }
+    // v65 G: 누르고 있는 동안 들고 있다가 떼면 던진다 (총을 든 채 빠른 투척)
     if (I.hit('KeyG') && !this.throwSt && a.throwCount() > 0) {
-      if (this.throwSt) { /* 이미 투척 중 */ }
-      else { if (a.throwables[this.throwKind] <= 0) this.cycleThrow(); this.startThrow(false, a.cur !== 'throw'); }
+      if (a.throwables[this.throwKind] <= 0) this.cycleThrow();
+      this.startThrow(false, a.cur !== 'throw', 'KeyG');
     }
     if (I.hit('KeyB')) { const d = a.wdef(a.cur); if (d && d.auto) { this.fireMode = this.fireMode === 'auto' ? 'single' : 'auto'; G.Audio.click('switch'); } }
     if (I.hit('KeyV')) this.cycleScope();
-    if (I.hit('KeyR')) this.startReload();
+    // v65 투척물을 들고 있으면 R = 안전핀 뽑기 (타이머 시작)
+    if (I.hit('KeyR')) { if (this.throwSt) this.pullPin(); else this.startReload(); }
     if (I.hit('KeyH')) this.startHeal();
 
     // 교체
@@ -288,14 +290,15 @@ const P = G.Player = {
     // 투척
     if (a.cur === 'throw' && !this.sw && !this.throwSt) {
       if (a.throwables[this.throwKind] <= 0) { if (!this.cycleThrow()) this.switchTo(a.bestGun()); }
-      else if (I.lmbHit) this.startThrow(false, false);
-      else if (I.rmbHit) this.startThrow(true, false);
+      else if (I.lmbHit) this.startThrow(false, false, 'lmb');
+      else if (I.rmbHit) this.startThrow(true, false, 'rmb');
     }
     if (this.throwSt) this.throwLogic(dt);
   },
   switchTo(slot) {
     const a = this.a;
-    if (this.throwSt) return;
+    // 핀을 뽑기 전이면 들고 있던 투척물을 내리고 바꾼다 (뽑은 뒤에는 던져야 한다)
+    if (this.throwSt) { if (this.throwSt.phase === 'hold' && this.throwSt.pinT < 0 && slot !== 'throw') this.throwSt = null; else return; }
     if (slot === 'throw') { if (a.throwCount() <= 0) return; if (a.throwables[this.throwKind] <= 0) this.cycleThrow(); }
     else if (slot !== 'fists' && !a.weapons[slot]) return;
     if ((this.sw ? this.sw.to : a.cur) === slot) return;
@@ -478,23 +481,63 @@ const P = G.Player = {
       break;
     }
   },
-  startThrow(under, quick) {
+  // v65 투척: 누르면 들고 있기(hold) → R 로 안전핀 뽑기(남은 시간이 흐른다) → 떼면 던지기(throw).
+  //  핀을 안 뽑고 떼면 던질 때 뽑는다(기본 시간). 들고 있다 시간이 다 되면 손에서 터진다. 화염병은 핀·타이머 없음
+  startThrow(under, quick, btn) {
     const a = this.a;
     if (a.throwables[this.throwKind] <= 0 && !this.cycleThrow()) return;
     this.reload = null;
-    this.throwSt = { t: 0, kind: this.throwKind, under, quick, prev: quick ? (this.sw ? this.sw.to : a.cur) : null, released: false };
+    this.throwSt = { phase: 'hold', t: 0, holdT: 0, pinT: -1, kind: this.throwKind, under, quick, btn: btn || null, prev: quick ? (this.sw ? this.sw.to : a.cur) : null, released: false };
     this.sw = null; this.raise = 1;
     a.cur = 'throw';
     G.VM.set('throw'); G.VM.setThrowKind(this.throwKind);
+  },
+  fuseOf(kind) { return G.Throwables.FUSE[kind] || 3; },
+  cookable(kind) { return kind !== 'molotov'; },
+  pullPin() {
+    const T = this.throwSt;
+    if (!T || T.phase !== 'hold' || T.pinT >= 0 || !this.cookable(T.kind)) return;
+    T.pinT = 0;
     G.Audio.click('pin');
   },
+  // 남은 시간 (핀을 안 뽑았으면 전체)
+  fuseLeft(T) { return this.fuseOf(T.kind) - Math.max(0, T.pinT); },
+  // 들고 있던 투척물을 놓친다 (기절·사망·탑승): 핀을 뽑았으면 발밑에 떨어뜨린다
+  abortThrow() {
+    const T = this.throwSt, a = this.a;
+    if (T && T.phase === 'hold' && T.pinT >= 0 && this.cookable(T.kind) && a && a.throwables[T.kind] > 0) {
+      a.throwables[T.kind]--;
+      _q.copy(a.pos); _q.y += 0.3;
+      G.Throwables.throw(a, T.kind, _q, _d.set(0, 0.5, 0).addScaledVector(a.vel, 0.5), Math.max(0.05, this.fuseLeft(T)));
+    }
+    this.throwSt = null;
+  },
   throwLogic(dt) {
-    const a = this.a, T = this.throwSt, cam = G.camera;
+    const a = this.a, T = this.throwSt, cam = G.camera, I = G.Input;
+    if (T.phase === 'hold') {
+      T.holdT += dt;
+      if (T.pinT >= 0) T.pinT += dt;
+      // 손에서 터진다
+      if (T.pinT >= 0 && this.cookable(T.kind) && this.fuseLeft(T) <= 0) {
+        if (a.throwables[T.kind] > 0) {
+          a.throwables[T.kind]--;
+          cam.getWorldDirection(_f); _q.copy(cam.position).addScaledVector(_f, 0.35); _q.y -= 0.15;
+          G.Throwables.throw(a, T.kind, _q, _d.set(0, 0, 0), 0.01);
+        }
+        T.phase = 'throw'; T.released = true; T.t = 0.33;
+        return;
+      }
+      const held = T.btn === 'lmb' ? I.lmb : T.btn === 'rmb' ? I.rmb : T.btn ? I.down(T.btn) : false;
+      // 떼면 던진다 (들어 올리는 동작이 끝나기 전이면 끝날 때까지 기다렸다가)
+      if (!held && T.holdT >= 0.12) { T.phase = 'throw'; T.t = 0.25; }
+      else return;
+    }
     T.t += dt;
     if (!T.released && T.t >= 0.33) {
       T.released = true;
       if (a.throwables[T.kind] > 0) {
         a.throwables[T.kind]--;
+        if (T.pinT < 0 && this.cookable(T.kind)) G.Audio.click('pin');
         cam.getWorldDirection(_f);
         _r.set(1, 0, 0).applyQuaternion(cam.quaternion);
         _q.copy(cam.position).addScaledVector(_f, 0.45).addScaledVector(_r, 0.15);
@@ -502,7 +545,8 @@ const P = G.Player = {
         if (T.under) _d.copy(_f).multiplyScalar(9).add(_e.set(0, 2.2, 0));
         else _d.copy(_f).multiplyScalar(21).add(_e.set(0, 2.6, 0));
         _d.addScaledVector(a.vel, 0.6);
-        G.Throwables.throw(a, T.kind, _q, _d);
+        // 핀을 뽑은 뒤 흐른 시간만큼 짧게 (화염병은 그대로)
+        G.Throwables.throw(a, T.kind, _q, _d, this.cookable(T.kind) ? Math.max(0.05, this.fuseLeft(T)) : undefined);
         if (a.model) a.model.throwT = 0.5;
       }
     }
@@ -691,7 +735,10 @@ const P = G.Player = {
       lookDX: G.Input.mdx, lookDY: G.Input.mdy, landDip: this.landDip, raise: this.raise,
       reload: rl, pumpP: this.pumpT >= 0.08 ? (this.pumpT - 0.08) / 0.45 : -1,
       cycleP: this.cycleT >= 0 && def && def.cycle ? this.cycleT / def.cycle : -1,
-      throwP: this.throwSt ? this.throwSt.t / 0.68 : -1, punchP: this.punchT >= 0 ? this.punchT / 0.4 : -1,
+      // v65 들고 있는 동안은 들어 올린 자세(0.37)에 멈춘다 · pinP: 왼손이 핀을 뽑는 진행 · cookP: 핀 뽑은 뒤 흐른 비율
+      throwP: this.throwSt ? (this.throwSt.phase === 'hold' ? 0.37 * Math.min(1, this.throwSt.holdT / 0.18) : this.throwSt.t / 0.68) : -1,
+      pinP: this.throwSt ? (this.throwSt.pinT >= 0 ? Math.min(1, this.throwSt.pinT / 0.4) : this.throwSt.released ? 1 : 0) : 0,
+      punchP: this.punchT >= 0 ? this.punchT / 0.4 : -1,
       empty: inst && inst.mag === 0 && !R, scope, hideVM: this.scopeView > 0.6
     });
     // 뷰모델 조명 (월드 태양 방향을 카메라 공간으로)
@@ -744,6 +791,7 @@ const P = G.Player = {
     G.Audio.setListener(cam.position, t.yaw);
   },
   onDeath(killcam) {
+    this.abortThrow();
     this.reload = null; this.heal = null; this.revive = null; this.throwSt = null; this.ads = 0; this.scopeView = 0; this.cycleT = -1;
     this.lean = 0; this.vault = null; if (this.a) this.a.leanX = 0;
     if (this.vehicle) G.Vehicles.exit(this, true);

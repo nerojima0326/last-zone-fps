@@ -238,7 +238,7 @@ const Vh = G.Vehicles = {
     const a = P.a;
     this.unblock(v);
     v.driver = a; v.claim = null; P.vehicle = v;
-    P.reload = null; P.autoReload = null; P.heal = null; P.ads = 0; P.scopeView = 0; P.lean = 0; a.leanX = 0; P.throwSt = null; P.cycleT = -1;
+    P.reload = null; P.autoReload = null; P.heal = null; P.ads = 0; P.scopeView = 0; P.lean = 0; a.leanX = 0; if (P.abortThrow) P.abortThrow(); else P.throwSt = null; P.cycleT = -1;
     a.crouch = false; a.prone = false;
     P.orbitYaw = v.yaw; P.orbitPitch = -0.22;
     G.VM.set(null);

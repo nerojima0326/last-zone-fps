@@ -6,7 +6,7 @@ const G=window.G,T=window.THREE;
 // v61 권총 미니 도트 = RMR 꼴, 산탄총 초크 = 연장 초크 (tools/attachments/build-procedural.mjs, 직접 만든 모델)
 const files={choke:'choke',micro:'rmr',reddot:'rd-aimpoint',holo:'holo-eotech',x2:'scope-acog',x4:'scope-sniper',x8:'scope-sniper',suppressor:'sup-rifle',brake:'brake-rifle',grip:'grip-vertical',laser:'laser-perst'};
 const A=G.Attachments={models:{},open:false,
- async load(){if(!T.GLTFLoader)return;await Promise.all(Object.entries(files).map(async([id,file])=>{try{const L=new T.GLTFLoader();if(T.MeshoptDecoder)L.setMeshoptDecoder(T.MeshoptDecoder);const m=await L.loadAsync('assets/models/attachments/'+file+'.glb?v=59');this.models[id]=m.scene;const e=m.scene.children[0]?.userData?.eye;if(e)m.scene.userData.eye=e}catch(e){console.info('Attachment unavailable',id)}}))},
+ async load(){if(!T.GLTFLoader)return;await Promise.all(Object.entries(files).map(async([id,file])=>{try{const L=new T.GLTFLoader();if(T.MeshoptDecoder)L.setMeshoptDecoder(T.MeshoptDecoder);const m=await L.loadAsync('assets/models/attachments/'+file+'.glb?v='+(window.LZ_BUILD||'59'));this.models[id]=m.scene;const e=m.scene.children[0]?.userData?.eye;if(e)m.scene.userData.eye=e}catch(e){console.info('Attachment unavailable',id)}}))},
  options(def){
   const mag=def.reloadType==='mag'&&def.key!=='kr98';
   return {
@@ -73,13 +73,13 @@ const A=G.Attachments={models:{},open:false,
     asset.traverse(x=>{if(x.isMesh&&/glass/i.test(x.material?.name||''))glass.union(new T.Box3().setFromObject(x))});
     if(!glass.isEmpty())eye=glass.getCenter(new T.Vector3()).y/m.s;
    }
-   if(id==='x4'||id==='x8'){asset.rotation.y=Math.PI;asset.scale.multiplyScalar(id==='x8'?1.05:1.05);asset.position.y=-box.min.y*(id==='x8'?1.05:1.05)}
-   eye=this.eyeOf(asset,eye*m.s,id==='x8'?1.05:id==='x4'?1.05:1)/m.s/(id==='x8'?1.05:id==='x4'?1.05:1);
+   if(id==='x4'||id==='x8'){asset.rotation.y=Math.PI;asset.scale.multiplyScalar(1.05);asset.position.y=-box.min.y*1.05}
+   eye=this.eyeOf(asset,eye*m.s,id==='x8'||id==='x4'?1.05:1)/m.s/(id==='x8'||id==='x4'?1.05:1);
    if(id==='reddot'||id==='holo'){
     asset.traverse(x=>{if(x.isMesh&&/glass|blue/i.test(x.material?.name||'')){x.material=x.material.clone();x.material.transparent=true;x.material.opacity=.15;x.material.depthWrite=false}});
     const dot=new T.Mesh(new T.CircleGeometry(.0009*m.s,16),new T.MeshBasicMaterial({color:0xff2415,depthTest:false}));dot.position.set(0,eye*m.s,.029*m.s);dot.renderOrder=10;g.add(dot);
    }
-   old.group.removeFromParent();g.visible=false;host.add(g);const sight=base.clone().add(new T.Vector3(0,eye*m.s*(id==='x8'?1.05:id==='x4'?1.05:1),.02*m.s));
+   old.group.removeFromParent();g.visible=false;host.add(g);const sight=base.clone().add(new T.Vector3(0,eye*m.s*(id==='x8'||id==='x4'?1.05:1),.02*m.s));
    m.scopes[id]={group:g,sight,ads:new T.Vector3(0,0,-({reddot:.34,holo:.32,x2:.24,x4:.2,x8:.17}[id])).sub(sight)};
   }
  },

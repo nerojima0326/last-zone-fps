@@ -11,7 +11,7 @@
 <script>
 // 새 버전이 올라왔는데 휴대폰이 예전 페이지를 기억하고 있으면 새로 불러온다
 (function () {
-  var BUILD = '63';
+  var BUILD = '65';
   window.LZ_BUILD = BUILD;
   try {
     fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (v) {
@@ -102,7 +102,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,700;1,800&family=Noto+Sans+KR:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=38">
-<link rel="stylesheet" href="css/mw.css?v=52">
+<link rel="stylesheet" href="css/mw.css?v=65">
 <script type="importmap">
 {
   "imports": {
@@ -214,6 +214,7 @@
 <div id="hud" class="hidden">
   <canvas id="scopeOverlay"></canvas>
   <div id="breathBar"><i></i><span>Shift 숨 참기</span></div>
+  <div id="cookTimer"><svg viewBox="0 0 44 44"><circle class="bg" cx="22" cy="22" r="18"/><circle class="fg" cx="22" cy="22" r="18"/></svg><b></b><span></span></div>
   <div id="vignette"></div>
   <div id="zoneOverlay"></div>
   <div id="knockOverlay"></div>

@@ -9,19 +9,21 @@ const FLASH_R = 45;   // 섬광이 닿는 거리 (m, 시야가 트여 있을 때
 const _d = new V3(), _v = new V3(), _c = new V3(), _e = new V3(), _f = new V3();
 
 const T = G.Throwables = {
+  FUSE,
   list: [], smokes: [], fires: [],
   reset() {
     for (const o of this.list) G.scene.remove(o.mesh);
     this.list.length = 0; this.smokes.length = 0; this.fires.length = 0;
     if (G.Audio.ctx) G.Audio.setLoop('fire', 0);
   },
-  throw(owner, kind, pos, vel) {
+  // v65 fuse: 핀을 뽑고 손에 들고 있던 만큼 줄어든 남은 시간 (없으면 기본)
+  throw(owner, kind, pos, vel, fuse) {
     const mesh = G.Guns.throwModel(kind, false);
     mesh.scale.setScalar(1.3);
     mesh.traverse(m => { if (m.isMesh) m.castShadow = true; });
     G.scene.add(mesh);
     mesh.position.copy(pos);
-    this.list.push({ owner, team: owner.team, kind, pos: pos.clone(), vel: vel.clone(), mesh, t: 0, fuse: FUSE[kind], rest: false, spin: new V3(U.rand(-12, 12), U.rand(-6, 6), U.rand(-12, 12)), lastBounce: 0 });
+    this.list.push({ owner, team: owner.team, kind, pos: pos.clone(), vel: vel.clone(), mesh, t: 0, fuse: fuse ?? FUSE[kind], rest: false, spin: new V3(U.rand(-12, 12), U.rand(-6, 6), U.rand(-12, 12)), lastBounce: 0 });
     G.Audio.click('throw');
   },
   // 목표 지점까지의 투척 속도 계산

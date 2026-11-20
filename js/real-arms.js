@@ -166,7 +166,8 @@ const R = G.RealArms = {
     const m = vm.models[vm.cur];
     const own = (vm.cur === 'ar7' && G.M4Viewmodel?.ready) || (vm.cur === 'g18' && G.G17Pilot?.ready) || G.AssetVM?.owns(vm.cur);
     const A = m && this.armsOf(m);
-    const use = this.ready && this.enabled && A && (A.L || A.R) && !own && !s.hideVM;
+    // v65 투척물·맨손은 설정과 상관없이 총과 같은 실사 팔 (절차적 팔과 섞이지 않게)
+    const use = this.ready && (this.enabled || vm.cur === 'throw' || vm.cur === 'fists') && A && (A.L || A.R) && !own && !s.hideVM;
     if (this.lastM && this.lastM !== m) this.procVisible(this.lastM, true);
     if (!use) { this.hide(); return; }
     if (this.copy.parent !== m.root) m.root.add(this.copy);

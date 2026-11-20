@@ -264,6 +264,7 @@ const UI = G.UI = {
       slots += '<div class="slot' + (a.throwCount() ? ' has' : '') + (a.cur === 'throw' ? ' cur' : '') + '"><span class="k">' + G.Settings.label('Digit4') + '</span>' + G.THROW_NAMES[tk] + ' <span class="cnt">' + a.throwables[tk] + '</span></div>';
       el.slots.innerHTML = slots;
     }
+    this.drawCook(a, P);
     // 조준점
     const showCross = a.alive && a.state === 'ground' && !a.knocked && P.ads < 0.5 && !this.mapOpen && a.cur !== 'throw' && !P.vehicle;
     this.drawScope(a.alive && a.state === 'ground' ? P.scopeView : 0, inst ? (inst.scope || def.baseSight) : null, P);
@@ -378,6 +379,21 @@ const UI = G.UI = {
     if (this.mapOpen) { this.bigT = (this.bigT || 0) + dt; if (this.bigT >= 0.05) { this.bigT = 0; this.drawBig(); } }
   },
   // 배율 조준경 화면 (원형 시야 + 조준선)
+  // v65 투척물을 들고 있을 때: 핀 뽑기 안내 → 뽑은 뒤 남은 시간 (원이 줄어든다, 1.2 초 아래는 빨갛게)
+  drawCook(a, P) {
+    const c = this.cookEl || (this.cookEl = document.getElementById('cookTimer'));
+    if (!c) return;
+    const T = P.throwSt, show = !!(T && T.phase === 'hold' && a.alive && P.cookable(T.kind));
+    if (!show) { if (c.style.display !== 'none') c.style.display = 'none'; return; }
+    if (!this.cookParts) this.cookParts = { fg: c.querySelector('.fg'), b: c.querySelector('b'), sp: c.querySelector('span') };
+    const k = this.cookParts, full = P.fuseOf(T.kind), left = Math.max(0, P.fuseLeft(T)), pulled = T.pinT >= 0;
+    c.style.display = 'block';
+    c.classList.toggle('idle', !pulled); c.classList.toggle('hot', pulled && left < 1.2);
+    k.fg.style.strokeDashoffset = (113.1 * (1 - left / full)).toFixed(1);
+    const txt = pulled ? left.toFixed(1) : '핀', hint = pulled ? '놓으면 던지기' : (document.documentElement.classList.contains('mobile') ? '장전 버튼: 핀 뽑기' : G.Settings.label('KeyR') + ' 핀 뽑기 · 놓으면 던지기');
+    if (k.b.textContent !== txt) k.b.textContent = txt;
+    if (k.sp.textContent !== hint) k.sp.textContent = hint;
+  },
   drawScope(amt, type, P) {
     const c = this.scopeEl || (this.scopeEl = document.getElementById('scopeOverlay'));
     if (!c) return;
