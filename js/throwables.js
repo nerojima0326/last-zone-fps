@@ -118,6 +118,7 @@ const T = G.Throwables = {
     if (G.Audio.ctx) G.Audio.setLoop('fire', fireVol);
   },
   detonate(o) {
+    if (G.Game.training && G.Training) G.Training.onBlast(o);   // v66 투척 훈련장 판정
     o.done = true;
     const W = G.World, Game = G.Game, p = o.pos;
     if (o.kind === 'frag') {

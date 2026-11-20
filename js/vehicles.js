@@ -180,6 +180,7 @@ const Vh = G.Vehicles = {
     while (this.list.length < n && tries++ < n * 30) {
       // 도로 옆에 세워 둔다
       const rd = U.pick(W.roads), t = Math.random(), dx = rd.bx - rd.ax, dz = rd.bz - rd.az, L = Math.hypot(dx, dz) || 1;
+      if (rd.course) continue;   // v66 훈련 기지 섬의 운전 코스에는 배틀로얄 차량을 두지 않는다
       const side = (Math.random() < 0.5 ? -1 : 1) * (rd.w * 0.5 + 2.2);
       const x = rd.ax + dx * t - dz / L * side, z = rd.az + dz * t + dx / L * side;
       if (Math.abs(x) > W.HALF - 30 || Math.abs(z) > W.HALF - 30) continue;
