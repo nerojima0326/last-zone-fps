@@ -34,6 +34,15 @@ const UI = G.UI = {
     this.fpsEl = $('fpsBox');
     this.fpsEl.classList.toggle('hidden', this.opts.showFps !== 'on');
     document.querySelectorAll('.ppl').forEach(p => { p.innerHTML = '<i></i>'.repeat(+p.dataset.n); });
+    // v69 메뉴 설정 탭 (매치 설정 / 화면 · 조작) — 마지막에 본 탭을 기억
+    const tabs = document.querySelectorAll('.menu-tabs button'), panes = document.querySelectorAll('.opts[data-pane]');
+    const showTab = (t) => {
+      tabs.forEach(b => { const on = b.dataset.tab === t; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+      panes.forEach(p => { p.hidden = p.dataset.pane !== t; });
+      try { localStorage.setItem('lz_menu_tab', t); } catch (e) { /* 무시 */ }
+    };
+    tabs.forEach(b => b.addEventListener('click', () => { showTab(b.dataset.tab); if (G.Audio && G.Audio.click) try { G.Audio.click('ui'); } catch (e) { /* 무시 */ } }));
+    try { const t = localStorage.getItem('lz_menu_tab'); if (t === 'gfx' || t === 'match') showTab(t); } catch (e) { /* 무시 */ }
     const modes = document.querySelectorAll('.mode');
     const setMode = (n) => {
       modes.forEach(b => b.classList.toggle('on', +b.dataset.size === n));
