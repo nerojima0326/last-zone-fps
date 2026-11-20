@@ -101,10 +101,21 @@ const Veg = G.Veg = {
     return { kind, def, gB, gL, bark, leaf, imp, w, h, crownR, tris: triCount(gB) + triCount(gL), items: [], mats: null };
   },
 
+  // v67 잎 투명도 밉 보정: 멀어질수록(밉 단계가 오를수록) 알파를 키워 alphaTest 에 잎이 숭숭 뚫리지 않게.
+  //  낮은 렌더 해상도에서 나뭇잎이 점점이 깜빡이며 보이던 주된 원인 (Ben Golus 'alpha to coverage' 글의 밉 보정)
+  alphaMip(sh) {
+    sh.fragmentShader = sh.fragmentShader.replace('#include <alphatest_fragment>', `#ifdef USE_MAP
+      { vec2 tsz = vec2(textureSize(map, 0)); vec2 ddx = dFdx(vMapUv * tsz), ddy = dFdy(vMapUv * tsz);
+        float mipL = 0.5 * log2(max(dot(ddx, ddx), dot(ddy, ddy)));
+        diffuseColor.a *= 1.0 + max(0.0, mipL) * 0.25; }
+      #endif
+      #include <alphatest_fragment>`);
+  },
   // 잎 흔들림 (인스턴스 위치마다 위상이 다르게)
   addWind(mat, amp) {
     const time = this.time;
     mat.onBeforeCompile = (sh) => {
+      this.alphaMip(sh);
       sh.uniforms.uTime = time;
       sh.vertexShader = 'uniform float uTime;\n' + sh.vertexShader.replace('#include <begin_vertex>', `#include <begin_vertex>
         #ifdef USE_INSTANCING
@@ -116,7 +127,7 @@ const Veg = G.Veg = {
         transformed.x += sin(uTime * 1.7 + wph + position.y * 0.6) * wk;
         transformed.z += cos(uTime * 1.3 + wph * 1.3 + position.x) * wk * 0.7;`);
     };
-    mat.customProgramCacheKey = () => 'ezwind' + amp;
+    mat.customProgramCacheKey = () => 'ezwind2' + amp;
   },
 
   makeImpostor(renderer, gB, gL, bark, leaf, w, h, res) {
@@ -150,6 +161,7 @@ const Veg = G.Veg = {
   hideNear(mat, uR) {
     const cam = this.cam;
     mat.onBeforeCompile = (sh) => {
+      this.alphaMip(sh);
       sh.uniforms.uCam = cam; sh.uniforms.uNearR = uR;
       sh.vertexShader = 'uniform vec3 uCam;\nuniform float uNearR;\n' + sh.vertexShader.replace('#include <begin_vertex>', `#include <begin_vertex>
         #ifdef USE_INSTANCING
@@ -157,7 +169,7 @@ const Veg = G.Veg = {
         if (distance(iw.xz, uCam.xz) < uNearR) transformed = vec3(0.0);
         #endif`);
     };
-    mat.customProgramCacheKey = () => 'imp' + (uR === this.uR ? 't' : 'b');
+    mat.customProgramCacheKey = () => 'imp2' + (uR === this.uR ? 't' : 'b');
   },
 
   // world.genVegetation 에서 호출: lists = { pine, oak, bush }, 각 항목 [x, y, z]
