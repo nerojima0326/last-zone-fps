@@ -135,3 +135,11 @@ html:not(.mobile) #fpsBox { left: 26px; top: auto; bottom: 4px; padding: 0 6px; 
 #cookTimer.idle b { font-size: 15px; top: 19px; color: rgba(255,255,255,0.8); }
 #cookTimer.hot circle.fg { stroke: #ff5a4a; }
 #cookTimer.hot b { color: #ff8a7a; }
+
+/* v66 훈련 기지: 킬하우스 타이머 · 투척 판정 글자 */
+#khTimer { position: absolute; left: 50%; top: 100px; transform: translateX(-50%); display: flex; gap: 12px; align-items: baseline; padding: 6px 16px; background: rgba(8,12,18,0.62); border-bottom: 2px solid #e8c53a; font: 600 14px 'Noto Sans KR', sans-serif; color: #dfe6ec; white-space: nowrap; pointer-events: none; }
+#khTimer.hidden { display: none; }
+#khTimer b { color: #e8c53a; letter-spacing: 2px; }
+#khTimer i { font-style: normal; font: 700 26px 'Barlow Condensed', Rajdhani, sans-serif; color: #fff; min-width: 64px; text-align: right; }
+#khTimer .bad { color: #ff8a7a; }
+#dmgNums .dn.msg { font: 800 24px 'Noto Sans KR', sans-serif; color: #ffe27a; letter-spacing: 1px; }

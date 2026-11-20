@@ -174,7 +174,7 @@ function checkMatchLifecycle() {
     const loaded = await page.evaluate(() => {
       const R = G.World.range, props = R.props;
       return { version: window.LZ_BUILD, booths: props.booths, bags: props.sandbags.length, crates: props.crates.length,
-        cases: props.ammoCases.length, targets: G.Training.targets.length,
+        cases: props.ammoCases.length, targets: G.Training.targets.filter(t => !t.kh && !t.zone).length, killhouse: G.Training.targets.filter(t => t.kh).length, grenadeTargets: G.Training.targets.filter(t => t.zone === 'grenade').length, base: !!G.World.base,
         guns: G.Training.items.filter(i => G.GUN_IDS.includes(i.kind)).length,
         attachments: G.Training.items.filter(i => i.kind.startsWith('att_')).length,
         attachmentCatalog: Object.keys(G.Attachments.catalog()).length,
@@ -184,7 +184,7 @@ function checkMatchLifecycle() {
     });
     console.log('Training assets:', JSON.stringify(loaded));
     assert.equal(loaded.booths, 4); assert(loaded.bags >= 8); assert(loaded.crates >= 4); assert(loaded.cases >= 4);
-    assert.equal(loaded.targets, 14); assert.equal(loaded.guns, 15); assert.equal(loaded.attachments, loaded.attachmentCatalog);
+    assert.equal(loaded.targets, 14); assert.equal(loaded.killhouse, 11); assert.equal(loaded.grenadeTargets, 3); assert(loaded.base); assert.equal(loaded.guns, 15); assert.equal(loaded.attachments, loaded.attachmentCatalog);
     assert.equal(loaded.importedSandbags, !process.env.RANGE_FALLBACK); assert.equal(loaded.floorTexture, !process.env.RANGE_FALLBACK);
     if (!process.env.RANGE_FALLBACK) { assert.equal(assetResponses.length, 5); assert(assetResponses.every(r => r.status === 200)); }
 
@@ -193,7 +193,7 @@ function checkMatchLifecycle() {
       const ensure = (ok, msg) => { if (!ok) throw new Error(msg); };
       const o = new THREE.Vector3(R.x + 3.2, W.heightAt(R.x + 3.2, R.line - 0.8) + 1.62, R.line - 0.8);
       let clearTargets = 0;
-      for (const target of T.targets) {
+      for (const target of T.targets.filter(t => !t.kh && !t.zone)) {
         const p = target.pivot.localToWorld(new THREE.Vector3(0, target.kind === 'gong' ? target.cy : 1.15, 0));
         const dir = p.clone().sub(o), distance = dir.length(); dir.normalize();
         ensure(!W.raycast(o, dir, distance - 0.05), 'Target sightline blocked at ' + target.d + ' m');
@@ -256,7 +256,7 @@ function checkMatchLifecycle() {
     await page.click('#trainBtn');
     // 총기 장전 팩(v51)을 뒤에서 받는 동안에도 훈련장 재입장이 끝날 때까지 기다린다
     await page.waitForFunction(() => G.Game.training && G.Training.targets.length > 0, null, { timeout: 30000, polling: 200 });
-    const repeated = await page.evaluate(() => ({ targets: G.Training.targets.length,
+    const repeated = await page.evaluate(() => ({ targets: G.Training.targets.filter(t => !t.kh && !t.zone).length,
       groups: G.scene.children.filter(c => c.name === 'training-range-props').length,
       crates: G.World.range.props.crates.length, version: window.LZ_BUILD }));
     assert.equal(repeated.targets, loaded.targets); assert.equal(repeated.groups, 1);

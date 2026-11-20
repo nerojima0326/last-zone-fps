@@ -45,9 +45,11 @@ const TOWN_DEFS = [
   { name: '목장', x: 120, z: 260, r: 56, type: 'farm' },
   { name: '채석장', x: 470, z: -230, r: 50, type: 'quarry' },
   { name: '남서 마을', x: -560, z: 300, r: 44, type: 'village' },
-  // 훈련장 (평평하게 고른 사격장, 사격 방향 -z)
-  { name: '사격장', x: -70, z: 380, r: 72, type: 'range' }
+  // v66 훈련 기지: 본섬과 떨어진 남서쪽 바다 위 섬 (사격장 · 운전 코스 · 킬하우스 · 투척 훈련장). 사격 방향 -z
+  { name: '훈련 기지', x: -735, z: 660, r: 72, type: 'range' }
 ];
+// v66 훈련 기지 섬: 이 사각형 안은 높이 4 m 로 평평, 밖으로 32 m 에 걸쳐 바다로 내려간다 (본섬 해안과 60 m 넘게 떨어짐)
+const BASE = { x0: -800, x1: -572, z0: 548, z1: 798, h: 4 };
 // 큰 산 (중심, 반지름, 높이)
 const MOUNTAINS = [
   { name: '북동 산맥', x: 400, z: -470, r: 300, h: 115 },
@@ -177,7 +179,11 @@ const W = G.World = {
       const st = 11, t = h / st, f = t - Math.floor(t);
       h = U.lerp(h, (Math.floor(t) + U.smoothstep(0.5, 0.78, f)) * st, tm * 0.92);
     }
-    return h * island + (-14) * (1 - island);
+    const hh = h * island + (-14) * (1 - island);
+    // 훈련 기지 섬
+    const bx = Math.max(BASE.x0 - x, 0, x - BASE.x1), bz = Math.max(BASE.z0 - z, 0, z - BASE.z1), bd = Math.hypot(bx, bz);
+    if (bd < 32) { const k = U.smoothstep(32, 4, bd); return Math.max(hh, U.lerp(-14, BASE.h, k)); }
+    return hh;
   },
   genHeights() {
     const H = this.heights = new Float32Array(N * N);
@@ -856,6 +862,7 @@ const W = G.World = {
     }
   },
   loot(b, lx, ly, lz) {
+    if (this.noLoot) return;   // v66 훈련 기지 건물에는 전리품 자리를 만들지 않는다
     const p = this.tf(b, lx, lz);
     this.lootSpots.push({ x: p[0], y: b.y + ly, z: p[1] });
   },
@@ -1340,7 +1347,7 @@ const W = G.World = {
   genTowns() {
     const r = this.rnd;
     for (const t of this.towns) {
-      if (t.type === 'range') { this.buildRange(t); continue; }
+      if (t.type === 'range') { this.buildRange(t); this.noLoot = true; this.buildBase(t); this.noLoot = false; continue; }
       const content = TOWN_CONTENT[t.type];
       for (const [kind, count] of content) {
         let placed = 0;
@@ -1426,6 +1433,99 @@ const W = G.World = {
       this.footprints.push({ minX: c.x0 - 7, maxX: c.x1 + 7, minZ: c.z0 - 7, maxZ: c.z1 + 7, kind: 'range' });
       this.footprints.push({ minX: c.spurX - 2, maxX: c.x0, minZ: c.z1 - 6, maxZ: c.z1 + 6, kind: 'range' });
     }
+  },
+  // v66 훈련 기지: 둘레 방벽·감시탑·막사·컨테이너·헬기장, 킬하우스, 투척 훈련장. 표적·표지는 training.js 가 훈련 모드에서 올린다
+  buildBase(t) {
+    const y = t.h, b = this.ctx(0, y, 0, 0);
+    const conc = C(0xb9b5ac), hesco = C(0xc4b48a), wallC = C(0xa9a59b), dark = C(0x3a3c3a), metal = C(0x7d838a);
+    const B = this.base = {};
+    // ---- 둘레 방벽 (헤스코 방벽, 높이 2.4 m) ----
+    const P = B.wall = { x0: -794, x1: -576, z0: 552, z1: 790 }, T = 1.1, H = 2.4;
+    this.boxMM(b, P.x0, -0.5, P.z0, P.x1, H, P.z0 + T, 'sandbag', hesco);
+    this.boxMM(b, P.x0, -0.5, P.z1 - T, P.x1, H, P.z1, 'sandbag', hesco);
+    this.boxMM(b, P.x0, -0.5, P.z0 + T, P.x0 + T, H, P.z1 - T, 'sandbag', hesco);
+    this.boxMM(b, P.x1 - T, -0.5, P.z0 + T, P.x1, H, P.z1 - T, 'sandbag', hesco);
+    // 방벽 위 철망 기둥
+    for (let x = P.x0 + 6; x < P.x1; x += 12) for (const z of [P.z0 + 0.55, P.z1 - 0.55]) this.boxMM(b, x - 0.04, H, z - 0.04, x + 0.04, H + 0.9, z + 0.04, 'metal', dark, NC);
+    for (let z = P.z0 + 6; z < P.z1; z += 12) for (const x of [P.x0 + 0.55, P.x1 - 0.55]) this.boxMM(b, x - 0.04, H, z - 0.04, x + 0.04, H + 0.9, z + 0.04, 'metal', dark, NC);
+    // 네 모서리 감시탑
+    for (const [x, z, r] of [[P.x0 + 4, P.z0 + 4, 0], [P.x1 - 4, P.z0 + 4, 0], [P.x0 + 4, P.z1 - 12, 2], [P.x1 - 4, P.z1 - 12, 2]]) this.tower(this.ctx(x, y, z, r));   // 계단이 안쪽으로
+    // ---- 북쪽 숙영지 (운전 코스 위): 막사 둘·컨테이너·헬기장·국기 게양대 ----
+    this.barracks(this.ctx(-668, y + 0.1, 568, 0), 16, 7);
+    this.barracks(this.ctx(-648, y + 0.1, 568, 0), 16, 7);
+    this.boxMM(b, -677, -0.4, 563.8, -639, 0.1, 572.2, 'concrete', conc, NC);
+    this.containers(this.ctx(-622, y, 566, 0));
+    this.containers(this.ctx(-600, y, 590, 1));
+    this.sandbags(this.ctx(-630, y, 600, 0));
+    B.heli = { x: -606, z: 566, r: 8 };
+    this.cyl(b, B.heli.x, -0.4, B.heli.z, B.heli.r, B.heli.r, 0.46, 32, 'concrete', C(0x8e8c86));
+    this.cyl(b, -656, 0, 586, 0.07, 0.09, 9, 8, 'metal', C(0xd8d8d8), true);
+    B.flag = { x: -656, y: y + 9, z: 586 };
+    this.footprints.push({ minX: -680, maxX: -636, minZ: 562, maxZ: 574, kind: 'pad' });
+    // ---- 킬하우스 (지붕 없는 단층 4 방) : 북쪽 문으로 들어가 NE → SE → SW → NW → 북쪽 문으로 나온다 ----
+    const K = B.kill = { x0: -790, x1: -760, z0: 740, z1: 764, xm: -775, zm: 752 }, KH = 3.0, KT = 0.25;
+    K.entry = { x: -766, z: K.z0 }; K.exit = { x: -784, z: K.z0 };
+    this.boxMM(b, K.x0, -0.3, K.z0, K.x1, 0.06, K.z1, 'concrete', conc, NC);
+    this.wallX(b, K.x0, K.x1, K.z0 + KT / 2, KT, 0, KH, [this.door(K.entry.x, 1.6), this.door(K.exit.x, 1.6)], 'concrete', wallC);
+    this.wallX(b, K.x0, K.x1, K.z1 - KT / 2, KT, 0, KH, [this.win(-781, 1.6), this.win(-769, 1.6)], 'concrete', wallC);
+    this.wallZ(b, K.z0 + KT, K.z1 - KT, K.x0 + KT / 2, KT, 0, KH, [this.win(752, 1.4)], 'concrete', wallC);
+    this.wallZ(b, K.z0 + KT, K.z1 - KT, K.x1 - KT / 2, KT, 0, KH, [this.win(752, 1.4)], 'concrete', wallC);
+    // 가운데 칸막이: 동·서는 남쪽 문 하나로만, 북·남은 방마다 문 하나
+    this.wallZ(b, K.z0 + KT, K.z1 - KT, K.xm, KT, 0, KH, [this.door(759.5, 1.4)], 'concrete', wallC);
+    this.wallX(b, K.xm + KT / 2, K.x1 - KT, K.zm, KT, 0, KH, [this.door(-767, 1.4)], 'concrete', wallC);
+    this.wallX(b, K.x0 + KT, K.xm - KT / 2, K.zm, KT, 0, KH, [this.door(-782, 1.4)], 'concrete', wallC);
+    // 엄폐물 (책상·상자·낮은 벽)
+    const crate = C(0x7a6040);
+    this.boxMM(b, -764.5, 0, 745.5, -762.5, 1.0, 747, 'crate', crate);
+    this.boxMM(b, -771.5, 0, 748.5, -769.5, 0.9, 749.5, 'crate', crate);
+    this.boxMM(b, -770, 0, 756, -766, 1.1, 756.4, 'concrete', wallC);
+    this.boxMM(b, -763, 0, 759.5, -761.5, 1.3, 761, 'crate', crate);
+    this.boxMM(b, -786, 0, 756.5, -784, 0.8, 758.5, 'wood', C(0x6b5038));
+    this.boxMM(b, -781, 0, 760, -778, 1.0, 760.5, 'concrete', wallC);
+    this.boxMM(b, -788.5, 0, 744, -786.5, 1.2, 745.5, 'crate', crate);
+    this.boxMM(b, -779.5, 0, 747, -777.5, 0.9, 748.5, 'crate', crate);
+    // 가운데 벽 위 관측 통로 (보기만)
+    this.boxMM(b, K.xm - 0.7, KH, K.z0, K.xm + 0.7, KH + 0.12, K.z1, 'metal', metal, NC);
+    this.footprints.push({ minX: K.x0, maxX: K.x1, minZ: K.z0, maxZ: K.z1, kind: 'pad' });
+    // 출발 대기 바닥
+    this.boxMM(b, -770, -0.3, 734, -762, 0.04, 739.8, 'concrete', C(0x8a8780), NC);
+    // ---- 투척 훈련장: 던지는 자리(모래주머니 낮은 벽) → 15 m 창문 벙커 · 25 m 참호 · 36 m 원형 과녁 (+z 로 던진다) ----
+    const Gt = B.grenade = { x0: -750, x1: -702, line: 741 };
+    this.boxMM(b, Gt.x0, -0.3, 734, Gt.x1, 0.06, Gt.line, 'concrete', conc, NC);
+    this.boxMM(b, Gt.x0, 0, Gt.line, Gt.x1, 0.95, Gt.line + 0.7, 'sandbag', hesco);
+    for (const x of [-738, -726, -714]) this.boxMM(b, x - 0.05, 0.06, 734.5, x + 0.05, 0.08, Gt.line, 'concrete', C(0xe8e4d8), NC);
+    // 창문 벙커 (안쪽 3.6 × 3.6, 정면 창 1.2 × 0.8)
+    const Bk = Gt.bunker = { x0: -741.8, x1: -738.2, z0: 756.2, z1: 759.8, y0: y, y1: y + 2.6, win: { x: -740, y0: 1.1, y1: 1.9 } };
+    this.wallX(b, Bk.x0 - 0.3, Bk.x1 + 0.3, Bk.z0 - 0.15, 0.3, 0, 2.6, [{ a: -740.6, b: -739.4, y0: 1.1, y1: 1.9, win: true }], 'concrete', wallC);
+    this.wallX(b, Bk.x0 - 0.3, Bk.x1 + 0.3, Bk.z1 + 0.15, 0.3, 0, 2.6, [], 'concrete', wallC);
+    this.wallZ(b, Bk.z0, Bk.z1, Bk.x0 - 0.15, 0.3, 0, 2.6, [], 'concrete', wallC);
+    this.wallZ(b, Bk.z0, Bk.z1, Bk.x1 + 0.15, 0.3, 0, 2.6, [], 'concrete', wallC);
+    this.boxMM(b, Bk.x0 - 0.4, 2.6, Bk.z0 - 0.4, Bk.x1 + 0.4, 2.85, Bk.z1 + 0.4, 'concrete', conc);
+    // 참호 (모래주머니 두 줄 사이)
+    const Tr = Gt.trench = { x0: -732, x1: -716, z0: 765.6, z1: 767.4 };
+    this.boxMM(b, Tr.x0, 0, Tr.z0 - 0.7, Tr.x1, 0.9, Tr.z0, 'sandbag', hesco);
+    this.boxMM(b, Tr.x0, 0, Tr.z1, Tr.x1, 0.9, Tr.z1 + 0.7, 'sandbag', hesco);
+    for (const x of [Tr.x0 - 0.7, Tr.x1]) this.boxMM(b, x, 0, Tr.z0 - 0.7, x + 0.7, 0.9, Tr.z1 + 0.7, 'sandbag', hesco);
+    Gt.rings = { x: -712, z: 777, r: [1.5, 3, 4.5] };
+    this.footprints.push({ minX: Gt.x0, maxX: Gt.x1, minZ: 734, maxZ: Gt.line + 1, kind: 'pad' });
+    // 길: 사격대 → 킬하우스·투척 훈련장
+    this.boxMM(b, -752, -0.3, 722, -748, 0.03, 734, 'concrete', C(0x8f8b83), NC);
+    this.footprints.push({ minX: -752, maxX: -748, minZ: 722, maxZ: 734, kind: 'pad' });
+    // ---- 남동쪽 정비창: 격납고 · 연료 탱크 · 컨테이너 · 모래주머니 진지 ----
+    this.boxMM(b, -653, -0.4, 752.5, -627, 0.1, 767.5, 'concrete', conc, NC);
+    this.warehouse(this.ctx(-640, y + 0.1, 760, 0), 24, 14);
+    this.tank(this.ctx(-596, y, 745, 0));
+    this.containers(this.ctx(-610, y, 774, 0));
+    this.containers(this.ctx(-668, y, 778, 1));
+    for (const [x, z, r] of [[-690, 753, 0], [-672, 604, 1], [-700, 588, 0], [-770, 724, 1]]) this.sandbags(this.ctx(x, y, z, r));
+    // ---- 기지 도로 (콘크리트): 사격대 ↔ 투척장 ↔ 정비창, 숙영지 ↔ 운전 코스 ----
+    const road = (x0, z0, x1, z1) => { this.boxMM(b, x0, -0.3, z0, x1, 0.03, z1, 'concrete', C(0x8f8b83), NC); this.footprints.push({ minX: x0, maxX: x1, minZ: z0, maxZ: z1, kind: 'pad' }); };
+    road(-702, 744, -653, 748.5);
+    road(-658, 572, -654, 620);
+    road(-790, 732, -752, 736);
+    road(-627, 758, -604, 762);
+    // 섬 전체: 나무·바위·집이 들어오지 않게
+    this.footprints.push({ minX: P.x0 - 4, maxX: P.x1 + 4, minZ: P.z0 - 4, maxZ: P.z1 + 4, kind: 'range' });
   },
   genWild() {
     const r = this.rnd;
