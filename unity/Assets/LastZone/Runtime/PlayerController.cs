@@ -32,23 +32,32 @@ namespace LastZone
             eye = standEye;
         }
 
-        void Start() { LockCursor(true); }
+        // 시작할 땐 잡지 않는다: 첫 클릭은 '마우스 잡기'로만 쓰이고 총은 쏘지 않게
+        void Start() { LockCursor(false); }
+
+        // 마우스를 잡는 순간 커서가 가운데로 순간 이동하며 큰 이동량이 들어온다 → 잡은 뒤 몇 프레임은 시선·사격을 무시
+        public static int lockFrame = -100;
 
         public static void LockCursor(bool on)
         {
+            if (on && Cursor.lockState != CursorLockMode.Locked) lockFrame = Time.frameCount;
             Cursor.lockState = on ? CursorLockMode.Locked : CursorLockMode.None;
             Cursor.visible = !on;
         }
 
+        // 에디터에선 재생 시작 때 이미 '잠김' 상태라, 게임 화면을 처음 클릭하는 순간 포커스만 바뀐다 → 그때도 몇 프레임 무시
+        void OnApplicationFocus(bool f) { if (f) lockFrame = Time.frameCount; }
+
         void Update()
         {
+            if (!Application.isFocused) lockFrame = Time.frameCount;
             float dt = Time.deltaTime;
             if (LZInput.Down(K.Escape)) LockCursor(false);
             if (Cursor.lockState != CursorLockMode.Locked && LZInput.FirePressed()) LockCursor(true);
             bool locked = Cursor.lockState == CursorLockMode.Locked;
 
             // ---- 시선 ----
-            if (locked)
+            if (locked && Time.frameCount - lockFrame > 3)
             {
                 Vector2 md = LZInput.MouseDelta();
                 float k = 0.0022f * sensitivity * Mathf.Lerp(1f, 0.75f, ads);   // 조준 중엔 조금 느리게

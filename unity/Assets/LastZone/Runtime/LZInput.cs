@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 namespace LastZone
 {
     // 새 입력 시스템(Input System 패키지)과 예전 입력 관리자 둘 다에서 돌아가게 감싼다
-    public enum K { W, A, S, D, Space, LeftShift, LeftCtrl, C, R, B, T, F1, F2, F3, Escape, Alpha1, Alpha2, Alpha3, Up, Down }
+    public enum K { W, A, S, D, Space, LeftShift, LeftCtrl, C, R, B, T, F1, F2, F3, F4, Escape, Alpha1, Alpha2, Alpha3, Up, Down }
 
     public static class LZInput
     {
@@ -103,6 +103,7 @@ namespace LastZone
                 case K.F1: return Key.F1;
                 case K.F2: return Key.F2;
                 case K.F3: return Key.F3;
+                case K.F4: return Key.F4;
                 case K.Escape: return Key.Escape;
                 case K.Alpha1: return Key.Digit1;
                 case K.Alpha2: return Key.Digit2;
@@ -130,6 +131,7 @@ namespace LastZone
                 case K.F1: return KeyCode.F1;
                 case K.F2: return KeyCode.F2;
                 case K.F3: return KeyCode.F3;
+                case K.F4: return KeyCode.F4;
                 case K.Escape: return KeyCode.Escape;
                 case K.Alpha1: return KeyCode.Alpha1;
                 case K.Alpha2: return KeyCode.Alpha2;

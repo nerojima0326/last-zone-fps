@@ -29,7 +29,7 @@ namespace LastZone
         float adsRaw, nextFire, bloom, recoilAcc, lastShot = -9f, switchT = 1f, flashT, cycleT = -1f;
         bool fullAuto = true, shot0;
         Vector3 swayRot, kickPos; float kickRot, kickRoll;
-        public bool zeroMode, centerDot;
+        public bool zeroMode, centerDot, aimToggle;
 
         // 장전 상태
         enum RS { None, Mag, ShellOpen, ShellLoad, ShellClose }
@@ -172,7 +172,7 @@ namespace LastZone
         void Update()
         {
             float dt = Time.deltaTime;
-            bool locked = Cursor.lockState == CursorLockMode.Locked;
+            bool locked = Cursor.lockState == CursorLockMode.Locked && Time.frameCount - PlayerController.lockFrame > 3;   // 화면을 눌러 마우스를 잡는 클릭은 쏘지 않는다
             var s = slots[cur]; var def = s.def;
 
             if (locked)
@@ -186,11 +186,12 @@ namespace LastZone
                 if (LZInput.Down(K.B) && def.auto) fullAuto = !fullAuto;
                 if (LZInput.Down(K.F2)) zeroMode = !zeroMode;
                 if (LZInput.Down(K.F3)) centerDot = !centerDot;
+                if (LZInput.Down(K.F4)) aimToggle = !aimToggle;   // 조준 고정 (누르고 있지 않아도)
                 s = slots[cur]; def = s.def;
             }
 
             switchT = Mathf.Min(1f, switchT + dt / 0.35f);
-            bool aiming = locked && LZInput.AimHeld() && rs != RS.Mag && rs != RS.ShellOpen && !player.sprinting && switchT > 0.5f;
+            bool aiming = locked && (LZInput.AimHeld() || aimToggle) && rs != RS.Mag && rs != RS.ShellOpen && !player.sprinting && switchT > 0.5f;
             adsRaw = Mathf.MoveTowards(adsRaw, aiming ? 1f : 0f, dt / def.adsTime);
             player.ads = Ads;
             player.blockSprint = locked && LZInput.FireHeld();
@@ -219,7 +220,7 @@ namespace LastZone
             // ---- 사격 ----
             if (locked && switchT >= 1f)
             {
-                bool wantFire = def.auto && fullAuto ? LZInput.FireHeld() : LZInput.FirePressed();
+                bool wantFire = def.auto && fullAuto ? (LZInput.FireHeld() || LZInput.FirePressed()) : LZInput.FirePressed();   // 짧게 톡 눌러도 한 발은 나가게
                 if (wantFire && (rs == RS.ShellLoad || rs == RS.ShellOpen) && s.mag > 0) CancelReload(true);   // 한 발씩 넣는 중엔 쏘면 멈춘다
                 if (wantFire && rs == RS.None && Time.time >= nextFire && !player.sprinting)
                 {
@@ -419,7 +420,7 @@ namespace LastZone
             Quaternion rot = Quaternion.Euler(0f, -2.5f * (1f - a), 0f);
 
             // 시선 흔들림 (마우스 따라 늦게)
-            Vector2 md = Cursor.lockState == CursorLockMode.Locked ? LZInput.MouseDelta() : Vector2.zero;
+            Vector2 md = Cursor.lockState == CursorLockMode.Locked && Time.frameCount - PlayerController.lockFrame > 3 ? LZInput.MouseDelta() : Vector2.zero;
             Vector3 want = new Vector3(Mathf.Clamp(md.y * 0.04f, -4f, 4f), Mathf.Clamp(-md.x * 0.04f, -4f, 4f), Mathf.Clamp(md.x * 0.06f, -5f, 5f));
             swayRot = Vector3.Lerp(swayRot, want, 1f - Mathf.Exp(-9f * dt));
             rot *= Quaternion.Euler(swayRot * w);

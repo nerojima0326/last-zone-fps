@@ -76,7 +76,7 @@ namespace LastZone.EditorTools
             // ---- 플레이어 ----
             var playerGo = new GameObject("Player");
             playerGo.layer = 2;   // Ignore Raycast: 내 총알·영점 레이가 나를 맞히지 않게
-            playerGo.transform.position = new Vector3(0f, 0.05f, -2f);
+            playerGo.transform.position = new Vector3(0f, 0.05f, 0.3f);   // 사격대 바로 뒤
             var cc = playerGo.AddComponent<CharacterController>();
             cc.height = 1.8f; cc.radius = 0.35f; cc.center = new Vector3(0f, 0.9f, 0f); cc.stepOffset = 0.4f;
             var headT = new GameObject("Head").transform;
