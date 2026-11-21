@@ -1,6 +1,6 @@
 /* v69 첫 화면(메뉴) 정리
    · 왼쪽: 로고 / (스크롤) 모드 + 설정 탭 / 늘 보이는 시작 버튼 줄
-   · 오른쪽: 조작법을 두 칸으로 압축해 화면 높이 안에 (넘치면 카드 안에서 스크롤)
+   · 조작법은 '조작법' 버튼으로 여는 창으로 (메뉴 옆에 늘 띄우지 않는다)
    · 낮은 화면(720p)·휴대폰에서도 시작 버튼이 화면 밖으로 밀려나지 않게 */
 
 #menu { align-items: stretch; padding: 0 calc(var(--vw, 1vw) * 5); gap: 32px; }
@@ -58,7 +58,7 @@
 /* 늘 보이는 버튼 줄 */
 #menu .menu-foot { flex: none; padding-top: 14px; }
 #menu #startBtn { padding: clamp(12px, 2.2vh, 18px); font-size: clamp(21px, 3vh, 26px); }
-#menu .foot-row { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: 8px; margin-top: 10px; }
+#menu .foot-row { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; margin-top: 10px; }
 #menu .foot-row button {
   width: auto; margin: 0; padding: 11px 6px; font-size: 15px; letter-spacing: 1px; white-space: nowrap;
   border-radius: 0 !important; font-family: var(--head); font-weight: 700; color: #f1efe6;
@@ -68,20 +68,32 @@
 #menu .foot-row #trainBtn { border-color: rgba(230,210,122,0.6); }
 #menu .foot-row button:hover { background: rgba(255,255,255,0.14) !important; }
 
-/* ---------- 오른쪽 ---------- */
-#menu .menu-right {
-  width: 380px; align-self: center;
-  max-height: calc(var(--vh, 1vh) * 100 - 48px); overflow-y: auto; overflow-x: hidden;
-  scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) transparent; gap: 10px;
+/* ---------- 조작법 창 ('조작법' 버튼으로 연다) ---------- */
+#menu .help-modal {
+  position: fixed; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center;
+  background: rgba(4, 5, 6, 0.6); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  animation: helpIn .14s ease-out;
 }
-#menu .menu-right .card { padding: 14px 16px; }
-#menu .menu-right .card-title { margin-bottom: 10px; }
-#menu .keys { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; font-size: 12.5px; }
+#menu .help-modal.hidden { display: none; }
+@keyframes helpIn { from { opacity: 0; } to { opacity: 1; } }
+#menu .help-box {
+  width: min(560px, calc(100vw - 32px)); max-height: calc(var(--vh, 1vh) * 100 - 48px);
+  overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; gap: 10px;
+  padding: 16px; background: rgba(12, 14, 16, 0.94); border: 1px solid rgba(255,255,255,0.14);
+  scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+#menu .help-head { display: flex; align-items: center; justify-content: space-between; padding: 0 2px 4px; }
+#menu .help-head b { font-family: var(--head); font-size: 20px; letter-spacing: 4px; color: var(--accent); }
+#menu .help-head button { width: 34px; height: 34px; font-size: 16px; color: #d8d8d2; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.16); }
+#menu .help-head button:hover { background: rgba(255,255,255,0.16); }
+#menu .help-box .card { padding: 14px 16px; background: rgba(255,255,255,0.03); }
+#menu .help-head + .card .card-title { display: none; }   /* 창 제목과 겹침 */
+#menu .help-box .card-title { margin-bottom: 10px; }
+#menu .keys { display: grid; grid-template-columns: 1fr 1fr; gap: 7px 16px; font-size: 13px; }
 #menu .keys div { gap: 4px; line-height: 1.25; min-width: 0; }
 #menu .keys kbd { flex: none; }
-/* 긴 설명은 한 줄 전체 */
 #menu .keys div.wide { grid-column: 1 / -1; }
-#menu .throw-info { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; font-size: 12.5px; }
+#menu .throw-info { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; font-size: 13px; }
 #menu .range-credits { padding: 0 4px; }
 
 /* 키 높이가 낮은 화면 (노트북 720p 등) */
@@ -92,15 +104,14 @@
   #menu .mode-note { margin: 8px 2px 10px; }
   #menu .opts { gap: 5px; }
   #menu .opt { min-height: 30px; }
-  #menu .keys, #menu .throw-info { font-size: 12px; gap: 4px 12px; }
 }
 
 /* 좁은 창: 조작법은 숨기고 왼쪽만 가운데로 */
 @media (max-width: 980px) {
   #menu { justify-content: center; }
   #menu .menu-shade { background: rgba(6, 7, 8, 0.72); }
-  #menu .menu-right { display: none; }
   #menu .menu-left { width: 600px; max-width: 100%; }
+  #menu .keys, #menu .throw-info { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) {
   #menu { padding: 0 14px; }
@@ -117,3 +128,4 @@
   #menu .foot-row button { font-size: 14px; padding: 10px 4px; }
 }
 html.mobile #menu .menu-left { width: 640px; max-width: 100%; }
+html.mobile #menu .no-touch { display: none; }   /* 휴대폰은 화면 버튼이라 키 설명이 필요 없다 */

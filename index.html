@@ -173,13 +173,17 @@
       <div class="foot-row">
         <button id="trainBtn">훈련장 <small>혼자 사격 연습</small></button>
         <button id="statsBtn">전적 · 업적</button>
+        <button id="helpBtn" class="no-touch">조작법</button>
         <button id="settingsBtn">설정 <small>감도 · 시야 · 소리 · 키</small></button>
       </div>
       <button id="touchLayoutBtn2" class="ghost touch-only" style="margin-top:10px;width:100%;padding:12px;border-radius:10px;font-size:17px;font-weight:700;color:#fff;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18)">휴대폰 버튼 위치 바꾸기</button>
     </div>
   </div>
 
-  <div class="menu-right">
+  <!-- v69 조작법은 메뉴 옆에 늘 띄우지 않고 '조작법' 버튼으로 연다 -->
+  <div id="helpModal" class="help-modal hidden" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="menu-right help-box">
+    <div class="help-head"><b id="helpTitle">조작법</b><button id="helpClose" type="button" aria-label="닫기">✕</button></div>
     <div class="card">
       <div class="card-title">조작법</div>
       <div class="keys">
@@ -225,6 +229,7 @@
       <p>G-18 1인칭 모델·애니메이션 — Glock 17 FPS 모델 (출처 확인 중).</p>
       <p>그 밖의 출처: 저장소의 <code>assets/CREDITS.md</code></p>
     </details>
+  </div>
   </div>
 </div>
 

@@ -43,6 +43,15 @@ const UI = G.UI = {
     };
     tabs.forEach(b => b.addEventListener('click', () => { showTab(b.dataset.tab); if (G.Audio && G.Audio.click) try { G.Audio.click('ui'); } catch (e) { /* 무시 */ } }));
     try { const t = localStorage.getItem('lz_menu_tab'); if (t === 'gfx' || t === 'match') showTab(t); } catch (e) { /* 무시 */ }
+    // v69 조작법 창 — 버튼으로 열고 ✕ · 바깥 클릭 · Esc 로 닫는다
+    const help = $('helpModal');
+    if (help) {
+      const close = () => help.classList.add('hidden');
+      $('helpBtn').addEventListener('click', () => { help.classList.remove('hidden'); G.Audio.init(); G.Audio.click('ui'); });
+      $('helpClose').addEventListener('click', close);
+      help.addEventListener('click', e => { if (e.target === help) close(); });
+      addEventListener('keydown', e => { if (e.code === 'Escape' && !help.classList.contains('hidden')) { e.stopPropagation(); close(); } }, true);
+    }
     const modes = document.querySelectorAll('.mode');
     const setMode = (n) => {
       modes.forEach(b => b.classList.toggle('on', +b.dataset.size === n));
