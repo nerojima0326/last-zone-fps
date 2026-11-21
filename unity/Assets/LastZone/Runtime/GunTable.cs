@@ -9,6 +9,12 @@ namespace LastZone
     {
         public static readonly List<GunDef> All = new List<GunDef>
         {
+            new GunDef { id = "ar7", displayName = "AR-7 돌격소총", shortName = "AR-7", cls = GunClass.Rifle, action = ActionType.Auto, reloadType = ReloadType.Mag,
+                auto = true, pellets = 1, mag = 30, clip = 0, dmg = 24f, head = 2.2f, rpm = 680f, cycle = 0f,
+                reload = 1.8f, clipReload = 0f, spread = 0.024f, adsSpread = 0.0022f, move = 0.035f, bloom = 0.005f, bloomMax = 0.03f,
+                recoilV = 0.022475f, recoilH = 0.008775f, vel = 880f, adsFov = 46f, kick = 0.7425f, range = 650f,
+                falloffA = 110f, falloffB = 0.85f, adsTime = 0.17f, tracerLen = 9f,
+                muzzleUp = 0.05f, muzzleFwd = 0.55f, sightHeight = 0.1f, sightFwd = -0.05f, eyeDist = 0.16f },
             new GunDef { id = "sc17", displayName = "SC-17 전투소총", shortName = "SC-17", cls = GunClass.Rifle, action = ActionType.Auto, reloadType = ReloadType.Mag,
                 auto = true, pellets = 1, mag = 20, clip = 0, dmg = 34f, head = 2.2f, rpm = 540f, cycle = 0f,
                 reload = 1.92f, clipReload = 0f, spread = 0.026f, adsSpread = 0.0024f, move = 0.04f, bloom = 0.008f, bloomMax = 0.04f,
@@ -63,6 +69,12 @@ namespace LastZone
                 recoilV = 0.06525f, recoilH = 0.02025f, vel = 400f, adsFov = 60f, kick = 1.62f, range = 110f,
                 falloffA = 5f, falloffB = 26f, adsTime = 0.17f, tracerLen = 4f,
                 muzzleUp = 0.05533f, muzzleFwd = 0.6126f, sightHeight = 0.1843f, sightFwd = -0.075f, eyeDist = 0.2f },
+            new GunDef { id = "p92", displayName = "P-92 권총", shortName = "P-92", cls = GunClass.Pistol, action = ActionType.Semi, reloadType = ReloadType.Mag,
+                auto = false, pellets = 1, mag = 15, clip = 0, dmg = 26f, head = 2.0f, rpm = 420f, cycle = 0f,
+                reload = 1.16f, clipReload = 0f, spread = 0.015f, adsSpread = 0.0045f, move = 0.022f, bloom = 0.012f, bloomMax = 0.035f,
+                recoilV = 0.0435f, recoilH = 0.01215f, vel = 380f, adsFov = 64f, kick = 1.215f, range = 320f,
+                falloffA = 35f, falloffB = 0.7f, adsTime = 0.17f, tracerLen = 5f,
+                muzzleUp = 0.02f, muzzleFwd = 0.2f, sightHeight = 0.032f, sightFwd = -0.08f, eyeDist = 0.34f },
             new GunDef { id = "g18", displayName = "G-18 자동권총", shortName = "G-18", cls = GunClass.Pistol, action = ActionType.Auto, reloadType = ReloadType.Mag,
                 auto = true, pellets = 1, mag = 20, clip = 0, dmg = 18f, head = 1.9f, rpm = 1100f, cycle = 0f,
                 reload = 1.28f, clipReload = 0f, spread = 0.022f, adsSpread = 0.008f, move = 0.022f, bloom = 0.006f, bloomMax = 0.04f,

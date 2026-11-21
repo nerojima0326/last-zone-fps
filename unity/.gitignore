@@ -14,3 +14,6 @@
 .vs/
 .idea/
 .DS_Store
+
+# 섬 맵 데이터 (130MB+): unity/Tools/map-export 로 웹판에서 다시 뽑는다
+/Assets/LastZone/Map/

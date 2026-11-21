@@ -13,7 +13,7 @@ namespace LastZone
             public string id;
             public GameObject model;           // glTFast 로 가져온 .glb (없으면 상자 모양 대체 총)
             public AudioClip shot0, shot1;     // 내 총 소리 (번갈아)
-            public AudioClip magout, magin, open, close, dry, shell, port, up, down;
+            public AudioClip magout, magin, open, close, dry, shell, port, up, down, near, far;
         }
 
         public List<Entry> entries = new List<Entry>();

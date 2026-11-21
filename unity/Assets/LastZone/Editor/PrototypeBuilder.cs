@@ -8,7 +8,7 @@ namespace LastZone.EditorTools
     //  (씬 파일을 손으로 만들지 않아도 되게 — 다시 누르면 최신 코드로 다시 만든다)
     public static class PrototypeBuilder
     {
-        const string Root = "Assets/LastZone", Gen = Root + "/Generated", ScenePath = Root + "/Scenes/Prototype.unity";
+        internal const string Root = "Assets/LastZone", Gen = Root + "/Generated", ScenePath = Root + "/Scenes/Prototype.unity";
         static readonly float[] Distances = { 10f, 25f, 50f, 75f, 100f, 150f, 200f, 300f };
 
         [MenuItem("LAST ZONE/프로토타입 씬 만들기", priority = 0)]
@@ -73,34 +73,8 @@ namespace LastZone.EditorTools
             Sign(env, font, "35m", new Vector3(6f, 0.25f, 34.4f), 35f);
             Sign(env, font, "60m", new Vector3(5f, 0.25f, 59.4f), 60f);
 
-            // ---- 플레이어 ----
-            var playerGo = new GameObject("Player");
-            playerGo.layer = 2;   // Ignore Raycast: 내 총알·영점 레이가 나를 맞히지 않게
-            playerGo.transform.position = new Vector3(0f, 0.05f, 0.3f);   // 사격대 바로 뒤
-            var cc = playerGo.AddComponent<CharacterController>();
-            cc.height = 1.8f; cc.radius = 0.35f; cc.center = new Vector3(0f, 0.9f, 0f); cc.stepOffset = 0.4f;
-            var headT = new GameObject("Head").transform;
-            headT.SetParent(playerGo.transform, false);
-            headT.localPosition = new Vector3(0f, 1.62f, 0f);
-            var cam = headT.gameObject.AddComponent<Camera>();
-            headT.gameObject.tag = "MainCamera";
-            cam.nearClipPlane = 0.01f; cam.farClipPlane = 1500f; cam.fieldOfView = 75f;
-            headT.gameObject.AddComponent<AudioListener>();
-            var audio = headT.gameObject.AddComponent<AudioSource>();
-            audio.playOnAwake = false; audio.spatialBlend = 0f;
-            var viewRoot = new GameObject("ViewRoot").transform;
-            viewRoot.SetParent(headT, false);
-            var pc = playerGo.AddComponent<PlayerController>();
-            pc.head = headT; pc.cam = cam;
-            var wc = playerGo.AddComponent<WeaponController>();
-            wc.player = pc; wc.cam = cam; wc.viewRoot = viewRoot; wc.library = lib; wc.audioSrc = audio; wc.flashMat = mFlash;
-
-            // ---- 시스템 ----
-            var sys = new GameObject("Systems");
-            var bal = sys.AddComponent<Ballistics>();
-            bal.tracerMat = mTracer; bal.impactMat = mImpact;
-            var hud = sys.AddComponent<Hud>();
-            hud.weapons = wc; hud.player = pc;
+            // ---- 플레이어 · 시스템 ----
+            CreatePlayer(new Vector3(0f, 0.05f, 0.3f), lib, mFlash, mTracer, mImpact);   // 사격대 바로 뒤
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             AddToBuild(ScenePath);
@@ -112,8 +86,40 @@ namespace LastZone.EditorTools
                 "확인");
         }
 
+        // 플레이어(이동·시선·총) + 시스템(총알·HUD) — 다른 씬 만들기(섬 맵)에서도 쓴다
+        internal static PlayerController CreatePlayer(Vector3 pos, GunLibrary lib, Material mFlash, Material mTracer, Material mImpact)
+        {
+            var playerGo = new GameObject("Player");
+            playerGo.layer = 2;   // Ignore Raycast: 내 총알·영점 레이가 나를 맞히지 않게
+            playerGo.transform.position = pos;
+            var cc = playerGo.AddComponent<CharacterController>();
+            cc.height = 1.8f; cc.radius = 0.35f; cc.center = new Vector3(0f, 0.9f, 0f); cc.stepOffset = 0.4f;
+            var headT = new GameObject("Head").transform;
+            headT.SetParent(playerGo.transform, false);
+            headT.localPosition = new Vector3(0f, 1.62f, 0f);
+            var cam = headT.gameObject.AddComponent<Camera>();
+            headT.gameObject.tag = "MainCamera";
+            cam.nearClipPlane = 0.01f; cam.farClipPlane = 2500f; cam.fieldOfView = 75f;
+            headT.gameObject.AddComponent<AudioListener>();
+            var audio = headT.gameObject.AddComponent<AudioSource>();
+            audio.playOnAwake = false; audio.spatialBlend = 0f;
+            var viewRoot = new GameObject("ViewRoot").transform;
+            viewRoot.SetParent(headT, false);
+            var pc = playerGo.AddComponent<PlayerController>();
+            pc.head = headT; pc.cam = cam;
+            var wc = playerGo.AddComponent<WeaponController>();
+            wc.player = pc; wc.cam = cam; wc.viewRoot = viewRoot; wc.library = lib; wc.audioSrc = audio; wc.flashMat = mFlash;
+
+            var sys = new GameObject("Systems");
+            var bal = sys.AddComponent<Ballistics>();
+            bal.tracerMat = mTracer; bal.impactMat = mImpact;
+            var hud = sys.AddComponent<Hud>();
+            hud.weapons = wc; hud.player = pc;
+            return pc;
+        }
+
         // ---------------- 총 모델·소리 묶음 ----------------
-        static GunLibrary BuildLibrary()
+        internal static GunLibrary BuildLibrary()
         {
             string path = Gen + "/GunLibrary.asset";
             var lib = AssetDatabase.LoadAssetAtPath<GunLibrary>(path);
@@ -128,7 +134,7 @@ namespace LastZone.EditorTools
                     model = AssetDatabase.LoadAssetAtPath<GameObject>($"{Root}/Models/{g.id}.glb"),
                     shot0 = A(g.id, "own0"), shot1 = A(g.id, "own1"),
                     magout = A(g.id, "magout"), magin = A(g.id, "magin"), open = A(g.id, "open"), close = A(g.id, "close"),
-                    dry = A(g.id, "dry"), shell = A(g.id, "shell"), port = A(g.id, "port"), up = A(g.id, "up"), down = A(g.id, "down")
+                    dry = A(g.id, "dry"), shell = A(g.id, "shell"), port = A(g.id, "port"), up = A(g.id, "up"), down = A(g.id, "down"), near = A(g.id, "near"), far = A(g.id, "far")
                 });
             }
             lib.switchClip = AssetDatabase.LoadAssetAtPath<AudioClip>($"{Root}/Audio/switch.ogg");
@@ -198,13 +204,13 @@ namespace LastZone.EditorTools
             return f;
         }
 
-        static Shader LitShader()
+        internal static Shader LitShader()
         {
             var s = Shader.Find("Universal Render Pipeline/Lit");
             return s != null ? s : Shader.Find("Standard");
         }
 
-        static Material Mat(string name, Color c, Texture tex = null, Vector2 tiling = default)
+        internal static Material Mat(string name, Color c, Texture tex = null, Vector2 tiling = default)
         {
             string path = $"{Gen}/{name}.mat";
             var m = AssetDatabase.LoadAssetAtPath<Material>(path);
@@ -224,7 +230,7 @@ namespace LastZone.EditorTools
             return m;
         }
 
-        static Material Unlit(string name, Color c)
+        internal static Material Unlit(string name, Color c)
         {
             string path = $"{Gen}/{name}.mat";
             var sh = Shader.Find("Sprites/Default");
@@ -238,7 +244,7 @@ namespace LastZone.EditorTools
         }
 
         // 바닥 격자 무늬 (1 칸 = 2 m)
-        static Texture2D Checker()
+        internal static Texture2D Checker()
         {
             string path = Gen + "/GroundChecker.asset";
             var t = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
@@ -257,12 +263,12 @@ namespace LastZone.EditorTools
             return t;
         }
 
-        static void Folder(string parent, string name)
+        internal static void Folder(string parent, string name)
         {
             if (!AssetDatabase.IsValidFolder(parent + "/" + name)) AssetDatabase.CreateFolder(parent, name);
         }
 
-        static void AddToBuild(string path)
+        internal static void AddToBuild(string path)
         {
             var list = new System.Collections.Generic.List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
             if (list.Exists(s => s.path == path)) return;

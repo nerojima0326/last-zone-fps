@@ -1,4 +1,4 @@
-# LAST ZONE — 유니티 시제품 (M0)
+# LAST ZONE — 유니티판
 
 웹판(Three.js) LAST ZONE 을 유니티로 옮기기 전에 **손맛과 성능을 확인하는 작은 사격장**입니다.
 이동 · 총 13종 · 조준 · 사격(탄속·낙차·영점) · 반동 · 장전 · 과녁만 들어 있습니다.
@@ -54,6 +54,20 @@ Assets/LastZone/
   Audio/     총소리 · 장전 소리 .ogg
 ```
 
-## 아직 없는 것 (다음 단계 후보)
+## 섬 맵 · 배틀로얄 (웹판 전체 이식)
 
-팔·손 모델과 장전 애니메이션 · 조준경(레드닷·배율) · 부착물 · 봇 · 맵 · 배틀로얄 규칙(자기장·낙하·아이템).
+웹판 게임 전체(섬 맵 · 봇 · 자기장 · 수송기·낙하 · 아이템 · 부착물 · 투척물 · 차량 · 메뉴·설정·통계 · 훈련장)를 `Sim/` 에 C# 로 옮겼습니다.
+게임 규칙은 웹판과 같은 좌표계로 계산하고, 그리는 쪽(`Runtime/GameView.cs`)에서만 유니티 좌표로 바꿉니다.
+
+1. **맵 데이터 만들기** (130MB 라 저장소에는 없습니다): `Tools/map-export` 의 `export.cjs` 로 웹판에서 지형·건물·나무·충돌 상자를 뽑고, `fixnan.py` → `shrink.py` → `splitglb.py` → `pack.py` 순서로 `Assets/LastZone/Map/` 에 넣습니다.
+2. 메뉴 **`LAST ZONE → 섬 맵 씬 만들기`** → `Assets/LastZone/Scenes/Island.unity`.
+3. **▶ 재생** → 메뉴에서 **게임 시작** 또는 **훈련장**.
+
+```
+Sim/       World(지형·충돌) · Match(규칙) · Bot · PlayerCtl · Bullets · Throwables · Vehicles · Attachments · Training · Extras · Data
+Runtime/   GameView(그리기) · GameHud(메뉴·HUD·지도) · GameInput · Sfx · Fx · CharacterRig · ViewModel · Settings · Graphics2
+```
+
+## 아직 없는 것
+
+AR-7 · P-92 총 모델(상자 대체 모델) · 부착물·조준경 겉모양 · 날씨 하늘 · 팔·손 모델.
