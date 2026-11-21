@@ -11,7 +11,7 @@
 <script>
 // 새 버전이 올라왔는데 휴대폰이 예전 페이지를 기억하고 있으면 새로 불러온다
 (function () {
-  var BUILD = '68';
+  var BUILD = '69';
   window.LZ_BUILD = BUILD;
   try {
     fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (v) {
@@ -103,6 +103,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,700;1,800&family=Noto+Sans+KR:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=38">
 <link rel="stylesheet" href="css/mw.css?v=66">
+<link rel="stylesheet" href="css/menu.css?v=69">
 <script type="importmap">
 {
   "imports": {
@@ -128,47 +129,68 @@
 <div id="menu" class="hidden">
   <div class="menu-shade"></div>
   <div class="menu-left">
-    <div class="logo big">LAST<span>ZONE</span></div>
-    <div class="tag">BATTLE ROYALE · TACTICAL FPS</div>
-
-    <div class="section-title">게임 모드</div>
-    <div class="modes">
-      <button class="mode on" data-size="1"><div class="ppl" data-n="1"></div><b>솔로</b><small>1인</small></button>
-      <button class="mode" data-size="2"><div class="ppl" data-n="2"></div><b>듀오</b><small>2인</small></button>
-      <button class="mode" data-size="3"><div class="ppl" data-n="3"></div><b>트리오</b><small>3인</small></button>
-      <button class="mode" data-size="4"><div class="ppl" data-n="4"></div><b>스쿼드</b><small>4인</small></button>
-    </div>
-    <div class="mode-note" id="modeNote">혼자서 모든 적과 싸워 최후의 1인이 되세요.</div>
-
-    <div class="opts">
-      <div class="opt"><span>닉네임</span><input id="optName" maxlength="12" value="Player" spellcheck="false"></div>
-      <div class="opt"><span>참가 인원</span><div class="seg" data-opt="players"><button data-v="24">24</button><button data-v="40" class="on">40</button><button data-v="60">60</button></div></div>
-      <div class="opt"><span>봇 난이도</span><div class="seg" data-opt="diff"><button data-v="easy">쉬움</button><button data-v="normal" class="on">보통</button><button data-v="hard">어려움</button></div></div>
-      <div class="opt"><span>시작 무기</span><div class="seg" data-opt="loadout"><button data-v="pistol">권총</button><button data-v="rifle" class="on">소총</button><button data-v="shotgun">산탄총</button><button data-v="all">전부</button><button data-v="none">없음</button></div></div>
-      <div class="opt"><span>시간대</span><div class="seg" data-opt="tod"><button data-v="day" class="on">낮</button><button data-v="sunset">노을</button><button data-v="night">밤</button><button data-v="fog">안개</button><button data-v="rain">비</button><button data-v="random">무작위</button></div></div>
-      <div class="opt"><span>그래픽</span><div class="seg" data-opt="quality"><button data-v="auto" class="on">자동</button><button data-v="potato">최저</button><button data-v="low">낮음</button><button data-v="medium">중간</button><button data-v="high">높음</button></div></div>
-      <div class="opt"><span>목표 FPS <small class="hint">해상도 자동 조절</small></span><div class="seg" data-opt="fpsTarget"><button data-v="60">60</button><button data-v="120" class="on">120</button><button data-v="144">144</button></div></div>
-      <div class="opt"><span>FPS 표시</span><div class="seg" data-opt="showFps"><button data-v="on" class="on">켜기</button><button data-v="off">끄기</button></div></div>
-      <div class="opt g17-opt"><span>G-18 글록 모델</span><div><label class="g17-upload">다른 FBX 선택<input id="g17File" type="file" accept=".fbx" hidden></label> <button id="g17Reset" type="button" hidden>기본으로</button><small id="g17Status" role="status">시작할 때 Glock 모델을 자동 적용합니다</small></div></div>
-      <div class="opt m4-opt"><span>AR-7 M4 모델</span><div><label class="m4-upload">다른 M4 ZIP 선택<input id="m4File" type="file" accept=".zip" hidden></label> <button id="m4Reset" type="button" hidden>기본으로</button><small id="m4Status" role="status">시작할 때 M4 모델을 자동 적용합니다</small></div></div>
-      <div class="opt"><span>마우스 감도</span><div class="range"><input type="range" id="optSens" min="0.2" max="3" step="0.05" value="1"><b id="sensVal">1.00</b></div></div>
+    <div class="menu-head">
+      <div class="logo big">LAST<span>ZONE</span></div>
+      <div class="tag">BATTLE ROYALE · TACTICAL FPS</div>
     </div>
 
-    <button id="startBtn">게임 시작</button>
-    <button id="trainBtn">훈련장 <small>혼자 사격 연습</small></button>
-    <button id="statsBtn">전적 · 업적</button>
-    <button id="settingsBtn">설정 <small>감도 · 시야 · 소리 · 키</small></button>
-    <button id="touchLayoutBtn2" class="ghost touch-only" style="margin-top:10px;width:100%;padding:12px;border-radius:10px;font-size:17px;font-weight:700;color:#fff;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18)">휴대폰 버튼 위치 바꾸기</button>
+    <div class="menu-body">
+      <div class="section-title">게임 모드</div>
+      <div class="modes">
+        <button class="mode on" data-size="1"><div class="ppl" data-n="1"></div><b>솔로</b><small>1인</small></button>
+        <button class="mode" data-size="2"><div class="ppl" data-n="2"></div><b>듀오</b><small>2인</small></button>
+        <button class="mode" data-size="3"><div class="ppl" data-n="3"></div><b>트리오</b><small>3인</small></button>
+        <button class="mode" data-size="4"><div class="ppl" data-n="4"></div><b>스쿼드</b><small>4인</small></button>
+      </div>
+      <div class="mode-note" id="modeNote">혼자서 모든 적과 싸워 최후의 1인이 되세요.</div>
+
+      <div class="menu-tabs" role="tablist">
+        <button class="on" data-tab="match" role="tab">매치 설정</button>
+        <button data-tab="gfx" role="tab">화면 · 조작</button>
+      </div>
+      <div class="opts" data-pane="match">
+        <div class="opt"><span>닉네임</span><input id="optName" maxlength="12" value="Player" spellcheck="false"></div>
+        <div class="opt"><span>참가 인원</span><div class="seg" data-opt="players"><button data-v="24">24</button><button data-v="40" class="on">40</button><button data-v="60">60</button></div></div>
+        <div class="opt"><span>봇 난이도</span><div class="seg" data-opt="diff"><button data-v="easy">쉬움</button><button data-v="normal" class="on">보통</button><button data-v="hard">어려움</button></div></div>
+        <div class="opt"><span>시작 무기</span><div class="seg" data-opt="loadout"><button data-v="pistol">권총</button><button data-v="rifle" class="on">소총</button><button data-v="shotgun">산탄총</button><button data-v="all">전부</button><button data-v="none">없음</button></div></div>
+        <div class="opt"><span>시간대</span><div class="seg" data-opt="tod"><button data-v="day" class="on">낮</button><button data-v="sunset">노을</button><button data-v="night">밤</button><button data-v="fog">안개</button><button data-v="rain">비</button><button data-v="random">무작위</button></div></div>
+      </div>
+      <div class="opts" data-pane="gfx" hidden>
+        <div class="opt"><span>그래픽</span><div class="seg" data-opt="quality"><button data-v="auto" class="on">자동</button><button data-v="potato">최저</button><button data-v="low">낮음</button><button data-v="medium">중간</button><button data-v="high">높음</button></div></div>
+        <div class="opt"><span>목표 FPS <small class="hint">해상도 자동 조절</small></span><div class="seg" data-opt="fpsTarget"><button data-v="60">60</button><button data-v="120" class="on">120</button><button data-v="144">144</button></div></div>
+        <div class="opt"><span>FPS 표시</span><div class="seg" data-opt="showFps"><button data-v="on" class="on">켜기</button><button data-v="off">끄기</button></div></div>
+        <div class="opt"><span>마우스 감도</span><div class="range"><input type="range" id="optSens" min="0.2" max="3" step="0.05" value="1"><b id="sensVal">1.00</b></div></div>
+        <details class="adv">
+          <summary>고급 · 1인칭 총 모델 바꾸기</summary>
+          <div class="opt g17-opt"><span>G-18 글록 모델</span><div><label class="g17-upload">다른 FBX 선택<input id="g17File" type="file" accept=".fbx" hidden></label> <button id="g17Reset" type="button" hidden>기본으로</button><small id="g17Status" role="status">시작할 때 Glock 모델을 자동 적용합니다</small></div></div>
+          <div class="opt m4-opt"><span>AR-7 M4 모델</span><div><label class="m4-upload">다른 M4 ZIP 선택<input id="m4File" type="file" accept=".zip" hidden></label> <button id="m4Reset" type="button" hidden>기본으로</button><small id="m4Status" role="status">시작할 때 M4 모델을 자동 적용합니다</small></div></div>
+        </details>
+      </div>
+    </div>
+
+    <div class="menu-foot">
+      <button id="startBtn">게임 시작</button>
+      <div class="foot-row">
+        <button id="trainBtn">훈련장 <small>혼자 사격 연습</small></button>
+        <button id="statsBtn">전적 · 업적</button>
+        <button id="helpBtn" class="no-touch">조작법</button>
+        <button id="settingsBtn">설정 <small>감도 · 시야 · 소리 · 키</small></button>
+      </div>
+      <button id="touchLayoutBtn2" class="ghost touch-only" style="margin-top:10px;width:100%;padding:12px;border-radius:10px;font-size:17px;font-weight:700;color:#fff;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18)">휴대폰 버튼 위치 바꾸기</button>
+    </div>
   </div>
 
-  <div class="menu-right">
+  <!-- v69 조작법은 메뉴 옆에 늘 띄우지 않고 '조작법' 버튼으로 연다 -->
+  <div id="helpModal" class="help-modal hidden" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="menu-right help-box">
+    <div class="help-head"><b id="helpTitle">조작법</b><button id="helpClose" type="button" aria-label="닫기">✕</button></div>
     <div class="card">
       <div class="card-title">조작법</div>
       <div class="keys">
-        <div><kbd data-k="KeyW">W</kbd><kbd data-k="KeyA">A</kbd><kbd data-k="KeyS">S</kbd><kbd data-k="KeyD">D</kbd>이동</div>
+        <div class="wide"><kbd data-k="KeyW">W</kbd><kbd data-k="KeyA">A</kbd><kbd data-k="KeyS">S</kbd><kbd data-k="KeyD">D</kbd>이동</div>
         <div><kbd data-k="ShiftLeft">Shift</kbd>달리기</div>
         <div><kbd data-k="Space">Space</kbd>점프</div>
-        <div><kbd data-k="Space">Space</kbd>낮은 장애물 넘기 (벽·창틀 앞에서)</div>
+        <div class="wide"><kbd data-k="Space">Space</kbd>낮은 장애물 넘기 (벽·창틀 앞에서)</div>
         <div><kbd data-k="KeyC">C</kbd>앉기</div>
         <div><kbd data-k="KeyZ">Z</kbd>엎드리기</div>
         <div><kbd data-k="KeyQ">Q</kbd><kbd data-k="KeyE">E</kbd>좌우로 기울이기</div>
@@ -176,12 +198,12 @@
         <div><kbd>우클릭</kbd>정조준 / 굴리기</div>
         <div><kbd data-k="KeyR">R</kbd>재장전</div>
         <div><kbd data-k="KeyV">V</kbd>조준경 교체</div>
-        <div><kbd data-k="ShiftLeft">Shift</kbd>숨 참기 (배율 조준 중)</div>
-        <div><kbd data-k="Digit1">1</kbd><kbd data-k="Digit2">2</kbd><kbd data-k="Digit3">3</kbd>소총 · 산탄총 · 권총</div>
-        <div><kbd data-k="Digit4">4</kbd>투척무기 (반복: 종류 변경)</div>
+        <div class="wide"><kbd data-k="ShiftLeft">Shift</kbd>숨 참기 (배율 조준 중)</div>
+        <div class="wide"><kbd data-k="Digit1">1</kbd><kbd data-k="Digit2">2</kbd><kbd data-k="Digit3">3</kbd>소총 · 산탄총 · 권총</div>
+        <div class="wide"><kbd data-k="Digit4">4</kbd>투척무기 (반복: 종류 변경)</div>
         <div><kbd data-k="KeyG">G</kbd>빠른 투척</div>
         <div><kbd data-k="KeyB">B</kbd>사격 모드 (연사/단발)</div>
-        <div><kbd data-k="KeyF">F</kbd>줍기 · 소생 · 강하 · 낙하산 · 차량 타고 내리기</div>
+        <div class="wide"><kbd data-k="KeyF">F</kbd>줍기 · 소생 · 강하 · 낙하산 · 차량 타고 내리기</div>
         <div><kbd data-k="KeyL">L</kbd>손전등</div>
         <div><kbd data-k="KeyH">H</kbd>치료</div>
         <div><kbd data-k="KeyM">M</kbd>지도</div>
@@ -207,6 +229,7 @@
       <p>G-18 1인칭 모델·애니메이션 — Glock 17 FPS 모델 (출처 확인 중).</p>
       <p>그 밖의 출처: 저장소의 <code>assets/CREDITS.md</code></p>
     </details>
+  </div>
   </div>
 </div>
 
