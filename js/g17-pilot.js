@@ -122,7 +122,7 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
   actions.Idle.action.play();mixer.setTime(actions.Idle.start);pivot.updateMatrixWorld(true);
   const mainRestMatrix=new T.Matrix4().copy(pivot.matrixWorld).invert().multiply(main.matrixWorld);
   const box=new T.Box3().setFromObject(slideMesh),x=(box.min.x+box.max.x)*.5;
-  const ironOffset=new T.Vector3(-x,-box.max.y-.001,-.28-(box.max.z-.01));
+  const ironOffset=new T.Vector3(-x,-box.max.y,-.28-(box.max.z-.01));   // v70 가늠자·가늠쇠 윗면을 화면 정가운데(탄착점)에
   const muzzleLocal=main.worldToLocal(new T.Vector3(x,box.max.y-.019,box.min.z-.002));
   const slide=model.getObjectByName('Slide_j'),spare=model.getObjectByName('Mag1');
   const flash=G.VM.models.g18.flash.clone();flash.name='G18Flash';flash.visible=false;pivot.add(flash);

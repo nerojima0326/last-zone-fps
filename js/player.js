@@ -337,6 +337,10 @@ const P = G.Player = {
     cam.getWorldDirection(_f);
     _r.set(1, 0, 0).applyQuaternion(cam.quaternion); _u.set(0, 1, 0).applyQuaternion(cam.quaternion);
     G.VM.muzzleWorld(cam, _m);
+    // v70 영점: 총알은 중력으로 떨어지므로, 조준점까지의 거리에서 화면 가운데(가늠쇠)에 맞도록 낙차만큼 살짝 위로 쏜다
+    //  조준 중에는 가운데에 걸린 것(지형·건물·사람·과녁)까지의 거리, 지향 사격은 50 m 영점
+    const zd = this.zeroDist(def, cam.position, _f);
+    _f.addScaledVector(_u, 9.8 * zd / (2 * def.vel * def.vel)).normalize();
     const spread = this.currentSpread(def);
     const shot = G.Game.training ? G.Training.onShot() : G.Stats.onShot();
     for (let k = 0; k < def.pellets; k++) {
@@ -359,6 +363,21 @@ const P = G.Player = {
     else if (def.action === 'bolt') { if (inst.mag > 0) this.cycleT = 0; }
     else if (def.action !== 'break' && def.reloadType !== 'revolver') this.ejectShell(def.cls === 'shotgun');
     if (inst.mag === 0 && a.ammo[def.ammo] > 0) this.autoReload = { weapon: inst, at: this.time + 0.22 };
+  },
+  zeroDist(def, o, d) {
+    const far = Math.min(def.range || 400, 600);
+    if (this.ads < 0.5) return Math.min(50, far);
+    let t = far;
+    if (G.World.raycast(o, d, t)) t = G.World.hit.t;
+    const Game = G.Game, me = this.a;
+    for (const a of Game.actors) {
+      if (a === me || !a.alive || a.state !== 'ground') continue;
+      const dx = a.pos.x - o.x, dz = a.pos.z - o.z;
+      if (dx * dx + dz * dz > (t + 3) * (t + 3)) continue;
+      const h = G.Ballistics.hitActor(a, o, d, t); if (h) t = h.t;
+    }
+    if (Game.training && G.Training.active) { const th = G.Training.hitTest(o, d, t); if (th) t = th.t; }
+    return Math.max(5, t);
   },
   ejectShell(red) {
     const cam = G.camera;
