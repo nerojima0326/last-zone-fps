@@ -8,19 +8,23 @@
 const G = window.G, T = window.THREE, V = T.Vector3, Q = T.Quaternion, D = Math.PI / 180;
 const clamp = T.MathUtils.clamp;
 const _v = new V(), _q = new Q(), _e = new T.Euler(), _m = new T.Matrix4(), ID = new Q();
+const _pose = new T.Matrix4(), _poseRot = new T.Matrix4(), _aimQ = new Q(), _aimT = new V();
 
 // 팩 설정 — 시간은 원본 클립의 초 단위
 //  eye: 카메라 뼈 이름(또는 모델 좌표), off: 눈 위치 보정, pitch/yaw: 카메라를 숙이고 돌리는 각(도)
 //  gun: 총 몸통 뼈, len: 실제 총 길이(m, 크기 맞춤), win: 클립에서 쓸 구간, ev: 장전 소리 시각
 //  spare: 장전 중에만 보이는 예비 탄창 뼈 (평소엔 0 크기로 접는다)
+//  iron: 실제 가늠쇠 끝(F)·가늠자 홈/구멍 중심(R), 총 뼈의 원본 좌표·단위
 const PACKS = {
   ak74: {
+    iron: { F: [0, 0.593655, -0.070780], R: [0, 0.126403, -0.071075], up: [0, 0, -1] },
     aimTop: true, file: 'ak74', cutBones: /^UpArm_[LR]/, magBone: 'Pmag', eye: 'Head_Cam', off: [0.08, 0.05, 0.15], pitch: 12, gun: 'PBody', len: 0.94, spare: ['Pmag2'],
     clips: { idle: 'Rig|AK_Idle', fire: 'Rig|AK_Shot', reload: 'Rig|AK_Reload', reloadEmpty: 'Rig|AK_Reload_full', draw: 'Rig|AK_Draw' },
     // AK 식: 새 탄창으로 헌 탄창을 쳐내고 → 끼우고 → (빈 총) 장전손잡이 당기기
     ev: { reload: [[1.2, 'magout'], [1.9, 'magin']], reloadEmpty: [[1.2, 'magout'], [1.9, 'magin'], [2.47, 'open'], [2.62, 'close']] }
   },
   saiga: {
+    iron: { F: [0, 0.450680, 0.481049], R: [0, 0.293365, 0.108033], up: [0, 1, 0] },
     aimTop: true, file: 'saiga', handScale: 0.88, cutBones: /^UpArm_[LR]/, magBone: 'Pmag', eye: 'Head_Cam', off: [0.02, 0.0, 0.04], pitch: 4, gun: 'Saiga', len: 1.0,
     clips: { idle: 'Armature|Saiga_Idle', fire: 'Armature|Saiga_Fire', reload: 'Armature|Saiga_Reload_Fast', reloadEmpty: 'Armature|Saiga_Reload_Full' },
     win: { reload: [0, 1.88] },
@@ -44,6 +48,7 @@ const PACKS = {
     ev: { reload: [[0.37, 'magout'], [0.9, 'magin']], reloadEmpty: [[0.37, 'magout'], [0.9, 'magin'], [1.36, 'close']] }
   },
   p9mm: {
+    iron: { F: [-0.003706, 0.029725, 0.079205], R: [-0.003706, 0.029376, -0.065794], up: [0, 1, 0] },
     file: 'p9mm', magBone: 'Magazine', slideBone: 'Slidder', eye: [0.0, 1.44, 0.08], pitch: 10, yaw: -2, gun: 'Weapon', len: 0.19, pistol: true, hip: { at: [0.11, -0.1, -0.37], yaw: 13, pitch: 4 }, spare: ['Magazine_2', 'Bullet_2'],
     clips: { idle: 'Idle', fire: 'Fire', reload: 'Reload', reloadEmpty: 'Reload_Empty', draw: 'Equip' },
     win: { reload: [0, 2.6], reloadEmpty: [0, 3.6] },
@@ -62,6 +67,7 @@ const PACKS = {
     ev: { reload: [[1.75, 'magout'], [2.55, 'magin'], [3.2, 'open'], [3.45, 'close']] }
   },
   revolver: {
+    iron: { F: [0, 11.37123, 35.61014], R: [0, 11.39594, 5.6], up: [0, 1, 0] },
     aimTop: true, file: 'revolver', eye: [6, 9, -40], pitch: 6, gun: 'revolver', len: 0.36, adsDist: 0.44, pistol: true, ik: [{ bones: ['R_arm', 'R_elbow', 'R_wrist'], drop: [-0.03, -0.14, 0.12], pole: [-0.5, -1, 0] }], cutBones: /^[LR]_arm_\d+$/, hip: { at: [0.095, -0.13, -0.47], yaw: 6 }, src: 'allanims',
     cut: { idle: [0.45, 0.5], fire: [0, 0.45], reload: [0.5, 9.2] },
     clips: {},
@@ -75,12 +81,18 @@ const FIRE_SPAN = { m1014: 0.36 };
 // v55 같은 팩(팔·동작)을 쓰는 두 번째 총은 총 메시만 다른 실사 총으로 바꿔 끼운다 (tools/viewmodels/build-swap.cjs)
 //  file: GLB 경로, shift: 가늠자 기준 총열 방향(앞 +) 보정 m, lift: 위 보정 m
 //  노드 이름이 mag… → 팩의 탄창 뼈, slide… → 팩의 슬라이드 뼈를 따라 움직인다
+//  iron: GLB 모델 좌표(m)의 실제 조준기 위치. 손에 끼우는 기준과 따로 보정한다.
 const SWAP = {
-  sc17: { file: 'assets/models/viewmodels/swap/sc17.glb', shift: -0.04, lift: -0.015 },          // SCAR-H (Rotuma) on ACR 팩
-  m1014: { file: 'assets/models/viewmodels/swap/m1014.glb', shift: -0.05, lift: 0.015, tilt: -7 },        // Benelli M4 (TastyTony) on Remington 팩
-  m1911: { file: 'assets/models/viewmodels/swap/m1911.glb', lift: -0.022 },   // 손잡이가 주먹 안에 들어오게 내림        // Colt M1911 (b0ho) on XD 팩
-  de7: { file: 'assets/models/viewmodels/swap/de7.glb', lift: -0.022 },            // Desert Eagle (ELIZION) on XD 팩
-  aa12: { file: 'assets/models/viewmodels/swap/aa12.glb', shift: -0.07, aimTop: true },          // v58 AA-12 Redesign (Naudaff3D) on Saiga 팩
+  sc17: { file: 'assets/models/viewmodels/swap/sc17.glb', shift: -0.04, lift: -0.015,
+    iron: { F: [0.004914, 0.139703, -0.295], R: [0.004914, 0.1328, 0.1642] } },
+  m1014: { file: 'assets/models/viewmodels/swap/m1014.glb', shift: -0.05, lift: 0.015, tilt: -7,
+    iron: { F: [-0.00937, 0.089265, -0.4601], R: [-0.00937, 0.0916, 0.1441] } },
+  m1911: { file: 'assets/models/viewmodels/swap/m1911.glb', lift: -0.022,
+    iron: { F: [0.000564, 0.067375, -0.095], R: [0.000564, 0.069093, 0.063282] } },
+  de7: { file: 'assets/models/viewmodels/swap/de7.glb', lift: -0.022,
+    iron: { F: [0, 0.07683, -0.1266], R: [0, 0.07669, 0.084] } },
+  aa12: { file: 'assets/models/viewmodels/swap/aa12.glb', shift: -0.07, adsFwd: 0.3,
+    iron: { F: [0, 0.123669, -0.233144], R: [0, 0.1103, 0.281] } },
   // v70 MK-14: 앞·뒤 고리 가늠쇠/가늠자의 가운데를 조준선으로 (정점 분포로 잡으면 총이 위로 들려 보였다), 조준경은 레일 위
   mk14: { file: 'assets/models/guns/mk14.glb', shift: -0.01, sight: { R: [-0.0007, 0.1325, 0.0345], F: [-0.0007, 0.1325, -0.528], mount: [-0.0007, 0.0886, -0.1] }, fold: { y: 0.09 } },                     // 게임 자체 MK-14 모델 on ACR 팩
   kr98: { file: 'assets/models/viewmodels/swap/kr98.glb', kar: true, sight: { R: [0, 0.0175, -0.216], F: [0.0005, 0.019, -0.6985], mount: [0, 0.017, -0.09] } }   // mount: 조준경은 가늠자(총열 위) 말고 기관부 위에               // v63 Kar98k (Kvark025) on 저격 팩 — 볼트·손잡이·탄 노드를 따로 움직인다
@@ -288,6 +300,7 @@ const AV = G.AssetVM = {
     }
     P.gunRest = new T.Matrix4().copy(pivot.matrixWorld).invert().multiply(gunBone.matrixWorld);
     P.gunRestInv = P.gunRest.clone().invert();
+    if (C.iron) this.calibrateIron(P.sight, C.iron, P.gunRest);
     P.muzzleLocal = P.muzzle0 = P.sight.muzzle.clone().applyMatrix4(P.gunRestInv);
     // 탄창·슬라이드 뼈의 휴식 자세 (바꿔 끼운 총의 탄창·슬라이드가 따라 움직이게)
     P.boneRest = {};
@@ -437,6 +450,7 @@ const AV = G.AssetVM = {
       holder.visible = false; bone.add(holder); groups.push(holder);
     }
     const sight = this.measure(P, pts.map(p => p.clone().applyMatrix4(M)), P.def.pistol, Sp.up, fix && { R: fix.R.clone().applyMatrix4(M), F: fix.F.clone().applyMatrix4(M), mount: fix.mount?.clone().applyMatrix4(M), noTop: true });
+    if (C.iron) this.calibrateIron(sight, C.iron, M);
     P.swaps[id] = { groups, sight, foldParts, muzzleLocal: sight.muzzle.clone().applyMatrix4(P.gunRestInv) };
     if (kar && kar.bolt && kar.handle) this.karSetup(P.swaps[id], kar);
     if (P.gunId === id) { this.useGun(P, id); P.mountKey = null; }   // 이미 이 총을 들고 있으면 바로 바꿔 보인다
@@ -450,6 +464,16 @@ const AV = G.AssetVM = {
     // 지향 자세는 팩 총 기준 그대로 (팔 숨김 구역이 팩 총 자세로 계산돼 있다), 조준만 바꿔 낀 총의 가늠선으로
     P.sight = sw ? Object.assign({}, sw.sight, { qH: P.sight0.qH, posH: P.sight0.posH }) : P.sight0;
     P.muzzleLocal = sw ? sw.muzzleLocal : P.muzzle0;
+  },
+  // Pack anchors use gun-bone coordinates; swap anchors use GLB coordinates.
+  // Keep the fitting frame for hands/hip poses separate from the actual sights.
+  calibrateIron(S, C, matrix) {
+    const F = new V(...C.F).applyMatrix4(matrix), R = new V(...C.R).applyMatrix4(matrix);
+    const axis = F.clone().sub(R).normalize(), up = new V(...(C.up || [0, 1, 0])).transformDirection(matrix);
+    up.addScaledVector(axis, -up.dot(axis)).normalize();
+    const back = axis.clone().negate(), right = new V().crossVectors(up, back).normalize();
+    const q = new Q().setFromRotationMatrix(new T.Matrix4().makeBasis(right, up, back).transpose());
+    S.iron = { F, R, q, qInv: q.clone().invert() };
   },
   measure(P, pv, pistol, upHint, fix) {
     // v54 총의 몸 좌표를 정점 분포로 잡는다 (애니메이션 자세가 옆으로 기울어 있어도 가늠자·가늠쇠를 제대로 찾게)
@@ -597,12 +621,13 @@ const AV = G.AssetVM = {
     }
     if (s.ads > 0.05 || reload) P.drawT = 99;
     P.reloading = reload;
+    P.aimIdle = list.length === 1 && list[0][0] === 'idle';
     this.pose(P, list);
     if (P.swaps[id]?.kar && P.gunId === id) this.karUpdate(P, P.swaps[id].kar, id, R, dt);
     for (const b of P.spare) b.scale.setScalar(reload ? 1 : 1e-4);
     this.syncMount(P, id, s.scope);
     // ADS: 총의 가늠선을 시선과 나란히 돌리고, 가늠쇠(또는 조준경 중심)를 화면 가운데로
-    const aim = reload ? 0 : clamp(s.ads || 0, 0, 1), weight = 1 - aim * 0.85, M = P.mount;
+    const aim = reload ? 0 : clamp(s.ads || 0, 0, 1), weight = 1 - aim, M = P.mount;
     const sprint = (vm.sprint || 0) * (!reload && !draw ? 1 : 0);
     // 흔들림·반동 기울기만 카메라 기준으로 돌린다 (전력질주 자세는 아래 sprintPose 에서 손잡이를 축으로)
     _e.set((vm.sway?.y || 0) * weight, (vm.sway?.x || 0) * weight, vm.kickRoll || 0);
@@ -892,9 +917,18 @@ const AV = G.AssetVM = {
     // 잘린 소매 끝 숨기기 (장전 동작에서는 팔 전체가 보여야 한다)
     // 2 = 화면 밖·총에서 먼 정점(늘 숨김), 1 = 위팔 뼈 정점 (cutReloadOnly 팩은 장전 중에만 숨김)
     if (P.armCut) P.armCut.value = P.def.cutReloadOnly && !P.reloading ? 1.5 : 0.5;
-    _q.copy(S.qH).slerp(M.q, aim);
+    _aimQ.copy(M.q); _aimT.copy(M.t);
+    if (aim > 0 && P.aimIdle) {
+      // Cancel idle gun-bone motion while aiming. Firing and reloads keep their animation.
+      P.gunBone.updateWorldMatrix(true, false);
+      _pose.copy(P.pivot.matrixWorld).invert().multiply(P.gunBone.matrixWorld).multiply(P.gunRestInv);
+      _aimQ.multiply(_q.setFromRotationMatrix(_poseRot.extractRotation(_pose)).invert());
+      _aimT.copy(M.aimPt).applyQuaternion(M.q).add(M.t)
+        .sub(_v.copy(M.aimPt).applyMatrix4(_pose).applyQuaternion(_aimQ));
+    }
+    _q.copy(S.qH).slerp(_aimQ, aim);
     if (eul) P.pivot.quaternion.setFromEuler(eul).multiply(_q); else P.pivot.quaternion.copy(_q);
-    P.pivot.position.copy(S.posH).lerp(M.t, aim);
+    P.pivot.position.copy(S.posH).lerp(_aimT, aim);
   },
   // 휴식 자세 기준 피벗 공간 변환을 총 몸통 뼈에 붙인다
   onBone(P, obj, pos, quat) {
@@ -915,23 +949,24 @@ const AV = G.AssetVM = {
     for (const k in P.flashes) if (k !== id) P.flashes[k].visible = false;
     const S = P.sight, A = G.Attachments, pistol = P.def.pistol, cls = G.WEAPONS[id].cls;
     for (const m of P.swaps?.[id]?.foldParts || []) m.visible = !scope;   // v70 조준경을 달면 가늠자·가늠쇠 접기
-    const t = new V(), q = S.q.clone();
-    const Fq = S.F.clone().applyQuaternion(q), Rq = S.R.clone().applyQuaternion(q);
+    const I = S.iron || S, t = new V(), q = I.q.clone();
+    const Fq = I.F.clone().applyQuaternion(q), Rq = I.R.clone().applyQuaternion(q);
     // v70 영점: 가늠쇠 끝(F)을 화면 정가운데(=총알이 가는 곳)에 정확히 둔다.
     //  예전에는 총 윗면(hTop) + 4 mm + adsLift 만큼 총을 내려서, 보이는 가늠쇠가 탄착점보다 0.5~4° 아래에 있었다.
     //  가늠쇠가 없는 총만 SWAP/팩의 sightLift 로 레일 위를 본다 (조준점 = 가늠쇠 위 sightLift)
     //  aimTop: 가늠쇠가 낮게 잡히고 뒤쪽 가늠자(덮개·손잡이·리볼버 윗면)가 시선을 가리는 총은 그 윗면을 조준선으로
-    const aimTop = SWAP[id] ? SWAP[id].aimTop : P.def.aimTop;
+    const aimTop = !S.iron && (SWAP[id] ? SWAP[id].aimTop : P.def.aimTop);
     const lift = (SWAP[id]?.sightLift ?? (SWAP[id] ? 0 : P.def.sightLift || 0)) + (aimTop && S.hTop > Fq.y ? S.hTop - Fq.y : 0);
     t.set(-Fq.x, -Fq.y - lift, -(SWAP[id]?.adsDist || P.def.adsDist || (pistol ? 0.3 : 0.27)) - Rq.z);
-    // 팔·총을 앞으로 너무 많이 밀면 원래 화면 밖이던 팔(소매 끝)이 들어온다 → 앞으로는 최대 7 cm 만
+    // 소매 끝이 들어오지 않도록 기본 전진은 7 cm 제한. 가까운 가늠자는 총별 adsFwd 로 조절한다.
     t.z = Math.max(t.z, -(SWAP[id]?.adsFwd ?? P.def.adsFwd ?? 0.07));
-    let aimPt = S.F.clone().add(new V(0, lift, 0).applyQuaternion(S.qInv));
+    let aimPt = I.F.clone().add(new V(0, lift, 0).applyQuaternion(I.qInv));
     const fwd = new V(0, 0, -1).applyQuaternion(S.qInv);
     const metal = () => { const m = new T.MeshStandardMaterial({ color: 0x252b2d, metalness: 0.7, roughness: 0.45 }); P.mountDispose.push(m); return m; };
     if (scope && A) {
       const optic = A.make(scope === 'reddot' && pistol ? 'micro' : scope, 1);
       if (optic) {
+        q.copy(S.q);
         let eye = scope === 'reddot' ? 0.032 : scope === 'holo' ? 0.044 : scope === 'x2' ? 0.05 : 0.0264;
         if (scope === 'x4' || scope === 'x8') { optic.rotation.y = Math.PI; optic.scale.multiplyScalar(1.05); eye *= 1.05; }
         optic.updateMatrixWorld(true);

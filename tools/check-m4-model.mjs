@@ -1,16 +1,16 @@
 // THREE_DIR: official Three.js r160 checkout. argv[2]: locally licensed M4 ZIP.
 // Motion/geometry regression checks; browser QA additionally verifies decoded textures and IndexedDB.
 import fs from 'node:fs';import path from 'node:path';import vm from 'node:vm';import{fileURLToPath,pathToFileURL}from'node:url';
+import{loadAttachmentFixtures}from'./model-test-helpers.mjs';
 if(!process.env.THREE_DIR||!process.argv[2])throw Error('Usage: THREE_DIR=/path/to/three node tools/check-m4-model.mjs /path/to/m4_animations.zip');
 const uri=p=>pathToFileURL(path.join(process.env.THREE_DIR,p)).href;
-const T=await import(uri('build/three.module.js')),{FBXLoader}=await import(uri('examples/jsm/loaders/FBXLoader.js')),{GLTFLoader}=await import(uri('examples/jsm/loaders/GLTFLoader.js')),{unzipSync}=await import(uri('examples/jsm/libs/fflate.module.js'));
+const T=await import(uri('build/three.module.js')),{FBXLoader}=await import(uri('examples/jsm/loaders/FBXLoader.js')),{unzipSync}=await import(uri('examples/jsm/libs/fflate.module.js'));
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');globalThis.window={URL};globalThis.self={URL};globalThis.document={getElementById(){return{addEventListener(){}}}};T.TextureLoader.prototype.load=function(url,onLoad){const texture=new T.Texture();queueMicrotask(()=>onLoad?.(texture));return texture};
 const files=unzipSync(fs.readFileSync(process.argv[2])),src=Object.entries(files).find(([n])=>/(^|\/)M4\.fbx$/i.test(n))?.[1];if(!src)throw Error('M4.fbx missing');
 const manager=new T.LoadingManager();manager.addHandler(/\.tga$/i,new T.TextureLoader(manager));const model=new FBXLoader(manager).parse(src.buffer.slice(src.byteOffset,src.byteOffset+src.byteLength),'');
 const original={root:new T.Group(),flash:new T.Mesh(new T.PlaneGeometry(.05,.05),new T.MeshBasicMaterial())};
 const V={root:new T.Group(),models:{ar7:original},cur:'ar7',t:0,kick:0,kickRoll:0,flashT:0,sway:{x:0,y:0},flashLight:new T.PointLight(),update(dt){this.t+=dt;original.root.visible=this.cur==='ar7'},set(id){this.cur=id},fireKick(a,s){this.flashT=s?0:.04},muzzleWorld(cam,out){return out.set(99,99,99)}};
-const assets={};for(const[id,file]of Object.entries({reddot:'red-dot',holo:'holo',x2:'magnifier',x4:'weathered-scope',x8:'weathered-scope',grip:'vertical-grip',suppressor:'suppressor',laser:'laser'})){const b=fs.readFileSync(root+'/assets/models/attachments/'+file+'.glb');assets[id]=(await new GLTFLoader().parseAsync(b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength),'')).scene}
-const G={VM:V,vmCamera:{fov:54},Guns:{reloadDuration(){return 1.8},reloadEvents(){return[]}},Game:{player:{weapons:{rifle:{id:'ar7',attachments:{}}}}},Attachments:{make(id,scale){const o=assets[id]?.clone(true);if(o)o.scale.setScalar(scale);return o}}};window.G=G;window.THREE={...T,FBXLoader};vm.runInThisContext(fs.readFileSync(root+'/js/m4-viewmodel.js','utf8'));const M=G.M4Viewmodel;await M.init();M.install(model);
+const G={VM:V,vmCamera:{fov:54},Guns:{reloadDuration(){return 1.8},reloadEvents(){return[]}},Game:{player:{weapons:{rifle:{id:'ar7',attachments:{}}}}}};const GLTFLoader=await loadAttachmentFixtures(T,G,root);window.THREE={...T,FBXLoader,GLTFLoader};vm.runInThisContext(fs.readFileSync(root+'/js/m4-viewmodel.js','utf8'));const M=G.M4Viewmodel;await M.init();M.install(model);
 const s={ads:0,raise:1,landDip:0,phase:0,moving:0,sprint:false,hideVM:false,reload:null,scope:null,empty:false},cam=new T.PerspectiveCamera(54,16/9,.01,10);cam.updateMatrixWorld(true);let frames=0,checks=0;
 const assert=(v,label)=>{if(!v)throw Error(label);checks++};
 // An optic may first be mounted while the weapon is still being drawn.

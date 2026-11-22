@@ -1,15 +1,14 @@
 // THREE_DIR points to Three.js r160; pass the locally licensed glock17.fbx as argv[2].
 // Geometry/animation checks only: texture loading is stubbed, without WebGL rendering.
 import fs from 'node:fs';import vm from 'node:vm';import path from 'node:path';import {fileURLToPath,pathToFileURL} from 'node:url';
+import {loadAttachmentFixtures} from './model-test-helpers.mjs';
 if(!process.env.THREE_DIR||!process.argv[2])throw Error('Usage: THREE_DIR=/path/to/three node tools/check-glock-import.mjs /path/to/glock17.fbx');
 const uri=p=>pathToFileURL(path.join(process.env.THREE_DIR,p)).href;
 const T=await import(uri('build/three.module.js'));
 const {FBXLoader}=await import(uri('examples/jsm/loaders/FBXLoader.js'));
-const {GLTFLoader}=await import(uri('examples/jsm/loaders/GLTFLoader.js'));
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');globalThis.window={URL};T.TextureLoader.prototype.load=function(){return new T.Texture()};globalThis.document={getElementById(){return {addEventListener(){}}}};
-const assets={};for(const [id,file] of [['micro','micro-dot'],['laser','laser'],['suppressor','suppressor']]){let b=fs.readFileSync(root+'/assets/models/attachments/'+file+'.glb');assets[id]=(await new GLTFLoader().parseAsync(b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength),'')).scene}
 const original={root:new T.Group(),flash:new T.Mesh(new T.PlaneGeometry(.05,.05),new T.MeshBasicMaterial())},V={root:new T.Group(),models:{g18:original},cur:'g18',kick:0,kickRoll:0,flashT:0,sway:{x:0,y:0},flashLight:new T.PointLight(),update(){original.root.visible=true},fireKick(a,s){this.flashT=s?0:.04},muzzleWorld(cam,out){return out.set(99,99,99)}};
-const G={VM:V,vmCamera:{fov:54},Game:{player:{weapons:{pistol:{id:'g18',attachments:{}}}}},Attachments:{make(id,scale){const o=assets[id]?.clone(true);if(o)o.scale.setScalar(scale);return o}}};window.G=G;window.THREE={...T,FBXLoader};vm.runInThisContext(fs.readFileSync(root+'/js/g17-pilot.js','utf8'));const P=G.G17Pilot;P.init();let b=fs.readFileSync(process.argv[2]);await P.load(b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength));
+const G={VM:V,vmCamera:{fov:54},Game:{player:{weapons:{pistol:{id:'g18',attachments:{}}}}}};const GLTFLoader=await loadAttachmentFixtures(T,G,root);window.THREE={...T,FBXLoader,GLTFLoader};vm.runInThisContext(fs.readFileSync(root+'/js/g17-pilot.js','utf8'));const P=G.G17Pilot;await P.init();let b=fs.readFileSync(process.argv[2]);await P.load(b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength),T.TextureLoader);
 const base={ads:0,raise:1,landDip:0,phase:0,moving:0,sprint:false,hideVM:false,reload:null};const cam=new T.PerspectiveCamera(54,1,.01,10);cam.updateMatrixWorld(true);let frames=0;
 P.sample('Idle',0); P.mountKey=null; P.syncAttachments('reddot');
 const opticOffset=P.aimOffset.clone();

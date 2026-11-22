@@ -54,7 +54,7 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
   if(this.spare)this.spare.visible=!!reload;
   if(this.slide&&!reload&&s.empty)this.slide.position.z=this.slideRestZ-5.1;
   this.syncAttachments(s.scope);
-  const aim=T.MathUtils.clamp(s.ads||0,0,1),weight=1-aim*.8;
+  const aim=T.MathUtils.clamp(s.ads||0,0,1),weight=1-aim;
   this.pivot.position.copy(this.aimOffset).multiplyScalar(aim);
   // v60 지향 자세를 다른 총들처럼 화면 오른쪽 아래·조금 앞으로 (손·총이 화면 가운데를 덮지 않게)
   this.pivot.position.addScaledVector(HIP_OFF.set(.07,-.035,-.07),1-aim);

@@ -3,7 +3,7 @@
 'use strict';
 const HIP_OFF=new window.THREE.Vector3();
 const G=window.G,T=window.THREE,V=T.Vector3;
-const clamp=T.MathUtils.clamp,point=new V();
+const clamp=T.MathUtils.clamp,point=new V(),aimQ=new T.Quaternion();
 const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
  async init(){
   const input=document.getElementById('m4File'),status=document.getElementById('m4Status'),reset=document.getElementById('m4Reset');
@@ -113,12 +113,16 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   const rearSight=this.splitRearSight(body,main);
   // Anchors measured from the supplied M4's barrel, rear aperture and rail (cm).
   const mainRestMatrix=new T.Matrix4().copy(pivot.matrixWorld).invert().multiply(main.matrixWorld);
-  const muzzleLocal=new V(.344,1.8,51.5),ironLocal=new V(.344,8.15,-8.3),ironOffset=new V();
-  main.localToWorld(point.copy(ironLocal));ironOffset.set(-point.x,-point.y,-.22-point.z);
+  const muzzleLocal=new V(.344,1.8,51.5),ironLocal=new V(.34094,8.63109,-6.3),ironOffset=new V();
+  const rear=ironLocal.clone().applyMatrix4(mainRestMatrix),front=new V(.33915,8.628555,34.35).applyMatrix4(mainRestMatrix);
+  const back=rear.clone().sub(front).normalize(),up=new V(0,1,0).transformDirection(mainRestMatrix);
+  up.addScaledVector(back,-up.dot(back)).normalize();
+  const ironQ=new T.Quaternion().setFromRotationMatrix(new T.Matrix4().makeBasis(new V().crossVectors(up,back).normalize(),up,back).transpose());
+  point.copy(rear).applyQuaternion(ironQ);ironOffset.set(-point.x,-point.y,-.22-point.z);
   const previewTemplate=frame.clone(true),remove=[];previewTemplate.traverse(o=>{if(o.isSkinnedMesh||o.isCamera||o.name==='Mag2')remove.push(o)});for(const o of remove)o.removeFromParent();
   const flash=G.VM.models.ar7.flash.clone();flash.name='M4Flash';flash.visible=false;pivot.add(flash);
   this.unload();G.VM.root.add(pivot);
-  Object.assign(this,{ready:true,active:false,model,pivot,frame,main,mainRestMatrix,body,rearSight,mixer,actions,spare,flash,muzzleLocal,ironLocal,ironOffset,aimOffset:ironOffset.clone(),previewTemplate,scope:null,mount:null,mountKey:null,name:'Idle',shotT:99,equipT:99,aim:0});
+  Object.assign(this,{ready:true,active:false,model,pivot,frame,main,mainRestMatrix,body,rearSight,mixer,actions,spare,flash,muzzleLocal,ironLocal,ironQ,ironOffset,aimOffset:ironOffset.clone(),previewTemplate,scope:null,mount:null,mountKey:null,name:'Idle',shotT:99,equipT:99,aim:0});
  },
  splitRearSight(body,main){
   const source=body.geometry.index?body.geometry.toNonIndexed():body.geometry,lists=[[],[]],v=new V();
@@ -152,7 +156,7 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   if(s.ads>.05||reload)this.equipT=99;
   if(!reload&&s.empty){const bolt=this.model.getObjectByName('Bolt_j');if(bolt)bolt.position.z=-.7}
   this.syncAttachments(s.scope);
-  const aim=reload?0:clamp(s.ads||0,0,1),weight=1-aim*.85;
+  const aim=reload?0:clamp(s.ads||0,0,1),weight=1-aim;
   this.aim=aim;this.pivot.position.copy(this.aimOffset).multiplyScalar(aim);
   // v60 지향 자세를 다른 총들처럼 화면 오른쪽 아래·조금 앞으로 (손·총이 화면 가운데를 덮지 않게)
   this.pivot.position.addScaledVector(HIP_OFF.set(.035,-.02,-.05),1-aim);
@@ -162,6 +166,7 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   this.pivot.position.z+=vm.kick*.02;
   const sprint=(vm.sprint||0)*(!reload&&!draw?1:0);
   this.pivot.rotation.set((vm.sway?.y||0)*weight-sprint*.2,(vm.sway?.x||0)*weight+sprint*.5,(vm.kickRoll||0)+sprint*.16);
+  if(!s.scope)this.pivot.quaternion.multiply(aimQ.identity().slerp(this.ironQ,aim));
   this.pivot.updateMatrixWorld(true);this.flash.visible=vm.flashT>0;
   this.flash.position.copy(this.muzzleLocal);this.main.localToWorld(this.flash.position);this.pivot.worldToLocal(this.flash.position);
   this.flash.rotation.z=vm.models.ar7.flash.rotation.z;this.flash.scale.copy(vm.models.ar7.flash.scale);
