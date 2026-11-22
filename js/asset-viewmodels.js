@@ -298,6 +298,8 @@ const AV = G.AssetVM = {
     }
     P.gunRest = new T.Matrix4().copy(pivot.matrixWorld).invert().multiply(gunBone.matrixWorld);
     P.gunRestInv = P.gunRest.clone().invert();
+    if (P.hands && Math.abs(P.handScale - 1) > .01) this.scaleHands(P, P.handScale);
+    G.HandContact?.bind(model, G.HandContact.frame(gunBone, P.gunRest, P.sight0.qInv));
     if (C.iron) this.calibrateIron(P.sight, C.iron, P.gunRest);
     P.muzzleLocal = P.muzzle0 = P.sight.muzzle.clone().applyMatrix4(P.gunRestInv);
     // 탄창·슬라이드 뼈의 휴식 자세 (바꿔 끼운 총의 탄창·슬라이드가 따라 움직이게)
@@ -306,6 +308,7 @@ const AV = G.AssetVM = {
       const b = nm && find(nm);
       if (b) P.boneRest[k] = { bone: b, inv: new T.Matrix4().copy(pivot.matrixWorld).invert().multiply(b.matrixWorld).invert() };
     }
+    P.magazineContact = G.HandContact?.magazine(model, P.boneRest.mag?.bone, P.gunMeshes);
     // 권총 슬라이드 후퇴 방향 (슬라이드 뼈 부모 좌표, 2.2 cm)
     if (C.pistol && P.boneRest.slide) {
       // 피벗이 아직 원점(단위 변환)이라 월드 = 피벗 공간 (m)
@@ -450,6 +453,7 @@ const AV = G.AssetVM = {
     const sight = this.measure(P, pts.map(p => p.clone().applyMatrix4(M)), P.def.pistol, Sp.up, fix && { R: fix.R.clone().applyMatrix4(M), F: fix.F.clone().applyMatrix4(M), mount: fix.mount?.clone().applyMatrix4(M), noTop: true });
     if (C.iron) this.calibrateIron(sight, C.iron, M);
     P.swaps[id] = { groups, sight, foldParts, muzzleLocal: sight.muzzle.clone().applyMatrix4(P.gunRestInv) };
+    P.swaps[id].magazineContact = G.HandContact?.swappedMagazine(P.magazineContact, groups);
     if (kar && kar.bolt && kar.handle) this.karSetup(P.swaps[id], kar);
     if (P.gunId === id) { this.useGun(P, id); P.mountKey = null; }   // 이미 이 총을 들고 있으면 바로 바꿔 보인다
     console.info('[AssetVM] ' + id + ' 총 모델 → ' + P.key + ' 팩');
@@ -529,6 +533,7 @@ const AV = G.AssetVM = {
   },
   // 여러 클립을 가중치로 섞어 한 자세를 만든다 (모든 클립이 시간 t 를 따로 가진다)
   pose(P, list) {
+    G.HandContact?.restore(P.model);
     for (const k in P.acts) P.acts[k].action.enabled = false;
     for (const [k, t, w] of list) {
       const A = P.acts[k].action;
@@ -622,6 +627,10 @@ const AV = G.AssetVM = {
     P.aimIdle = list.length === 1 && list[0][0] === 'idle';
     this.pose(P, list);
     if (P.swaps[id]?.kar && P.gunId === id) this.karUpdate(P, P.swaps[id].kar, id, R, dt);
+    G.HandContact?.apply(id, P.model, G.HandContact.frame(P.gunBone, P.gunRest, P.sight0.qInv), undefined,
+      { reload: R, magazine: P.swaps[id]?.magazineContact || P.magazineContact,
+        movingLeft: G.WEAPONS[id].action === 'pump' && !R && P.shotT * fireSpd < fireLen + .15,
+        movingRight: id === 'kr98' && (R || P.shotT < (G.WEAPONS[id].cycle || .95)) || id === 'r45' && !!R });
     for (const b of P.spare) b.scale.setScalar(reload ? 1 : 1e-4);
     this.syncMount(P, id, s.scope);
     // ADS: 총의 가늠선을 시선과 나란히 돌리고, 가늠쇠(또는 조준경 중심)를 화면 가운데로

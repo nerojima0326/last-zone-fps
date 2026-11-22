@@ -36,6 +36,7 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
   finally{input.disabled=false}
  },
  sample(name,p){
+  G.HandContact?.restore(this.model);
   const part=this.actions[name];if(!part)return;
   // All FBX takes retain absolute source timeline offsets.
   if(this.name!==name){this.mixer.stopAllAction();part.action.reset().play();this.name=name}
@@ -50,6 +51,7 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
   this.shotT+=dt;
   const reload=s.reload?.type==='mag',fireDuration=this.actions.Fire.end-this.actions.Fire.start,firing=!reload&&this.shotT<fireDuration;
   this.sample(reload?(s.reload.empty?'ReloadEmpty':'Reload'):firing?'Fire':'Idle',reload?s.reload.p:firing?this.shotT/fireDuration:0);
+  G.HandContact?.apply('g18',this.model,G.HandContact.frame(this.main,this.mainRestMatrix),undefined,{reload:s.reload});
   // The spare magazine lives behind the camera in the source idle; omit it then.
   if(this.spare)this.spare.visible=!!reload;
   if(this.slide&&!reload&&s.empty)this.slide.position.z=this.slideRestZ-5.1;
@@ -128,6 +130,7 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
   const flash=G.VM.models.g18.flash.clone();flash.name='G18Flash';flash.visible=false;pivot.add(flash);
   this.unload();G.VM.root.add(pivot);
   Object.assign(this,{ready:true,model,pivot,mixer,actions,active:false,name:'Idle',main,mainRestMatrix,slide,slideRestZ:slide?.position.z,spare,flash,muzzleLocal,ironOffset,aimOffset:ironOffset.clone(),mount:null,mountKey:null,shotT:99});
+  G.HandContact?.bind(model,G.HandContact.frame(main,mainRestMatrix));
   if(spare)spare.visible=false;
   // v60 다른 1인칭 팩과 같은 장갑·소매 색
   if(G.AssetVM?.tintArms)G.AssetVM.tintArms(model).catch(e=>console.warn('[G18] 팔 색',e));
