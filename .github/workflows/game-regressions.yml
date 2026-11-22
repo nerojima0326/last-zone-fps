@@ -40,6 +40,7 @@ jobs:
           node tools/check-combat.cjs
       - name: Check reload animation and audio
         run: |
+          node tools/check-original-weapon-audio.cjs
           node tools/check-reloads.cjs
           node tools/check-clearance.cjs
           node tools/check-weapon-audio.cjs

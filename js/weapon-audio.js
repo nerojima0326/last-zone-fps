@@ -1,6 +1,5 @@
-// 실총 녹음(CC0, The Free Firearm Sound Library) 사격음·조작음. 출처·편집: assets/audio/weapons/CREDITS.md
-//  <id>-shot.mp3 : 내 총 (사수 뒤 스테레오 녹음 2테이크, 번갈아 재생)
-//  <id>-fx.mp3   : 남의 총 near/far + 장전 조작음 (magout·magin·open·close·shell·port·dry·up·down)
+// Original generated firing reports + CC0 recorded handling.
+// The same original generator supplies reports if downloaded banks are absent.
 (function(){
 'use strict';
 const G=window.G,U=G.U;
@@ -9,7 +8,7 @@ const LEVEL={magout:.15,magin:.20,open:.17,close:.20,shell:.14,port:.16,dry:.11,
 const MASS={ar7:1,ka47:1.08,sc17:1,mk14:1.1,kr98:1.05,s12:1.05,m1014:1,db2:1.05,sa12:1.08,aa12:1.12,p92:.9,g18:.86,m1911:.95,de7:.85,r45:.95};
 const base=new URL('assets/audio/weapons/',document.baseURI);
 const W=G.WeaponAudio={
- manifest:null, buffers:{}, raw:{}, voices:[], own:[], sequence:{},
+ manifest:null, buffers:{}, raw:{}, voices:[], own:[], sequence:{}, generated:{},
  prepare(){
   if(this.preparing)return this.preparing;
   this.preparing=(async()=>{
@@ -18,7 +17,7 @@ const W=G.WeaponAudio={
    const banks=[m.switch];for(const w of Object.values(m.weapons))banks.push(w.shot,w.fx);
    await Promise.all(banks.map(async b=>{const r=await fetch(new URL(b.path+'?v='+b.sha,base));if(!r.ok)throw Error(b.path+' '+r.status);this.raw[b.path]=await r.arrayBuffer()}));
    return true;
-  })().catch(e=>{console.info('[audio] recorded bank unavailable; using synthesis',e.message);return false});
+  })().catch(e=>{console.info('[audio] bank unavailable; using original report generator',e.message);return false});
   return this.preparing;
  },
  load(ctx){
@@ -49,7 +48,7 @@ const W=G.WeaponAudio={
  },
  bank(id){return this.manifest?.weapons[id]},
  play(a,bank,name,sp,o={}){
-  const buffer=this.buffers[bank?.path],cue=bank?.cues[name];if(!buffer||!cue)return null;
+  const buffer=o.buffer||this.buffers[bank?.path],cue=bank?.cues[name];if(!buffer||!cue)return null;
   const c=a.ctx,t=c.currentTime+(o.delay||0),rate=(o.rate||1)*(1+(Math.random()-.5)*(o.vary??.03));
   const offset=cue.start??cue.offset,duration=Math.min(cue.offset+cue.duration-offset,buffer.duration-offset),seconds=duration/rate;
   if(!(duration>0))return null;
@@ -75,8 +74,22 @@ const W=G.WeaponAudio={
   v.gain.gain.cancelScheduledValues(now);v.gain.gain.setTargetAtTime(0,now,.01);try{v.source.stop(now+.06)}catch(e){}
   let i=this.voices.indexOf(v);if(i>=0)this.voices.splice(i,1);i=this.own.indexOf(v);if(i>=0)this.own.splice(i,1);
  },
+ report(a,id,w,name,sp,options){
+  if(w&&this.buffers[w.shot.path])return this.play(a,w.shot,name,sp,options);
+  const D=G.WeaponSound,sr=a.ctx.sampleRate||44100,key=id+':'+name+':'+sr;
+  let sound=this.generated[key];
+  if(!sound){
+   const own=name.startsWith('own'),take=own?Number(name.slice(3)):0;
+   const pcm=D.generate(id,take,own?'own':name,sr),buffer=a.ctx.createBuffer(2,pcm.left.length,sr);
+   buffer.copyToChannel(pcm.left,0);buffer.copyToChannel(pcm.right,1);
+   sound=this.generated[key]={buffer,bank:{path:key,cues:{[name]:{offset:0,duration:pcm.duration}}}};
+  }
+  return this.play(a,sound.bank,name,sp,{...options,buffer:sound.buffer});
+ },
  fire(a,id,pos,own,suppressed=false){
-  const w=this.bank(id);if(!w||!this.buffers[w.shot.path]||!this.buffers[w.fx.path])return false;
+  const D=G.WeaponSound;if(!D?.profiles[id])return false;
+  // An old cached manifest must not silently bring back the retired shots.
+  let w=this.bank(id);if(this.manifest?.edition!==D.edition||w?.shot?.source!=='original-pressure-noise-v1')w=null;
   const cut=suppressed?3100:18000,sg=suppressed?.30:1;
   if(own){
    // 연사: 앞 발의 잔향은 줄이고(겹쳐 쌓이지 않게) 최대 4발까지만 남긴다
@@ -84,22 +97,22 @@ const W=G.WeaponAudio={
    for(const v of this.own){if(now-v.t<.02)continue;v.gain.gain.cancelScheduledValues(now);v.gain.gain.setTargetAtTime(v.level*.22,now,.025)}
    while(this.own.length>=4)this.kill(this.own[0]);
    const seq=this.sequence[id]||0;this.sequence[id]=seq+1;
-   // 두 테이크의 크기를 맞춘다
-   const C=w.shot.cues,name=seq%2?'own1':'own0',even=C.own0.loud&&C.own1.loud?U.clamp((C.own0.loud+C.own1.loud)/2/C[name].loud,.7,1.3):1;
-   const v=this.play(a,w.shot,name,{g:1,pan:0,lp:20000,rev:.03},{gain:(w.mix?.shot??.86)*even*sg,cut,rate:w.rate,vary:.012,wet:.18,own:true,role:'shot'});
+   const C=w?.shot.cues,names=C?Object.keys(C).filter(n=>/^own\d+$/.test(n)):Array.from({length:D.variants},(_,i)=>'own'+i),name=names[seq%names.length];
+   const mean=C?names.reduce((v,n)=>v+(C[n].loud||0),0)/names.length:0,even=mean&&C[name].loud?U.clamp(mean/C[name].loud,.85,1.18):1;
+   const v=this.report(a,id,w,name,{g:1,pan:0,lp:20000,rev:.03},{gain:(w?.mix?.shot??.86)*even*sg,cut,rate:w?.rate||1,vary:.008,wet:.18,own:true,role:'shot'});
    if(v)this.own.push(v);
    // A small, real bolt/slide contact makes self-loaders tactile, especially
    // with a suppressor. Manual bolts and pumps keep their animation events.
-   if(w.mix?.action)this.play(a,w.fx,'close',{g:1,pan:.025,lp:8500,rev:0},
+   if(w?.mix?.action&&this.buffers[w.fx.path])this.play(a,w.fx,'close',{g:1,pan:.025,lp:8500,rev:0},
     {gain:suppressed?.12:.045,delay:w.mix.action,rate:1,vary:.015,wet:0,own:true,role:'action'});
    return true;
   }
   const sp=a.spatial(pos,30);if(sp.g<.015||!a._budget())return true;
   // 거리에 따라 가까운 녹음 → 먼 녹음으로 넘어간다. 소리는 음속으로 늦게 도착한다.
   const d=sp.d,far=U.clamp((d-45)/90,0,1),delay=Math.min(3,d/343);
-  const o={rate:w.rate,cut,delay,wet:.5,role:'shot'};
-  if(far<1)this.play(a,w.fx,'near',{...sp,lp:Math.max(sp.lp,1800)},{...o,gain:1.15*sg*(1-far)});
-  if(far>0)this.play(a,w.fx,'far',{...sp,g:Math.min(1,sp.g*2.2),lp:Math.min(sp.lp,5400)},{...o,gain:1.0*sg*far});
+  const o={rate:w?.rate||1,cut,delay,wet:.5,role:'shot'};
+  if(far<1)this.report(a,id,w,'near',{...sp,lp:Math.max(sp.lp,1800)},{...o,gain:1.0*sg*(1-far)});
+  if(far>0)this.report(a,id,w,'far',{...sp,g:sp.g,lp:Math.min(sp.lp,5400)},{...o,gain:.8*sg*far});
   return true;
  },
  handle(a,id,name,delay=0,k=1){
