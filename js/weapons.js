@@ -1290,10 +1290,13 @@ const Ballistics = G.Ballistics = {
     const Wd = G.World, Game = G.Game, player = Game.player;
     for (let i = 0; i < this.list.length; i++) {
       const p = this.list[i];
+      // Travel with the step's average velocity. Using the end velocity for
+      // the entire step adds extra bullet drop that grows at lower frame rates.
+      _d.copy(p.vel); _d.y -= 4.9 * dt;
       p.vel.y -= 9.8 * dt;
-      const sp = p.vel.length();
+      const sp = _d.length();
       let L = sp * dt;
-      _d.copy(p.vel).divideScalar(sp);
+      _d.divideScalar(sp);
       let best = L, kind = null, target = null, head = false;
       if (Wd.raycast(p.pos, _d, L)) { best = Wd.hit.t; kind = 'world'; }
       // 수면 (바다·호수·강)
@@ -1532,7 +1535,7 @@ const VM = G.VM = {
     // 스웨이
     this.sway.x = U.damp(this.sway.x, U.clamp(-s.lookDX * 0.0005, -0.05, 0.05), 9, dt);
     this.sway.y = U.damp(this.sway.y, U.clamp(-s.lookDY * 0.0005, -0.05, 0.05), 9, dt);
-    const a = this.adsT, ia = 1 - a * 0.9;
+    const a = this.adsT, ia = 1 - a;
     const sight = this.sightOf(m, s.scope);
     const p = this.pos.copy(m.hip).lerp(sight.ads, a);
     const r = this.rot; r.set(0, a < 1 ? (1 - a) * 0.035 : 0, 0);
