@@ -1,0 +1,32 @@
+[
+  {
+    "id": "ar7",
+    "start": 0.0,
+    "end": 5.95,
+    "example": "shot / empty reload"
+  },
+  {
+    "id": "ka47",
+    "start": 5.95,
+    "end": 10.76,
+    "example": "shot / empty reload"
+  },
+  {
+    "id": "s12",
+    "start": 10.76,
+    "end": 17.65,
+    "example": "shot / empty reload"
+  },
+  {
+    "id": "g18",
+    "start": 17.65,
+    "end": 22.06,
+    "example": "burst / empty reload"
+  },
+  {
+    "id": "de7",
+    "start": 22.06,
+    "end": 26.06,
+    "example": "shot / empty reload"
+  }
+]

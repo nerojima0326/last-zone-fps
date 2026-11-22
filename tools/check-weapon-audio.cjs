@@ -1,8 +1,13 @@
 // npm i playwright; npx playwright install chromium
-// Optional: THREE_DIR, CHROME_BIN, BASELINE_PLAYER (v19 source), REPORT (JSON).
+// Optional: THREE_DIR, CHROME_BIN, BASELINE_PLAYER (legacy studio), REPORT, RENDER_AUDIO.
 const fs=require('fs'),http=require('http'),path=require('path'),assert=require('assert');
 const {chromium}=require('playwright');
 const root=path.resolve(__dirname,'..');
+const manifest=JSON.parse(fs.readFileSync(path.join(root,'assets/audio/weapons/manifest.json'),'utf8'));
+for(const bank of [manifest.switch,...Object.values(manifest.weapons).flatMap(w=>[w.shot,w.fx])]){
+ const digest=require('crypto').createHash('sha256').update(fs.readFileSync(path.join(root,'assets/audio/weapons',bank.path))).digest('hex').slice(0,12);
+ assert.equal(bank.sha,digest,bank.path+' cache hash mismatch');
+}
 const mime={'.html':'text/html','.js':'application/javascript','.glb':'model/gltf-binary','.gltf':'model/gltf+json','.bin':'application/octet-stream','.jpg':'image/jpeg','.png':'image/png','.hdr':'application/octet-stream'};
 (async()=>{
 const server=http.createServer((req,res)=>{let file=path.join(root,decodeURIComponent(req.url.split('?')[0]));if(file.endsWith('/'))file+='index.html';if(!file.startsWith(root)||!fs.existsSync(file)){res.writeHead(404);res.end();return}res.setHeader('Content-Type',mime[path.extname(file)]||'text/plain');fs.createReadStream(file).pipe(res)}).listen(0,'127.0.0.1');await new Promise(r=>server.once('listening',r));
@@ -10,15 +15,26 @@ const browser=await chromium.launch({executablePath:process.env.CHROME_BIN||unde
 try{
 const page=await browser.newPage({viewport:{width:1440,height:900}});const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')console.log('console:',m.text())});
 if(process.env.THREE_DIR) await page.route('https://cdn.jsdelivr.net/npm/three@0.160.0/**',route=>{const file=path.join(process.env.THREE_DIR,route.request().url().split('/three@0.160.0/')[1]);return route.fulfill({status:200,contentType:'application/javascript',body:fs.readFileSync(file)})});
-await page.goto(`http://127.0.0.1:${server.address().port}/tools/reloads.html`);
-await page.waitForFunction(()=>window.ReloadStudio?.ready,null,{timeout:120000});
-console.log('Studio loaded');await page.evaluate(()=>ReloadStudio.pause());
+await page.route('https://fonts.googleapis.com/**',r=>r.fulfill({contentType:'text/css',body:''}));
+if(process.env.BASELINE_PLAYER){
+ await page.goto(`http://127.0.0.1:${server.address().port}/tools/reloads.html`);
+ await page.waitForFunction(()=>window.ReloadStudio?.ready,null,{timeout:120000});
+ await page.evaluate(()=>ReloadStudio.pause());
+}else{
+ await page.addInitScript(()=>localStorage.setItem('lastzone_opts',JSON.stringify({quality:'potato',qv:2,players:24,loadout:'all',fpsTarget:60})));
+ await page.goto(`http://127.0.0.1:${server.address().port}/`);
+ await page.waitForFunction(()=>window.G?.UI&&document.querySelector('#loading.hidden'),null,{timeout:180000});
+ await page.click('#trainBtn');
+ await page.waitForFunction(()=>G.Training.active&&G.M4Viewmodel.ready&&G.G17Pilot.ready&&Object.keys(G.AssetVM.PACKS).every(k=>G.AssetVM.packs[k]?.ready),null,{timeout:240000});
+ await page.evaluate(()=>{G.onLockChange=()=>{};G.Input.unlock();G.paused=true;G.UI.showPause(false);window.requestAnimationFrame=()=>0;});
+}
+console.log('Audio scene loaded');
 await page.evaluate(async()=>{G.Audio.init();await G.Audio.ctx.resume();if(!await G.WeaponAudio.load(G.Audio.ctx))throw Error('recorded audio bank failed to load')});
 const timing=await page.evaluate(()=>{
  const out=[],P=G.Player;const click=G.Audio.click;
  for(const id of G.GUN_IDS)for(const empty of [false,true]){
   const d=G.WEAPONS[id],events=[],dt=.001;let elapsed=0;
-  P.init({cur:d.cls,weapons:{[d.cls]:{id,mag:empty?0:Math.max(1,Math.floor(d.mag/2))}},ammo:{[d.ammo]:100}});
+  const actor=G.Game?.player||{};Object.assign(actor,{cur:d.cls,weapons:{[d.cls]:{id,mag:empty?0:Math.max(1,Math.floor(d.mag/2)),attachments:{}}},ammo:{[d.ammo]:100}});P.init(actor);
   G.Audio.click=(type,weaponId)=>events.push({type,weaponId,at:elapsed});P.startReload();
   if(P.reload.kind==='mag'||P.reload.kind==='revolver'){
    if(Math.abs(P.reload.dur-G.Guns.reloadDuration(id,empty))>1e-8)throw Error(id+' empty duration');
@@ -59,7 +75,7 @@ const audio=await page.evaluate(async timing=>{
   const bus={ctx:clock,master,verb,spatial:()=>({g:1,pan:0,lp:20000,rev:0}),_budget:()=>true};
   if(kind==='reload')for(const event of row.events){clock.currentTime=event.at;W.event(bus,event.type,id)}
   else if(kind==='burst')for(let t=0;t<1.8;t+=60/G.WEAPONS[id].rpm){clock.currentTime=t;W.fire(bus,id,null,true)}
-  else if(kind==='far'){bus.spatial=G.Audio.spatial.bind(G.Audio);W.fire(bus,id,{x:120,y:0,z:0},false)}
+  else if(kind==='far'){bus.spatial=pos=>G.Audio.spatial.call({listener:{x:0,y:0,z:0,yaw:0}},pos,30);W.fire(bus,id,{x:120,y:0,z:0},false)}
   else W.fire(bus,id,null,true);
   const b=await c.startRendering(),data=b.getChannelData(0),stats=energy(data);
   if(kind==='shot'){const start=data.findIndex(v=>Math.abs(v)>.025);if(start<0||start/44100>.025)throw Error(id+' delayed shot attack: '+start/44100)}
@@ -72,14 +88,26 @@ const audio=await page.evaluate(async timing=>{
  for(const kind of ['shot','reload'])if(new Set(output.map(r=>r[kind].hash)).size!==15)throw Error('weapon '+kind+' audio is shared');
  const far=await render('ar7','far');if(far.rms>=output.find(x=>x.id==='ar7').shot.rms*.3)throw Error('distant report is not attenuated');
  const bursts=[];for(const id of ['ar7','aa12','g18'])bursts.push({id,...await render(id,'burst')});
- await new Promise(r=>setTimeout(r,50));if(W.voices.length)throw Error('audio nodes leak after completion: '+W.voices.length);
+ await new Promise(r=>setTimeout(r,50));const retained=W.voices.filter(v=>v.ctx!==G.Audio.ctx);if(retained.length)throw Error('offline audio nodes leak after completion: '+JSON.stringify(retained.map(v=>({role:v.role,t:v.t}))));
  // A missing bank must hand control back to the existing synthesizer.
  const saved=W.buffers;W.buffers={};if(W.fire({spatial:()=>({g:1})},'ar7',null,true)!==false)throw Error('missing sample fallback');W.buffers=saved;
  Math.random=rnd;
  return {banks:Object.keys(W.buffers).length,weapons:output,bursts,far};
 },timing);
-if(process.env.REPORT)fs.writeFileSync(process.env.REPORT,JSON.stringify({timing,audio},null,2));
+if(process.env.REPORT)fs.writeFileSync(process.env.REPORT,JSON.stringify({timing,audio,pendingMixChecks:true},null,2));
+const mix=await page.evaluate(require('./audio-mix-checks.cjs'),{render:!!process.env.RENDER_AUDIO,timing});
+if(process.env.RENDER_AUDIO){
+ fs.mkdirSync(process.env.RENDER_AUDIO,{recursive:true});
+ for(const sample of mix.renders){
+  const pcm=Buffer.from(sample.pcm,'base64'),header=Buffer.alloc(44);
+  header.write('RIFF');header.writeUInt32LE(36+pcm.length,4);header.write('WAVEfmt ',8);header.writeUInt32LE(16,16);header.writeUInt16LE(1,20);header.writeUInt16LE(2,22);header.writeUInt32LE(44100,24);header.writeUInt32LE(44100*4,28);header.writeUInt16LE(4,32);header.writeUInt16LE(16,34);header.write('data',36);header.writeUInt32LE(pcm.length,40);
+  fs.writeFileSync(path.join(process.env.RENDER_AUDIO,sample.name+'.wav'),Buffer.concat([header,pcm]));
+ }
+}
+delete mix.renders;
+if(process.env.REPORT)fs.writeFileSync(process.env.REPORT,JSON.stringify({timing,audio,mix},null,2));
 console.log(JSON.stringify(audio,null,2));
+console.log('Mix checks',JSON.stringify(mix));
 assert.equal(errors.length,0,errors.join('\n'));
 console.log('PASS: 31 recorded banks decode; 15 unique shot/reload renders; safe automatic bursts, voice cleanup and missing-bank fallback.');
 
