@@ -105,8 +105,6 @@ const HIP = {
   pistol: { at: [0.085, -0.095, -0.34], yaw: 3, pitch: 2, roll: 0 }
 };
 // v56 장전 중 들어 올리기 (m, 도)
-// v56 권총 반동 (도, m, 초): 오르는 시간 · 돌아오는 빠르기 · 흔들림
-const PISTOL_KICK = { pitch: 9, roll: 2.5, back: 0.022, lift: 0.006, rise: 0.035, ret: 13, wob: 9 };
 // v57 전력질주 자세 (도, m): pitch − = 총구 아래, yaw + = 총구 왼쪽(가운데), roll + = 윗면 왼쪽
 const SPRINT = {
   rifle: { pitch: -7, yaw: 3, roll: 16, at: [0.0, -0.015, 0.01] },
@@ -124,7 +122,7 @@ const AV = G.AssetVM = {
     const vm = G.VM, update = vm.update, fire = vm.fireKick, muzzle = vm.muzzleWorld, set = vm.set;
     vm.update = function (dt, s) { update.call(this, dt, s); AV.update(dt, s, this); };
     vm.set = function (id) { set.call(this, id); for (const k in AV.packs) { const P = AV.packs[k]; if (P.pivot && GUNS[id] !== k) { P.pivot.visible = false; P.active = false; } } };
-    vm.fireKick = function (a, sup) { fire.call(this, a, sup); const P = AV.pack(this.cur); if (P) { P.shotT = 0; P.drawT = 99; P.kickSide = Math.random() < 0.5 ? -1 : 1; } };
+    vm.fireKick = function (a, sup) { fire.call(this, a, sup); const P = AV.pack(this.cur); if (P) { P.shotT = 0; P.drawT = 99; } };
     vm.muzzleWorld = function (cam, out) {
       const P = AV.pack(this.cur);
       if (!P || !P.active) return muzzle.call(this, cam, out);
@@ -300,6 +298,8 @@ const AV = G.AssetVM = {
     }
     P.gunRest = new T.Matrix4().copy(pivot.matrixWorld).invert().multiply(gunBone.matrixWorld);
     P.gunRestInv = P.gunRest.clone().invert();
+    if (P.hands && Math.abs(P.handScale - 1) > .01) this.scaleHands(P, P.handScale);
+    G.HandContact?.bind(model, G.HandContact.frame(gunBone, P.gunRest, P.sight0.qInv));
     if (C.iron) this.calibrateIron(P.sight, C.iron, P.gunRest);
     P.muzzleLocal = P.muzzle0 = P.sight.muzzle.clone().applyMatrix4(P.gunRestInv);
     // 탄창·슬라이드 뼈의 휴식 자세 (바꿔 끼운 총의 탄창·슬라이드가 따라 움직이게)
@@ -308,6 +308,7 @@ const AV = G.AssetVM = {
       const b = nm && find(nm);
       if (b) P.boneRest[k] = { bone: b, inv: new T.Matrix4().copy(pivot.matrixWorld).invert().multiply(b.matrixWorld).invert() };
     }
+    P.magazineContact = G.HandContact?.magazine(model, P.boneRest.mag?.bone, P.gunMeshes);
     // 권총 슬라이드 후퇴 방향 (슬라이드 뼈 부모 좌표, 2.2 cm)
     if (C.pistol && P.boneRest.slide) {
       // 피벗이 아직 원점(단위 변환)이라 월드 = 피벗 공간 (m)
@@ -452,6 +453,7 @@ const AV = G.AssetVM = {
     const sight = this.measure(P, pts.map(p => p.clone().applyMatrix4(M)), P.def.pistol, Sp.up, fix && { R: fix.R.clone().applyMatrix4(M), F: fix.F.clone().applyMatrix4(M), mount: fix.mount?.clone().applyMatrix4(M), noTop: true });
     if (C.iron) this.calibrateIron(sight, C.iron, M);
     P.swaps[id] = { groups, sight, foldParts, muzzleLocal: sight.muzzle.clone().applyMatrix4(P.gunRestInv) };
+    P.swaps[id].magazineContact = G.HandContact?.swappedMagazine(P.magazineContact, groups);
     if (kar && kar.bolt && kar.handle) this.karSetup(P.swaps[id], kar);
     if (P.gunId === id) { this.useGun(P, id); P.mountKey = null; }   // 이미 이 총을 들고 있으면 바로 바꿔 보인다
     console.info('[AssetVM] ' + id + ' 총 모델 → ' + P.key + ' 팩');
@@ -531,6 +533,7 @@ const AV = G.AssetVM = {
   },
   // 여러 클립을 가중치로 섞어 한 자세를 만든다 (모든 클립이 시간 t 를 따로 가진다)
   pose(P, list) {
+    G.HandContact?.restore(P.model);
     for (const k in P.acts) P.acts[k].action.enabled = false;
     for (const [k, t, w] of list) {
       const A = P.acts[k].action;
@@ -624,14 +627,19 @@ const AV = G.AssetVM = {
     P.aimIdle = list.length === 1 && list[0][0] === 'idle';
     this.pose(P, list);
     if (P.swaps[id]?.kar && P.gunId === id) this.karUpdate(P, P.swaps[id].kar, id, R, dt);
+    G.HandContact?.apply(id, P.model, G.HandContact.frame(P.gunBone, P.gunRest, P.sight0.qInv), undefined,
+      { reload: R, magazine: P.swaps[id]?.magazineContact || P.magazineContact,
+        movingLeft: G.WEAPONS[id].action === 'pump' && !R && P.shotT * fireSpd < fireLen + .15,
+        movingRight: id === 'kr98' && (R || P.shotT < (G.WEAPONS[id].cycle || .95)) || id === 'r45' && !!R });
     for (const b of P.spare) b.scale.setScalar(reload ? 1 : 1e-4);
     this.syncMount(P, id, s.scope);
     // ADS: 총의 가늠선을 시선과 나란히 돌리고, 가늠쇠(또는 조준경 중심)를 화면 가운데로
     const aim = reload ? 0 : clamp(s.ads || 0, 0, 1), weight = 1 - aim, M = P.mount;
     const sprint = (vm.sprint || 0) * (!reload && !draw ? 1 : 0);
     // 흔들림·반동 기울기만 카메라 기준으로 돌린다 (전력질주 자세는 아래 sprintPose 에서 손잡이를 축으로)
-    _e.set((vm.sway?.y || 0) * weight, (vm.sway?.x || 0) * weight, vm.kickRoll || 0);
+    _e.set((vm.sway?.y || 0) * weight, (vm.sway?.x || 0) * weight, 0);
     this.place(P, aim, _e);
+    if (!reload && !draw && !P.aimIdle) G.WeaponMotion?.stabilize(P.pivot, P.gunBone, P.gunRest);
     if (sprint > 0.001) this.sprintPose(P, sprint * sprint * (3 - 2 * sprint));
     // v56 장전할 때는 총을 화면 가운데 쪽으로 들어 올려 손동작이 보이게 (지향 자세가 오른쪽 아래라 그대로면 화면 밖에서 장전한다)
     // v63 KR-98 사격 뒤 볼트 조작도 반쯤 들어 올린다 (손잡이가 얼굴에 붙지 않게)
@@ -641,8 +649,7 @@ const AV = G.AssetVM = {
     P.pivot.position.x += (vm.sway?.x || 0) * 0.2 * weight + Math.sin((vm.t || 0) * 0.8) * 0.001 * weight;
     P.pivot.position.y += Math.sin(s.phase || 0) * 0.006 * (s.moving || 0) * weight - (s.landDip || 0) * 0.05;
     if (!draw) P.pivot.position.y -= (1 - (s.raise ?? 1)) * 0.22;
-    P.pivot.position.z += vm.kick * (C.pistol ? 0.006 : 0.02);
-    if (C.pistol && !reload) this.pistolKick(P, P.shotT, aim, !!s.empty);
+    if (C.pistol && !reload) this.pistolSlide(P, P.shotT, !!s.empty);
     P.pivot.updateMatrixWorld(true);
     // 총구 불꽃
     const fl = P.flashes[id];
@@ -656,22 +663,12 @@ const AV = G.AssetVM = {
     }
     P.active = true;
   },
-  // v56 권총 반동: 팩의 사격 클립(총이 크게 뒤집힌다) 대신 손목을 축으로 짧게 튀었다가 스프링처럼 돌아온다 + 슬라이드 후퇴
-  pistolKick(P, t, aim, empty) {
+  // Slide motion stays local; wrist recoil is supplied by the shared rig.
+  pistolSlide(P, t, empty) {
     const S = P.slideKick;
     // 슬라이드: 0.025 초에 끝까지 물러났다가 0.07 초에 돌아온다 (pose() 가 매 프레임 제자리로 되돌린 뒤 더한다).
     //  탄창이 비면 마지막 발 뒤 슬라이드가 뒤로 걸린 채 (슬라이드 멈춤)
     if (S) { const e = empty && t > 0.025 ? 1 : t < 0.025 ? t / 0.025 : Math.max(0, 1 - (t - 0.025) / 0.07); if (e > 0) S.bone.position.addScaledVector(S.d, e); }
-    if (t > 0.6) return;
-    const K = Object.assign({}, PISTOL_KICK, P.def.kick);
-    const up = t < K.rise ? t / K.rise : Math.exp(-(t - K.rise) * K.ret) * Math.cos((t - K.rise) * K.wob);
-    const w = 1 - aim * 0.45, ang = K.pitch * D * up * w;
-    // 손목(손잡이) 자리를 축으로 돌린다
-    const g = P.sight.grip.clone().applyQuaternion(P.pivot.quaternion).add(P.pivot.position);
-    _q.setFromEuler(new T.Euler(ang, 0, K.roll * D * up * w * (P.kickSide || 1)));
-    P.pivot.quaternion.premultiply(_q);
-    P.pivot.position.sub(g).applyQuaternion(_q).add(g);
-    P.pivot.position.z += K.back * Math.max(0, up) * w; P.pivot.position.y += K.lift * Math.max(0, up) * w;
   },
   // 손 뼈(손가락 사슬의 뿌리)를 주먹 가운데(손가락 뼈 평균)를 축으로 s 배 — 총을 쥔 자리는 그대로, 손만 작아진다
   scaleHands(P, s) {

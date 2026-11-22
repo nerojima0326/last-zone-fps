@@ -1,0 +1,28 @@
+{
+  "version": 74,
+  "checks": {
+    "glock-import": 0,
+    "m4-import": 0,
+    "aim": 0,
+    "training-range": 0,
+    "training-fallback": 0,
+    "bundled-viewmodels": 0,
+    "hand-poses": 0,
+    "combat": 0,
+    "reloads": 0,
+    "clearance": 0,
+    "weapon-audio": 0
+  },
+  "recordedBanks": 31,
+  "weaponRenders": 15,
+  "reloadTimings": 30,
+  "suppressedRenders": 13,
+  "maxBurstPeak": 0.7238051891326904,
+  "stereoAttack": true,
+  "isolatedCues": true,
+  "mute": true,
+  "fallbackMute": true,
+  "cleanedUp": true,
+  "reproducibleBanks": 31,
+  "failures": []
+}

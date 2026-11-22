@@ -123,6 +123,7 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   const flash=G.VM.models.ar7.flash.clone();flash.name='M4Flash';flash.visible=false;pivot.add(flash);
   this.unload();G.VM.root.add(pivot);
   Object.assign(this,{ready:true,active:false,model,pivot,frame,main,mainRestMatrix,body,rearSight,mixer,actions,spare,flash,muzzleLocal,ironLocal,ironQ,ironOffset,aimOffset:ironOffset.clone(),previewTemplate,scope:null,mount:null,mountKey:null,name:'Idle',shotT:99,equipT:99,aim:0});
+  G.HandContact?.bind(model,G.HandContact.frame(main,mainRestMatrix,ironQ.clone().invert()));
  },
  splitRearSight(body,main){
   const source=body.geometry.index?body.geometry.toNonIndexed():body.geometry,lists=[[],[]],v=new V();
@@ -137,6 +138,7 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   const rear=body.clone(false);rear.name='M4RearSight';rear.geometry=geometry(lists[1]);body.parent.add(rear);body.geometry=geometry(lists[0]);source.dispose();return rear;
  },
  sample(name,p){
+  G.HandContact?.restore(this.model);
   const part=this.actions[name];if(this.name!==name){this.mixer.stopAllAction();part.action.reset().play();this.name=name}
   part.action.paused=false;
   this.mixer.setTime(part.start+clamp(p,0,1)*part.duration);
@@ -153,6 +155,7 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   const draw=!reload&&!firing&&this.equipT<this.actions.Draw.duration&&(s.ads||0)<.05;
   const name=reload?(s.reload.empty?'Reload_Empty':'Reload'):firing?'Fire':draw?'Draw':'Idle';
   this.sample(name,reload?s.reload.p:firing?this.shotT/this.actions.Fire.duration:draw?this.equipT/this.actions.Draw.duration:0);
+  G.HandContact?.apply('ar7',this.model,G.HandContact.frame(this.main,this.mainRestMatrix,this.ironQ.clone().invert()),undefined,{reload:s.reload});
   if(s.ads>.05||reload)this.equipT=99;
   if(!reload&&s.empty){const bolt=this.model.getObjectByName('Bolt_j');if(bolt)bolt.position.z=-.7}
   this.syncAttachments(s.scope);
@@ -163,10 +166,10 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   this.pivot.position.x+=(vm.sway?.x||0)*.2*weight+Math.sin((vm.t||0)*.8)*.001*weight;
   this.pivot.position.y+=Math.sin(s.phase||0)*.006*(s.moving||0)*weight-(s.landDip||0)*.05;
   if(!draw)this.pivot.position.y-=(1-(s.raise??1))*.22;
-  this.pivot.position.z+=vm.kick*.02;
   const sprint=(vm.sprint||0)*(!reload&&!draw?1:0);
-  this.pivot.rotation.set((vm.sway?.y||0)*weight-sprint*.2,(vm.sway?.x||0)*weight+sprint*.5,(vm.kickRoll||0)+sprint*.16);
+  this.pivot.rotation.set((vm.sway?.y||0)*weight-sprint*.2,(vm.sway?.x||0)*weight+sprint*.5,sprint*.16);
   if(!s.scope)this.pivot.quaternion.multiply(aimQ.identity().slerp(this.ironQ,aim));
+  if(firing)G.WeaponMotion?.stabilize(this.pivot,this.main,this.mainRestMatrix);
   this.pivot.updateMatrixWorld(true);this.flash.visible=vm.flashT>0;
   this.flash.position.copy(this.muzzleLocal);this.main.localToWorld(this.flash.position);this.pivot.worldToLocal(this.flash.position);
   this.flash.rotation.z=vm.models.ar7.flash.rotation.z;this.flash.scale.copy(vm.models.ar7.flash.scale);

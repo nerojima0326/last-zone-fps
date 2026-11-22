@@ -163,6 +163,7 @@ const R = G.RealArms = {
     if (this.lastM) { this.procVisible(this.lastM, true); this.lastM = null; }
   },
   update(vm, s) {
+    G.HandContact?.restore(this.copy);
     const m = vm.models[vm.cur];
     const own = (vm.cur === 'ar7' && G.M4Viewmodel?.ready) || (vm.cur === 'g18' && G.G17Pilot?.ready) || G.AssetVM?.owns(vm.cur);
     const A = m && this.armsOf(m);
@@ -180,6 +181,9 @@ const R = G.RealArms = {
       if (r) { S.b.arm.scale.setScalar(1); this.drive(m, r, S, pistol); }
       else this.tuck(S);   // 한 팔만 쓰는 동작(투척): 다른 팔은 접어서 감춘다
     }
+    G.HandContact?.apply(vm.cur, this.copy, m.gun.matrixWorld, {
+      L: A.L?.contactMode === 'support' ? 1 : 0, R: A.R?.contactMode === 'grip' ? 1 : 0
+    }, { reload: s.reload });
   },
   tuck(S) {
     const b = S.b; b.arm.scale.setScalar(1e-4); b.arm.updateMatrixWorld(true);

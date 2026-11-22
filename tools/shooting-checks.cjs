@@ -56,16 +56,17 @@ module.exports = function checkShooting() {
     T.onHit = onHit;
     for (const id of G.GUN_IDS) {
       B.reset(); const { def } = prepare(id), count = Math.min(5, def.mag - 1), start = T.stats.shots;
-      let peakKick = 0;
+      let peakKick = 0, peakWeaponPitch = 0;
       for (let frame = 0; T.stats.shots - start < count && frame < 600; frame++) {
         G.Input.lmb = !!def.auto; G.Input.lmbHit = !def.auto;
         step(1 / 60); peakKick = Math.max(peakKick, P.camKick);
+        peakWeaponPitch = Math.max(peakWeaponPitch, VM.root.rotation.x);
       }
       G.Input.lmb = G.Input.lmbHit = false;
       for (let frame = 0; frame < 240; frame++) step(1 / 60);
-      const error = aimError(id), row = { id, shots: T.stats.shots - start, peakKick, camKick: P.camKick, recoilAcc: P.recoilAcc, aimPixels: error };
+      const error = aimError(id), row = { id, shots: T.stats.shots - start, peakKick, peakWeaponPitch, camKick: P.camKick, recoilAcc: P.recoilAcc, aimPixels: error };
       recovery.push(row);
-      if (row.shots !== count || peakKick <= 0 || P.camKick > 1e-6 || P.recoilAcc > 1e-6 || !Number.isFinite(error) || error > .5) failures.push({ phase: 'recovery', ...row });
+      if (row.shots !== count || peakKick <= 0 || peakWeaponPitch <= .003 || peakWeaponPitch > .45 || P.camKick > 1e-6 || P.recoilAcc > 1e-6 || !Number.isFinite(error) || error > .5) failures.push({ phase: 'recovery', ...row });
       for (const empty of [false, true]) {
         const { inst } = prepare(id), initial = empty ? 0 : Math.max(1, Math.floor(def.mag / 2)); inst.mag = initial;
         const reserve = a.ammo[def.ammo]; P.startReload();

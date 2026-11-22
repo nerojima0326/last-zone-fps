@@ -7,49 +7,49 @@
    "rate": 1.0,
    "shot": {
     "path": "ar7-shot.mp3",
-    "sha": "ae09fdf7aedf",
+    "sha": "3ff1941fac11",
     "cues": {
      "own0": {
-      "offset": 0.25,
-      "duration": 1.604
+      "offset": 0.2,
+      "duration": 0.699977
      },
      "own1": {
-      "offset": 2.104,
-      "duration": 1.604
+      "offset": 1.099977,
+      "duration": 0.699977
      }
     }
    },
    "fx": {
     "path": "ar7-fx.mp3",
-    "sha": "de91c81a64d4",
+    "sha": "f0e5b6632b03",
     "cues": {
      "near": {
-      "offset": 0.25,
-      "duration": 1.404
+      "offset": 0.2,
+      "duration": 0.699977
      },
      "far": {
-      "offset": 1.904,
-      "duration": 2.204
+      "offset": 1.099977,
+      "duration": 1.52
      },
      "magout": {
-      "offset": 4.358,
-      "duration": 0.2021
+      "offset": 2.819977,
+      "duration": 0.197596
      },
      "magin": {
-      "offset": 4.81,
-      "duration": 0.1732
+      "offset": 3.217574,
+      "duration": 0.1661
      },
      "open": {
-      "offset": 5.2332,
-      "duration": 0.3312
+      "offset": 3.583673,
+      "duration": 0.326349
      },
      "close": {
-      "offset": 5.8144,
-      "duration": 0.1524
+      "offset": 4.110023,
+      "duration": 0.146848
      },
      "dry": {
-      "offset": 6.2169,
-      "duration": 0.1512
+      "offset": 4.456871,
+      "duration": 0.15068
      }
     }
    },
@@ -65,55 +65,60 @@
     "open": "D_9",
     "close": "D_13",
     "dry": "D_16"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.048,
+    "handling": 0.8
    }
   },
   "ka47": {
    "rate": 1.0,
    "shot": {
     "path": "ka47-shot.mp3",
-    "sha": "7942a17fe85e",
+    "sha": "4ff3df8f3251",
     "cues": {
      "own0": {
-      "offset": 0.25,
-      "duration": 1.7822
+      "offset": 0.2,
+      "duration": 0.874989
      },
      "own1": {
-      "offset": 2.2822,
-      "duration": 1.7822
+      "offset": 1.274989,
+      "duration": 0.874989
      }
     }
    },
    "fx": {
     "path": "ka47-fx.mp3",
-    "sha": "8a50a5f953fa",
+    "sha": "4591b052a043",
     "cues": {
      "near": {
-      "offset": 0.25,
-      "duration": 1.56
+      "offset": 0.2,
+      "duration": 0.874989
      },
      "far": {
-      "offset": 2.06,
-      "duration": 2.4489
+      "offset": 1.274989,
+      "duration": 1.72
      },
      "magout": {
-      "offset": 4.7589,
-      "duration": 0.1516
+      "offset": 3.194989,
+      "duration": 0.14449
      },
      "magin": {
-      "offset": 5.1605,
-      "duration": 0.1514
+      "offset": 3.539478,
+      "duration": 0.144717
      },
      "open": {
-      "offset": 5.5619,
-      "duration": 0.2761
+      "offset": 3.884195,
+      "duration": 0.273605
      },
      "close": {
-      "offset": 6.088,
-      "duration": 0.1516
+      "offset": 4.3578,
+      "duration": 0.151565
      },
      "dry": {
-      "offset": 6.4895,
-      "duration": 0.1513
+      "offset": 4.709365,
+      "duration": 0.143832
      }
     }
    },
@@ -129,55 +134,60 @@
     "open": "C_12",
     "close": "C_13",
     "dry": "C_7"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.058,
+    "handling": 0.8
    }
   },
   "sc17": {
    "rate": 1.0,
    "shot": {
     "path": "sc17-shot.mp3",
-    "sha": "1c72bb415907",
+    "sha": "f827003d6c99",
     "cues": {
      "own0": {
-      "offset": 0.25,
-      "duration": 1.8651
+      "offset": 0.2,
+      "duration": 0.91
      },
      "own1": {
-      "offset": 2.3651,
-      "duration": 1.8651
+      "offset": 1.31,
+      "duration": 0.91
      }
     }
    },
    "fx": {
     "path": "sc17-fx.mp3",
-    "sha": "c54e9ec93cf1",
+    "sha": "4c8e68fe5a5a",
     "cues": {
      "near": {
-      "offset": 0.25,
-      "duration": 1.6325
+      "offset": 0.2,
+      "duration": 0.91
      },
      "far": {
-      "offset": 2.1325,
-      "duration": 2.5628
+      "offset": 1.31,
+      "duration": 1.76
      },
      "magout": {
-      "offset": 4.9453,
-      "duration": 0.2021
+      "offset": 3.27,
+      "duration": 0.197528
      },
      "magin": {
-      "offset": 5.3974,
-      "duration": 0.1732
+      "offset": 3.667528,
+      "duration": 0.166122
      },
      "open": {
-      "offset": 5.8206,
-      "duration": 0.2435
+      "offset": 4.033651,
+      "duration": 0.239932
      },
      "close": {
-      "offset": 6.3141,
-      "duration": 0.1623
+      "offset": 4.473583,
+      "duration": 0.160544
      },
      "dry": {
-      "offset": 6.7264,
-      "duration": 0.151
+      "offset": 4.834127,
+      "duration": 0.145011
      }
     }
    },
@@ -193,55 +203,60 @@
     "open": "U_3",
     "close": "U_4",
     "dry": "U_6"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.055,
+    "handling": 0.8
    }
   },
   "mk14": {
    "rate": 1.0,
    "shot": {
     "path": "mk14-shot.mp3",
-    "sha": "1c2a29d9fd87",
+    "sha": "8c0d378bc723",
     "cues": {
      "own0": {
-      "offset": 0.25,
-      "duration": 1.4852
+      "offset": 0.2,
+      "duration": 0.98
      },
      "own1": {
-      "offset": 1.9852,
-      "duration": 1.4852
+      "offset": 1.38,
+      "duration": 0.98
      }
     }
    },
    "fx": {
     "path": "mk14-fx.mp3",
-    "sha": "fe56bb77e853",
+    "sha": "aa5f3bfb5323",
     "cues": {
      "near": {
-      "offset": 0.25,
-      "duration": 1.3
+      "offset": 0.2,
+      "duration": 0.98
      },
      "far": {
-      "offset": 1.8,
-      "duration": 2.0407
+      "offset": 1.38,
+      "duration": 1.84
      },
      "magout": {
-      "offset": 4.0907,
-      "duration": 0.1517
+      "offset": 3.42,
+      "duration": 0.143991
      },
      "magin": {
-      "offset": 4.4924,
-      "duration": 0.1518
+      "offset": 3.763991,
+      "duration": 0.147687
      },
      "open": {
-      "offset": 4.8941,
-      "duration": 0.2407
+      "offset": 4.111678,
+      "duration": 0.235896
      },
      "close": {
-      "offset": 5.3848,
-      "duration": 0.1515
+      "offset": 4.547574,
+      "duration": 0.145442
      },
      "dry": {
-      "offset": 5.7863,
-      "duration": 0.151
+      "offset": 4.893016,
+      "duration": 0.144898
      }
     }
    },
@@ -257,63 +272,68 @@
     "open": "U_1",
     "close": "U_2",
     "dry": "U_6"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.06,
+    "handling": 0.8
    }
   },
   "kr98": {
    "rate": 1.0,
    "shot": {
     "path": "kr98-shot.mp3",
-    "sha": "092e65de308d",
+    "sha": "48d12f1ccd03",
     "cues": {
      "own0": {
-      "offset": 0.25,
-      "duration": 1.7435
+      "offset": 0.2,
+      "duration": 1.47
      },
      "own1": {
-      "offset": 2.2435,
-      "duration": 1.7435
+      "offset": 1.87,
+      "duration": 1.47
      }
     }
    },
    "fx": {
     "path": "kr98-fx.mp3",
-    "sha": "547b4925c0ae",
+    "sha": "3da08143ec80",
     "cues": {
      "near": {
-      "offset": 0.25,
-      "duration": 1.5261
+      "offset": 0.2,
+      "duration": 1.445624
      },
      "far": {
-      "offset": 2.0261,
-      "duration": 2.3956
+      "offset": 1.845624,
+      "duration": 2.269637
      },
      "magout": {
-      "offset": 4.6717,
-      "duration": 0.1521
+      "offset": 4.315261,
+      "duration": 0.145896
      },
      "magin": {
-      "offset": 5.0738,
-      "duration": 0.1516
+      "offset": 4.661156,
+      "duration": 0.143923
      },
      "open": {
-      "offset": 5.4754,
-      "duration": 0.1521
+      "offset": 5.005079,
+      "duration": 0.149773
      },
      "close": {
-      "offset": 5.8775,
-      "duration": 0.2208
+      "offset": 5.354853,
+      "duration": 0.213424
      },
      "dry": {
-      "offset": 6.3483,
-      "duration": 0.1514
+      "offset": 5.768277,
+      "duration": 0.143991
      },
      "up": {
-      "offset": 6.7497,
-      "duration": 0.1512
+      "offset": 6.112268,
+      "duration": 0.151202
      },
      "down": {
-      "offset": 7.1508,
-      "duration": 0.1849
+      "offset": 6.463469,
+      "duration": 0.180794
      }
     }
    },
@@ -331,55 +351,60 @@
     "dry": "W_13",
     "up": "W_6",
     "down": "M_7"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": null,
+    "handling": 0.8
    }
   },
   "s12": {
    "rate": 1.0,
    "shot": {
     "path": "s12-shot.mp3",
-    "sha": "31687d605aa1",
+    "sha": "99fced84aedf",
     "cues": {
      "own0": {
-      "offset": 0.25,
-      "duration": 1.8227
+      "offset": 0.2,
+      "duration": 1.014989
      },
      "own1": {
-      "offset": 2.3227,
-      "duration": 1.8227
+      "offset": 1.414989,
+      "duration": 1.014989
      }
     }
    },
    "fx": {
     "path": "s12-fx.mp3",
-    "sha": "2d5872e44059",
+    "sha": "13a985856b21",
     "cues": {
      "near": {
-      "offset": 0.25,
-      "duration": 1.5954
+      "offset": 0.2,
+      "duration": 1.014989
      },
      "far": {
-      "offset": 2.0954,
-      "duration": 2.5045
+      "offset": 1.414989,
+      "duration": 1.88
      },
      "open": {
-      "offset": 4.85,
-      "duration": 0.1568
+      "offset": 3.494989,
+      "duration": 0.151565
      },
      "close": {
-      "offset": 5.2568,
-      "duration": 0.193
+      "offset": 3.846553,
+      "duration": 0.189252
      },
      "shell": {
-      "offset": 5.6998,
-      "duration": 0.1516
+      "offset": 4.235805,
+      "duration": 0.15161
      },
      "port": {
-      "offset": 6.1014,
-      "duration": 0.1835
+      "offset": 4.587415,
+      "duration": 0.179274
      },
      "dry": {
-      "offset": 6.5349,
-      "duration": 0.1532
+      "offset": 4.966689,
+      "duration": 0.147596
      }
     }
    },
@@ -395,55 +420,60 @@
     "shell": "O_3",
     "port": "O_7",
     "dry": "O_8"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": null,
+    "handling": 0.8
    }
   },
   "m1014": {
    "rate": 1.0,
    "shot": {
     "path": "m1014-shot.mp3",
-    "sha": "938115d21e9e",
+    "sha": "b375b9ddc588",
     "cues": {
      "own0": {
-      "offset": 0.25,
-      "duration": 1.5132
+      "offset": 0.2,
+      "duration": 0.84
      },
      "own1": {
-      "offset": 2.0132,
-      "duration": 1.5132
+      "offset": 1.24,
+      "duration": 0.84
      }
     }
    },
    "fx": {
     "path": "m1014-fx.mp3",
-    "sha": "e0810aab59d6",
+    "sha": "1e87f5a889b1",
     "cues": {
      "near": {
-      "offset": 0.25,
-      "duration": 1.3245
+      "offset": 0.2,
+      "duration": 0.84
      },
      "far": {
-      "offset": 1.8245,
-      "duration": 2.0793
+      "offset": 1.24,
+      "duration": 1.68
      },
      "open": {
-      "offset": 4.1538,
-      "duration": 0.2407
+      "offset": 3.12,
+      "duration": 0.235941
      },
      "close": {
-      "offset": 4.6444,
-      "duration": 0.1515
+      "offset": 3.555941,
+      "duration": 0.14542
      },
      "shell": {
-      "offset": 5.0459,
-      "duration": 0.1519
+      "offset": 3.901361,
+      "duration": 0.146463
      },
      "port": {
-      "offset": 5.4478,
-      "duration": 0.2073
+      "offset": 4.247823,
+      "duration": 0.199796
      },
      "dry": {
-      "offset": 5.9051,
-      "duration": 0.1512
+      "offset": 4.647619,
+      "duration": 0.144331
      }
     }
    },
@@ -459,51 +489,56 @@
     "shell": "K_3",
     "port": "K_13",
     "dry": "K_7"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.065,
+    "handling": 0.8
    }
   },
   "db2": {
    "rate": 1.0,
    "shot": {
     "path": "db2-shot.mp3",
-    "sha": "99728ff7d549",
+    "sha": "b910efe0f595",
     "cues": {
      "own0": {
-      "offset": 0.25,
-      "duration": 2.0564
+      "offset": 0.2,
+      "duration": 1.26
      },
      "own1": {
-      "offset": 2.5564,
-      "duration": 2.0564
+      "offset": 1.66,
+      "duration": 1.26
      }
     }
    },
    "fx": {
     "path": "db2-fx.mp3",
-    "sha": "404056da5932",
+    "sha": "ad3ae70f039d",
     "cues": {
      "near": {
-      "offset": 0.25,
-      "duration": 1.8
+      "offset": 0.2,
+      "duration": 1.26
      },
      "far": {
-      "offset": 2.3,
-      "duration": 2.8256
+      "offset": 1.66,
+      "duration": 2.16
      },
      "open": {
-      "offset": 5.3756,
-      "duration": 0.1566
+      "offset": 4.02,
+      "duration": 0.149229
      },
      "close": {
-      "offset": 5.7822,
-      "duration": 0.1762
+      "offset": 4.369229,
+      "duration": 0.168753
      },
      "shell": {
-      "offset": 6.2084,
-      "duration": 0.2094
+      "offset": 4.737982,
+      "duration": 0.201927
      },
      "dry": {
-      "offset": 6.6678,
-      "duration": 0.1515
+      "offset": 5.139909,
+      "duration": 0.146259
      }
     }
    },
@@ -518,55 +553,60 @@
     "close": "H_1",
     "shell": "H_7",
     "dry": "H_8"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": null,
+    "handling": 0.8
    }
   },
   "sa12": {
    "rate": 1.0,
    "shot": {
     "path": "sa12-shot.mp3",
-    "sha": "e434a8e5f533",
+    "sha": "83a08d8edd20",
     "cues": {
      "own0": {
-      "offset": 0.25,
-      "duration": 1.5573
+      "offset": 0.2,
+      "duration": 0.77
      },
      "own1": {
-      "offset": 2.0573,
-      "duration": 1.5573
+      "offset": 1.17,
+      "duration": 0.77
      }
     }
    },
    "fx": {
     "path": "sa12-fx.mp3",
-    "sha": "f1b1bfeca713",
+    "sha": "6f501b2941bc",
     "cues": {
      "near": {
-      "offset": 0.25,
-      "duration": 1.3631
+      "offset": 0.2,
+      "duration": 0.77
      },
      "far": {
-      "offset": 1.8631,
-      "duration": 2.1398
+      "offset": 1.17,
+      "duration": 1.6
      },
      "magout": {
-      "offset": 4.2529,
-      "duration": 0.228
+      "offset": 2.97,
+      "duration": 0.223764
      },
      "magin": {
-      "offset": 4.7309,
-      "duration": 0.1516
+      "offset": 3.393764,
+      "duration": 0.144422
      },
      "open": {
-      "offset": 5.1325,
-      "duration": 0.2735
+      "offset": 3.738186,
+      "duration": 0.269138
      },
      "close": {
-      "offset": 5.656,
-      "duration": 0.1511
+      "offset": 4.207324,
+      "duration": 0.150975
      },
      "dry": {
-      "offset": 6.0571,
-      "duration": 0.1513
+      "offset": 4.558299,
+      "duration": 0.144558
      }
     }
    },
@@ -582,55 +622,60 @@
     "open": "C_0",
     "close": "C_1",
     "dry": "N_18"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.07,
+    "handling": 0.8
    }
   },
   "aa12": {
    "rate": 1.0,
    "shot": {
     "path": "aa12-shot.mp3",
-    "sha": "6b7826cbdf89",
+    "sha": "91bdb72609c4",
     "cues": {
      "own0": {
-      "offset": 0.25,
-      "duration": 2.1676
+      "offset": 0.2,
+      "duration": 0.664989
      },
      "own1": {
-      "offset": 2.6676,
-      "duration": 2.1676
+      "offset": 1.064989,
+      "duration": 0.664989
      }
     }
    },
    "fx": {
     "path": "aa12-fx.mp3",
-    "sha": "712c267651a8",
+    "sha": "e46cbd69e9d2",
     "cues": {
      "near": {
-      "offset": 0.25,
-      "duration": 1.8973
+      "offset": 0.2,
+      "duration": 0.664989
      },
      "far": {
-      "offset": 2.3973,
-      "duration": 2.9784
+      "offset": 1.064989,
+      "duration": 1.48
      },
      "magout": {
-      "offset": 5.6256,
-      "duration": 0.1581
+      "offset": 2.744989,
+      "duration": 0.158095
      },
      "magin": {
-      "offset": 6.0337,
-      "duration": 0.1517
+      "offset": 3.103084,
+      "duration": 0.144875
      },
      "open": {
-      "offset": 6.4354,
-      "duration": 0.1516
+      "offset": 3.447959,
+      "duration": 0.145215
      },
      "close": {
-      "offset": 6.8369,
-      "duration": 0.1515
+      "offset": 3.793175,
+      "duration": 0.14542
      },
      "dry": {
-      "offset": 7.2384,
-      "duration": 0.1514
+      "offset": 4.138594,
+      "duration": 0.143991
      }
     }
    },
@@ -646,55 +691,60 @@
     "open": "P_8",
     "close": "U_2",
     "dry": "P_1"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.075,
+    "handling": 0.8
    }
   },
   "p92": {
    "rate": 1.0,
    "shot": {
     "path": "p92-shot.mp3",
-    "sha": "01c8ac6246c3",
+    "sha": "0187b5eb150a",
     "cues": {
      "own0": {
-      "offset": 0.25,
-      "duration": 1.4322
+      "offset": 0.2,
+      "duration": 0.594989
      },
      "own1": {
-      "offset": 1.9322,
-      "duration": 1.4322
+      "offset": 0.994989,
+      "duration": 0.594989
      }
     }
    },
    "fx": {
     "path": "p92-fx.mp3",
-    "sha": "cf11fe4da543",
+    "sha": "5d9d97f7191d",
     "cues": {
      "near": {
-      "offset": 0.25,
-      "duration": 1.2536
+      "offset": 0.2,
+      "duration": 0.594989
      },
      "far": {
-      "offset": 1.7536,
-      "duration": 1.9679
+      "offset": 0.994989,
+      "duration": 1.399977
      },
      "magout": {
-      "offset": 3.9714,
-      "duration": 0.2651
+      "offset": 2.594966,
+      "duration": 0.259342
      },
      "magin": {
-      "offset": 4.4865,
-      "duration": 0.1641
+      "offset": 3.054308,
+      "duration": 0.159297
      },
      "open": {
-      "offset": 4.9006,
-      "duration": 0.1516
+      "offset": 3.413605,
+      "duration": 0.148118
      },
      "close": {
-      "offset": 5.3022,
-      "duration": 0.1546
+      "offset": 3.761723,
+      "duration": 0.150726
      },
      "dry": {
-      "offset": 5.7068,
-      "duration": 0.152
+      "offset": 4.112449,
+      "duration": 0.147234
      }
     }
    },
@@ -710,55 +760,60 @@
     "open": "F_8",
     "close": "F_17",
     "dry": "F_23"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.045,
+    "handling": 0.8
    }
   },
   "g18": {
    "rate": 1.0,
    "shot": {
     "path": "g18-shot.mp3",
-    "sha": "365dd61a330a",
+    "sha": "cb2a1b7b347a",
     "cues": {
      "own0": {
-      "offset": 0.25,
-      "duration": 1.2531
+      "offset": 0.2,
+      "duration": 0.49
      },
      "own1": {
-      "offset": 1.7531,
-      "duration": 1.2531
+      "offset": 0.89,
+      "duration": 0.49
      }
     }
    },
    "fx": {
     "path": "g18-fx.mp3",
-    "sha": "56d5b576bb6d",
+    "sha": "1870f1bcb66e",
     "cues": {
      "near": {
-      "offset": 0.25,
-      "duration": 1.0969
+      "offset": 0.2,
+      "duration": 0.49
      },
      "far": {
-      "offset": 1.5969,
-      "duration": 1.7219
+      "offset": 0.89,
+      "duration": 1.28
      },
      "magout": {
-      "offset": 3.5687,
-      "duration": 0.1544
+      "offset": 2.37,
+      "duration": 0.149819
      },
      "magin": {
-      "offset": 3.9731,
-      "duration": 0.1783
+      "offset": 2.719819,
+      "duration": 0.172018
      },
      "open": {
-      "offset": 4.4014,
-      "duration": 0.2182
+      "offset": 3.091837,
+      "duration": 0.211995
      },
      "close": {
-      "offset": 4.8696,
-      "duration": 0.1574
+      "offset": 3.503832,
+      "duration": 0.156689
      },
      "dry": {
-      "offset": 5.277,
-      "duration": 0.1515
+      "offset": 3.860522,
+      "duration": 0.145941
      }
     }
    },
@@ -774,55 +829,60 @@
     "open": "X_8",
     "close": "X_11",
     "dry": "X_18"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.032,
+    "handling": 0.8
    }
   },
   "m1911": {
    "rate": 1.0,
    "shot": {
     "path": "m1911-shot.mp3",
-    "sha": "7e8710f1545c",
+    "sha": "64e6464ddab7",
     "cues": {
      "own0": {
-      "offset": 0.25,
-      "duration": 1.7064
+      "offset": 0.2,
+      "duration": 0.734989
      },
      "own1": {
-      "offset": 2.2064,
-      "duration": 1.7064
+      "offset": 1.134989,
+      "duration": 0.734989
      }
     }
    },
    "fx": {
     "path": "m1911-fx.mp3",
-    "sha": "182156a4c3eb",
+    "sha": "86b08570e50a",
     "cues": {
      "near": {
-      "offset": 0.25,
-      "duration": 1.4936
+      "offset": 0.2,
+      "duration": 0.734989
      },
      "far": {
-      "offset": 1.9936,
-      "duration": 2.3447
+      "offset": 1.134989,
+      "duration": 1.56
      },
      "magout": {
-      "offset": 4.5883,
-      "duration": 0.1555
+      "offset": 2.894989,
+      "duration": 0.151383
      },
      "magin": {
-      "offset": 4.9938,
-      "duration": 0.1756
+      "offset": 3.246372,
+      "duration": 0.170726
      },
      "open": {
-      "offset": 5.4194,
-      "duration": 0.1523
+      "offset": 3.617098,
+      "duration": 0.145057
      },
      "close": {
-      "offset": 5.8217,
-      "duration": 0.1752
+      "offset": 3.962154,
+      "duration": 0.170431
      },
      "dry": {
-      "offset": 6.2468,
-      "duration": 0.1515
+      "offset": 4.332585,
+      "duration": 0.146122
      }
     }
    },
@@ -838,55 +898,60 @@
     "open": "A_8",
     "close": "A_11",
     "dry": "A_19"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.055,
+    "handling": 0.8
    }
   },
   "de7": {
    "rate": 1.0,
    "shot": {
     "path": "de7-shot.mp3",
-    "sha": "d136fde161d0",
+    "sha": "da23df411c36",
     "cues": {
      "own0": {
-      "offset": 0.25,
-      "duration": 2.1105
+      "offset": 0.2,
+      "duration": 1.154989
      },
      "own1": {
-      "offset": 2.6105,
-      "duration": 2.1105
+      "offset": 1.554989,
+      "duration": 1.154989
      }
     }
    },
    "fx": {
     "path": "de7-fx.mp3",
-    "sha": "bc620d64d173",
+    "sha": "b2dcfba99924",
     "cues": {
      "near": {
-      "offset": 0.25,
-      "duration": 1.8473
+      "offset": 0.2,
+      "duration": 1.154989
      },
      "far": {
-      "offset": 2.3473,
-      "duration": 2.9
+      "offset": 1.554989,
+      "duration": 2.04
      },
      "magout": {
-      "offset": 5.4973,
-      "duration": 0.1555
+      "offset": 3.794989,
+      "duration": 0.150068
      },
      "magin": {
-      "offset": 5.9029,
-      "duration": 0.1756
+      "offset": 4.145057,
+      "duration": 0.170748
      },
      "open": {
-      "offset": 6.3284,
-      "duration": 0.1523
+      "offset": 4.515805,
+      "duration": 0.146644
      },
      "close": {
-      "offset": 6.7307,
-      "duration": 0.1599
+      "offset": 4.862449,
+      "duration": 0.154921
      },
      "dry": {
-      "offset": 7.1406,
-      "duration": 0.1515
+      "offset": 5.21737,
+      "duration": 0.146122
      }
     }
    },
@@ -902,55 +967,60 @@
     "open": "A_8",
     "close": "A_17",
     "dry": "A_19"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.065,
+    "handling": 0.8
    }
   },
   "r45": {
    "rate": 1.0,
    "shot": {
     "path": "r45-shot.mp3",
-    "sha": "ae3c5b96d628",
+    "sha": "4a873242e632",
     "cues": {
      "own0": {
-      "offset": 0.25,
-      "duration": 1.8651
+      "offset": 0.2,
+      "duration": 1.014989
      },
      "own1": {
-      "offset": 2.3651,
-      "duration": 1.8651
+      "offset": 1.414989,
+      "duration": 1.014989
      }
     }
    },
    "fx": {
     "path": "r45-fx.mp3",
-    "sha": "ebfe3bebe259",
+    "sha": "1e81504de3ad",
     "cues": {
      "near": {
-      "offset": 0.25,
-      "duration": 1.6325
+      "offset": 0.2,
+      "duration": 1.014989
      },
      "far": {
-      "offset": 2.1325,
-      "duration": 2.5628
+      "offset": 1.414989,
+      "duration": 1.88
      },
      "open": {
-      "offset": 4.9453,
-      "duration": 0.1511
+      "offset": 3.494989,
+      "duration": 0.143946
      },
      "shell": {
-      "offset": 5.3464,
-      "duration": 0.1518
+      "offset": 3.838934,
+      "duration": 0.144104
      },
      "magin": {
-      "offset": 5.7482,
-      "duration": 0.1513
+      "offset": 4.183039,
+      "duration": 0.143968
      },
      "close": {
-      "offset": 6.1495,
-      "duration": 0.1601
+      "offset": 4.527007,
+      "duration": 0.155374
      },
      "dry": {
-      "offset": 6.5596,
-      "duration": 0.1546
+      "offset": 4.882381,
+      "duration": 0.148866
      }
     }
    },
@@ -966,18 +1036,29 @@
     "magin": "V_2",
     "close": "V_10",
     "dry": "V_5"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": null,
+    "handling": 0.8
    }
   }
  },
  "switch": {
   "path": "switch.mp3",
-  "sha": "15aae3bc6157",
+  "sha": "121fa59ff182",
   "cues": {
    "switch": {
-    "offset": 0.25,
-    "duration": 0.1513
+    "offset": 0.2,
+    "duration": 0.144558
    }
   },
   "src": "C_4"
+ },
+ "edition": 74,
+ "design": {
+  "sourceCommit": "154d93d",
+  "style": "tight reports and close mechanical detail",
+  "tool": "tools/remaster-weapon-audio.py"
  }
 }

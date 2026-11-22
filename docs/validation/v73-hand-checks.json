@@ -1,0 +1,13 @@
+{
+  "version": 73,
+  "weapons": 15,
+  "holdingCases": 225,
+  "reloadCases": 216,
+  "poseCases": 441,
+  "poseRecoveryChecks": 30,
+  "coordinateChecks": 15,
+  "maxCoordinateErrorMm": 3.6743536477312766e-06,
+  "maxRepeatedPoseDrift": 2.3041340866329764e-14,
+  "baselineHoldingFailedCases": 72,
+  "failures": []
+}

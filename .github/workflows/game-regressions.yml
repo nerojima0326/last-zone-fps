@@ -20,12 +20,14 @@ jobs:
           node-version: '22'
       - name: Install test dependencies
         run: |
-          npm install --prefix "$RUNNER_TEMP/lz-tests" --no-audit --no-fund playwright@1.62.1 three@0.160.0
+          npm install --prefix "$RUNNER_TEMP/lz-tests" --no-audit --no-fund playwright@1.62.1 three@0.160.0 three-mesh-bvh@0.7.8
           "$RUNNER_TEMP/lz-tests/node_modules/.bin/playwright" install --with-deps chromium
           echo "NODE_PATH=$RUNNER_TEMP/lz-tests/node_modules" >> "$GITHUB_ENV"
           echo "THREE_DIR=$RUNNER_TEMP/lz-tests/node_modules/three" >> "$GITHUB_ENV"
-      - name: Check ADS alignment, distance zero and recoil recovery
+      - name: Check ADS, distance zero and all-weapon recoil motion
         run: node tools/check-aim.cjs
+      - name: Check all weapon grips and hand animation
+        run: node tools/check-hand-poses.cjs
       - name: Import bundled models
         run: |
           node tools/check-glock-import.mjs assets/models/viewmodels/glock17.fbx

@@ -14,6 +14,18 @@ The track IDs below (for example `D_27`) are the master-sheet IDs. The letter se
 
 ## Edits
 
+### Current mix (v74)
+
+`tools/remaster-weapon-audio.py` rebuilds the current banks from the immutable v73 CC0 banks at commit `154d93d`. It never processes its own output again. Run `python tools/remaster-weapon-audio.py` with ffmpeg and numpy installed.
+
+- **Reports:** restore near-natural recording pitches (0.94–1.03×), soften most of the previous exaggerated EQ, extract a parallel 90–1500 Hz body layer from the recording itself, and add gentle saturation. Preserve the initial impact, then decay the report so automatic fire remains distinct. No synthesised bass note is added in this pass.
+- **Space:** own reports keep a centred stereo image with quiet reflections at 11, 23 and 37 ms. Distant recordings keep their captured space, with distance filtering and propagation delay in the game.
+- **Handling:** high-pass at 105 Hz, emphasise the body and metal contact, and add very small 6/14 ms contact resonances. Magazine removal/insertion, bolt/slide travel, shell loading and dry-fire keep their separate cues and animation events.
+- **Mix:** alternate two firing takes, reduce older shot tails during automatic fire, and add a quiet recorded action contact for self-loading weapons. Suppressed reports reduce the muzzle blast while leaving the close mechanical action audible. Handling stays below the gun report in the production compressor.
+- **Encoding:** 44.1 kHz; 160 kbps stereo shot banks and 112 kbps mono effect banks, with 200 ms cue padding. Stereo-aware decoder alignment preserves whichever channel leads and clamps playback to each cue's original end.
+
+### Source-bank edits (v43–v45)
+
 - **Shots, own weapon (`<id>-shot.mp3`).** Two "behind shooter" stereo takes per weapon. Each is cut 4 ms before the transient and kept for about 1.6 s, so the natural room and outdoor tail stays. Both are normalised; the game alternates them.
 - **Shots, other players (`<id>-fx.mp3`, cues `near` and `far`).** Mono takes from the near and far microphone positions. The game crossfades from near to far with distance and delays each shot by the speed of sound.
 - **Handling (`<id>-fx.mp3`).** Each single handling event (magazine out/in, slide or bolt open/close, shell insert, port load, dry fire, bolt up/down) is high-passed at 150 Hz, trimmed around its peak and normalised.
