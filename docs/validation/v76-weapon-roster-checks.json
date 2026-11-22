@@ -1,0 +1,140 @@
+{
+  "build": 76,
+  "baseCommit": "58cd44a5abcc40ae7ce6d997735d36c3f2e906cc",
+  "date": "2026-11-22",
+  "environment": {
+    "node": "24.22.3",
+    "chromium": "156.0.8078.79",
+    "renderer": "headless Chromium / SwiftShader"
+  },
+  "roster": {
+    "previous": 15,
+    "total": 30,
+    "added": [
+      "mp9",
+      "v45",
+      "cx9",
+      "sm45",
+      "ar416",
+      "sg56",
+      "ms56",
+      "lm86",
+      "rk762",
+      "mg60",
+      "sr25",
+      "dm56",
+      "m24",
+      "sp12",
+      "p226"
+    ]
+  },
+  "checks": [
+    {
+      "tool": "check-weapon-catalog.cjs",
+      "passed": true
+    },
+    {
+      "tool": "check-aim.cjs",
+      "passed": true
+    },
+    {
+      "tool": "check-hand-poses.cjs",
+      "passed": true
+    },
+    {
+      "tool": "check-glock-import.mjs",
+      "passed": true
+    },
+    {
+      "tool": "check-m4-model.mjs",
+      "passed": true
+    },
+    {
+      "tool": "check-training-range.cjs",
+      "passed": true
+    },
+    {
+      "tool": "RANGE_FALLBACK=1 check-training-range.cjs",
+      "passed": true
+    },
+    {
+      "tool": "check-bundled-viewmodels.cjs",
+      "passed": true
+    },
+    {
+      "tool": "check-combat.cjs",
+      "passed": true
+    },
+    {
+      "tool": "check-original-weapon-audio.cjs",
+      "passed": true
+    },
+    {
+      "tool": "check-reloads.cjs",
+      "passed": true
+    },
+    {
+      "tool": "check-clearance.cjs",
+      "passed": true
+    },
+    {
+      "tool": "check-weapon-audio.cjs",
+      "passed": true
+    }
+  ],
+  "aim": {
+    "viewports": [
+      {
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "width": 960,
+        "height": 720
+      }
+    ],
+    "cases": 166,
+    "samples": 7992,
+    "maxErrorPixels": 7.226360804695209e-06,
+    "impacts": 270,
+    "maxImpactCm": 0.13576063572733332,
+    "recoilSingles": 60,
+    "recoilBursts": 180,
+    "visibleRigs": 120
+  },
+  "hands": {
+    "cases": 810,
+    "repeatedPoses": 60,
+    "coordinateChecks": 30,
+    "maxRepeatDriftMetres": 4.264181500047145e-14,
+    "failures": 0,
+    "limitsMm": {
+      "heldPalm": 6.5,
+      "heldFinger": 11,
+      "reloadPalm": 10,
+      "reloadFinger": 15
+    }
+  },
+  "reloads": {
+    "weaponModeCases": 60,
+    "continuousFrames": 20857,
+    "ammoAndSoundCases": 720,
+    "clearanceCases": 180,
+    "clearanceFrames": 32334
+  },
+  "audio": {
+    "banks": 46,
+    "weapons": 30,
+    "reloadTimings": 60,
+    "generatedReports": 180,
+    "firingVariantsPerGun": 4,
+    "sampleRates": [
+      44100,
+      48000
+    ],
+    "generatedFallback": true,
+    "staleManifest": true,
+    "mutedFallback": true,
+    "nodeCleanup": true
+  }
+}

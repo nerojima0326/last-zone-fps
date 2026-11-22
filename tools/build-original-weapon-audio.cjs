@@ -2,10 +2,17 @@
 // Existing CC0 handling banks remain byte-for-byte unchanged.
 const fs=require('fs'),path=require('path'),crypto=require('crypto'),{spawnSync}=require('child_process');
 const D=require('../js/weapon-sound-design.js');
+const catalog=require('../js/weapon-catalog.js');
 const root=path.resolve(__dirname,'..'),audio=path.join(root,'assets/audio/weapons');
 const out=path.resolve(process.argv[2]||audio),sr=44100;
 const manifest=JSON.parse(fs.readFileSync(path.join(audio,'manifest.json'),'utf8'));
 fs.mkdirSync(out,{recursive:true});
+for(const [id,entry]of Object.entries(catalog)){
+  if(!manifest.weapons[id])manifest.weapons[id]=JSON.parse(JSON.stringify(manifest.weapons[entry.audioBase]));
+  const w=manifest.weapons[id];w.handleRate=+(1.06-Object.keys(catalog).indexOf(id)*.012).toFixed(3);
+  w.mix={...w.mix,handling:entry.stats.family==='lmg'?1.05:.84};
+  if(entry.motion.action)w.mix.action=entry.motion.action;else delete w.mix.action;
+}
 for(const [id,w]of Object.entries(manifest.weapons)){
   const samples=[];for(let take=0;take<D.variants;take++)samples.push(['own'+take,D.generate(id,take,'own',sr)]);
   for(const p of ['near','far'])samples.push([p,D.generate(id,0,p,sr)]);
@@ -16,7 +23,7 @@ for(const [id,w]of Object.entries(manifest.weapons)){
     cues[name]={offset:frames/sr,duration:sound.left.length/sr};
     pieces.push(Buffer.from(pcm.buffer),Buffer.alloc(Math.round(.2*sr)*8));frames+=sound.left.length+Math.round(.2*sr);
   }
-  const file=id+'-report-v75.mp3',dest=path.join(out,file);
+  const file=id+'-report-v'+D.edition+'.mp3',dest=path.join(out,file);
   const encoded=spawnSync('ffmpeg',['-v','error','-y','-f','f32le','-ar',String(sr),'-ac','2','-i','-','-codec:a','libmp3lame','-b:a','160k',dest],{input:Buffer.concat(pieces),maxBuffer:16*1024*1024});
   if(encoded.status!==0)throw Error(encoded.stderr.toString());
   w.shot={path:file,sha:crypto.createHash('sha256').update(fs.readFileSync(dest)).digest('hex').slice(0,12),cues,source:'original-pressure-noise-v1'};
@@ -26,6 +33,6 @@ for(const [id,w]of Object.entries(manifest.weapons)){
   for(const name of ['near','far'])delete w.fx.cues[name];
   console.log(id,D.profiles[id].tag);
 }
-manifest.edition=75;manifest.source='Original generated reports; CC0 recorded handling';
-manifest.design={generator:'js/weapon-sound-design.js',generatorSha:crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'js/weapon-sound-design.js'))).digest('hex').slice(0,12),generatorVersion:D.version,variants:D.variants,recordedShotInputs:0,tool:'tools/build-original-weapon-audio.cjs'};
+manifest.edition=D.edition;manifest.source='Original generated reports; CC0 recorded handling';
+manifest.design={generator:'js/weapon-sound-design.js',generatorSha:crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'js/weapon-sound-design.js'))).digest('hex').slice(0,12),catalogSha:crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'js/weapon-catalog.js'))).digest('hex').slice(0,12),generatorVersion:D.version,variants:D.variants,recordedShotInputs:0,tool:'tools/build-original-weapon-audio.cjs'};
 fs.writeFileSync(path.join(out,'manifest.json'),JSON.stringify(manifest,null,1)+'\n');

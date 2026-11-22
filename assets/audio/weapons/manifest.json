@@ -6,7 +6,7 @@
   "ar7": {
    "rate": 1,
    "shot": {
-    "path": "ar7-report-v75.mp3",
+    "path": "ar7-report-v76.mp3",
     "sha": "57c016719f73",
     "cues": {
      "own0": {
@@ -79,7 +79,7 @@
   "ka47": {
    "rate": 1,
    "shot": {
-    "path": "ka47-report-v75.mp3",
+    "path": "ka47-report-v76.mp3",
     "sha": "825b5726b3a2",
     "cues": {
      "own0": {
@@ -152,7 +152,7 @@
   "sc17": {
    "rate": 1,
    "shot": {
-    "path": "sc17-report-v75.mp3",
+    "path": "sc17-report-v76.mp3",
     "sha": "def8ab119663",
     "cues": {
      "own0": {
@@ -225,7 +225,7 @@
   "mk14": {
    "rate": 1,
    "shot": {
-    "path": "mk14-report-v75.mp3",
+    "path": "mk14-report-v76.mp3",
     "sha": "97b8816dd8d7",
     "cues": {
      "own0": {
@@ -298,7 +298,7 @@
   "kr98": {
    "rate": 1,
    "shot": {
-    "path": "kr98-report-v75.mp3",
+    "path": "kr98-report-v76.mp3",
     "sha": "e9a2275ea3db",
     "cues": {
      "own0": {
@@ -381,7 +381,7 @@
   "s12": {
    "rate": 1,
    "shot": {
-    "path": "s12-report-v75.mp3",
+    "path": "s12-report-v76.mp3",
     "sha": "0b1c9a065838",
     "cues": {
      "own0": {
@@ -454,7 +454,7 @@
   "m1014": {
    "rate": 1,
    "shot": {
-    "path": "m1014-report-v75.mp3",
+    "path": "m1014-report-v76.mp3",
     "sha": "27a086d05f45",
     "cues": {
      "own0": {
@@ -527,7 +527,7 @@
   "db2": {
    "rate": 1,
    "shot": {
-    "path": "db2-report-v75.mp3",
+    "path": "db2-report-v76.mp3",
     "sha": "639316364295",
     "cues": {
      "own0": {
@@ -595,7 +595,7 @@
   "sa12": {
    "rate": 1,
    "shot": {
-    "path": "sa12-report-v75.mp3",
+    "path": "sa12-report-v76.mp3",
     "sha": "38600f162a56",
     "cues": {
      "own0": {
@@ -668,7 +668,7 @@
   "aa12": {
    "rate": 1,
    "shot": {
-    "path": "aa12-report-v75.mp3",
+    "path": "aa12-report-v76.mp3",
     "sha": "d57b1e956a96",
     "cues": {
      "own0": {
@@ -741,7 +741,7 @@
   "p92": {
    "rate": 1,
    "shot": {
-    "path": "p92-report-v75.mp3",
+    "path": "p92-report-v76.mp3",
     "sha": "35db4edeb8d2",
     "cues": {
      "own0": {
@@ -814,7 +814,7 @@
   "g18": {
    "rate": 1,
    "shot": {
-    "path": "g18-report-v75.mp3",
+    "path": "g18-report-v76.mp3",
     "sha": "4bb983818368",
     "cues": {
      "own0": {
@@ -887,7 +887,7 @@
   "m1911": {
    "rate": 1,
    "shot": {
-    "path": "m1911-report-v75.mp3",
+    "path": "m1911-report-v76.mp3",
     "sha": "14dd03a4365d",
     "cues": {
      "own0": {
@@ -960,7 +960,7 @@
   "de7": {
    "rate": 1,
    "shot": {
-    "path": "de7-report-v75.mp3",
+    "path": "de7-report-v76.mp3",
     "sha": "dc2a52616460",
     "cues": {
      "own0": {
@@ -1033,7 +1033,7 @@
   "r45": {
    "rate": 1,
    "shot": {
-    "path": "r45-report-v75.mp3",
+    "path": "r45-report-v76.mp3",
     "sha": "ebb498a955c5",
     "cues": {
      "own0": {
@@ -1102,6 +1102,1124 @@
     "action": null,
     "handling": 0.8
    }
+  },
+  "mp9": {
+   "rate": 1,
+   "shot": {
+    "path": "mp9-report-v76.mp3",
+    "sha": "c9539fe6cc48",
+    "cues": {
+     "own0": {
+      "offset": 0.2,
+      "duration": 0.28002267573696143
+     },
+     "own1": {
+      "offset": 0.6800226757369614,
+      "duration": 0.28002267573696143
+     },
+     "own2": {
+      "offset": 1.1600453514739228,
+      "duration": 0.28002267573696143
+     },
+     "own3": {
+      "offset": 1.6400680272108843,
+      "duration": 0.28002267573696143
+     },
+     "near": {
+      "offset": 2.120090702947846,
+      "duration": 0.4
+     },
+     "far": {
+      "offset": 2.7200907029478456,
+      "duration": 0.83
+     }
+    },
+    "source": "original-pressure-noise-v1"
+   },
+   "fx": {
+    "path": "g18-fx.mp3",
+    "sha": "1870f1bcb66e",
+    "cues": {
+     "magout": {
+      "offset": 2.37,
+      "duration": 0.149819
+     },
+     "magin": {
+      "offset": 2.719819,
+      "duration": 0.172018
+     },
+     "open": {
+      "offset": 3.091837,
+      "duration": 0.211995
+     },
+     "close": {
+      "offset": 3.503832,
+      "duration": 0.156689
+     },
+     "dry": {
+      "offset": 3.860522,
+      "duration": 0.145941
+     }
+    }
+   },
+   "src": {
+    "magout": "X_5",
+    "magin": "X_4",
+    "open": "X_8",
+    "close": "X_11",
+    "dry": "X_18",
+    "report": "Original synthesis: js/weapon-sound-design.js"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.036,
+    "handling": 0.84
+   },
+   "handleRate": 1.06
+  },
+  "v45": {
+   "rate": 1,
+   "shot": {
+    "path": "v45-report-v76.mp3",
+    "sha": "a8ace3ddd7c9",
+    "cues": {
+     "own0": {
+      "offset": 0.2,
+      "duration": 0.28002267573696143
+     },
+     "own1": {
+      "offset": 0.6800226757369614,
+      "duration": 0.28002267573696143
+     },
+     "own2": {
+      "offset": 1.1600453514739228,
+      "duration": 0.28002267573696143
+     },
+     "own3": {
+      "offset": 1.6400680272108843,
+      "duration": 0.28002267573696143
+     },
+     "near": {
+      "offset": 2.120090702947846,
+      "duration": 0.4
+     },
+     "far": {
+      "offset": 2.7200907029478456,
+      "duration": 0.83
+     }
+    },
+    "source": "original-pressure-noise-v1"
+   },
+   "fx": {
+    "path": "m1911-fx.mp3",
+    "sha": "86b08570e50a",
+    "cues": {
+     "magout": {
+      "offset": 2.894989,
+      "duration": 0.151383
+     },
+     "magin": {
+      "offset": 3.246372,
+      "duration": 0.170726
+     },
+     "open": {
+      "offset": 3.617098,
+      "duration": 0.145057
+     },
+     "close": {
+      "offset": 3.962154,
+      "duration": 0.170431
+     },
+     "dry": {
+      "offset": 4.332585,
+      "duration": 0.146122
+     }
+    }
+   },
+   "src": {
+    "magout": "A_5",
+    "magin": "A_4",
+    "open": "A_8",
+    "close": "A_11",
+    "dry": "A_19",
+    "report": "Original synthesis: js/weapon-sound-design.js"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.028,
+    "handling": 0.84
+   },
+   "handleRate": 1.048
+  },
+  "cx9": {
+   "rate": 1,
+   "shot": {
+    "path": "cx9-report-v76.mp3",
+    "sha": "a5f465da8bce",
+    "cues": {
+     "own0": {
+      "offset": 0.2,
+      "duration": 0.28002267573696143
+     },
+     "own1": {
+      "offset": 0.6800226757369614,
+      "duration": 0.28002267573696143
+     },
+     "own2": {
+      "offset": 1.1600453514739228,
+      "duration": 0.28002267573696143
+     },
+     "own3": {
+      "offset": 1.6400680272108843,
+      "duration": 0.28002267573696143
+     },
+     "near": {
+      "offset": 2.120090702947846,
+      "duration": 0.4
+     },
+     "far": {
+      "offset": 2.7200907029478456,
+      "duration": 0.83
+     }
+    },
+    "source": "original-pressure-noise-v1"
+   },
+   "fx": {
+    "path": "p92-fx.mp3",
+    "sha": "5d9d97f7191d",
+    "cues": {
+     "magout": {
+      "offset": 2.594966,
+      "duration": 0.259342
+     },
+     "magin": {
+      "offset": 3.054308,
+      "duration": 0.159297
+     },
+     "open": {
+      "offset": 3.413605,
+      "duration": 0.148118
+     },
+     "close": {
+      "offset": 3.761723,
+      "duration": 0.150726
+     },
+     "dry": {
+      "offset": 4.112449,
+      "duration": 0.147234
+     }
+    }
+   },
+   "src": {
+    "magout": "F_5",
+    "magin": "F_4",
+    "open": "F_8",
+    "close": "F_17",
+    "dry": "F_23",
+    "report": "Original synthesis: js/weapon-sound-design.js"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.033,
+    "handling": 0.84
+   },
+   "handleRate": 1.036
+  },
+  "sm45": {
+   "rate": 1,
+   "shot": {
+    "path": "sm45-report-v76.mp3",
+    "sha": "ab29d24680fe",
+    "cues": {
+     "own0": {
+      "offset": 0.2,
+      "duration": 0.3840136054421769
+     },
+     "own1": {
+      "offset": 0.7840136054421769,
+      "duration": 0.3840136054421769
+     },
+     "own2": {
+      "offset": 1.3680272108843536,
+      "duration": 0.3840136054421769
+     },
+     "own3": {
+      "offset": 1.9520408163265306,
+      "duration": 0.3840136054421769
+     },
+     "near": {
+      "offset": 2.5360544217687075,
+      "duration": 0.5040136054421769
+     },
+     "far": {
+      "offset": 3.240068027210884,
+      "duration": 0.9340136054421768
+     }
+    },
+    "source": "original-pressure-noise-v1"
+   },
+   "fx": {
+    "path": "m1911-fx.mp3",
+    "sha": "86b08570e50a",
+    "cues": {
+     "magout": {
+      "offset": 2.894989,
+      "duration": 0.151383
+     },
+     "magin": {
+      "offset": 3.246372,
+      "duration": 0.170726
+     },
+     "open": {
+      "offset": 3.617098,
+      "duration": 0.145057
+     },
+     "close": {
+      "offset": 3.962154,
+      "duration": 0.170431
+     },
+     "dry": {
+      "offset": 4.332585,
+      "duration": 0.146122
+     }
+    }
+   },
+   "src": {
+    "magout": "A_5",
+    "magin": "A_4",
+    "open": "A_8",
+    "close": "A_11",
+    "dry": "A_19",
+    "report": "Original synthesis: js/weapon-sound-design.js"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.049,
+    "handling": 0.84
+   },
+   "handleRate": 1.024
+  },
+  "ar416": {
+   "rate": 1,
+   "shot": {
+    "path": "ar416-report-v76.mp3",
+    "sha": "15e9fad7dc4e",
+    "cues": {
+     "own0": {
+      "offset": 0.2,
+      "duration": 0.34800453514739227
+     },
+     "own1": {
+      "offset": 0.7480045351473923,
+      "duration": 0.34800453514739227
+     },
+     "own2": {
+      "offset": 1.2960090702947846,
+      "duration": 0.34800453514739227
+     },
+     "own3": {
+      "offset": 1.844013605442177,
+      "duration": 0.34800453514739227
+     },
+     "near": {
+      "offset": 2.392018140589569,
+      "duration": 0.46800453514739226
+     },
+     "far": {
+      "offset": 3.0600226757369615,
+      "duration": 0.8980045351473923
+     }
+    },
+    "source": "original-pressure-noise-v1"
+   },
+   "fx": {
+    "path": "ar7-fx.mp3",
+    "sha": "f0e5b6632b03",
+    "cues": {
+     "magout": {
+      "offset": 2.819977,
+      "duration": 0.197596
+     },
+     "magin": {
+      "offset": 3.217574,
+      "duration": 0.1661
+     },
+     "open": {
+      "offset": 3.583673,
+      "duration": 0.326349
+     },
+     "close": {
+      "offset": 4.110023,
+      "duration": 0.146848
+     },
+     "dry": {
+      "offset": 4.456871,
+      "duration": 0.15068
+     }
+    }
+   },
+   "src": {
+    "magout": "D_5",
+    "magin": "D_4",
+    "open": "D_9",
+    "close": "D_13",
+    "dry": "D_16",
+    "report": "Original synthesis: js/weapon-sound-design.js"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.047,
+    "handling": 0.84
+   },
+   "handleRate": 1.012
+  },
+  "sg56": {
+   "rate": 1,
+   "shot": {
+    "path": "sg56-report-v76.mp3",
+    "sha": "14374df7746b",
+    "cues": {
+     "own0": {
+      "offset": 0.2,
+      "duration": 0.45
+     },
+     "own1": {
+      "offset": 0.85,
+      "duration": 0.45
+     },
+     "own2": {
+      "offset": 1.5,
+      "duration": 0.45
+     },
+     "own3": {
+      "offset": 2.15,
+      "duration": 0.45
+     },
+     "near": {
+      "offset": 2.8,
+      "duration": 0.57
+     },
+     "far": {
+      "offset": 3.57,
+      "duration": 1
+     }
+    },
+    "source": "original-pressure-noise-v1"
+   },
+   "fx": {
+    "path": "ka47-fx.mp3",
+    "sha": "4591b052a043",
+    "cues": {
+     "magout": {
+      "offset": 3.194989,
+      "duration": 0.14449
+     },
+     "magin": {
+      "offset": 3.539478,
+      "duration": 0.144717
+     },
+     "open": {
+      "offset": 3.884195,
+      "duration": 0.273605
+     },
+     "close": {
+      "offset": 4.3578,
+      "duration": 0.151565
+     },
+     "dry": {
+      "offset": 4.709365,
+      "duration": 0.143832
+     }
+    }
+   },
+   "src": {
+    "magout": "C_11",
+    "magin": "C_10",
+    "open": "C_12",
+    "close": "C_13",
+    "dry": "C_7",
+    "report": "Original synthesis: js/weapon-sound-design.js"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.053,
+    "handling": 0.84
+   },
+   "handleRate": 1
+  },
+  "ms56": {
+   "rate": 1,
+   "shot": {
+    "path": "ms56-report-v76.mp3",
+    "sha": "0463dc2fb98d",
+    "cues": {
+     "own0": {
+      "offset": 0.2,
+      "duration": 0.30002267573696145
+     },
+     "own1": {
+      "offset": 0.7000226757369614,
+      "duration": 0.30002267573696145
+     },
+     "own2": {
+      "offset": 1.2000453514739229,
+      "duration": 0.30002267573696145
+     },
+     "own3": {
+      "offset": 1.7000680272108843,
+      "duration": 0.30002267573696145
+     },
+     "near": {
+      "offset": 2.2000907029478456,
+      "duration": 0.42
+     },
+     "far": {
+      "offset": 2.8200907029478457,
+      "duration": 0.8500226757369614
+     }
+    },
+    "source": "original-pressure-noise-v1"
+   },
+   "fx": {
+    "path": "ar7-fx.mp3",
+    "sha": "f0e5b6632b03",
+    "cues": {
+     "magout": {
+      "offset": 2.819977,
+      "duration": 0.197596
+     },
+     "magin": {
+      "offset": 3.217574,
+      "duration": 0.1661
+     },
+     "open": {
+      "offset": 3.583673,
+      "duration": 0.326349
+     },
+     "close": {
+      "offset": 4.110023,
+      "duration": 0.146848
+     },
+     "dry": {
+      "offset": 4.456871,
+      "duration": 0.15068
+     }
+    }
+   },
+   "src": {
+    "magout": "D_5",
+    "magin": "D_4",
+    "open": "D_9",
+    "close": "D_13",
+    "dry": "D_16",
+    "report": "Original synthesis: js/weapon-sound-design.js"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.041,
+    "handling": 0.84
+   },
+   "handleRate": 0.988
+  },
+  "lm86": {
+   "rate": 1,
+   "shot": {
+    "path": "lm86-report-v76.mp3",
+    "sha": "2b5a786a72c5",
+    "cues": {
+     "own0": {
+      "offset": 0.2,
+      "duration": 0.37201814058956917
+     },
+     "own1": {
+      "offset": 0.7720181405895692,
+      "duration": 0.37201814058956917
+     },
+     "own2": {
+      "offset": 1.3440362811791384,
+      "duration": 0.37201814058956917
+     },
+     "own3": {
+      "offset": 1.9160544217687074,
+      "duration": 0.37201814058956917
+     },
+     "near": {
+      "offset": 2.4880725623582767,
+      "duration": 0.49201814058956916
+     },
+     "far": {
+      "offset": 3.180090702947846,
+      "duration": 0.9220181405895692
+     }
+    },
+    "source": "original-pressure-noise-v1"
+   },
+   "fx": {
+    "path": "aa12-fx.mp3",
+    "sha": "e46cbd69e9d2",
+    "cues": {
+     "magout": {
+      "offset": 2.744989,
+      "duration": 0.158095
+     },
+     "magin": {
+      "offset": 3.103084,
+      "duration": 0.144875
+     },
+     "open": {
+      "offset": 3.447959,
+      "duration": 0.145215
+     },
+     "close": {
+      "offset": 3.793175,
+      "duration": 0.14542
+     },
+     "dry": {
+      "offset": 4.138594,
+      "duration": 0.143991
+     }
+    }
+   },
+   "src": {
+    "magout": "P_7",
+    "magin": "P_6",
+    "open": "P_8",
+    "close": "U_2",
+    "dry": "P_1",
+    "report": "Original synthesis: js/weapon-sound-design.js"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.052,
+    "handling": 1.05
+   },
+   "handleRate": 0.976
+  },
+  "rk762": {
+   "rate": 1,
+   "shot": {
+    "path": "rk762-report-v76.mp3",
+    "sha": "56285d1b9722",
+    "cues": {
+     "own0": {
+      "offset": 0.2,
+      "duration": 0.5760090702947845
+     },
+     "own1": {
+      "offset": 0.9760090702947846,
+      "duration": 0.5760090702947845
+     },
+     "own2": {
+      "offset": 1.7520181405895692,
+      "duration": 0.5760090702947845
+     },
+     "own3": {
+      "offset": 2.528027210884354,
+      "duration": 0.5760090702947845
+     },
+     "near": {
+      "offset": 3.304036281179138,
+      "duration": 0.6960090702947845
+     },
+     "far": {
+      "offset": 4.200045351473923,
+      "duration": 1.1260090702947845
+     }
+    },
+    "source": "original-pressure-noise-v1"
+   },
+   "fx": {
+    "path": "ka47-fx.mp3",
+    "sha": "4591b052a043",
+    "cues": {
+     "magout": {
+      "offset": 3.194989,
+      "duration": 0.14449
+     },
+     "magin": {
+      "offset": 3.539478,
+      "duration": 0.144717
+     },
+     "open": {
+      "offset": 3.884195,
+      "duration": 0.273605
+     },
+     "close": {
+      "offset": 4.3578,
+      "duration": 0.151565
+     },
+     "dry": {
+      "offset": 4.709365,
+      "duration": 0.143832
+     }
+    }
+   },
+   "src": {
+    "magout": "C_11",
+    "magin": "C_10",
+    "open": "C_12",
+    "close": "C_13",
+    "dry": "C_7",
+    "report": "Original synthesis: js/weapon-sound-design.js"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.06,
+    "handling": 1.05
+   },
+   "handleRate": 0.964
+  },
+  "mg60": {
+   "rate": 1,
+   "shot": {
+    "path": "mg60-report-v76.mp3",
+    "sha": "f94087954dc2",
+    "cues": {
+     "own0": {
+      "offset": 0.2,
+      "duration": 0.5580045351473923
+     },
+     "own1": {
+      "offset": 0.9580045351473923,
+      "duration": 0.5580045351473923
+     },
+     "own2": {
+      "offset": 1.7160090702947846,
+      "duration": 0.5580045351473923
+     },
+     "own3": {
+      "offset": 2.474013605442177,
+      "duration": 0.5580045351473923
+     },
+     "near": {
+      "offset": 3.2320181405895694,
+      "duration": 0.6780045351473923
+     },
+     "far": {
+      "offset": 4.110022675736961,
+      "duration": 1.1080045351473924
+     }
+    },
+    "source": "original-pressure-noise-v1"
+   },
+   "fx": {
+    "path": "aa12-fx.mp3",
+    "sha": "e46cbd69e9d2",
+    "cues": {
+     "magout": {
+      "offset": 2.744989,
+      "duration": 0.158095
+     },
+     "magin": {
+      "offset": 3.103084,
+      "duration": 0.144875
+     },
+     "open": {
+      "offset": 3.447959,
+      "duration": 0.145215
+     },
+     "close": {
+      "offset": 3.793175,
+      "duration": 0.14542
+     },
+     "dry": {
+      "offset": 4.138594,
+      "duration": 0.143991
+     }
+    }
+   },
+   "src": {
+    "magout": "P_7",
+    "magin": "P_6",
+    "open": "P_8",
+    "close": "U_2",
+    "dry": "P_1",
+    "report": "Original synthesis: js/weapon-sound-design.js"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.057,
+    "handling": 1.05
+   },
+   "handleRate": 0.952
+  },
+  "sr25": {
+   "rate": 1,
+   "shot": {
+    "path": "sr25-report-v76.mp3",
+    "sha": "0738e25538c7",
+    "cues": {
+     "own0": {
+      "offset": 0.2,
+      "duration": 0.6240136054421769
+     },
+     "own1": {
+      "offset": 1.024013605442177,
+      "duration": 0.6240136054421769
+     },
+     "own2": {
+      "offset": 1.8480272108843538,
+      "duration": 0.6240136054421769
+     },
+     "own3": {
+      "offset": 2.672040816326531,
+      "duration": 0.6240136054421769
+     },
+     "near": {
+      "offset": 3.4960544217687075,
+      "duration": 0.7440136054421769
+     },
+     "far": {
+      "offset": 4.440068027210884,
+      "duration": 1.1740136054421768
+     }
+    },
+    "source": "original-pressure-noise-v1"
+   },
+   "fx": {
+    "path": "mk14-fx.mp3",
+    "sha": "aa5f3bfb5323",
+    "cues": {
+     "magout": {
+      "offset": 3.42,
+      "duration": 0.143991
+     },
+     "magin": {
+      "offset": 3.763991,
+      "duration": 0.147687
+     },
+     "open": {
+      "offset": 4.111678,
+      "duration": 0.235896
+     },
+     "close": {
+      "offset": 4.547574,
+      "duration": 0.145442
+     },
+     "dry": {
+      "offset": 4.893016,
+      "duration": 0.144898
+     }
+    }
+   },
+   "src": {
+    "magout": "G_9",
+    "magin": "G_8",
+    "open": "U_1",
+    "close": "U_2",
+    "dry": "U_6",
+    "report": "Original synthesis: js/weapon-sound-design.js"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.06,
+    "handling": 0.84
+   },
+   "handleRate": 0.94
+  },
+  "dm56": {
+   "rate": 1,
+   "shot": {
+    "path": "dm56-report-v76.mp3",
+    "sha": "71100297206c",
+    "cues": {
+     "own0": {
+      "offset": 0.2,
+      "duration": 0.3960090702947846
+     },
+     "own1": {
+      "offset": 0.7960090702947846,
+      "duration": 0.3960090702947846
+     },
+     "own2": {
+      "offset": 1.392018140589569,
+      "duration": 0.3960090702947846
+     },
+     "own3": {
+      "offset": 1.9880272108843537,
+      "duration": 0.3960090702947846
+     },
+     "near": {
+      "offset": 2.5840362811791384,
+      "duration": 0.5160090702947846
+     },
+     "far": {
+      "offset": 3.3000453514739228,
+      "duration": 0.9460090702947845
+     }
+    },
+    "source": "original-pressure-noise-v1"
+   },
+   "fx": {
+    "path": "ar7-fx.mp3",
+    "sha": "f0e5b6632b03",
+    "cues": {
+     "magout": {
+      "offset": 2.819977,
+      "duration": 0.197596
+     },
+     "magin": {
+      "offset": 3.217574,
+      "duration": 0.1661
+     },
+     "open": {
+      "offset": 3.583673,
+      "duration": 0.326349
+     },
+     "close": {
+      "offset": 4.110023,
+      "duration": 0.146848
+     },
+     "dry": {
+      "offset": 4.456871,
+      "duration": 0.15068
+     }
+    }
+   },
+   "src": {
+    "magout": "D_5",
+    "magin": "D_4",
+    "open": "D_9",
+    "close": "D_13",
+    "dry": "D_16",
+    "report": "Original synthesis: js/weapon-sound-design.js"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.049,
+    "handling": 0.84
+   },
+   "handleRate": 0.928
+  },
+  "m24": {
+   "rate": 1,
+   "shot": {
+    "path": "m24-report-v76.mp3",
+    "sha": "ae7da929c7e3",
+    "cues": {
+     "own0": {
+      "offset": 0.2,
+      "duration": 0.8580045351473923
+     },
+     "own1": {
+      "offset": 1.2580045351473923,
+      "duration": 0.8580045351473923
+     },
+     "own2": {
+      "offset": 2.3160090702947844,
+      "duration": 0.8580045351473923
+     },
+     "own3": {
+      "offset": 3.374013605442177,
+      "duration": 0.8580045351473923
+     },
+     "near": {
+      "offset": 4.4320181405895696,
+      "duration": 0.9780045351473923
+     },
+     "far": {
+      "offset": 5.610022675736961,
+      "duration": 1.4080045351473922
+     }
+    },
+    "source": "original-pressure-noise-v1"
+   },
+   "fx": {
+    "path": "kr98-fx.mp3",
+    "sha": "3da08143ec80",
+    "cues": {
+     "magout": {
+      "offset": 4.315261,
+      "duration": 0.145896
+     },
+     "magin": {
+      "offset": 4.661156,
+      "duration": 0.143923
+     },
+     "open": {
+      "offset": 5.005079,
+      "duration": 0.149773
+     },
+     "close": {
+      "offset": 5.354853,
+      "duration": 0.213424
+     },
+     "dry": {
+      "offset": 5.768277,
+      "duration": 0.143991
+     },
+     "up": {
+      "offset": 6.112268,
+      "duration": 0.151202
+     },
+     "down": {
+      "offset": 6.463469,
+      "duration": 0.180794
+     }
+    }
+   },
+   "src": {
+    "magout": "W_5",
+    "magin": "W_4",
+    "open": "W_9",
+    "close": "W_12",
+    "dry": "W_13",
+    "up": "W_6",
+    "down": "M_7",
+    "report": "Original synthesis: js/weapon-sound-design.js"
+   },
+   "mix": {
+    "shot": 0.86,
+    "handling": 0.84
+   },
+   "handleRate": 0.916
+  },
+  "sp12": {
+   "rate": 1,
+   "shot": {
+    "path": "sp12-report-v76.mp3",
+    "sha": "663b3bc719ea",
+    "cues": {
+     "own0": {
+      "offset": 0.2,
+      "duration": 0.6120181405895692
+     },
+     "own1": {
+      "offset": 1.0120181405895692,
+      "duration": 0.6120181405895692
+     },
+     "own2": {
+      "offset": 1.8240362811791384,
+      "duration": 0.6120181405895692
+     },
+     "own3": {
+      "offset": 2.6360544217687076,
+      "duration": 0.6120181405895692
+     },
+     "near": {
+      "offset": 3.4480725623582766,
+      "duration": 0.7320181405895692
+     },
+     "far": {
+      "offset": 4.380090702947846,
+      "duration": 1.162018140589569
+     }
+    },
+    "source": "original-pressure-noise-v1"
+   },
+   "fx": {
+    "path": "s12-fx.mp3",
+    "sha": "13a985856b21",
+    "cues": {
+     "open": {
+      "offset": 3.494989,
+      "duration": 0.151565
+     },
+     "close": {
+      "offset": 3.846553,
+      "duration": 0.189252
+     },
+     "shell": {
+      "offset": 4.235805,
+      "duration": 0.15161
+     },
+     "port": {
+      "offset": 4.587415,
+      "duration": 0.179274
+     },
+     "dry": {
+      "offset": 4.966689,
+      "duration": 0.147596
+     }
+    }
+   },
+   "src": {
+    "open": "O_4",
+    "close": "O_5",
+    "shell": "O_3",
+    "port": "O_7",
+    "dry": "O_8",
+    "report": "Original synthesis: js/weapon-sound-design.js"
+   },
+   "mix": {
+    "shot": 0.86,
+    "handling": 0.84
+   },
+   "handleRate": 0.904
+  },
+  "p226": {
+   "rate": 1,
+   "shot": {
+    "path": "p226-report-v76.mp3",
+    "sha": "d40c906c3d87",
+    "cues": {
+     "own0": {
+      "offset": 0.2,
+      "duration": 0.3240136054421769
+     },
+     "own1": {
+      "offset": 0.7240136054421769,
+      "duration": 0.3240136054421769
+     },
+     "own2": {
+      "offset": 1.2480272108843538,
+      "duration": 0.3240136054421769
+     },
+     "own3": {
+      "offset": 1.7720408163265307,
+      "duration": 0.3240136054421769
+     },
+     "near": {
+      "offset": 2.2960544217687073,
+      "duration": 0.4440136054421769
+     },
+     "far": {
+      "offset": 2.9400680272108843,
+      "duration": 0.8740136054421769
+     }
+    },
+    "source": "original-pressure-noise-v1"
+   },
+   "fx": {
+    "path": "p92-fx.mp3",
+    "sha": "5d9d97f7191d",
+    "cues": {
+     "magout": {
+      "offset": 2.594966,
+      "duration": 0.259342
+     },
+     "magin": {
+      "offset": 3.054308,
+      "duration": 0.159297
+     },
+     "open": {
+      "offset": 3.413605,
+      "duration": 0.148118
+     },
+     "close": {
+      "offset": 3.761723,
+      "duration": 0.150726
+     },
+     "dry": {
+      "offset": 4.112449,
+      "duration": 0.147234
+     }
+    }
+   },
+   "src": {
+    "magout": "F_5",
+    "magin": "F_4",
+    "open": "F_8",
+    "close": "F_17",
+    "dry": "F_23",
+    "report": "Original synthesis: js/weapon-sound-design.js"
+   },
+   "mix": {
+    "shot": 0.86,
+    "action": 0.046,
+    "handling": 0.84
+   },
+   "handleRate": 0.892
   }
  },
  "switch": {
@@ -1115,10 +2233,11 @@
   },
   "src": "C_4"
  },
- "edition": 75,
+ "edition": 76,
  "design": {
   "generator": "js/weapon-sound-design.js",
-  "generatorSha": "fb9bb3743ab0",
+  "generatorSha": "f94e4d6532f8",
+  "catalogSha": "e5f6a9d4564e",
   "generatorVersion": 1,
   "variants": 4,
   "recordedShotInputs": 0,

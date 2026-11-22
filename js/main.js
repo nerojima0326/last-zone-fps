@@ -411,12 +411,12 @@ G.boot = async function () {
   addEventListener('resize', onResize);
   renderer.domElement.addEventListener('click', () => {
     if (G.Game.spectating && !G.Input.locked) { G.Input.lock(); return; }
-    if (G.Game.state === 'playing' && !G.Input.locked && !G.Settings?.open && !G.Attachments?.open) G.resume();
+    if (G.Game.state === 'playing' && !G.Input.locked && !G.Settings?.open && !G.Attachments?.open && !G.Armory?.open) G.resume();
   });
   G.onLockChange = (locked) => {
     if (G.Game.spectating && !locked) { G.Game.stopSpectate(); return; }
     if (G.Game.state !== 'playing') return;
-    if(G.Attachments?.open){G.paused=true;G.UI.showPause(false);return;}
+    if(G.Attachments?.open||G.Armory?.open){G.paused=true;G.UI.showPause(false);return;}
     if (!locked) { G.paused = true; G.UI.showPause(true); }
     else { G.paused = false; G.UI.showPause(false); }
   };
@@ -514,6 +514,8 @@ function applyQuality(q) {
 const _db = new THREE.Vector2();
 function usePost() { const Q = QUALITY[G.quality]; return !Q || Q.post; }
 function renderFrame(dt) {
+  // The catalogue draws its own preview on demand over the last game frame.
+  if (G.Armory?.open) return;
   // 레이트레이싱 (설정에서 켰고 지원되는 기기일 때)
   const PF = G.Perf && G.Perf.on ? G.Perf : null;
   if (G.RT && G.RT.drawing()) { if (PF) PF.seg('rt'); G.RT.render(renderer, scene, camera, G.vmScene, G.vmCamera); return; }

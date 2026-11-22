@@ -23,6 +23,8 @@ const profiles = {
   r45:   { back: .035, pitch: 9.3, yaw: .65, roll: 1.4, speed: 24, damping: .80 }
 };
 
+for (const [id, entry] of Object.entries(G.WeaponCatalog || {})) profiles[id] = entry.motion;
+
 function axis(frequency, damping) {
   const decay = frequency * damping, wave = frequency * Math.sqrt(1 - damping * damping);
   const peakTime = Math.atan2(wave, decay) / wave;

@@ -14,6 +14,41 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #0b0f14; c
 #app { position: fixed; inset: 0; }
 #app canvas { display: block; width: 100%; height: 100%; }
 .hidden { display: none !important; }
+/* Weapon catalogue and solo-training selector. */
+#armoryModal { position: fixed; inset: 0; z-index: 45; padding: 24px; display: grid; place-items: center; background: #05080dda; backdrop-filter: blur(12px); }
+.armory-panel { width: min(1160px, 100%); height: min(830px, 94vh); display: flex; flex-direction: column; padding: 28px; background: #111923; border: 1px solid #34414f; border-radius: 12px; box-shadow: 0 28px 100px #0009; }
+.armory-panel header { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.armory-panel header small { color: var(--accent); letter-spacing: 3px; font: 600 12px var(--num); }
+.armory-panel h2 { margin-top: 6px; font-size: 26px; }.armory-panel h2 em { color: var(--accent); font: 700 34px var(--num); margin-left: 10px; }
+#armoryClose { padding: 10px 14px; border: 1px solid #43505d; border-radius: 6px; }
+#armoryHint { color: var(--muted); font-size: 12px; margin: 12px 0 18px; }
+.armory-search { display: flex; align-items: center; gap: 20px; }
+#armorySearch { flex: 1; min-width: 0; padding: 12px 14px; color: #fff; background: #080e15; border: 1px solid #34414f; border-radius: 6px; font: inherit; font-size: 13px; }
+#armoryCount { white-space: nowrap; color: #bdc9d5; font-size: 13px; }
+#armoryFilters { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px 0; }
+#armoryFilters button { padding: 7px 11px; border-radius: 4px; background: #1d2935; font-size: 12px; }
+#armoryFilters [aria-pressed=true] { color: #15120b; background: var(--accent); font-weight: 700; }
+.armory-content { display: grid; grid-template-columns: 1fr 43%; gap: 22px; min-height: 0; flex: 1; }
+#armoryList { display: grid; grid-template-columns: 1fr 1fr; align-content: start; gap: 8px; overflow-y: auto; padding: 2px 6px 12px 2px; }
+#armoryList button { min-width: 0; text-align: left; padding: 15px; border: 1px solid #2c3a48; background: #18232f; border-radius: 5px; }
+#armoryList button:hover { background: #243341; }#armoryList [aria-pressed=true] { border-color: var(--accent); background: #2c2b25; }
+#armoryList span { display: flex; justify-content: space-between; gap: 5px; color: #b0c0cf; font-size: 11px; }
+#armoryList b { color: var(--accent); font: 700 11px var(--num); }#armoryList strong { display: block; margin: 7px 0 5px; font: 700 25px var(--num); letter-spacing: 1px; }
+#armoryList small { font-size: 11px; color: #a8b7c7; }.armory-empty { color: var(--muted); grid-column: 1 / -1; padding: 30px; }
+.armory-content aside { overflow-y: auto; min-width: 0; padding-right: 4px; }
+#armoryPreview { height: 205px; border: 1px solid #2e3e4c; border-radius: 6px; cursor: grab; touch-action: none; background: radial-gradient(ellipse at 50% 60%, #33414e, #101923 76%); }
+#armoryPreview:active { cursor: grabbing; }#armoryPreview canvas { display: block; border-radius: 6px; }
+.armory-drag { display: block; text-align: right; color: #8798a8; font-size: 10px; margin-top: 5px; }
+#armoryDetail > small { color: var(--accent); font-size: 11px; }#armoryDetail h3 { margin: 8px 0; font-size: 20px; }#armoryDetail p { color: #a8b7c7; font-size: 12px; line-height: 1.7; }
+#armoryDetail dl { display: grid; grid-template-columns: 1fr 1fr; gap: 0 22px; margin: 14px 0; }
+#armoryDetail dl div { display: flex; justify-content: space-between; gap: 6px; padding: 10px 0; border-bottom: 1px solid #293745; font-size: 12px; }
+#armoryDetail dt { color: #8fa2b5; }#armoryDetail dd { font-weight: 700; }
+#armoryEquip { width: 100%; padding: 13px; margin-bottom: 10px; color: #16120a; font-weight: 700; background: var(--accent); border-radius: 5px; }
+#armorySound { width: 100%; padding: 10px; margin-bottom: 10px; color: #d5e1ee; border: 1px solid #435362; border-radius: 5px; font-size: 12px; }
+#trainStats button { color: var(--accent); font-size: 12px; pointer-events: auto; }
+#armoryModal button:focus-visible, #armorySearch:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+@media (max-width: 760px) { #armoryModal { padding: 8px; }.armory-panel { padding: 16px; height: 96dvh; }.armory-content { grid-template-columns: 1fr 1fr; gap: 12px; }#armoryList { grid-template-columns: 1fr; }#armoryPreview { height: 155px; }#armoryDetail h3 { font-size: 16px; }#armoryDetail dl { grid-template-columns: 1fr; }#armoryFilters { gap: 5px; }#armoryFilters button { padding: 6px 8px; font-size: 11px; } }
+@media (max-height: 630px) { .armory-panel { padding: 12px 18px; height: 98dvh; }#armoryHint { margin: 6px 0 8px; }#armoryFilters { padding: 8px 0; }#armoryPreview { height: 130px; } }
 button { font-family: inherit; cursor: pointer; border: 0; color: inherit; background: none; }
 
 /* ---------- logo ---------- */

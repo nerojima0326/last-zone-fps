@@ -1,4 +1,4 @@
-// weapons.js — 무기 정의(15종), 조준경, 탄도, 1인칭 뷰모델(팔 IK + 재장전 애니메이션)
+// weapons.js — 무기 정의(30종), 조준경, 탄도, 1인칭 뷰모델(팔 IK + 재장전 애니메이션)
 (function () {
 'use strict';
 const THREE = window.THREE, G = window.G, U = G.U;
@@ -57,13 +57,16 @@ G.WEAPONS = {
     spread: 0.017, ads: 0.0045, move: 0.024, bloom: 0.02, bloomMax: 0.04, recoilV: 0.065, recoilH: 0.015, vel: 440, adsFov: 62, kick: 1.6, range: 350, falloff: [45, 0.75], tracerLen: 6, sound: 'magnum', tier: 3, scopes: [] }),
   fists: { key: 'fists', name: '맨손', short: '맨손', dmg: 22, rpm: 110 }
 };
+for (const [id, entry] of Object.entries(G.WeaponCatalog || {})) G.WEAPONS[id] = W(entry.stats);
+for (const d of Object.values(G.WEAPONS)) if (d.cls && !d.family) d.family = d.cls === 'rifle' ? d.action === 'bolt' ? 'sniper' : d.key === 'mk14' ? 'dmr' : 'assault' : d.cls;
 G.GUN_IDS = Object.keys(G.WEAPONS).filter(k => G.WEAPONS[k].cls);
+G.FAMILY_NAMES = { assault: '돌격소총', smg: '기관단총', lmg: '경기관총', dmr: '지정사수소총', sniper: '저격총', shotgun: '산탄총', pistol: '권총' };
 G.GUN_CLASSES = { rifle: [], shotgun: [], pistol: [] };
 for (const k of G.GUN_IDS) G.GUN_CLASSES[G.WEAPONS[k].cls].push(k);
 G.DEFAULT_GUN = { rifle: 'ar7', shotgun: 's12', pistol: 'p92' };
-G.CLASS_NAMES = { rifle: '소총', shotgun: '산탄총', pistol: '권총' };
+G.CLASS_NAMES = { rifle: '주무기', shotgun: '산탄총', pistol: '권총' };
 G.AMMO_NAMES = { '556': '5.56mm', '762': '7.62mm', '9mm': '9mm', '45': '.45 ACP', '12g': '12게이지' };
-G.AMMO_MAX = { '556': 240, '762': 180, '9mm': 150, '45': 120, '12g': 60 };
+G.AMMO_MAX = { '556': 240, '762': 180, '9mm': 240, '45': 180, '12g': 60 };
 G.SCOPES = {
   reddot: { name: '레드닷', zoom: 1, rank: 1 },
   holo: { name: '홀로그램', zoom: 1, rank: 2 },
@@ -90,6 +93,9 @@ function mats() {
   MM.dark = std(0x141518, 0.45, 0.55, { envMapIntensity: 0.5 });
   MM.darkDS = std(0x141518, 0.45, 0.55, { envMapIntensity: 0.5, side: THREE.DoubleSide });
   MM.poly = std(0x1d1e21, 0.1, 0.62);
+  MM.machined = std(0x4b535e, 0.42, 0.43);
+  MM.phosphate = std(0x2c323b, 0.25, 0.58);
+  MM.polymer = std(0x343b43, 0.06, 0.76);
   MM.tan = std(0x8a785a, 0.08, 0.72);
   MM.wood = std(0x6e3f1f, 0.05, 0.5);
   MM.woodL = std(0x8e5a2c, 0.05, 0.45);
@@ -728,7 +734,12 @@ const RSTYLE = {
   db2: { s: 'pair' },
   r45: { s: 'revolver' }
 };
-const rstyle = id => RSTYLE[id] || RSTYLE.ar7;
+RSTYLE.sp12 = { ...RSTYLE.s12, eject: [.032, .072, -.13], pumpReturn: .54 };
+RSTYLE.v45 = { ...RSTYLE.sc17, handleLead: .045, magHold: .15 };
+RSTYLE.sr25 = { ...RSTYLE.ar7, hd: .055, magHold: .10 };
+RSTYLE.dm56 = { ...RSTYLE.sc17, hd: .055 };
+RSTYLE.m24 = { ...RSTYLE.kr98, hd: .03 };
+const rstyle = id => RSTYLE[id] || RSTYLE[G.WeaponCatalog?.[id]?.reloadBase] || RSTYLE.ar7;
 // 무게·손목·복귀 리듬. 동작의 접촉점은 makeKeys, 몸의 선행/후행 움직임은 여기서 분리한다.
 const RFEEL = {
   ar7:   { name: '짧은 확인 · 볼트 멈치', mass: 1, reach: -0.014, lift: 0.012, cant: -0.035, wrist: -0.12, finish: 0.032 },
@@ -780,7 +791,7 @@ function gunData(id) {
 
 const Guns = G.Guns = {
   mats, CLS, gunData, rstyle,
-  reloadFeel(id) { return RFEEL[id] || RFEEL.ar7; },
+  reloadFeel(id) { return RFEEL[id] || RFEEL[G.WeaponCatalog?.[id]?.reloadBase] || RFEEL.ar7; },
   // Freeze the original empty state for the entire reload, including every shell cycle.
   reloadFactor(empty) { return empty ? 1.1 : 1; },
   reloadDuration(id,empty) { return G.WEAPONS[id].reload*this.reloadFactor(empty); },
@@ -1059,9 +1070,12 @@ const Guns = G.Guns = {
       E = join(base, pull(0.72, side < 0 ? 'left' : 'over'), [[0.9, v(F, -0.11, -0.04, 0.06)], [0.97, F]], { k: [], T: Object.assign({ endE: 0.98 }, T0) });
     } else if (S === 'scar') {
       // 빈 총: 탄창은 저절로 떨어지고 가슴 탄입대에서 새 탄창 → 앞쪽 왼손 장전 손잡이를 낚아챈다
+      // Original procedural models finish the seating check before reaching
+      // for the handle. Interleaved key times produce a very fast elbow turn.
+      const expanded = !!G.WeaponCatalog?.[o.id], pullAt = expanded ? .60 : .56;
       E = join([[0, F], [0.07, v(Hm, -0.02, -0.04, 0.03)], [0.1, v(Hm, -0.03, -0.06, 0.04)], [0.2, chest], [0.26, chest2]], straight(0.32),
-        ch ? pull(0.56, side > 0 ? 'over' : 'left') : slap(0.56), [[0.78, v(F, -0.11, -0.04, 0.06)], [0.88, F]],
-        { k: [], T: { drop: 0.1, newMag: 0.2, seat: 0.47, endE: 0.9 } });
+        ch ? pull(pullAt, side > 0 ? 'over' : 'left') : slap(pullAt), [[expanded ? .84 : .78, v(F, -0.11, -0.04, 0.06)], [expanded ? .96 : .88, F]],
+        { k: [], T: { drop: 0.1, newMag: 0.2, seat: 0.47, endE: expanded ? .98 : .9 } });
       // 남은 탄창: 뽑아서 그대로 던지고 (스피드 리로드) 새 탄창
       Tac = join([[0, F], [0.07, v(Hm, -0.01, -0.03, 0.02)], [0.1, Hm], [0.12, Hm], [0.2, Hout], [0.24, v(Hout, -0.02, -0.06, 0.03)], [0.32, chest], [0.37, chest2]], straight(0.42), home(0.72, 0.84),
         { k: [], T: { grab: 0.1, out: 0.2, release: 0.24, toss: true, newMag: 0.32, seat: 0.57, endT: 0.86 } });
@@ -1095,6 +1109,13 @@ const Guns = G.Guns = {
       Tac = join([[0, F], [0.07, v(Hm, -0.01, -0.03, 0.02)], [0.1, Hm], [0.13, Hm], [0.24, Hout], [0.34, belt], [0.41, belt2]], straight(0.45), [[0.86, v(F, -0.02, -0.02, 0.04)], [1, F]],
         { k: [], T: { grab: 0.1, out: 0.24, release: 0.34, newMag: 0.37, seat: 0.6, endT: 0.84 } });
     }
+    if (G.WeaponCatalog?.[o.id] && (S === 'drum' || S === 'ar')) {
+      // A long fore-end needs a low return from the charging handle, rather
+      // than a straight sweep through the barrel jacket.
+      const at = S === 'drum' ? .97 : .88;
+      E.k = E.k.filter(([t]) => t < at).concat([[at, v(F, -.06, -.08, .02)], [1, F]]);
+    }
+    if (st.magHold) for (const key of Tac.k) if (key[0] >= .69 && key[0] < .81) key[1].y -= .012;
     for (const q of [E, Tac]) { q.k.sort((x, y) => x[0] - y[0]); for (let i = 1; i < q.k.length; i++) if (q.k[i][0] <= q.k[i - 1][0]) q.k[i][0] = q.k[i - 1][0] + 0.002; }
     K.E = E; K.Tac = Tac;
   },
@@ -1722,7 +1743,7 @@ const VM = G.VM = {
     if(rl.type==='mag') {
       const p=rl.p,S=rl.empty?K.E:K.Tac;if(!S)return;const T=S.T;
       const old=T.grab!==undefined&&p>=T.grab-0.025&&p<T.release;
-      const fresh=p>=T.newMag-0.025&&p<T.seat+0.055;
+      const fresh=p>=T.newMag-0.025&&p<T.seat+(st.magHold||0.055);
       if(old||fresh){
         const object=old?m.parts.mag:m.mag2,a=object?object.rotation.x:0;
         handPose(L,'magazine',[1,0,0],[0,Math.sin(a),-Math.cos(a)],0.66,0.65,0.58);
@@ -1733,7 +1754,7 @@ const VM = G.VM = {
         const w=env(p,T.chA-0.12,T.chA-0.04,Math.min(0.97,T.chRel+0.12),1.001);
         L.pole.lerp(_o.set(-0.95,K.chMode==='over'?0.05:-0.9,-0.55).normalize(),w).normalize();
       }
-      if(rl.empty&&T.chA!==undefined&&p>T.chA-0.095&&p<T.chRel+0.02){
+      if(rl.empty&&T.chA!==undefined&&p>T.chA-(st.handleLead||0.095)&&p<T.chRel+0.02){
         const over=K.chMode==='over';
         handPose(L,'handle',over?[0,-1,0]:[m.charge&&m.charge.x>0?-1:1,0,0],over?[1,-0.35,-0.1]:K.chMode==='under'?[0,0.9,-0.35]:[0,0.45,-1],0.78,0.6,0.72);
         L.reachRef=K.chGrab;
@@ -1782,6 +1803,7 @@ const VM = G.VM = {
           else if(p>0.74)L.contactLock=0;
         }
       }
+      if(st.pumpReturn && rl.phase==='start' && rl.port && rl.pp>st.pumpReturn && rl.pp<.82) handPose(L,'support',m.supportN,m.supportF);
     }
   },
   // 총의 접촉점은 그대로 두고 어깨·손목이 먼저 움직였다가 늦게 따라오는 작은 무게감을 더한다.

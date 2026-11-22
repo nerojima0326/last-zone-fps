@@ -184,7 +184,7 @@ function checkMatchLifecycle() {
     });
     console.log('Training assets:', JSON.stringify(loaded));
     assert.equal(loaded.booths, 4); assert(loaded.bags >= 8); assert(loaded.crates >= 4); assert(loaded.cases >= 4);
-    assert.equal(loaded.targets, 14); assert.equal(loaded.killhouse, 11); assert.equal(loaded.grenadeTargets, 3); assert(loaded.base); assert.equal(loaded.guns, 15); assert.equal(loaded.attachments, loaded.attachmentCatalog);
+    assert.equal(loaded.targets, 14); assert.equal(loaded.killhouse, 11); assert.equal(loaded.grenadeTargets, 3); assert(loaded.base); assert.equal(loaded.guns, 30); assert.equal(loaded.attachments, loaded.attachmentCatalog);
     assert.equal(loaded.importedSandbags, !process.env.RANGE_FALLBACK); assert.equal(loaded.floorTexture, !process.env.RANGE_FALLBACK);
     if (!process.env.RANGE_FALLBACK) { assert.equal(assetResponses.length, 5); assert(assetResponses.every(r => r.status === 200)); }
 

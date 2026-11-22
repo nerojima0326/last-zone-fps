@@ -24,6 +24,15 @@ const profiles = {
 // Procedural fallback weapons have their own fitted contacts. A correction
 // measured for an imported animation pack must not displace those grips.
 const fallbackProfiles = { db2: profiles.db2 };
+for (const [id, entry] of Object.entries(G.WeaponCatalog || {})) {
+  const pistol = entry.stats.cls === 'pistol', shotgun = entry.stats.cls === 'shotgun';
+  const freeGap = { lm86: .032, rk762: .024, sr25: .040, dm56: .024, cx9: .024 }[id] || .016;
+  const freeAt = pistol ? [-.003, -.003, 0] : id === 'sr25' ? [-.004, 0, 0] : id === 'dm56' ? [0, 0, -.016] : id === 'm24' ? [-.008, -.008, 0] : null;
+  fallbackProfiles[id] = {
+    R: { at: shotgun ? [0, 0, 0] : pistol ? [.003, 0, .003] : [.005, -.003, .004], curl: shotgun ? [] : [[.12, .12], [0, 0], [.12, .12], [.16, .12], [.16, .12]] },
+    L: { at: pistol ? [-.003, -.003, 0] : [0, shotgun ? -.020 : -.007, 0], freeAt, freeGap: pistol ? 0 : freeGap, curl: shotgun ? [] : [[.12, 0], [0, .12], [.12, .12], [.12, .12], [.16, .12]] }
+  };
+}
 const rigs = new WeakMap();
 function sideOf(name) { return /left|_L(?:_|$)|^L_|L(?:_\d+)?$/i.test(name) ? 'L' : 'R'; }
 function remember(rig, bone) {
@@ -236,7 +245,7 @@ G.HandContact = {
         weight *= 1 - magWeight;
       }
       const freeWeight = h.side === 'L' && reload ? 1 - weight * weight : 0;
-      if (weight < 1e-5 && magWeight < 1e-5 && !(C.freeAt && freeWeight)) continue;
+      if (weight < 1e-5 && magWeight < 1e-5 && !((C.freeAt || C.freeGap) && freeWeight)) continue;
       const sourceMatrix = h.hand.matrixWorld.clone(), restMatrix = h.restMatrix.clone();
       let offsetFrame = frame, offset = new V(...C.at);
       if (moving) {
@@ -251,6 +260,8 @@ G.HandContact = {
         const extra = new V(...C.freeAt).transformDirection(frame).multiplyScalar(new V(...C.freeAt).length() * freeWeight);
         delta.add(extra);
       }
+      const arm = context?.proceduralArms?.[h.side];
+      if (C.freeGap && freeWeight && arm?.palmRef) delta.add(arm.palmRef.clone().transformDirection(frame).multiplyScalar(-C.freeGap * freeWeight));
       if (!moving) {
         // A held grip stays on the furniture through idle breathing and fire
         // clips. Only the free hand follows the authored manipulation path.

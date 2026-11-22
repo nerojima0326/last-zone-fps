@@ -33,6 +33,6 @@ const root = path.resolve(__dirname, '..'), bvhDir = path.dirname(path.dirname(r
     console.log(JSON.stringify({ cases: result.cases.length, transitions: result.transitions.length, failures: result.failures.slice(0, 15), failureCount: result.failures.length }, null, 2));
     assert.deepEqual(errors, [], 'Browser errors');
     assert.equal(result.failures.length, 0, 'Hand/weapon contact or animation continuity regressed; see REPORT for all cases');
-    console.log('PASS: all 15 weapons; holding/ADS/walk/sprint/fire at 30/60/144 FPS; reloads and repeated poses at 60 FPS.');
+    console.log('PASS: all 30 weapons; holding/ADS/walk/sprint/fire at 30/60/144 FPS; reloads and repeated poses at 60 FPS.');
   } finally { if (browser) await browser.close(); server.close(); }
 })().catch(e => { console.error(e.stack); process.exitCode = 1; });

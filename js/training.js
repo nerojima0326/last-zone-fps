@@ -169,9 +169,14 @@ const T = G.Training = {
       const x = table.x0 + 0.55 + i * ((table.x1 - table.x0 - 1.1) / Math.max(1, kinds.length - 1));
       this.placeItem(k, x, table.y, table.z, 0);
     });
-    const by = c => G.GUN_IDS.filter(id => G.WEAPONS[id].cls === c);
-    row(tb[0], by('rifle')); row(tb[1], by('shotgun')); row(tb[2], by('pistol'));
+    const by = (...families) => G.GUN_IDS.filter(id => families.includes(G.WEAPONS[id].family));
+    row(tb[0], by('assault')); row(tb[1], by('shotgun')); row(tb[2], by('pistol'));
+    row(tb[4], by('smg')); row(tb[5], by('lmg', 'dmr', 'sniper'));
     row(tb[3], Object.keys(G.SCOPES).map(s => 'scope_' + s).concat(['frag', 'smoke', 'molotov', 'flash']));
+    ['돌격소총', '산탄총', '권총', '조준경 · 투척', '기관단총', '지원화기 · 정밀 소총'].forEach((label, i) => {
+      const t = tb[i], map = signTexture(label), m = new THREE.Mesh(new THREE.PlaneGeometry(1.8, .36), new THREE.MeshBasicMaterial({ map, side: THREE.DoubleSide }));
+      m.position.set((t.x0 + t.x1) / 2, t.y + .30, t.z - .60); G.scene.add(m); this.objs.push(m);
+    });
     const at=W.range.attachmentTable,items=Object.keys(G.Attachments.catalog());
     const cols=Math.ceil(items.length/2);
     items.forEach((kind,i)=>{const x=at.x0+.4+(i%cols)*(at.x1-at.x0-.8)/Math.max(1,cols-1),z=at.z0+.5+Math.floor(i/cols)*.9;this.placeItem(kind,x,at.y,z,0)});
@@ -299,6 +304,8 @@ const T = G.Training = {
   stop() {
     if (!this.active && !this.objs.length) return;
     this.active = false;
+    G.Armory?.close(false);
+    document.getElementById('trainArmoryBtn')?.classList.add('hidden');
     this.syncLamps();
     const geometries = new Set(), materials = new Set();
     const shared = new Set(Object.values(this.mats));
@@ -324,16 +331,19 @@ const T = G.Training = {
       this.layer = document.createElement('div'); this.layer.id = 'dmgNums';
       document.getElementById('hud').appendChild(this.layer);
       this.statsEl = document.createElement('div'); this.statsEl.id = 'trainStats';
+      this.statsEl.addEventListener('click', e => { if (e.target.closest('[data-armory]')) G.Armory.show(); });
       document.getElementById('hud').appendChild(this.statsEl);
       this.khEl = document.createElement('div'); this.khEl.id = 'khTimer'; this.khEl.className = 'hidden';
       document.getElementById('hud').appendChild(this.khEl);
     }
     this.statsEl.classList.remove('hidden');
+    document.getElementById('trainArmoryBtn').textContent = '훈련 무기 선택 · ' + G.Settings.label('KeyJ');
+    document.getElementById('trainArmoryBtn')?.classList.remove('hidden');
     this.drawStats();
   },
   drawStats() {
     const s = this.stats, acc = s.shots ? Math.round(s.hits / s.shots * 100) : 0;
-    this.statsEl.innerHTML = `<b>훈련장</b><span>명중 <i>${s.hits}</i> / ${s.shots} (${acc}%)</span><span>헤드샷 <i>${s.heads}</i></span><span>최근 피해 <i>${Math.round(s.last)}</i></span><span>쓰러뜨림 <i>${s.downs}</i></span>`;
+    this.statsEl.innerHTML = `<b>훈련장</b><span>명중 <i>${s.hits}</i> / ${s.shots} (${acc}%)</span><span>헤드샷 <i>${s.heads}</i></span><span>최근 피해 <i>${Math.round(s.last)}</i></span><span>쓰러뜨림 <i>${s.downs}</i></span><button data-armory>${G.Settings.label('KeyJ')} · 무기 선택 (30종)</button>`;
   },
   refill() {
     const a = G.Game.player;

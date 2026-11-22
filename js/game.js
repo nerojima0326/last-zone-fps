@@ -27,6 +27,11 @@ const LOOT_TABLE = [
   ['scope_reddot', 3.5], ['scope_holo', 2.8], ['scope_x2', 2.6], ['scope_x4', 1.8], ['scope_x8', 0.9],
   ['frag', 7], ['smoke', 5], ['molotov', 5], ['flash', 5],
   ['bandage', 9], ['medkit', 4], ['vest', 4], ['helmet', 5], ['bag', 4]];
+// More models should not increase the overall chance of a gun instead of ammo.
+const oldGunWeight = LOOT_TABLE.reduce((sum, [id, weight]) => sum + (G.WEAPONS[id]?.cls ? weight : 0), 0);
+for (const [id, entry] of Object.entries(G.WeaponCatalog || {})) LOOT_TABLE.push([id, entry.lootWeight]);
+const expandedGunWeight = LOOT_TABLE.reduce((sum, [id, weight]) => sum + (G.WEAPONS[id]?.cls ? weight : 0), 0);
+for (const row of LOOT_TABLE) if (G.WEAPONS[row[0]]?.cls) row[1] *= oldGunWeight / expandedGunWeight;
 for(const [k,v] of Object.entries(G.Attachments.catalog())) LOOT_TABLE.push([k,1.8]);
 const LOOT_AMOUNT = { ammo_556: 30, ammo_762: 30, ammo_9mm: 30, ammo_45: 24, ammo_12g: 10, bandage: 2 };
 const LOOT_NAMES = { frag: '수류탄', smoke: '연막탄', molotov: '화염병', flash: '섬광탄', bandage: '붕대', medkit: '구급상자', vest: '방탄조끼', helmet: '헬멧', bag: '가방' };

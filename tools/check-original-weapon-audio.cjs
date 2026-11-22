@@ -2,6 +2,7 @@ const assert=require('assert'),crypto=require('crypto'),fs=require('fs'),path=re
 const D=require('../js/weapon-sound-design.js');
 const manifest=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/audio/weapons/manifest.json'),'utf8'));
 assert.equal(manifest.edition,D.edition);
+assert.equal(manifest.design.catalogSha,crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname,'../js/weapon-catalog.js'))).digest('hex').slice(0,12),'Roster audio profiles changed without rebuilding banks');
 assert.equal(manifest.design.generatorSha,crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname,'../js/weapon-sound-design.js'))).digest('hex').slice(0,12),'Report generator changed without rebuilding the banks');
 assert.deepEqual(Object.keys(manifest.weapons).sort(),Object.keys(D.profiles).sort());
 const hashes=new Set(),rows=[];
