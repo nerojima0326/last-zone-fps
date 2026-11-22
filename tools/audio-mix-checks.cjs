@@ -16,7 +16,7 @@ module.exports = async function checkAudioMix({ render, timing }) {
     const master = c.createGain(); master.gain.value = .75; master.connect(comp);
     const verb = c.createGain(); verb.gain.value = 0; verb.connect(master);
     const clock = { currentTime: 0, sampleRate: sr };
-    for (const key of ['createBufferSource', 'createBiquadFilter', 'createGain', 'createStereoPanner', 'createOscillator']) clock[key] = c[key].bind(c);
+    for (const key of ['createBuffer', 'createBufferSource', 'createBiquadFilter', 'createGain', 'createStereoPanner', 'createOscillator']) clock[key] = c[key].bind(c);
     const bus = { ctx: clock, master, verb, listener: { x: 0, y: 0, z: 0, yaw: 0 }, ok: () => true,
       volOf: () => volume, _budget: () => true, noiseBuf: A.noiseBuf, brownBuf: A.brownBuf,
       out: A.out, noise: A.noise, tone: A.tone, spatial: A.spatial };
@@ -84,7 +84,19 @@ module.exports = async function checkAudioMix({ render, timing }) {
     const w = W.bank('ar7'); W.play(zeroBus, w.fx, 'close', { g: 1, lp: 20000, rev: 0 }, { gain: 0 });
     if (stats((await zero.startRendering()).getChannelData(0)).peak !== 0) throw Error('Explicit zero gain is ignored');
 
-    // The synthetic backup must obey the same weapons mute setting.
+    // Losing all downloaded banks still produces a new, audible report for
+    // every gun, rather than falling back to the retired generic shots.
+    const banks=W.buffers, fallback=[]; W.buffers={};
+    try {
+      for(const id of G.GUN_IDS)fallback.push({id,...await play(id,'fallback')});
+    } finally { W.buffers=banks; }
+    // A cached v74 manifest must use the new generator even with buffers loaded.
+    const edition=W.manifest.edition,cache=W.generated;W.manifest.edition=74;W.generated={};
+    try {
+      await play('ar7','stale-manifest');
+      if(!Object.keys(W.generated).length)throw Error('Stale metadata restores retired reports');
+    } finally {W.manifest.edition=edition;W.generated=cache;}
+    // The generated backup must obey the same weapons mute setting.
     const saved = W.buffers, backup = context(.8, 0); W.buffers = {};
     try { A.click.call(backup.bus, 'magin', 'ar7'); A.shot.call(backup.bus, 'ar7', null, true); }
     finally { W.buffers = saved; }
@@ -92,6 +104,6 @@ module.exports = async function checkAudioMix({ render, timing }) {
     await new Promise(r => setTimeout(r, 30));
     const retained=W.voices.filter(v=>v.ctx!==A.ctx);
     if (retained.length || W.own.some(v=>v.ctx!==A.ctx)) throw Error('Offline audio nodes retained after rendering: '+JSON.stringify(retained.map(v=>({role:v.role,t:v.t}))));
-    return { weapons: results, stereoAttack: true, isolatedCues: true, mute: true, fallbackMute: true, cleanedUp: true, renders };
+    return { weapons: results, fallback, originalFallback:true, staleManifest:true, stereoAttack: true, isolatedCues: true, mute: true, fallbackMute: true, cleanedUp: true, renders };
   } finally { Math.random = random; }
 };

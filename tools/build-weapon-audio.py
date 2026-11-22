@@ -1,4 +1,4 @@
-# v74 배포 뱅크 재현: python tools/remaster-weapon-audio.py (아래는 이전 CC0 소스 뱅크 제작 도구)
+# 이전 v74 뱅크 재현: python tools/remaster-weapon-audio.py (아래는 이전 CC0 소스 뱅크 제작 도구)
 # Free Firearm Sound Library(CC0) 마스터 트랙 → 게임용 총소리·조작음 뱅크
 # 실총 녹음 → 게임 사운드 뱅크. 사용: python3 tools/build-weapon-audio.py <FreeFirearmsSFXLibrary 클론> assets/audio/weapons
 # 원본: https://github.com/buddingmonkey/FreeFirearmsSFXLibrary (Master Tracks, CC0). ffmpeg·numpy 필요.

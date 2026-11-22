@@ -11,7 +11,7 @@
 <script>
 // 새 버전이 올라왔는데 휴대폰이 예전 페이지를 기억하고 있으면 새로 불러온다
 (function () {
-  var BUILD = '74';
+  var BUILD = '75';
   window.LZ_BUILD = BUILD;
   try {
     fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (v) {
@@ -377,7 +377,7 @@ try {
     try { window.EZTree = await import('./vendor/ez-tree.es.js'); } catch (e) { console.info('[veg] vendor/ez-tree.es.js 없음 — 기존 나무 사용'); }
   }
   loadFill.style.width = '15%';
-  const files = ['core', 'assets', 'range-props', 'vegetation', 'world', 'effects', 'ambient', 'plane', 'character', 'soldiers', 'gunlib', 'gunmodels', 'reload-assets', 'weapons','weapon-motion','hand-contact','weapon-audio','attachments','g17-pilot','m4-viewmodel','asset-viewmodels','real-arms', 'throwable-models', 'throwables', 'actor', 'player', 'bots', 'extras', 'vehicles', 'game', 'training', 'ui', 'settings', 'raytrace', 'perf', 'main', 'touch'];
+  const files = ['core', 'assets', 'range-props', 'vegetation', 'world', 'effects', 'ambient', 'plane', 'character', 'soldiers', 'gunlib', 'gunmodels', 'reload-assets', 'weapons','weapon-motion','hand-contact','weapon-sound-design','weapon-audio','attachments','g17-pilot','m4-viewmodel','asset-viewmodels','real-arms', 'throwable-models', 'throwables', 'actor', 'player', 'bots', 'extras', 'vehicles', 'game', 'training', 'ui', 'settings', 'raytrace', 'perf', 'main', 'touch'];
   for (let i = 0; i < files.length; i++) {
     loadText.textContent = '스크립트 불러오는 중... (' + files[i] + ')';
     await new Promise((res, rej) => {

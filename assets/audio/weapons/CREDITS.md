@@ -1,6 +1,12 @@
-# Recorded weapon audio — sources and edits
+# Weapon audio — original reports and CC0 handling
 
-All weapon audio is cut from real firearm recordings. It is not taken from commercial games.
+## Current firing reports (v75)
+
+All 15 firing reports are original synthesized sounds authored for LAST ZONE. `js/weapon-sound-design.js` creates the pressure front, shaped gas/crack/body noise and diffuse reflections without loading any previous firing waveform. Each weapon has four firing variants plus near/far perspectives: 90 new reports in 15 `*-report-v75.mp3` banks.
+
+`node tools/build-original-weapon-audio.cjs` renders these banks with ffmpeg. The browser uses the same deterministic generator when a bank is missing or its manifest is obsolete. Recorded handling sounds remain from the CC0 sources below. The retired near/far regions in those handling atlases have no firing cues and are never selected by the v75 firing mixer.
+
+The following recording table and processing notes document the retained handling and historical v43–v74 firing banks.
 
 ## Source (CC0 1.0)
 
@@ -14,9 +20,9 @@ The track IDs below (for example `D_27`) are the master-sheet IDs. The letter se
 
 ## Edits
 
-### Current mix (v74)
+### Historical mix (v74)
 
-`tools/remaster-weapon-audio.py` rebuilds the current banks from the immutable v73 CC0 banks at commit `154d93d`. It never processes its own output again. Run `python tools/remaster-weapon-audio.py` with ffmpeg and numpy installed.
+`tools/remaster-weapon-audio.py` rebuilds the historical v74 banks from the immutable v73 CC0 banks at commit `154d93d`. It never processes its own output again. Run `python tools/remaster-weapon-audio.py` with ffmpeg and numpy installed.
 
 - **Reports:** restore near-natural recording pitches (0.94–1.03×), soften most of the previous exaggerated EQ, extract a parallel 90–1500 Hz body layer from the recording itself, and add gentle saturation. Preserve the initial impact, then decay the report so automatic fire remains distinct. No synthesised bass note is added in this pass.
 - **Space:** own reports keep a centred stereo image with quiet reflections at 11, 23 and 37 ms. Distant recordings keep their captured space, with distance filtering and propagation delay in the game.

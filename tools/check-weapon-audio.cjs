@@ -71,7 +71,7 @@ const audio=await page.evaluate(async timing=>{
   const c=new OfflineAudioContext(2,Math.ceil(seconds*44100),44100),comp=c.createDynamicsCompressor();
   comp.threshold.value=-14;comp.knee.value=12;comp.ratio.value=6;comp.attack.value=.003;comp.release.value=.25;comp.connect(c.destination);
   const master=c.createGain();master.gain.value=.75;master.connect(comp);const verb=c.createGain();verb.gain.value=0;verb.connect(master);
-  const clock={currentTime:0};for(const key of ['createBufferSource','createBiquadFilter','createGain','createStereoPanner'])clock[key]=c[key].bind(c);
+  const clock={currentTime:0,sampleRate:44100};for(const key of ['createBuffer','createBufferSource','createBiquadFilter','createGain','createStereoPanner'])clock[key]=c[key].bind(c);
   const bus={ctx:clock,master,verb,spatial:()=>({g:1,pan:0,lp:20000,rev:0}),_budget:()=>true};
   if(kind==='reload')for(const event of row.events){clock.currentTime=event.at;W.event(bus,event.type,id)}
   else if(kind==='burst')for(let t=0;t<1.8;t+=60/G.WEAPONS[id].rpm){clock.currentTime=t;W.fire(bus,id,null,true)}
@@ -89,8 +89,8 @@ const audio=await page.evaluate(async timing=>{
  const far=await render('ar7','far');if(far.rms>=output.find(x=>x.id==='ar7').shot.rms*.3)throw Error('distant report is not attenuated');
  const bursts=[];for(const id of ['ar7','aa12','g18'])bursts.push({id,...await render(id,'burst')});
  await new Promise(r=>setTimeout(r,50));const retained=W.voices.filter(v=>v.ctx!==G.Audio.ctx);if(retained.length)throw Error('offline audio nodes leak after completion: '+JSON.stringify(retained.map(v=>({role:v.role,t:v.t}))));
- // A missing bank must hand control back to the existing synthesizer.
- const saved=W.buffers;W.buffers={};if(W.fire({spatial:()=>({g:1})},'ar7',null,true)!==false)throw Error('missing sample fallback');W.buffers=saved;
+ // Unknown sounds retain the generic path; known guns have an original fallback.
+ if(W.fire({},'unknown-weapon',null,true)!==false)throw Error('unknown weapon fallback');
  Math.random=rnd;
  return {banks:Object.keys(W.buffers).length,weapons:output,bursts,far};
 },timing);
@@ -107,9 +107,9 @@ if(process.env.RENDER_AUDIO){
 delete mix.renders;
 if(process.env.REPORT)fs.writeFileSync(process.env.REPORT,JSON.stringify({timing,audio,mix},null,2));
 console.log(JSON.stringify(audio,null,2));
-console.log('Mix checks',JSON.stringify(mix));
+console.log('Mix checks',JSON.stringify({weapons:mix.weapons.length,originalFallback:mix.originalFallback,staleManifest:mix.staleManifest,stereoAttack:mix.stereoAttack,isolatedCues:mix.isolatedCues,mute:mix.mute,fallbackMute:mix.fallbackMute,cleanedUp:mix.cleanedUp}));
 assert.equal(errors.length,0,errors.join('\n'));
-console.log('PASS: 31 recorded banks decode; 15 unique shot/reload renders; safe automatic bursts, voice cleanup and missing-bank fallback.');
+console.log('PASS: 31 audio banks; 15 original reports, reloads, bursts and generated fallbacks; suppression, mute, cue isolation and cleanup.');
 
 }catch(e){console.error(e.stack);process.exitCode=1}finally{await browser.close();server.close()}
 })();

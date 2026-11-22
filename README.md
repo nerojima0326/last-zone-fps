@@ -2,6 +2,15 @@
 
 Three.js로 만든 브라우저용 3D 배틀로얄 FPS입니다. 설치나 빌드 없이 바로 실행됩니다.
 
+## 총성 전면 교체 (버전 75)
+
+[15종 새 총성 듣기](docs/validation/v75-new-reports.mp3) · [이전/새 총성 비교](docs/validation/v75-reports-comparison.mp3) · [검증 기록](docs/validation/v75-audio-checks.md)
+
+- 기존 발사음 파형을 입력으로 사용하지 않고 총기 15종의 파열음·압력음·가스음·반사음을 새로 합성했습니다. 소총은 날카로운 균열음, 산탄총은 넓은 폭발음, 권총은 짧은 타격음으로 나누고 총마다 주파수와 감쇠 특성을 다르게 설계했습니다.
+- 총마다 4개의 발사 변형과 근거리·원거리 소리를 만들어 총 90개의 새 발사음을 사용합니다. 연사에서는 네 변형을 번갈아 재생합니다.
+- 새 파일명과 버전으로 교체하고, 구버전 매니페스트가 남거나 파일 로딩이 실패해도 같은 새 생성기로 발사합니다. 플레이어와 다른 플레이어의 발사 경로에 모두 적용됩니다.
+- `node tools/build-original-weapon-audio.cjs`로 새 뱅크를 생성합니다. `node tools/check-original-weapon-audio.cjs`와 `node tools/check-weapon-audio.cjs`로 생성 파형, 실제 게임 믹스와 대체 재생을 검사합니다.
+
 ## 총성·장전 사운드 (버전 74)
 
 [게임 믹스 미리듣기](docs/validation/v74-weapon-audio.mp3) · [검증 기록](docs/validation/v74-audio-checks.md)

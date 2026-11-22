@@ -1,0 +1,152 @@
+[
+  {
+    "id": "ar7",
+    "beforeStart": 0.0,
+    "afterStart": 1.13,
+    "spectralDistance": 0.2692,
+    "oldCentroidHz": 1534,
+    "newCentroidHz": 884,
+    "maxWaveCorrelation": 0.1461,
+    "newPreviewStart": 0.0
+  },
+  {
+    "id": "ka47",
+    "beforeStart": 2.26,
+    "afterStart": 3.39,
+    "spectralDistance": 0.4064,
+    "oldCentroidHz": 316,
+    "newCentroidHz": 644,
+    "maxWaveCorrelation": 0.095,
+    "newPreviewStart": 1.13
+  },
+  {
+    "id": "sc17",
+    "beforeStart": 4.52,
+    "afterStart": 5.65,
+    "spectralDistance": 0.3085,
+    "oldCentroidHz": 261,
+    "newCentroidHz": 556,
+    "maxWaveCorrelation": 0.1934,
+    "newPreviewStart": 2.26
+  },
+  {
+    "id": "mk14",
+    "beforeStart": 6.78,
+    "afterStart": 7.91,
+    "spectralDistance": 0.4789,
+    "oldCentroidHz": 1725,
+    "newCentroidHz": 876,
+    "maxWaveCorrelation": 0.1015,
+    "newPreviewStart": 3.39
+  },
+  {
+    "id": "kr98",
+    "beforeStart": 9.04,
+    "afterStart": 10.42,
+    "spectralDistance": 0.4258,
+    "oldCentroidHz": 282,
+    "newCentroidHz": 696,
+    "maxWaveCorrelation": 0.1542,
+    "newPreviewStart": 4.52
+  },
+  {
+    "id": "s12",
+    "beforeStart": 11.8,
+    "afterStart": 12.93,
+    "spectralDistance": 0.1584,
+    "oldCentroidHz": 305,
+    "newCentroidHz": 629,
+    "maxWaveCorrelation": 0.1404,
+    "newPreviewStart": 5.9
+  },
+  {
+    "id": "m1014",
+    "beforeStart": 14.06,
+    "afterStart": 15.19,
+    "spectralDistance": 0.4969,
+    "oldCentroidHz": 1266,
+    "newCentroidHz": 722,
+    "maxWaveCorrelation": 0.1134,
+    "newPreviewStart": 7.03
+  },
+  {
+    "id": "db2",
+    "beforeStart": 16.32,
+    "afterStart": 17.7,
+    "spectralDistance": 0.3206,
+    "oldCentroidHz": 313,
+    "newCentroidHz": 559,
+    "maxWaveCorrelation": 0.1134,
+    "newPreviewStart": 8.16
+  },
+  {
+    "id": "sa12",
+    "beforeStart": 19.08,
+    "afterStart": 20.21,
+    "spectralDistance": 0.1899,
+    "oldCentroidHz": 677,
+    "newCentroidHz": 676,
+    "maxWaveCorrelation": 0.1085,
+    "newPreviewStart": 9.54
+  },
+  {
+    "id": "aa12",
+    "beforeStart": 21.34,
+    "afterStart": 22.47,
+    "spectralDistance": 0.3455,
+    "oldCentroidHz": 347,
+    "newCentroidHz": 915,
+    "maxWaveCorrelation": 0.1395,
+    "newPreviewStart": 10.67
+  },
+  {
+    "id": "p92",
+    "beforeStart": 23.6,
+    "afterStart": 24.73,
+    "spectralDistance": 0.4256,
+    "oldCentroidHz": 1876,
+    "newCentroidHz": 996,
+    "maxWaveCorrelation": 0.1421,
+    "newPreviewStart": 11.8
+  },
+  {
+    "id": "g18",
+    "beforeStart": 25.86,
+    "afterStart": 26.99,
+    "spectralDistance": 0.3936,
+    "oldCentroidHz": 2385,
+    "newCentroidHz": 1344,
+    "maxWaveCorrelation": 0.1099,
+    "newPreviewStart": 12.93
+  },
+  {
+    "id": "m1911",
+    "beforeStart": 28.12,
+    "afterStart": 29.25,
+    "spectralDistance": 0.1555,
+    "oldCentroidHz": 568,
+    "newCentroidHz": 713,
+    "maxWaveCorrelation": 0.1051,
+    "newPreviewStart": 14.06
+  },
+  {
+    "id": "de7",
+    "beforeStart": 30.38,
+    "afterStart": 31.76,
+    "spectralDistance": 0.2529,
+    "oldCentroidHz": 276,
+    "newCentroidHz": 692,
+    "maxWaveCorrelation": 0.1632,
+    "newPreviewStart": 15.19
+  },
+  {
+    "id": "r45",
+    "beforeStart": 33.14,
+    "afterStart": 34.27,
+    "spectralDistance": 0.3179,
+    "oldCentroidHz": 296,
+    "newCentroidHz": 992,
+    "maxWaveCorrelation": 0.1183,
+    "newPreviewStart": 16.57
+  }
+]
