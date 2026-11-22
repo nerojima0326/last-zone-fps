@@ -1472,6 +1472,7 @@ const VM = G.VM = {
     if (this.cur === type) return;
     for (const k in this.models) this.models[k].root.visible = false;
     this.cur = type;
+    G.WeaponMotion?.reset(this);
     const m = type && this.models[type];
     if (m) { m.root.visible = true; m.snap = true; }
   },
@@ -1481,16 +1482,13 @@ const VM = G.VM = {
   },
   fireKick(amount, suppressed = false) {
     this.kickV += amount * 3.6;
-    this.kickRoll = (Math.random() - 0.5) * amount * 0.09;
-    // 총과 시야가 같이 튄다 (위로, 뒤로, 좌우 비틀림)
-    const ia = 1 - this.adsT * 0.45;
-    this.bump(amount * 0.55 * ia, amount * 0.05, amount * 0.12, (Math.random() - 0.5) * amount * 0.9 * ia, (Math.random() - 0.5) * amount * 0.35 * ia);
+    G.WeaponMotion?.fire(this, amount);
     this.flashT = suppressed ? 0 : 0.045;
     this.slideT = 1;
     const m = this.models[this.cur];
     if (m && m.flash) { m.flash.visible = !suppressed; m.flash.rotation.z = Math.random() * 6.28; const s = 0.8 + Math.random() * 0.5; m.flash.scale.set(s, s, s); }
     this.flashLight.intensity = suppressed ? 0 : 6;
-    if (m && m.muzzle) this.flashLight.position.copy(m.muzzle).add(m.root.position);
+    if (m && m.muzzle) m.gun.localToWorld(this.flashLight.position.copy(m.muzzle));
   },
   // 재장전 충격 (속도로 더한다)
   bump(rx, y, z, rz, ry) {
@@ -1521,6 +1519,7 @@ const VM = G.VM = {
   },
   update(dt, s) {
     this.t += dt;
+    G.WeaponMotion?.update(this, dt, s);
     const m = this.models[this.cur];
     if (!m || !m.def) { this.camRX = U.damp(this.camRX, 0, 8, dt); this.camRY = U.damp(this.camRY, 0, 8, dt); this.camRZ = U.damp(this.camRZ, 0, 8, dt); }
     if (!m) return;
@@ -1528,7 +1527,7 @@ const VM = G.VM = {
     this.adsT = s.ads;
     this.sprint = U.damp(this.sprint, s.sprint ? 1 : 0, 10, dt);
     this.crouch = U.damp(this.crouch, s.crouch ? 1 : 0, 8, dt);
-    // 반동 스프링
+    // Procedural trigger pulse; rigid-body recoil uses WeaponMotion above.
     const acc = -260 * this.kick - 24 * this.kickV;
     this.kickV += acc * dt; this.kick += this.kickV * dt;
     this.kickRoll = U.damp(this.kickRoll, 0, 10, dt);
@@ -1558,8 +1557,8 @@ const VM = G.VM = {
     p.y -= this.crouch * 0.012 * ia; r.z -= this.crouch * 0.04 * ia;
     // 착지
     p.y -= s.landDip * 0.06;
-    // 반동
-    p.z += this.kick * 0.065; r.x += this.kick * (a > 0.5 ? 0.04 : 0.11); r.z += this.kickRoll;
+    // Shot recoil is applied to the shared root (weapon-motion.js). The local
+    // pose springs below remain available for reload and action handling.
     // 무기 교체
     const raise = s.raise;
     p.y -= (1 - raise) * 0.28; r.x -= (1 - raise) * 0.9;
@@ -1636,7 +1635,11 @@ const VM = G.VM = {
     m.root.position.copy(p);
     m.root.rotation.copy(r);
     // 총구 섬광
-    if (this.flashT > 0) { this.flashT -= dt; if (this.flashT <= 0 && m.flash) m.flash.visible = false; }
+    if (this.flashT > 0) {
+      this.flashT -= dt;
+      if (this.flashT <= 0 && m.flash) m.flash.visible = false;
+      else if (m.muzzle) m.gun.localToWorld(this.flashLight.position.copy(m.muzzle));
+    }
     this.flashLight.intensity = Math.max(0, this.flashLight.intensity - dt * 120);
   },
 

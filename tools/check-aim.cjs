@@ -2,6 +2,7 @@
 const fs = require('fs'), http = require('http'), path = require('path'), assert = require('assert');
 const { chromium } = require('playwright');
 const checkShooting = require('./shooting-checks.cjs');
+const checkRecoil = require('./recoil-checks.cjs');
 const root = path.resolve(__dirname, '..');
 const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css' };
 
@@ -169,9 +170,13 @@ function checkAim() {
     const shooting = await page.evaluate(checkShooting);
     if (process.env.REPORT) fs.writeFileSync(process.env.REPORT + '.shooting.json', JSON.stringify(shooting, null, 2));
     console.log(JSON.stringify({ impacts: shooting.impacts.length, maxImpactCm: shooting.maxImpactCm, recovery: shooting.recovery.length, reloads: shooting.reloads.length, failures: shooting.failures }));
+    const recoil = await page.evaluate(checkRecoil);
+    if (process.env.REPORT) fs.writeFileSync(process.env.REPORT + '.recoil.json', JSON.stringify(recoil, null, 2));
+    console.log(JSON.stringify({ recoilSingles: recoil.singles.length, recoilBursts: recoil.bursts.length, visibleRigs: recoil.rigs.length, failures: recoil.failures }));
     assert.deepEqual(errors, []);
     assert(reports.every(r => r.failures.length === 0), 'ADS sight/reticle moved away from the crosshair; see failures above');
     assert.deepEqual(shooting.failures, [], 'Distance zero, recoil recovery or post-reload alignment regressed');
+    assert.deepEqual(recoil.failures, [], 'Weapon recoil, frame-rate independence or native/fallback rig motion regressed');
     console.log('PASS: all 15 guns, iron/red-dot/holo sights, full idle clips, mouse/walk/crouch motion, 30/60/144 FPS, 16:9 and 4:3.');
   } finally { if (browser) await browser.close(); server.close(); }
 })().catch(e => { console.error(e.stack); process.exitCode = 1; });

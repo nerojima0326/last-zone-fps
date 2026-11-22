@@ -61,8 +61,8 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
   this.pivot.position.x+=(vm.sway?.x||0)*.25*weight;
   this.pivot.position.y-=(1-(s.raise??1))*.28+(s.landDip||0)*.06;
   this.pivot.position.y+=Math.sin(s.phase||0)*.008*(s.moving||0)*weight;
-  this.pivot.position.z+=vm.kick*.025;
-  this.pivot.rotation.set((vm.sway?.y||0)*weight-(s.sprint?.5:0),(vm.sway?.x||0)*weight,vm.kickRoll||0);
+  this.pivot.rotation.set((vm.sway?.y||0)*weight-(s.sprint?.5:0),(vm.sway?.x||0)*weight,0);
+  if(firing)G.WeaponMotion?.stabilize(this.pivot,this.main,this.mainRestMatrix);
   this.pivot.updateMatrixWorld(true);
   this.flash.visible=vm.flashT>0;
   this.flash.position.copy(this.muzzleLocal);this.main.localToWorld(this.flash.position);this.pivot.worldToLocal(this.flash.position);

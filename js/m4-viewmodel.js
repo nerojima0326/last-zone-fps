@@ -163,10 +163,10 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   this.pivot.position.x+=(vm.sway?.x||0)*.2*weight+Math.sin((vm.t||0)*.8)*.001*weight;
   this.pivot.position.y+=Math.sin(s.phase||0)*.006*(s.moving||0)*weight-(s.landDip||0)*.05;
   if(!draw)this.pivot.position.y-=(1-(s.raise??1))*.22;
-  this.pivot.position.z+=vm.kick*.02;
   const sprint=(vm.sprint||0)*(!reload&&!draw?1:0);
-  this.pivot.rotation.set((vm.sway?.y||0)*weight-sprint*.2,(vm.sway?.x||0)*weight+sprint*.5,(vm.kickRoll||0)+sprint*.16);
+  this.pivot.rotation.set((vm.sway?.y||0)*weight-sprint*.2,(vm.sway?.x||0)*weight+sprint*.5,sprint*.16);
   if(!s.scope)this.pivot.quaternion.multiply(aimQ.identity().slerp(this.ironQ,aim));
+  if(firing)G.WeaponMotion?.stabilize(this.pivot,this.main,this.mainRestMatrix);
   this.pivot.updateMatrixWorld(true);this.flash.visible=vm.flashT>0;
   this.flash.position.copy(this.muzzleLocal);this.main.localToWorld(this.flash.position);this.pivot.worldToLocal(this.flash.position);
   this.flash.rotation.z=vm.models.ar7.flash.rotation.z;this.flash.scale.copy(vm.models.ar7.flash.scale);

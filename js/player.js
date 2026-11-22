@@ -353,7 +353,6 @@ const P = G.Player = {
     a.pitch = Math.min(1.45, a.pitch + rv); this.recoilAcc += rv;
     a.yaw += mod.h * def.recoilH * U.rand(-1, 1.25);
     this.camKick += def.kick * (def.cls === 'shotgun' ? 0.019 : def.cls === 'pistol' ? 0.014 : 0.016);
-    G.FX.shake(Math.min(0.12, def.kick * (suppressed ? 0.009 : 0.015)));
     this.bloom = Math.min(def.bloomMax, this.bloom + def.bloom);
     const hideFlash = suppressed || parts.muzzle === 'flash';
     G.VM.fireKick(def.kick, hideFlash);
