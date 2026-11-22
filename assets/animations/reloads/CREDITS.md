@@ -35,3 +35,7 @@ THREE_DIR=/path/to/node_modules/three node tools/extract-reload-motions.mjs \
 ```
 
 원본 입력은 Git에서 제외한 `tools/_reload-src/`에 저장합니다. 다운로드와 추출 시 SHA-256을 검증합니다. 플레이 중에는 이 도구나 원본 파일이 필요하지 않습니다.
+
+## v77 신규 15종
+
+별도 번들 `expansion.json`으로 Vector·UMP·LMG 및 플랫폼별 장전 곡선을 적용합니다. 원본 저작자·배포 저장소·클립 대응·수정 내용은 [신규 총기 출처](../../models/guns/EXPANSION-CREDITS.md)에 있습니다. 같은 CC BY 4.0 조건으로 제공합니다.

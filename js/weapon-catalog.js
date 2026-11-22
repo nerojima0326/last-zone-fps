@@ -53,8 +53,8 @@
   add('rk762', 'RK-762', 'lmg', lmg, { ammo: '762', dmg: 32, mag: 45, rpm: 600, reload: 3.65, vel: 760, recoilV: .024, recoilH: .009, ads: .003, falloff: [145, .84], adsTime: .26 }, '45발 곡선 탄창 · 강한 7.62mm 화력',
     { style: 'ak', barrel: .72, guard: .25, stock: 'fixed', mag: 'banana', color: 'wood', bipod: true }, 'ka47', 'ka47',
     [142, 840, 4200, .081, [.85, 1.25, 1.03], 29, .25], [.031, 3.8, .5, .72, 25, .83, .06], 1.1);
-  add('mg60', 'MG-60', 'lmg', lmg, { ammo: '762', dmg: 30, mag: 100, rpm: 800, reload: 6.4, vel: 825, recoilV: .022, recoilH: .011, ads: .0035, adsTime: .34, spread: .042, move: .078, kick: .9, tier: 4, falloff: [180, .88] }, '100발 대형 드럼 · 무거운 지원화기',
-    { style: 'support', barrel: .76, guard: .29, stock: 'fixed', mag: 'doubleDrum', color: 'olive', bipod: true }, 'aa12', 'aa12',
+  add('mg60', 'MG-60', 'lmg', lmg, { ammo: '762', dmg: 30, mag: 100, rpm: 800, reload: 6.4, vel: 825, recoilV: .022, recoilH: .011, ads: .0035, adsTime: .34, spread: .042, move: .078, kick: .9, tier: 4, falloff: [180, .88] }, '100발 탄띠 · 덮개 개방식 장전',
+    { style: 'support', barrel: .76, guard: .29, stock: 'fixed', mag: 'beltBox', color: 'olive', bipod: true }, 'aa12', 'aa12',
     [125, 1400, 5700, .078, [1.1, 1.3, .95], 26, .25], [.028, 3.2, .55, .8, 26, .88, .057], .65);
   add('sr25', 'SR-25', 'dmr', dmr, { ammo: '762', dmg: 50, rpm: 280, reload: 2.9, recoilV: .035, recoilH: .007, vel: 885, kick: 1.12, falloff: [250, .9], tier: 4, baseSight: 'x4' }, '정밀 반자동 · 기본 4배율 조준경',
     { style: 'quad', barrel: .70, guard: .32, stock: 'marksman', mag: 'box', color: 'dark', bipod: true }, 'sc17', 'mk14',

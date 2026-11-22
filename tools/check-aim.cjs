@@ -19,6 +19,9 @@ function checkAim() {
   const landmarks = (id, scope) => {
     if (!scope && G.WeaponCatalog[id]) {
       const m = VM.models[id], shape = G.WeaponCatalog[id].shape;
+      const imported = G.Guns.gunData(id).extra;
+      if (imported?.importedExpansion) return [imported.ironFront, imported.ironRear]
+        .map(p => m.gun.localToWorld(m.toVM(new THREE.Vector3(...p))));
       // Authored front-post tip and rear-notch top, independent of VM.iron.
       const y = shape.style === 'pistol' ? .060 : .112;
       return [shape.style === 'pistol' ? -.116 : -.11 - shape.guard, shape.style === 'pistol' ? .031 : .058]

@@ -34,13 +34,14 @@ const results=await page.evaluate(()=>{
    // The handle must follow the solved hand in the same frame.
    const T=m.keys.E?.T;
    if(!window.clearanceBaseline&&mode==='empty'&&R.kind==='mag'&&T?.chA!==undefined&&p>=T.chA&&p<T.chRel){
-    const expected=m.rest.charge.z+G.U.clamp(m.armL.contact.z-m.keys.chGrab.z,0,.075);
+    const hand=m.keys.st.chargeHand==='R'?m.armR:m.armL;
+    const expected=m.rest.charge.z+G.U.clamp(hand.contact.z-m.keys.chGrab.z,0,.075);
     if(Math.abs(m.parts.charge.position.z-expected)>.001)throw Error(id+' handle lags hand at '+fps+' FPS');
    }
   }out.push({id,mode,fps,byMode});
  }return {frames,cases:out};
 });
-const active=new Set(['handle','slide','bolt','pinch','button','buttonThumb','loader','shell','cylinder']);
+const active=new Set(['handle','slide','bolt','pinch','button','buttonThumb','loader','shell','cylinder','cover']);
 const failures=[];let maxActive=0,maxReturn=0;
 for(const row of results.cases)for(const [key,pose]of Object.entries(row.byMode)){
  const name=key.slice(2),operating=active.has(name),returning=['support','reach','shellReach','grip'].includes(name);

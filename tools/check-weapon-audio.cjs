@@ -74,7 +74,7 @@ const audio=await page.evaluate(async timing=>{
   const master=c.createGain();master.gain.value=.75;master.connect(comp);const verb=c.createGain();verb.gain.value=0;verb.connect(master);
   const clock={currentTime:0,sampleRate:44100};for(const key of ['createBuffer','createBufferSource','createBiquadFilter','createGain','createStereoPanner'])clock[key]=c[key].bind(c);
   const bus={ctx:clock,master,verb,spatial:()=>({g:1,pan:0,lp:20000,rev:0}),_budget:()=>true};
-  if(kind==='reload')for(const event of row.events){clock.currentTime=event.at;W.event(bus,event.type,id)}
+  if(kind==='reload')for(const event of row.events){clock.currentTime=event.at;if(!W.event(bus,event.type,id))throw Error(id+' unplayable reload cue: '+event.type)}
   else if(kind==='burst')for(let t=0;t<1.8;t+=60/G.WEAPONS[id].rpm){clock.currentTime=t;W.fire(bus,id,null,true)}
   else if(kind==='far'){bus.spatial=pos=>G.Audio.spatial.call({listener:{x:0,y:0,z:0,yaw:0}},pos,30);W.fire(bus,id,{x:120,y:0,z:0},false)}
   else W.fire(bus,id,null,true);

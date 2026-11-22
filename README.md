@@ -2,6 +2,12 @@
 
 Three.js로 만든 브라우저용 3D 배틀로얄 FPS입니다. 설치나 빌드 없이 바로 실행됩니다.
 
+## 신규 총기 모델·장전 모션 (버전 77)
+
+새 15종의 절차적 모델을 GitHub에서 확보한 CC BY 4.0 모델과 계열별 수정 모델로 교체했습니다. 원본 장전 곡선을 손·탄창 위치에 맞춰 연결했으며, MG-60은 급탄 덮개·탄통·탄띠가 따로 움직입니다. 모델과 곡선은 게임에 포함되어 자동 적용됩니다.
+
+[새 모델과 적용 내역](assets/models/guns/EXPANSION-CREDITS.md) · [검증 기록](docs/validation/v77-imported-weapon-checks.md)
+
 ## 무기 30종 확장 (버전 76)
 
 [추가 15종 모델](docs/validation/v76-new-weapon-models.jpg) · [게임 화면](docs/validation/v76-new-weapon-holds.jpg) · [검증 기록](docs/validation/v76-weapon-roster-checks.md)
@@ -358,7 +364,7 @@ GitHub Pages 사이트는 `gh-pages` 브랜치에서 배포됩니다. `main`에 
 - **하늘:** 낮/노을 모두 실제 촬영한 HDRI 하늘을 배경과 조명(반사)으로 씁니다. 태양 방향과 안개 색도 사진 하늘에 맞춥니다.
 - **군인:** Microsoft Rocketbox 실사 군인 3종(ACU 위장복, 헬멧)을 씁니다. 기존 자세 계산(조준·달리기·앉기·기절·낙하산·사망)을 그대로 뼈대에 옮기고, 총을 들면 두 손이 손잡이와 총열 덮개를 잡도록 팔 IK를 겁니다. 텍스처 4장을 1장으로 합쳐 캐릭터당 드로우콜은 1~2개입니다.
 - **총기 (30종 모두 3D 모델):** 3인칭·바닥 전리품·훈련장 테이블도 같은 모델입니다.
-  - v76 새 15종은 `js/weapon-expansion-models.js`에서 직접 설계합니다. 외부 모델 다운로드가 추가되지 않습니다.
+  - v77 새 15종은 번들된 CC BY 4.0 모델·계열별 수정 모델을 사용합니다. 원본·라이선스·모션 대응·재생성 방법은 [신규 총기 출처](assets/models/guns/EXPANSION-CREDITS.md)에 있습니다. 에셋을 읽지 못하면 `js/weapon-expansion-models.js`의 기본 모델을 씁니다.
   - 실사 무료 에셋(CC0): AR-7(M4A1) · KA-47(AK-47) · KR-98(볼트액션 저격소총) · S-12(펌프 산탄총) · P-92(Service Pistol)
   - 추가 CC0 에셋 5종: SC-17 · M-1014 · DB-2 · SA-12 · AA-12. 모델별 출처와 가공 내용은 [총기 출처](assets/models/guns/CREDITS.md)에 기록했습니다.
   - 직접 설계한 모델: G-18(글록 18 계열, 3인칭·전리품). M-1911 · DE-7 · MK-14는 Flat Guns(CC0), R-45는 Quaternius Ultimate Gun Pack(CC0) 모델로 바꿨습니다(v42).

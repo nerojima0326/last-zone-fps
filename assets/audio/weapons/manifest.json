@@ -2237,7 +2237,7 @@
  "design": {
   "generator": "js/weapon-sound-design.js",
   "generatorSha": "f94e4d6532f8",
-  "catalogSha": "e5f6a9d4564e",
+  "catalogSha": "e2d9f8e2e107",
   "generatorVersion": 1,
   "variants": 4,
   "recordedShotInputs": 0,

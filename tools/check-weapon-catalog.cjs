@@ -16,6 +16,7 @@ assert.equal(Object.keys(catalog).length, 15, 'Expansion must add 15 weapons');
       args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } }), errors = [];
     page.on('pageerror', e => errors.push(e.message));
+    page.on('console', m => { if (/Shader Error|program not valid/.test(m.text())) errors.push(m.text()); });
     await page.route('https://fonts.googleapis.com/**', r => r.fulfill({ contentType: 'text/css', body: '' }));
     if (process.env.THREE_DIR) await page.route('https://cdn.jsdelivr.net/npm/three@0.160.0/**', r => r.fulfill({
       contentType: 'application/javascript', body: fs.readFileSync(path.join(process.env.THREE_DIR, r.request().url().split('/three@0.160.0/')[1])) }));
@@ -24,6 +25,15 @@ assert.equal(Object.keys(catalog).length, 15, 'Expansion must add 15 weapons');
     await page.waitForFunction(() => window.G?.UI && document.querySelector('#loading.hidden'), null, { timeout: 180000 });
     console.log('Menu ready');
     assert.equal(await page.evaluate(() => G.GUN_IDS.length), 30);
+    const imported = await page.evaluate(() => Object.keys(G.WeaponCatalog).map(id => {
+      const d = G.Guns.gunData(id), needed = id === 'sp12' ? ['pump'] : id === 'mg60' ? ['mag', 'cover', 'belt', 'charge'] : id === 'p226' ? ['mag', 'slide'] : id === 'm24' ? ['mag', 'bolt'] : ['mag'];
+      const actor = G.GunModels.tpMesh(id, false), colors = [];
+      actor.traverse(m => { if (m.isMesh && m.geometry.attributes.color) colors.push(...m.geometry.attributes.color.array.slice(0, 3)); });
+      return { id, ready: d.real && d.extra?.importedExpansion && !!d.sourceAsset && !!d.credit,
+        parts: needed.every(k => !!d.parts[k]), maps: Object.values(d.mats || {}).some(m => !!m.map), motion: G.ReloadAssets.has(id),
+        actorColor: colors.every(Number.isFinite) && (!colors.length || Math.min(...colors) < .9) };
+    }));
+    for (const row of imported) assert(row.ready && row.parts && row.maps && row.motion && row.actorColor, 'Incomplete imported asset: ' + JSON.stringify(row));
     await page.click('#armoryBtn');
     for (const [family, count] of Object.entries({ all: 30, new: 15, assault: 6, smg: 4, lmg: 3, dmr: 3, sniper: 2, shotgun: 6, pistol: 6 })) {
       await page.click(`[data-family="${family}"]`); assert.equal(await page.locator('#armoryList [data-gun]').count(), count, family);

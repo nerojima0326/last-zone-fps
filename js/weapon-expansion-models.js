@@ -39,7 +39,13 @@ function magazine(B, s) {
   if (!s.mag) return;
   const z = s.style === 'vector' ? -.066 : -.09;
   B.pivots.mag = [0, -.01, z];
-  if (s.mag === 'drum' || s.mag === 'doubleDrum') {
+  if (s.mag === 'beltBox') {
+    block(B, 'mag', 'olive', .098, .11, .075, 0, -.069, z);
+    block(B, 'mag', 'dark', .102, .012, .079, 0, -.016, z);
+    block(B, 'cover', 'metal', .057, .016, .14, 0, .075, -.10);
+    B.pivots.cover = [0, .075, -.17]; B.pivots.belt = [0, .06, z];
+    for (let i = 0; i < 7; i++) B.cyl('belt', 'brass', .0045, .0045, z - .03, z + .025, .05 - i * .009, .028 + Math.sin(i / 6 * Math.PI) * .033, 8);
+  } else if (s.mag === 'drum' || s.mag === 'doubleDrum') {
     block(B, 'mag', 'dark', .028, .06, .05, 0, -.035, z);
     const r = s.mag === 'drum' ? .066 : .071;
     for (const x of s.mag === 'drum' ? [0] : [-.047, .047]) {

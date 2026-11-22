@@ -43,6 +43,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #0b0f14; c
 #armoryDetail dl { display: grid; grid-template-columns: 1fr 1fr; gap: 0 22px; margin: 14px 0; }
 #armoryDetail dl div { display: flex; justify-content: space-between; gap: 6px; padding: 10px 0; border-bottom: 1px solid #293745; font-size: 12px; }
 #armoryDetail dt { color: #8fa2b5; }#armoryDetail dd { font-weight: 700; }
+#armoryDetail .armory-credit { display: block; color: #8fa2b5; font-size: 10px; line-height: 1.5; overflow-wrap: anywhere; }
+.armory-credit a { color: var(--accent); }
 #armoryEquip { width: 100%; padding: 13px; margin-bottom: 10px; color: #16120a; font-weight: 700; background: var(--accent); border-radius: 5px; }
 #armorySound { width: 100%; padding: 10px; margin-bottom: 10px; color: #d5e1ee; border: 1px solid #435362; border-radius: 5px; font-size: 12px; }
 #trainStats button { color: var(--accent); font-size: 12px; pointer-events: auto; }
