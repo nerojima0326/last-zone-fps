@@ -12,7 +12,7 @@ const A=G.Attachments={models:{},open:false,
   return {
    optic:[['iron','가늠쇠'],...def.scopes.map(x=>[x,G.SCOPES[x].name])],
    muzzle:[['none','기본'],...(def.key==='db2'||def.key==='r45'?[]:def.cls==='shotgun'?[['choke','초크']]:[['suppressor','소음기'],['compensator','보정기'],['flash','소염기']])],
-   under:[['none','기본'],...(def.cls==='rifle'&&def.key!=='kr98'?[['grip','수직 손잡이'],['angled','앵글 손잡이'],['light','경량 손잡이'],['half','하프 손잡이']]:[])],
+   under:[['none','기본'],...(def.cls==='rifle'&&def.action!=='bolt'?[['grip','수직 손잡이'],['angled','앵글 손잡이'],['light','경량 손잡이'],['half','하프 손잡이']]:[])],
    magazine:[['none','기본'],...(mag?[['extended','대용량 탄창'],['quick','퀵드로우 탄창'],['extendedQuick','대용량 퀵드로우']]:[])],
    stock:[['none','기본'],...(def.cls==='rifle'?[['tactical','전술 개머리판'],['cheek','뺨 받침대']]:[])],
    side:[['none','기본'],['laser','레이저 모듈']]

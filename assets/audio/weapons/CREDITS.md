@@ -1,10 +1,10 @@
 # Weapon audio — original reports and CC0 handling
 
-## Current firing reports (v75)
+## Current firing reports (v76)
 
-All 15 firing reports are original synthesized sounds authored for LAST ZONE. `js/weapon-sound-design.js` creates the pressure front, shaped gas/crack/body noise and diffuse reflections without loading any previous firing waveform. Each weapon has four firing variants plus near/far perspectives: 90 new reports in 15 `*-report-v75.mp3` banks.
+All 30 firing reports are original synthesized sounds authored for LAST ZONE. `js/weapon-sound-design.js` creates the pressure front, shaped gas/crack/body noise and diffuse reflections without loading any previous firing waveform. The 15 expansion profiles are in `js/weapon-catalog.js`. Each weapon has four firing variants plus near/far perspectives: 180 reports in 30 `*-report-v76.mp3` banks. The original 15 acoustic profiles retain their v75 sound.
 
-`node tools/build-original-weapon-audio.cjs` renders these banks with ffmpeg. The browser uses the same deterministic generator when a bank is missing or its manifest is obsolete. Recorded handling sounds remain from the CC0 sources below. The retired near/far regions in those handling atlases have no firing cues and are never selected by the v75 firing mixer.
+`node tools/build-original-weapon-audio.cjs` renders these banks with ffmpeg. The browser uses the same deterministic generator when a bank is missing or its manifest is obsolete. Recorded handling sounds remain from the CC0 sources below. Expansion weapons share appropriate handling banks, with separate event timing, rate and level. The retired near/far regions in those handling atlases have no firing cues and are never selected by the firing mixer.
 
 The following recording table and processing notes document the retained handling and historical v43–v74 firing banks.
 

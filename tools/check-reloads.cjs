@@ -17,7 +17,7 @@ const results=await page.evaluate(()=>{
  const out=[];const assert=(ok,msg)=>{if(!ok)throw Error(msg)};
  for(const id of G.GUN_IDS)for(const mode of ['empty','tactical']){
   const studio=ReloadStudio;studio.select(id,mode);studio.pause();
-  const m=studio.model;assert(m.real,id+' real asset loaded');
+  const m=studio.model;assert(m.real===!G.WeaponCatalog[id],id+' correct imported/original model loaded');
   for(const keys of [m.keys.E,m.keys.Tac])if(keys){for(let i=1;i<keys.k.length;i++)assert(keys.k[i][0]>keys.k[i-1][0],id+' increasing hand keys');}
   let max=0;
   for(const fraction of [0,.1,.27,.48,.6,.76,.9,1]){
@@ -155,6 +155,6 @@ if(process.env.SHOTS){
  }
 }
 assert.equal(errors.length,0,errors.join('\n'));
-console.log('PASS: 30 real-asset animations, 240 poses, continuous hand rig checks, 360 ammo/sound cases; no page errors.');
+console.log('PASS: 60 weapon/reload cases, continuous hand rigs, 720 ammo/sound cases; no page errors.');
 }catch(e){console.error(e.stack);process.exitCode=1}finally{await browser.close();server.close()}
 })();

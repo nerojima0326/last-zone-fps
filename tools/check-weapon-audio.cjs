@@ -59,11 +59,12 @@ if(process.env.BASELINE_PLAYER){
   }return out;
  });
  for(let i=0;i<timing.length;i++)assert(Math.abs(timing[i].seconds-baseline[i].seconds*(timing[i].empty?1.1:1))<.015,timing[i].id+' duration changed outside empty reload scale');
- console.log('PASS: all 15 empty reloads +35% duration; all 15 tactical durations unchanged versus v19.');await old.close();
+ console.log('PASS: all empty reload durations scaled; tactical durations unchanged.');await old.close();
 }
 const audio=await page.evaluate(async timing=>{
  const W=G.WeaponAudio,output=[];const rnd=Math.random;Math.random=()=>.5;
- if(Object.keys(W.buffers).length!==31)throw Error('all 31 MP3 banks must decode');
+ const expectedBanks=new Set([W.manifest.switch,...Object.values(W.manifest.weapons).flatMap(w=>[w.shot,w.fx])].map(b=>b.path)).size;
+ if(Object.keys(W.buffers).length!==expectedBanks)throw Error('all '+expectedBanks+' unique MP3 banks must decode');
  const fingerprint=data=>{let h=2166136261;for(let i=0;i<data.length;i+=13){h^=(data[i]*32767)|0;h=Math.imul(h,16777619)}return h>>>0};
  const energy=data=>{let sum=0,peak=0,active=0;for(const v of data){sum+=v*v;peak=Math.max(peak,Math.abs(v));if(Math.abs(v)>.0001)active++}return {peak,rms:Math.sqrt(sum/data.length),active}};
  async function render(id,kind){
@@ -85,7 +86,7 @@ const audio=await page.evaluate(async timing=>{
  for(const id of G.GUN_IDS){const shot=await render(id,'shot'),reload=await render(id,'reload');output.push({id,shot,reload})}
  // 게임 압축기는 총성 피크를 약 9dB 누른다. 압축 전에는 조작음이 총성보다 12dB 이상 작다.
  for(const row of output)if(row.reload.peak>=row.shot.peak*.8)throw Error(row.id+' handling masks the gun report '+JSON.stringify(output.map(r=>[r.id,+r.shot.peak.toFixed(3),+r.reload.peak.toFixed(3),+r.shot.rms.toFixed(4),+r.reload.rms.toFixed(4)])));
- for(const kind of ['shot','reload'])if(new Set(output.map(r=>r[kind].hash)).size!==15)throw Error('weapon '+kind+' audio is shared');
+ for(const kind of ['shot','reload'])if(new Set(output.map(r=>r[kind].hash)).size!==G.GUN_IDS.length)throw Error('weapon '+kind+' audio is shared');
  const far=await render('ar7','far');if(far.rms>=output.find(x=>x.id==='ar7').shot.rms*.3)throw Error('distant report is not attenuated');
  const bursts=[];for(const id of ['ar7','aa12','g18'])bursts.push({id,...await render(id,'burst')});
  await new Promise(r=>setTimeout(r,50));const retained=W.voices.filter(v=>v.ctx!==G.Audio.ctx);if(retained.length)throw Error('offline audio nodes leak after completion: '+JSON.stringify(retained.map(v=>({role:v.role,t:v.t}))));
@@ -109,7 +110,7 @@ if(process.env.REPORT)fs.writeFileSync(process.env.REPORT,JSON.stringify({timing
 console.log(JSON.stringify(audio,null,2));
 console.log('Mix checks',JSON.stringify({weapons:mix.weapons.length,originalFallback:mix.originalFallback,staleManifest:mix.staleManifest,stereoAttack:mix.stereoAttack,isolatedCues:mix.isolatedCues,mute:mix.mute,fallbackMute:mix.fallbackMute,cleanedUp:mix.cleanedUp}));
 assert.equal(errors.length,0,errors.join('\n'));
-console.log('PASS: 31 audio banks; 15 original reports, reloads, bursts and generated fallbacks; suppression, mute, cue isolation and cleanup.');
+console.log('PASS: All unique audio banks; 30 original reports, reloads, bursts and generated fallbacks; suppression, mute, cue isolation and cleanup.');
 
 }catch(e){console.error(e.stack);process.exitCode=1}finally{await browser.close();server.close()}
 })();

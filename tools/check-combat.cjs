@@ -83,7 +83,7 @@ const result=await page.evaluate(()=>{
   let steps=0;while(P.reload&&steps++<3000)P.reloadLogic(1/60);
   if(a.weapons[a.cur].mag!==def.mag)throw Error(id+' training reload');output.push(id);
  }
- const heard=[],shot=G.Audio.shot;G.Audio.shot=(id,pos,own)=>{heard.push(id);shot.call(G.Audio,id,pos,own)};for(const id of G.GUN_IDS){const d=G.WEAPONS[id];a.cur=d.cls;a.weapons[a.cur]={id,mag:d.mag};G.VM.set(id);P.fire(d,a.weapons[a.cur],G.U.now())}G.Audio.shot=shot;if(heard.length!==15)throw Error('actual firearm path did not route all weapon IDs');P.pumpT=.2;P.cycleT=.2;P.switchTo('rifle');if(P.pumpT!==-1||P.cycleT!==-1)throw Error('switch leaves a weapon action playing');return {training:G.Game.training,checked:output,fired:heard,version:window.LZ_BUILD};
+ const heard=[],shot=G.Audio.shot;G.Audio.shot=(id,pos,own)=>{heard.push(id);shot.call(G.Audio,id,pos,own)};for(const id of G.GUN_IDS){const d=G.WEAPONS[id];a.cur=d.cls;a.weapons[a.cur]={id,mag:d.mag};G.VM.set(id);P.fire(d,a.weapons[a.cur],G.U.now())}G.Audio.shot=shot;if(heard.length!==G.GUN_IDS.length)throw Error('actual firearm path did not route all weapon IDs');P.pumpT=.2;P.cycleT=.2;P.switchTo('rifle');if(P.pumpT!==-1||P.cycleT!==-1)throw Error('switch leaves a weapon action playing');return {training:G.Game.training,checked:output,fired:heard,version:window.LZ_BUILD};
 });
 assert.equal(errors.length,0,errors.join('\n'));console.log(JSON.stringify(result));console.log('PASS: main menu, training entry, 6 weapon reloads in actual game.');
 }catch(e){console.error(e.stack);process.exitCode=1}finally{await browser.close();server.close()}

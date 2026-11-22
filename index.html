@@ -11,7 +11,7 @@
 <script>
 // 새 버전이 올라왔는데 휴대폰이 예전 페이지를 기억하고 있으면 새로 불러온다
 (function () {
-  var BUILD = '75';
+  var BUILD = '76';
   window.LZ_BUILD = BUILD;
   try {
     fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (v) {
@@ -152,7 +152,7 @@
         <div class="opt"><span>닉네임</span><input id="optName" maxlength="12" value="Player" spellcheck="false"></div>
         <div class="opt"><span>참가 인원</span><div class="seg" data-opt="players"><button data-v="24">24</button><button data-v="40" class="on">40</button><button data-v="60">60</button></div></div>
         <div class="opt"><span>봇 난이도</span><div class="seg" data-opt="diff"><button data-v="easy">쉬움</button><button data-v="normal" class="on">보통</button><button data-v="hard">어려움</button></div></div>
-        <div class="opt"><span>시작 무기</span><div class="seg" data-opt="loadout"><button data-v="pistol">권총</button><button data-v="rifle" class="on">소총</button><button data-v="shotgun">산탄총</button><button data-v="all">전부</button><button data-v="none">없음</button></div></div>
+        <div class="opt"><span>시작 무기</span><div class="seg" data-opt="loadout"><button data-v="pistol">권총</button><button data-v="rifle" class="on">주무기</button><button data-v="shotgun">산탄총</button><button data-v="all">전부</button><button data-v="none">없음</button></div></div>
         <div class="opt"><span>시간대</span><div class="seg" data-opt="tod"><button data-v="day" class="on">낮</button><button data-v="sunset">노을</button><button data-v="night">밤</button><button data-v="fog">안개</button><button data-v="rain">비</button><button data-v="random">무작위</button></div></div>
       </div>
       <div class="opts" data-pane="gfx" hidden>
@@ -172,6 +172,7 @@
       <button id="startBtn">게임 시작</button>
       <div class="foot-row">
         <button id="trainBtn">훈련장 <small>혼자 사격 연습</small></button>
+        <button id="armoryBtn">무기 도감 <small>30종 살펴보기</small></button>
         <button id="statsBtn">전적 · 업적</button>
         <button id="helpBtn" class="no-touch">조작법</button>
         <button id="settingsBtn">설정 <small>감도 · 시야 · 소리 · 키</small></button>
@@ -199,7 +200,7 @@
         <div><kbd data-k="KeyR">R</kbd>재장전</div>
         <div><kbd data-k="KeyV">V</kbd>조준경 교체</div>
         <div class="wide"><kbd data-k="ShiftLeft">Shift</kbd>숨 참기 (배율 조준 중)</div>
-        <div class="wide"><kbd data-k="Digit1">1</kbd><kbd data-k="Digit2">2</kbd><kbd data-k="Digit3">3</kbd>소총 · 산탄총 · 권총</div>
+        <div class="wide"><kbd data-k="Digit1">1</kbd><kbd data-k="Digit2">2</kbd><kbd data-k="Digit3">3</kbd>주무기 · 산탄총 · 권총</div>
         <div class="wide"><kbd data-k="Digit4">4</kbd>투척무기 (반복: 종류 변경)</div>
         <div><kbd data-k="KeyG">G</kbd>빠른 투척</div>
         <div><kbd data-k="KeyB">B</kbd>사격 모드 (연사/단발)</div>
@@ -207,6 +208,7 @@
         <div><kbd data-k="KeyL">L</kbd>손전등</div>
         <div><kbd data-k="KeyH">H</kbd>치료</div>
         <div><kbd data-k="KeyM">M</kbd>지도</div>
+        <div><kbd data-k="KeyJ">J</kbd>훈련 무기 선택 (훈련장)</div>
         <div><kbd>Esc</kbd>일시정지</div>
       </div>
     </div>
@@ -295,6 +297,7 @@
     <div class="ptitle">일시정지</div>
     <button id="resumeBtn">계속하기</button>
     <button id="settingsBtn2" class="ghost">설정</button>
+    <button id="trainArmoryBtn" class="ghost hidden">훈련 무기 선택 · J</button>
     <button id="touchLayoutBtn" class="ghost touch-only">버튼 위치 바꾸기</button>
     <button id="quitBtn" class="ghost">메인 메뉴로</button>
   </div>
@@ -377,7 +380,7 @@ try {
     try { window.EZTree = await import('./vendor/ez-tree.es.js'); } catch (e) { console.info('[veg] vendor/ez-tree.es.js 없음 — 기존 나무 사용'); }
   }
   loadFill.style.width = '15%';
-  const files = ['core', 'assets', 'range-props', 'vegetation', 'world', 'effects', 'ambient', 'plane', 'character', 'soldiers', 'gunlib', 'gunmodels', 'reload-assets', 'weapons','weapon-motion','hand-contact','weapon-sound-design','weapon-audio','attachments','g17-pilot','m4-viewmodel','asset-viewmodels','real-arms', 'throwable-models', 'throwables', 'actor', 'player', 'bots', 'extras', 'vehicles', 'game', 'training', 'ui', 'settings', 'raytrace', 'perf', 'main', 'touch'];
+  const files = ['core', 'assets', 'range-props', 'vegetation', 'world', 'effects', 'ambient', 'plane', 'character', 'soldiers', 'weapon-catalog', 'gunlib', 'weapon-expansion-models', 'gunmodels', 'reload-assets', 'weapons','weapon-motion','hand-contact','weapon-sound-design','weapon-audio','attachments','g17-pilot','m4-viewmodel','asset-viewmodels','real-arms', 'throwable-models', 'throwables', 'actor', 'player', 'bots', 'extras', 'vehicles', 'game', 'training', 'ui', 'settings', 'armory', 'raytrace', 'perf', 'main', 'touch'];
   for (let i = 0; i < files.length; i++) {
     loadText.textContent = '스크립트 불러오는 중... (' + files[i] + ')';
     await new Promise((res, rej) => {

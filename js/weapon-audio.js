@@ -14,7 +14,7 @@ const W=G.WeaponAudio={
   this.preparing=(async()=>{
    const res=await fetch(new URL('manifest.json?v='+window.LZ_BUILD,base));if(!res.ok)throw Error('audio manifest '+res.status);
    const m=await res.json();if(m.schema!==2)throw Error('audio schema');this.manifest=m;
-   const banks=[m.switch];for(const w of Object.values(m.weapons))banks.push(w.shot,w.fx);
+   const banks=[...new Map([m.switch,...Object.values(m.weapons).flatMap(w=>[w.shot,w.fx])].map(b=>[b.path,b])).values()];
    await Promise.all(banks.map(async b=>{const r=await fetch(new URL(b.path+'?v='+b.sha,base));if(!r.ok)throw Error(b.path+' '+r.status);this.raw[b.path]=await r.arrayBuffer()}));
    return true;
   })().catch(e=>{console.info('[audio] bank unavailable; using original report generator',e.message);return false});
@@ -24,8 +24,11 @@ const W=G.WeaponAudio={
   if(this.loading)return this.loading;
   this.loading=(async()=>{
    if(!await this.prepare())return false;
-   const m=this.manifest,banks=[m.switch];for(const w of Object.values(m.weapons))banks.push(w.shot,w.fx);
-   await Promise.all(banks.map(async b=>{const buf=await ctx.decodeAudioData(this.raw[b.path].slice(0));this.buffers[b.path]=buf;this.align(buf,b.cues)}));
+   const m=this.manifest,banks=[...new Map([m.switch,...Object.values(m.weapons).flatMap(w=>[w.shot,w.fx])].map(b=>[b.path,b])).values()];
+   await Promise.all(banks.map(async b=>{this.buffers[b.path]=await ctx.decodeAudioData(this.raw[b.path].slice(0))}));
+   // Handling banks can be shared, while cue alignment belongs to each entry.
+   this.align(this.buffers[m.switch.path],m.switch.cues);
+   for(const w of Object.values(m.weapons))for(const b of [w.shot,w.fx])this.align(this.buffers[b.path],b.cues);
    this.raw={};
    return true;
   })().catch(e=>{console.info('[audio] decode fallback',e.message);return false});
@@ -119,7 +122,7 @@ const W=G.WeaponAudio={
   const w=this.bank(id);if(!w)return false;
   const cue=w.fx.cues[name]?name:null;if(!cue)return false;
   const pan=/mag|shell|port/.test(name)?-.12:id==='s12'?-.06:.08;
-  return !!this.play(a,w.fx,cue,{g:1,pan,lp:20000,rev:.018},{gain:(LEVEL[name]||.2)*(MASS[id]||1)*(w.mix?.handling??1)*k,delay,wet:.08,vary:.025,own:true});
+  return !!this.play(a,w.fx,cue,{g:1,pan,lp:20000,rev:.018},{gain:(LEVEL[name]||.2)*(MASS[id]||1)*(w.mix?.handling??1)*k,rate:w.handleRate||1,delay,wet:.08,vary:.025,own:true});
  },
  // 다른 사람의 조작음 (위치 기반): 가까이 있는 적의 재장전을 들을 수 있다
  eventAt(a,type,id,pos){

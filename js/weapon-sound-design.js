@@ -1,10 +1,11 @@
 // Original weapon reports. The browser fallback and offline asset builder use
 // this same deterministic pressure/noise model; no recorded shot is an input.
 (function (root, factory) {
-  const design = factory();
+  const catalog = typeof module === 'object' && module.exports ? require('./weapon-catalog.js') : root.G?.WeaponCatalog;
+  const design = factory(catalog);
   if (typeof module === 'object' && module.exports) module.exports = design;
   else (root.G = root.G || {}).WeaponSound = design;
-})(typeof globalThis === 'object' ? globalThis : this, function () {
+})(typeof globalThis === 'object' ? globalThis : this, function (catalog) {
   'use strict';
   // body Hz, bark Hz, crack Hz, body decay seconds, crack/body/bark balance,
   // reflection spacing ms, diffuse decay seconds. These are different acoustic
@@ -26,6 +27,7 @@
     de7:   { body: 128, bark: 1600, crack: 7600, decay: .105, balance: [1.25,1.36,1.10], space: 33, room: .31, tag: 'large pistol pressure blast' },
     r45:   { body: 285, bark: 1700, crack: 6500, decay: .078, balance: [1.12,1.0,1.12], space: 25, room: .25, tag: 'raw revolver side blast' }
   };
+  for (const [id, entry] of Object.entries(catalog || {})) profiles[id] = entry.audio;
   function random(seed) {
     return function () {
       seed |= 0; seed = seed + 0x6D2B79F5 | 0;
@@ -129,5 +131,5 @@
     for(let i=0;i<n;i++) {left[i]*=scale;right[i]*=scale;}
     return {left,right,sampleRate:sr,duration:n/sr};
   }
-  return { version:1, edition:75, variants:4, profiles, generate };
+  return { version:1, edition:76, variants:4, profiles, generate };
 });

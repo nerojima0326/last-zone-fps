@@ -17,6 +17,13 @@ function checkAim() {
     return Math.hypot(point.x * innerWidth / 2, point.y * innerHeight / 2);
   };
   const landmarks = (id, scope) => {
+    if (!scope && G.WeaponCatalog[id]) {
+      const m = VM.models[id], shape = G.WeaponCatalog[id].shape;
+      // Authored front-post tip and rear-notch top, independent of VM.iron.
+      const y = shape.style === 'pistol' ? .060 : .112;
+      return [shape.style === 'pistol' ? -.116 : -.11 - shape.guard, shape.style === 'pistol' ? .031 : .058]
+        .map(z => m.gun.localToWorld(m.toVM(new THREE.Vector3(0, y, z))));
+    }
     const pack = AV.pack(id), M = id === 'ar7' ? G.M4Viewmodel : id === 'g18' ? G.G17Pilot : null;
     if (scope && M) {
       const dots = []; M.mount.traverse(o => { if (o.isMesh && o.geometry.type === 'CircleGeometry' && !o.material.depthTest) dots.push(o); });
@@ -177,6 +184,6 @@ function checkAim() {
     assert(reports.every(r => r.failures.length === 0), 'ADS sight/reticle moved away from the crosshair; see failures above');
     assert.deepEqual(shooting.failures, [], 'Distance zero, recoil recovery or post-reload alignment regressed');
     assert.deepEqual(recoil.failures, [], 'Weapon recoil, frame-rate independence or native/fallback rig motion regressed');
-    console.log('PASS: all 15 guns, iron/red-dot/holo sights, full idle clips, mouse/walk/crouch motion, 30/60/144 FPS, 16:9 and 4:3.');
+    console.log('PASS: all 30 guns, iron/red-dot/holo sights, full idle clips, mouse/walk/crouch motion, 30/60/144 FPS, 16:9 and 4:3.');
   } finally { if (browser) await browser.close(); server.close(); }
 })().catch(e => { console.error(e.stack); process.exitCode = 1; });

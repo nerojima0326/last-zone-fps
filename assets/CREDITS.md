@@ -75,3 +75,7 @@ Cransh의 **FPS AK-74m animations**와 **FPS Arms remington (shotgun)** (CC BY 4
 ## 조준경 · 총기 부착물 (v21)
 
 v59부터 조준경·부착물은 Sketchfab 실사 모델(레드닷 · EOTech 홀로 · ACOG · 저격 조준경 · 소음기 · 제퇴기 · 수직 손잡이 · Perst-4 레이저 — valterjherson1, GC_3D_ART, SpatialNeglect, The WarVet, D_U, 모두 CC-BY-4.0)을 씁니다. 권총 미니 도트만 Pichuliru의 [Flat Gun Attachments](https://pichuliru.itch.io/flat-gun-attachments)(CC0). 모델별 출처와 가공 내용은 [부착물 출처](models/attachments/CREDITS.md)에 기록했습니다.
+
+## v76 original weapon expansion
+
+The 15 expansion weapon meshes in `js/weapon-expansion-models.js` are original procedural models authored for LAST ZONE. They reuse the project’s existing material palette and arm rigs. Their geometry is shared between first-person, third-person, loot and the catalogue viewer. No additional external model asset is required.

@@ -11,8 +11,8 @@ const ACTIONS = [
   ['ShiftLeft', '달리기 · 숨 참기'], ['Space', '점프 · 넘기 · 드리프트'], ['KeyC', '앉기'], ['KeyZ', '엎드리기'],
   ['KeyQ', '왼쪽 기울이기'], ['KeyE', '오른쪽 기울이기'], ['KeyR', '재장전'], ['KeyF', '줍기 · 상호작용'],
   ['KeyV', '조준경 교체'], ['KeyB', '사격 모드'], ['KeyG', '빠른 투척'], ['KeyH', '치료'],
-  ['KeyL', '손전등'], ['KeyM', '지도'],
-  ['Digit1', '소총'], ['Digit2', '산탄총'], ['Digit3', '권총'], ['Digit4', '투척무기']
+  ['KeyL', '손전등'], ['KeyM', '지도'], ['KeyJ', '훈련 무기 선택'],
+  ['Digit1', '주무기'], ['Digit2', '산탄총'], ['Digit3', '권총'], ['Digit4', '투척무기']
 ];
 const RESERVED = new Set(['Escape', 'Tab', 'F5', 'F11', 'F12', 'MetaLeft', 'MetaRight']);
 
