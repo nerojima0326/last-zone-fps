@@ -302,10 +302,13 @@ const T = G.Training = {
     });
   },
   stop() {
+    G.TrainingRecords?.abort('훈련을 종료해 측정을 중단했습니다.');
+    G.TrainingRecords?.close(false);
     if (!this.active && !this.objs.length) return;
     this.active = false;
     G.Armory?.close(false);
     document.getElementById('trainArmoryBtn')?.classList.add('hidden');
+    document.getElementById('trainRecordBtn')?.classList.add('hidden');
     this.syncLamps();
     const geometries = new Set(), materials = new Set();
     const shared = new Set(Object.values(this.mats));
@@ -331,7 +334,7 @@ const T = G.Training = {
       this.layer = document.createElement('div'); this.layer.id = 'dmgNums';
       document.getElementById('hud').appendChild(this.layer);
       this.statsEl = document.createElement('div'); this.statsEl.id = 'trainStats';
-      this.statsEl.addEventListener('click', e => { if (e.target.closest('[data-armory]')) G.Armory.show(); });
+      this.statsEl.addEventListener('click', e => { if (e.target.closest('[data-armory]')) G.Armory.show(); if (e.target.closest('[data-record]')) G.TrainingRecords.show(); });
       document.getElementById('hud').appendChild(this.statsEl);
       this.khEl = document.createElement('div'); this.khEl.id = 'khTimer'; this.khEl.className = 'hidden';
       document.getElementById('hud').appendChild(this.khEl);
@@ -339,11 +342,13 @@ const T = G.Training = {
     this.statsEl.classList.remove('hidden');
     document.getElementById('trainArmoryBtn').textContent = '훈련 무기 선택 · ' + G.Settings.label('KeyJ');
     document.getElementById('trainArmoryBtn')?.classList.remove('hidden');
+    document.getElementById('trainRecordBtn')?.classList.remove('hidden');
     this.drawStats();
   },
   drawStats() {
     const s = this.stats, acc = s.shots ? Math.round(s.hits / s.shots * 100) : 0;
-    this.statsEl.innerHTML = `<b>훈련장</b><span>명중 <i>${s.hits}</i> / ${s.shots} (${acc}%)</span><span>헤드샷 <i>${s.heads}</i></span><span>최근 피해 <i>${Math.round(s.last)}</i></span><span>쓰러뜨림 <i>${s.downs}</i></span><button data-armory>${G.Settings.label('KeyJ')} · 무기 선택 (30종)</button>`;
+    const r=G.TrainingRecords?.run;
+    this.statsEl.innerHTML = `<b>훈련장</b><span>명중 <i>${s.hits}</i> / ${s.shots} (${acc}%)</span><span>헤드샷 <i>${s.heads}</i></span><span>처치 <i>${s.downs}</i></span><button data-armory>${G.Settings.label('KeyJ')} · 무기 선택</button><button data-record>${r?'측정 '+Math.ceil(30-r.elapsed)+'초 · '+r.distance+'m':'훈련 기록'}</button>`;
   },
   refill() {
     const a = G.Game.player;
@@ -351,7 +356,7 @@ const T = G.Training = {
     for (const t in a.ammo) a.ammo[t] = 999;
     for (const k of G.THROW_ORDER) if ((a.throwables[k] || 0) < 3) a.throwables[k] = 3;
   },
-  onShot() { this.stats.shots++; this.dirty = true; return { hit: false, head: false }; },
+  onShot() { this.stats.shots++; this.dirty = true; const shot={hit:false,head:false};G.TrainingRecords?.onShot(shot);return shot; },
 
   /* ---------------- 판정 ---------------- */
   // 총알 (o, d 단위벡터) 이 maxT 안에서 표적에 맞으면 {t, target, head}
@@ -380,6 +385,7 @@ const T = G.Training = {
   // 맞음 (같은 프레임의 산탄은 합쳐서 숫자 하나로)
   onHit(h, dmg, point, dir, shot) {
     const t = h.target;
+    G.TrainingRecords?.onHit(h,shot);
     t.fd = (t.fd || 0) + dmg; t.fh = t.fh || h.head; t.fp = (t.fp || new V3()).copy(point);
     if (shot && !shot.hit) { shot.hit = true; this.stats.hits++; }
     if (h.head && shot && !shot.head) { shot.head = true; this.stats.heads++; }
@@ -397,7 +403,7 @@ const T = G.Training = {
       if (t.kind === 'sil') {
         t.hp -= dmg;
         if (t.civ && this.kh && this.kh.active && !t.hitCiv) { t.hitCiv = true; this.kh.civHit++; G.UI.toast('민간인 명중 · +5초'); }
-        if (t.hp <= 0) { kill = true; t.down = 2.2; t.fall = 0; this.stats.downs++; }
+        if (t.hp <= 0) { kill = true; t.down = 2.2; t.fall = 0; this.stats.downs++; G.TrainingRecords?.onDown(t); }
       }
       this.stats.last = dmg; this.stats.dmg += dmg;
       G.UI.hitmarker(head, kill);
@@ -417,6 +423,7 @@ const T = G.Training = {
   /* ---------------- 매 프레임 ---------------- */
   update(dt) {
     if (!this.active) return;
+    G.TrainingRecords?.update(dt);
     this.flush();
     this.refill();
     const time = G.Game.time;
@@ -506,6 +513,7 @@ const T = G.Training = {
   },
   // v66 투척물이 터진 자리: 창문 벙커 · 참호 · 원형 과녁 판정, 수류탄은 가까운 표적을 쓰러뜨린다
   onBlast(o) {
+    if(G.TrainingRecords?.run)G.TrainingRecords.abort('투척물을 사용해 측정을 중단했습니다.');
     if (!this.active || !G.World.base) return;
     const Gt = G.World.base.grenade, p = o.pos, Bk = Gt.bunker, Tr = Gt.trench, Rg = Gt.rings;
     let msg = null;

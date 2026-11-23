@@ -114,7 +114,7 @@ const UI = G.UI = {
     this.el = {
       alive: $('aliveNum'), teams: $('teamsNum'), kills: $('killNum'), hpFill: $('hpFill'), hpLag: $('hpLag'), hpText: $('hpText'),
       vest: $('vestIcon'), helm: $('helmIcon'), bag: $('bagIcon'), meds: $('medsInfo'), mag: $('ammoMag'), res: $('ammoRes'), wname: $('weaponName'), fmode: $('fireMode'), slots: $('slots'),
-      cross: $('crosshair'), hit: $('hitmarker'), prompt: $('prompt'), progress: $('progress'), progLabel: $('progressLabel'), progFill: $('progressFill'),
+      cross: $('crosshair'), hit: $('hitmarker'), prompt: $('prompt'), progress: $('progress'), progLabel: $('progressLabel'), progFill: $('progressFill'), weaponStatus: $('weaponStatus'),
       center: $('centerMsg'), kill: $('killMsg'), pick: $('pickupMsg'), plane: $('planeHint'), spec: $('spectate'), vig: $('vignette'), zoneO: $('zoneOverlay'),
       knockO: $('knockOverlay'), flash: $('flashOverlay'), freeze: $('flashFreeze'), zoneInfo: $('zoneInfo'), zoneLabel: $('zoneLabel'), zoneTime: $('zoneTime'), strip, compassDeg: $('compassDeg'),
       feed: $('killfeed'), dmg: $('dmgDirs'), team: $('teamPanel'), tags: $('tags'), bigWrap: $('bigmapWrap')
@@ -211,6 +211,8 @@ const UI = G.UI = {
   hurt(dmg, from) {
     this.hurtV = Math.min(1, this.hurtV + dmg / 35);
     if (from) {
+      const current = this.dmgDirs.find(d => d.pos.distanceToSquared(from) < 9);
+      if (current) { current.pos.copy(from); current.t = 1.6; return; }
       const el = document.createElement('div'); el.className = 'dd';
       this.el.dmg.appendChild(el);
       this.dmgDirs.push({ el, pos: from.clone(), t: 1.6 });
@@ -272,6 +274,8 @@ const UI = G.UI = {
       this.set('mag', el.mag, '-'); this.set('res', el.res, ''); this.set('wn', el.wname, '맨손'); this.set('fm', el.fmode, '');
     }
     this.set('magc', el.mag, inst && inst.mag <= Math.ceil((G.Attachments?.capacity(inst,def) || def.mag) * 0.25) ? 'low' : '', 'className');
+    const status = G.WeaponObstruction?.blocked ? '총구가 막혔습니다' : P.sw ? '무기 교체 중' : P.reload ? '재장전 중' : inst && inst.mag === 0 ? (a.ammo[def.ammo] > 0 ? G.Settings.label('KeyR') + ' · 재장전' : '탄약이 없습니다') : inst && inst.mag <= Math.ceil((G.Attachments?.capacity(inst,def) || def.mag) * .25) ? '탄약 부족 · ' + G.Settings.label('KeyR') + ' 재장전' : '';
+    this.set('weaponStatus', el.weaponStatus, status);
     const tk = P.throwKind;
     const skey = a.cur + a.gunId('rifle') + a.gunId('shotgun') + a.gunId('pistol') + tk + a.throwables[tk] + (a.throwCount() ? 1 : 0);
     if (this.slotKey !== skey) {

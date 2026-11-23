@@ -5,7 +5,7 @@ const THREE = window.THREE, G = window.G, U = G.U;
 
 class Particles {
   constructor(scene, max, blending, tex) {
-    this.max = max; this.list = [];
+    this.max = max; this.list = []; this.free = []; this.created = 0;
     const geo = this.geo = new THREE.InstancedBufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([-0.5, -0.5, 0, 0.5, -0.5, 0, 0.5, 0.5, 0, -0.5, 0.5, 0]), 3));
     geo.setAttribute('uv', new THREE.BufferAttribute(new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]), 2));
@@ -13,6 +13,7 @@ class Particles {
     const mk = (n) => { const a = new THREE.InstancedBufferAttribute(new Float32Array(max * n), n); a.setUsage(THREE.DynamicDrawUsage); return a; };
     this.aPos = mk(3); this.aSize = mk(1); this.aRot = mk(1); this.aCol = mk(4);
     geo.setAttribute('iPos', this.aPos); geo.setAttribute('iSize', this.aSize); geo.setAttribute('iRot', this.aRot); geo.setAttribute('iCol', this.aCol);
+    this.upload = [this.aPos, this.aSize, this.aRot, this.aCol];
     geo.instanceCount = 0;
     const additive = blending === THREE.AdditiveBlending;
     this.mat = new THREE.ShaderMaterial({
@@ -50,12 +51,12 @@ class Particles {
   }
   spawn(o) {
     if (this.list.length >= this.max) return null;
-    const p = {
-      x: o.x, y: o.y, z: o.z, vx: o.vx || 0, vy: o.vy || 0, vz: o.vz || 0, age: 0, life: o.life || 1,
-      s0: o.s0 || 0.2, s1: o.s1 === undefined ? (o.s0 || 0.2) : o.s1, r: o.r === undefined ? 1 : o.r, g: o.g === undefined ? 1 : o.g, b: o.b === undefined ? 1 : o.b,
-      a: o.a === undefined ? 1 : o.a, rot: o.rot === undefined ? Math.random() * 6.28 : o.rot, vr: o.vr || 0, grav: o.grav || 0, drag: o.drag || 0,
-      fin: o.fin || 0.001, fo: o.fo === undefined ? 1 : o.fo, floor: o.floor
-    };
+    // 수명이 끝난 입자를 재사용해 연사·연속 폭발 중 객체 쓰레기가 쌓이지 않게 한다.
+    let p = this.free.pop(); if (!p) { p = { x:0,y:0,z:0,vx:0,vy:0,vz:0,age:0,life:1,s0:.2,s1:.2,r:1,g:1,b:1,a:1,rot:0,vr:0,grav:0,drag:0,fin:.001,fo:1,floor:undefined }; this.created++; }
+    p.x=o.x;p.y=o.y;p.z=o.z;p.vx=o.vx||0;p.vy=o.vy||0;p.vz=o.vz||0;p.age=0;p.life=o.life||1;
+    p.s0=o.s0||.2;p.s1=o.s1===undefined?(o.s0||.2):o.s1;p.r=o.r===undefined?1:o.r;p.g=o.g===undefined?1:o.g;p.b=o.b===undefined?1:o.b;
+    p.a=o.a===undefined?1:o.a;p.rot=o.rot===undefined?Math.random()*6.28:o.rot;p.vr=o.vr||0;p.grav=o.grav||0;p.drag=o.drag||0;
+    p.fin=o.fin||.001;p.fo=o.fo===undefined?1:o.fo;p.floor=o.floor;
     this.list.push(p);
     return p;
   }
@@ -65,7 +66,7 @@ class Particles {
     for (let i = 0; i < L.length; i++) {
       const p = L[i];
       p.age += dt;
-      if (p.age >= p.life) { L[i] = L[L.length - 1]; L.pop(); i--; continue; }
+      if (p.age >= p.life) { L[i] = L[L.length - 1]; L.pop(); this.free.push(p); i--; continue; }
       const dr = Math.exp(-p.drag * dt);
       p.vx *= dr; p.vy = p.vy * dr - p.grav * dt; p.vz *= dr;
       p.x += p.vx * dt; p.y += p.vy * dt; p.z += p.vz * dt; p.rot += p.vr * dt;
@@ -82,12 +83,12 @@ class Particles {
     if (n === 0 && this.lastN === 0) return;
     this.lastN = n;
     // 실제 사용 중인 범위만 GPU로 업로드
-    for (const a of [this.aPos, this.aSize, this.aRot, this.aCol]) {
+    for (const a of this.upload) {
       if (a.clearUpdateRanges) { a.clearUpdateRanges(); a.addUpdateRange(0, Math.max(1, n) * a.itemSize); }
       a.needsUpdate = true;
     }
   }
-  clear() { this.list.length = 0; this.geo.instanceCount = 0; }
+  clear() { for (const p of this.list) this.free.push(p); this.list.length = 0; this.geo.instanceCount = 0; }
 }
 
 const FX = G.FX = {
@@ -237,6 +238,7 @@ const FX = G.FX = {
     this.norm.spawn({ x: p.x + dx * 0.3, y: p.y + dy * 0.3, z: p.z + dz * 0.3, vx: dx * 1.5, vy: dy * 1.5 + 0.3, vz: dz * 1.5, life: 0.5, s0: 0.15, s1: 0.6, r: 0.7, g: 0.7, b: 0.7, a: 0.2, drag: 3 });
   },
   explosion(p) {
+    G.SessionPerf?.mark('폭발');
     this.light(p, 0xff9040, 900, 0.35, 45);
     for (let i = 0; i < 34; i++) {
       const a = Math.random() * 6.28, e = Math.random() * 1.4, s = 4 + Math.random() * 9;

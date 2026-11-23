@@ -255,7 +255,10 @@ function checkMatchLifecycle() {
     await page.evaluate(() => { G.toMenu(); G.vmScene.visible = true; });
     await page.click('#trainBtn');
     // 총기 장전 팩(v51)을 뒤에서 받는 동안에도 훈련장 재입장이 끝날 때까지 기다린다
-    await page.waitForFunction(() => G.Game.training && G.Training.targets.length > 0, null, { timeout: 30000, polling: 200 });
+    await page.waitForFunction(() => G.Game.training && G.Training.targets.length > 0, null, { timeout: 30000, polling: 200 }).catch(async e=>{
+      const state=await page.evaluate(()=>({state:G.Game.state,training:G.Game.training,active:G.Training.active,targets:G.Training.targets.length,paused:G.paused,menu:document.getElementById('menu').className,loading:document.getElementById('loadText').textContent}));
+      throw Error(e.message+'\n'+JSON.stringify({state,errors}));
+    });
     const repeated = await page.evaluate(() => ({ targets: G.Training.targets.filter(t => !t.kh && !t.zone).length,
       groups: G.scene.children.filter(c => c.name === 'training-range-props').length,
       crates: G.World.range.props.crates.length, version: window.LZ_BUILD }));

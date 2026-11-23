@@ -355,6 +355,47 @@ html.mobile #weaponPanel #slots { justify-content: center; }
 #trainStats b { color: var(--accent); letter-spacing: 2px; }
 #trainStats i { font-style: normal; font-family: var(--num); font-size: 17px; color: #fff; }
 #trainStats.hidden { display: none; }
+
+/* 교전 상태·측정 기록은 배경 위에서도 읽을 수 있게 표시한다. */
+#gear { flex-wrap: wrap; }
+#weaponStatus { min-height: 20px; color: #ffd27a; font-size: 13px; font-weight: 800; text-shadow: 0 1px 3px #000; }
+#weaponName { overflow-wrap: anywhere; }
+#ammoLine { display: inline-block; padding: 3px 8px; border-radius: 5px; background: rgba(4,9,14,.6); }
+#centerMsg { max-width: min(700px, calc(100% - 30px)); white-space: normal; line-height: 1.35; }
+#hud.training #centerMsg { top: 30%; }
+#trainStats { top: 77px; max-width: calc(100% - 32px); width: max-content; box-sizing: border-box; justify-content: center; flex-wrap: wrap; gap: 5px 12px; font-size: 12px; padding: 6px 10px; }
+#trainStats button { border: 1px solid #6b6346; border-radius: 4px; padding: 4px 8px; white-space: nowrap; }
+#fpsBox { top: auto; bottom: 3px; left: 12px; max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+#trainingHistoryBtn { width: 100%; margin-top: 8px; padding: 9px; border: 1px solid var(--line); border-radius: 9px; }
+#trainingRecordPanel { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 12px; background: rgba(4,8,13,.86); }
+#trainingRecordPanel .panel { display: flex; flex-direction: column; gap: 8px; width: min(820px, 96vw); max-height: 92vh; overflow: auto; padding: 22px; border: 1px solid #52606b; border-radius: 12px; background: #15212b; }
+#trainingRecordPanel h2 { flex-shrink: 0; font-size: 22px; margin: 0; }
+#recordWeapon { margin: 0; }
+#trainingRecordPanel select { flex-shrink: 0; font: inherit; color: var(--text); background: #233440; border: 1px solid #627482; border-radius: 5px; padding: 5px 9px; margin: 0; }
+#recordBody { min-height: 0; overflow: auto; }
+#trainingRecordPanel > .panel > .record-help { margin: 0; }
+#trainingRecordPanel .res-btns { flex-shrink: 0; margin: 0; }
+#trainingRecordPanel .res-btns button { padding: 10px 14px; font-size: 14px; letter-spacing: 1px; }
+.record-help { color: #bcc8d2; font-size: 12px; line-height: 1.7; margin: 8px 0; }
+.record-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0; }
+.record-cards article { border: 1px solid #52616e; padding: 12px; border-radius: 6px; }
+.record-cards b, .record-delta { color: #ffd27a; }
+.record-cards p { font-size: 13px; line-height: 1.8; margin-top: 6px; }
+.record-history { margin: 14px 0; padding-left: 24px; font-size: 12px; }
+.record-history li { padding: 6px 0; }
+.record-history time { display: block; color: #a9bac8; }
+#recordNotice { flex-shrink: 0; color: #e6cb8b; font-size: 13px; margin: 0; }
+#recordNotice:empty { display: none; }
+.perf-buttons { display: flex; gap: 5px; flex-wrap: wrap; }
+.perf-buttons button:disabled { opacity: .4; cursor: default; }
+@media (max-width: 700px) {
+  .slot { min-width: 35px; font-size: 9px; padding: 3px; }
+  #slots { gap: 2px; }
+  #trainStats { top: 74px; gap: 4px 8px; padding: 5px 8px; font-size: 11px; }
+  #centerMsg { font-size: 18px; }
+  #centerMsg small { font-size: 11px; }
+  .record-cards { grid-template-columns: 1fr; }
+}
 #dmgNums { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
 #dmgNums .dn { position: absolute; left: 0; top: 0; font: 800 26px var(--num); color: #fff; text-shadow: 0 0 3px #000, 0 2px 4px #000; will-change: transform, opacity; }
 #dmgNums .dn.head { color: #ffcf3a; font-size: 32px; }

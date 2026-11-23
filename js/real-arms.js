@@ -183,7 +183,7 @@ const R = G.RealArms = {
     }
     G.HandContact?.apply(vm.cur, this.copy, m.gun.matrixWorld, {
       L: A.L?.contactMode === 'support' ? 1 : 0, R: A.R?.contactMode === 'grip' ? 1 : 0
-    }, { reload: s.reload, proceduralArms: A });
+    }, { reload: s.reload, proceduralArms: A, recoveryGap: s.recoveryGap });
   },
   tuck(S) {
     const b = S.b; b.arm.scale.setScalar(1e-4); b.arm.updateMatrixWorld(true);

@@ -28,6 +28,8 @@ jobs:
         run: node tools/check-aim.cjs
       - name: Check startup ordering and delayed or missing assets
         run: node tools/check-startup.cjs
+      - name: 훈련 기록·프레임 측정·봇 재조준·자세 복귀 검사
+        run: node tools/check-session-polish.cjs
       - name: Check all weapon grips and hand animation
         run: node tools/check-hand-poses.cjs
       - name: Import bundled models

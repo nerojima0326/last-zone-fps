@@ -24,6 +24,7 @@ class Bot {
     this.d = profiles[G.Game.diff] || profiles.normal;
     this.target = null; this.visible = false; this.lostT = 99; this.lastSeen = new V3(); this.hasLast = false;
     this.aimOff = new V3(); this.reactT = 0;
+    this.aimPhase = U.rand(0, Math.PI * 2); this.aimClock = 0; this.sightError = new V3();
     this.goal = null; this.goalType = ''; this.goalT = 0; this.lootItem = null;
     this.thinkT = Math.random() * 0.4; this.percT = Math.random() * 0.2;
     this.burstLeft = 0; this.burstPause = 0; this.nextFire = 0; this.reloadT = 0;
@@ -132,6 +133,7 @@ class Bot {
       let s = dist + (t.knocked ? 30 : 0) - (t === this.target ? 12 : 0) - (t.isPlayer ? 3 : 0);
       if (s < bestS) { bestS = s; best = t; }
     }
+    const wasVisible = this.visible;
     this.visible = !!best;
     if (best) {
       const dist = a.pos.distanceTo(best.pos);
@@ -140,6 +142,11 @@ class Bot {
         this.reactT = d.react * U.rand(0.8, 1.3) * (1 + dist / 160) * (this.lostT < 3 ? 0.5 : 1);
         const e = d.err * (1 + dist / 35);
         this.aimOff.set(U.rand(-1, 1), U.rand(-0.6, 1), U.rand(-1, 1)).normalize().multiplyScalar(e);
+        this.burstLeft = 0;
+        this.aimHead = false;
+      } else if (!wasVisible && this.lostT > .35 && a.team !== 0) {
+        // 같은 적이라도 한동안 가려졌다가 다시 보이면 짧게 재조준한다.
+        this.reactT = Math.max(this.reactT, U.clamp(d.react * .55, .18, .65) * (1 + dist / 240));
         this.burstLeft = 0;
       }
       this.lastSeen.copy(best.pos); this.hasLast = true; this.lostT = 0;
@@ -422,9 +429,11 @@ class Bot {
       const x=cx+dx*radius,z=cz+dz*radius,dist=Math.hypot(x-a.pos.x,z-a.pos.z);
       if(dist>12||dist<0.4||dist>=best)continue;
       const y=W.heightAt(x,z);if(Math.abs(y-a.pos.y)>1.2)continue;
+      let occupied=false;W.queryBoxes(x-.3,z-.3,x+.3,z+.3,other=>{if(other.minY<y+1.15&&other.maxY>y+.15&&x+.3>other.minX&&x-.3<other.maxX&&z+.3>other.minZ&&z-.3<other.maxZ)occupied=true});
+      if(occupied)continue;
       if(W.rayBoxes(a.pos.x,a.pos.y+0.7,a.pos.z,(x-a.pos.x)/dist,0,(z-a.pos.z)/dist,dist-0.4,null)<Infinity)continue;
-      const tx=target.pos.x-x,tz=target.pos.z-z,td=Math.hypot(tx,tz);
-      if(W.rayBoxes(x,y+0.8,z,tx/td,0,tz/td,td-0.3,null)===Infinity)continue;
+      target.chest(_p);const tx=_p.x-x,ty=_p.y-(y+.8),tz=_p.z-z,td=Math.hypot(tx,ty,tz);
+      if(W.rayBoxes(x,y+0.8,z,tx/td,ty/td,tz/td,td-0.3,null)===Infinity)continue;
       best=dist;point={x,y,z};
     }
     if(!point)return false;this.coverPos.set(point.x,point.y,point.z);this.coverT=3.5;this.coverArrived=false;this.coverStall=0;this.coverTargetId=target.id;return true;
@@ -441,10 +450,13 @@ class Bot {
     // 조준 오차 갱신
     this.aimOff.multiplyScalar(Math.exp(-d.track * dt));
     const tv = t.hspeed || 0;
-    this.aimOff.x += (Math.random() - 0.5) * dt * (0.6 + tv * 0.35) * d.err;
-    this.aimOff.y += (Math.random() - 0.5) * dt * 0.4 * d.err;
-    this.aimOff.z += (Math.random() - 0.5) * dt * (0.6 + tv * 0.35) * d.err;
+    this.aimClock += dt;
+    // 매 프레임 난수를 더하지 않고 시간에 따른 각도 오차를 사용한다. 동료의 기존 효율은 유지한다.
+    const error = a.team === 0 ? 0 : Math.min(1.2, Math.max(.015, dist * d.err * .0018) * (1 + Math.min(7,tv) * .12) * (a.hspeed>1?1.25:1));
+    const phase=this.aimClock+this.aimPhase;
+    this.sightError.set(Math.sin(phase*1.31),Math.sin(phase*.83+.7)*.45,Math.cos(phase*1.17)).multiplyScalar(error);
     const aimP = this.visible ? _a.copy(_c).add(this.aimOff) : _a.copy(this.lastSeen).add(_l.set(0, 1.2, 0)).add(this.aimOff);
+    if(this.visible)aimP.add(this.sightError);
     a.eye(_e);
     _d.copy(aimP).sub(_e);
     const hd = Math.hypot(_d.x, _d.z);
@@ -452,7 +464,7 @@ class Bot {
     const dy = U.angleDiff(a.yaw, wantYaw);
     a.yaw += U.clamp(dy, -d.turn * dt, d.turn * dt);
     a.pitch += U.clamp(wantPitch - a.pitch, -d.turn * dt, d.turn * dt);
-    if (this.reactT > 0) this.reactT -= dt;
+    if (this.reactT > 0 && this.visible) this.reactT = Math.max(0,this.reactT-dt);
     // 사격
     const inst = a.weapons[a.cur], def = inst ? G.WEAPONS[inst.id] : G.WEAPONS[a.cur];
     const aligned = Math.abs(U.angleDiff(a.yaw, wantYaw)) < 0.06 + 0.5 / Math.max(dist, 1) && Math.abs(wantPitch - a.pitch) < 0.1;

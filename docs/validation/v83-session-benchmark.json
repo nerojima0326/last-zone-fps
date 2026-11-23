@@ -1,0 +1,67 @@
+{
+  "before": {
+    "particles": [
+      {
+        "kind": "add",
+        "births": 6400,
+        "objects": 6400,
+        "ms": 8.199999995529652,
+        "remaining": 0
+      },
+      {
+        "kind": "norm",
+        "births": 6400,
+        "objects": 6400,
+        "ms": 0.9000000059604645,
+        "remaining": 0
+      }
+    ],
+    "lateWeapon": {
+      "before": 132,
+      "loaded": 132,
+      "rendered": 135,
+      "firstMs": 691,
+      "followupMs": [
+        320.5,
+        307.3999999985099
+      ]
+    },
+    "gpu": "SwiftShader",
+    "mode": "before",
+    "base": "a758fec49ba8265ab02b14da5963a40300bab735",
+    "errors": []
+  },
+  "after": {
+    "particles": [
+      {
+        "kind": "add",
+        "births": 6400,
+        "objects": 64,
+        "ms": 1.5999999940395355,
+        "remaining": 0
+      },
+      {
+        "kind": "norm",
+        "births": 6400,
+        "objects": 64,
+        "ms": 0.8000000044703484,
+        "remaining": 0
+      }
+    ],
+    "lateWeapon": {
+      "before": 149,
+      "loaded": 151,
+      "rendered": 152,
+      "firstMs": 505.8999999985099,
+      "followupMs": [
+        337.70000000298023,
+        266.1000000014901
+      ]
+    },
+    "gpu": "SwiftShader",
+    "mode": "after",
+    "base": "a758fec49ba8265ab02b14da5963a40300bab735",
+    "errors": []
+  },
+  "주의": "동일 환경의 입자 객체·셰이더 프로그램 수를 비교한다. 첫 렌더 시간은 각 한 번과 후속 두 프레임이며 소프트웨어 렌더러의 참고값이다. 실제 PC의 FPS 개선률로 환산하지 않는다."
+}
