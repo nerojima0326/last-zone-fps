@@ -1,0 +1,291 @@
+{
+  "renderPrep": {
+    "deferred": true,
+    "prepared": true,
+    "recover": true
+  },
+  "particles": [
+    {
+      "kind": "add",
+      "objects": 64,
+      "reset": true,
+      "capped": true,
+      "bounded": true
+    },
+    {
+      "kind": "norm",
+      "objects": 64,
+      "reset": true,
+      "capped": true,
+      "bounded": true
+    }
+  ],
+  "poses": {
+    "half": 0.1,
+    "untouched": true,
+    "ended": true,
+    "ads": true
+  },
+  "switches": [
+    {
+      "fps": 30,
+      "from": 0.35,
+      "continuous": true,
+      "maxStep": 0.18923110639086965,
+      "ended": true
+    },
+    {
+      "fps": 60,
+      "from": 0.35,
+      "continuous": true,
+      "maxStep": 0.09587990357221116,
+      "ended": true
+    },
+    {
+      "fps": 144,
+      "from": 0.35,
+      "continuous": true,
+      "maxStep": 0.040054529695219776,
+      "ended": true
+    }
+  ],
+  "bots": {
+    "reaction": 0.5454166666666668,
+    "hidden": 0.5454166666666668,
+    "rows": [
+      {
+        "fps": 30,
+        "dist": 10,
+        "error": [
+          0.0235317295161963,
+          0.011461876763004577,
+          -0.012061751821027124
+        ]
+      },
+      {
+        "fps": 30,
+        "dist": 80,
+        "error": [
+          0.1882538361295704,
+          0.09169501410403662,
+          -0.09649401456821699
+        ]
+      },
+      {
+        "fps": 60,
+        "dist": 10,
+        "error": [
+          0.023531729516196268,
+          0.011461876763004572,
+          -0.012061751821027172
+        ]
+      },
+      {
+        "fps": 60,
+        "dist": 80,
+        "error": [
+          0.18825383612957014,
+          0.09169501410403658,
+          -0.09649401456821738
+        ]
+      },
+      {
+        "fps": 144,
+        "dist": 10,
+        "error": [
+          0.023531729516196358,
+          0.01146187676300459,
+          -0.012061751821027051
+        ]
+      },
+      {
+        "fps": 144,
+        "dist": 80,
+        "error": [
+          0.18825383612957086,
+          0.09169501410403672,
+          -0.09649401456821641
+        ]
+      }
+    ],
+    "ally": 0,
+    "cover": {
+      "accepted": true,
+      "rejected": true,
+      "vertical": true
+    }
+  },
+  "perf": {
+    "version": "83",
+    "at": 1795427600768,
+    "frames": 100,
+    "fps": 59.38242280285036,
+    "low1": 10,
+    "maxMs": 100,
+    "quality": "potato",
+    "resolution": {
+      "scale": 0.6,
+      "percent": 60,
+      "mode": "자동",
+      "rendererPixelRatio": 1,
+      "composerPixelRatio": 0.6
+    },
+    "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "spikes": [
+      {
+        "at": 0.3999999985098839,
+        "ms": 100,
+        "updateMs": 8,
+        "renderMs": 15,
+        "action": "발사"
+      }
+    ],
+    "events": [
+      {
+        "name": "발사",
+        "at": 0.3999999985098839
+      }
+    ],
+    "frameMs": [
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      100
+    ],
+    "auto": true
+  },
+  "records": {
+    "first": {
+      "weapon": "ar7",
+      "distance": 25,
+      "duration": 30,
+      "at": 1795427601141,
+      "shots": 3,
+      "hits": 2,
+      "heads": 1,
+      "downs": 1,
+      "ttk": 0.3999999999999999
+    },
+    "second": {
+      "weapon": "ar7",
+      "distance": 25,
+      "duration": 30,
+      "at": 1795427601160,
+      "shots": 1,
+      "hits": 1,
+      "heads": 1,
+      "downs": 1,
+      "ttk": 0
+    },
+    "fallback": true,
+    "live": [
+      10,
+      25,
+      50,
+      100
+    ],
+    "checks": 16
+  },
+  "download": {
+    "frames": 60,
+    "filename": "last-zone-performance.json"
+  },
+  "reentry": 2,
+  "errors": []
+}

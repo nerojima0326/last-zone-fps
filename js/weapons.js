@@ -1620,7 +1620,7 @@ const VM = G.VM = {
     r.y += this.sway.x * ia; r.x += this.sway.y * ia;
     p.x += this.sway.x * 0.25 * ia; p.y += this.sway.y * 0.25 * ia;
     // 달리기 자세
-    const sp = this.sprint;
+    const sp = this.sprint * ia * ia;
     if (m.cls === 'pistol') { r.x -= 0.5 * sp; p.y -= 0.06 * sp; p.z += 0.03 * sp; }
     else { r.y += 0.75 * sp; r.x -= 0.22 * sp; r.z += 0.25 * sp; p.x -= 0.02 * sp; p.y -= 0.05 * sp; p.z += 0.03 * sp; }
     // 앉기
@@ -1646,8 +1646,10 @@ const VM = G.VM = {
       this.camRY = -0.012 * this.camE * (1 - a) + S.ry[0] * 0.15;
       this.camRZ = 0.018 * this.camE * (1 - a) + S.rz[0] * 0.25;
       // 팔 IK (손은 부드럽게 따라간다)
-      const k = m.snap ? 1 : 1 - Math.exp(-dt * 30);
+      const k = m.snap || s.poseRecovery ? 1 : 1 - Math.exp(-dt * 30);
       for (const arm of [m.armL, m.armR]) {
+        // 짧은 복귀 곡선에서는 손목·손가락의 추가 지연이 총몸을 가로지르므로 접촉 목표를 그대로 따른다.
+        if(s.poseRecovery){arm.handReady=false;arm.curl=arm.curlT;arm.thumb=arm.thumbT;arm.trig=arm.trigT;}
         if(m.snap){arm.handReady=false;arm.bendReady=false;arm.framesReady=false;arm.swivelVelocity=0;arm.foreTwist=0;arm.foreTwistVelocity=0;arm.shoulderShift.set(0,0,0);arm.shoulderVelocity.set(0,0,0);arm.curl=arm.curlT;arm.thumb=arm.thumbT;arm.trig=arm.trigT;}
         arm.motionWeight=s.reload?1:0;
         const follow=k+(1-k)*(arm.contactLock || 0);

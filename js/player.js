@@ -11,6 +11,7 @@ const P = G.Player = {
   a: null, sens: 1, adsSens: 1, scopeSens: 1, fov: 80, invertY: false,
   init(actor) {
     this.a = actor;
+    G.PoseRecovery?.reset();
     G.WeaponObstruction?.reset(G.VM);
     this.ads = 0; this.nextFire = 0; this.lastShot = -9; this.recoilAcc = 0;
     this.reload = null; this.autoReload = null; this.sw = null; this.raise = 1; this.pumpT = -1; this.punchT = -1; this.cycleT = -1;
@@ -214,7 +215,7 @@ const P = G.Player = {
       this.sw.t += dt;
       const t = this.sw.t;
       if (t >= 0.2 && a.cur !== this.sw.to) { a.cur = this.sw.to; if (a.cur === 'throw') G.VM.setThrowKind(this.throwKind); }
-      this.raise = t < 0.2 ? Math.min(this.raise, 1 - t / 0.2) : U.clamp((t - 0.2) / 0.26, 0, 1);
+      this.raise = t < 0.2 ? (this.sw.from ?? 1) * (1 - U.smoothstep(0, .2, t)) : U.smoothstep(.2, .46, t);
       if (t >= 0.46) { this.sw = null; this.raise = 1; }
     }
     const inst = a.weapons[a.cur], def = inst ? G.WEAPONS[inst.id] : G.WEAPONS[a.cur];
@@ -298,7 +299,8 @@ const P = G.Player = {
     this.reload = null; this.autoReload = null; this.cycleT = -1; this.pumpT = -1;
     const next = a.weapons[slot];
     if (next) { G.VM.ensure(next.id); G.AssetVM?.request(next.id); }
-    this.sw = { t: this.sw && this.sw.t < 0.2 ? this.sw.t : 0, to: slot };
+    this.sw = { t: 0, from: this.raise, to: slot };
+    G.SessionPerf?.mark('무기 교체');
     G.Audio.click('switch');
   },
   cycleThrow() {
@@ -326,6 +328,7 @@ const P = G.Player = {
     const a = this.a, cam = G.camera;
     if (G.WeaponObstruction && !G.WeaponObstruction.canFire(inst.id)) { this.nextFire = now + .07; return false; }
     inst.mag--;
+    G.SessionPerf?.mark('발사');
     const parts = inst.attachments || {}, suppressed = parts.muzzle === 'suppressor';
     G.Audio.shot(inst.id, a.pos, true, suppressed);
     this.nextFire = now + Math.max(60 / def.rpm, def.action === 'bolt' ? def.cycle : 0);
@@ -386,6 +389,7 @@ const P = G.Player = {
     if (!inst || !def || !def.pellets || this.reload || this.sw || this.throwSt) return;
     if (inst.mag >= (G.Attachments?.capacity(inst,def) || def.mag) || a.ammo[def.ammo] <= 0) return;
     const empty = inst.mag === 0;
+    G.SessionPerf?.mark('장전');
     if (def.reloadType === 'shell' || def.reloadType === 'break') {
       // 펌프·반자동 산탄총은 빈 총이면 먼저 배출구에 한 발을 넣어 약실을 채운다
       const st = G.Guns.rstyle(def.key);

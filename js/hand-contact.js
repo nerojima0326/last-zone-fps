@@ -51,6 +51,8 @@ for (const [id, sides] of Object.entries(importedContacts)) for (const [side, at
   fallbackProfiles[id][side].importedAt = at;
 for (const [id, gap] of Object.entries({ ar416: .032, ms56: .024, sr25: .056, mg60: .040 }))
   fallbackProfiles[id].L.importedFreeGap = gap;
+// 넓은 MG-60 급탄부는 복귀 중 왼손이 옆을 돌아오도록 별도의 여유를 둔다.
+fallbackProfiles.mg60.L.recoveryAt = [-.065, 0, 0];
 const rigs = new WeakMap();
 function sideOf(name) { return /left|_L(?:_|$)|^L_|L(?:_\d+)?$/i.test(name) ? 'L' : 'R'; }
 function remember(rig, bone) {
@@ -281,8 +283,13 @@ G.HandContact = {
         delta.add(extra);
       }
       const arm = context?.proceduralArms?.[h.side];
-      const gap = imported && arm?.contactMode === 'cover' ? .012 : C.freeGap;
+      // 빠른 장전 복귀 중 자유 손은 총몸 바깥으로 여유를 두고 돌아온다.
+      const gap = (imported && arm?.contactMode === 'cover' ? .012 : C.freeGap || 0) + (context?.recoveryGap || 0);
       if (gap && freeWeight && arm?.palmRef) delta.add(arm.palmRef.clone().transformDirection(frame).multiplyScalar(-gap * freeWeight));
+      if (C.recoveryAt && context?.recoveryGap && freeWeight) {
+        const v = new V(...C.recoveryAt), amount = v.length() * freeWeight * Math.min(1, context.recoveryGap / .045);
+        delta.add(v.transformDirection(frame).multiplyScalar(amount));
+      }
       if (!moving) {
         // A held grip stays on the furniture through idle breathing and fire
         // clips. Only the free hand follows the authored manipulation path.

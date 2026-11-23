@@ -472,6 +472,9 @@ G.boot = async function () {
   G.AssetVM?.init();
   // M4 팩의 실사 팔을 나머지 총기에도 (M4·Glock 이 준비된 뒤)
   G.RealArms?.init();
+  G.PoseRecovery?.init(G.VM);
+  G.SessionPerf?.init();
+  G.TrainingRecords?.initUI();
   G.WeaponFinish?.root(G.vmScene);
   if(G.Attachments)G.Attachments.initUI();
   G.World.setTimeOfDay(G.UI.opts.tod || 'day');
@@ -499,12 +502,12 @@ G.boot = async function () {
   addEventListener('resize', onResize);
   renderer.domElement.addEventListener('click', () => {
     if (G.Game.spectating && !G.Input.locked) { G.Input.lock(); return; }
-    if (G.Game.state === 'playing' && !G.Input.locked && !G.Settings?.open && !G.Attachments?.open && !G.Armory?.open) G.resume();
+    if (G.Game.state === 'playing' && !G.Input.locked && !G.Settings?.open && !G.Attachments?.open && !G.Armory?.open && !G.TrainingRecords?.open) G.resume();
   });
   G.onLockChange = (locked) => {
     if (G.Game.spectating && !locked) { G.Game.stopSpectate(); return; }
     if (G.Game.state !== 'playing') return;
-    if(G.Attachments?.open||G.Armory?.open){G.paused=true;G.UI.showPause(false);return;}
+    if(G.Attachments?.open||G.Armory?.open||G.TrainingRecords?.open){G.paused=true;G.UI.showPause(false);return;}
     if (!locked) { G.paused = true; G.UI.showPause(true); }
     else { G.paused = false; G.UI.showPause(false); }
   };
@@ -709,21 +712,30 @@ function warmup() {
   for (const k in G.VM.models) show(G.VM.models[k].root);
   // Visibility inside a model encodes optics, magazines and alternate hands.
   // Compiling its root must not reveal those hidden alternatives.
-  renderer.compile(scene, camera);
-  renderer.compile(G.vmScene, G.vmCamera);
+  // 실제 HDR 출력과 같은 상태에서 준비해 첫 사격 때 출력 색공간 변형이 다시 만들어지지 않게 한다.
+  const previous = renderer.getRenderTarget();
+  try {
+    renderer.setRenderTarget(composer.renderTarget1); renderer.compile(scene, camera);
+    renderer.setRenderTarget(nativeVM.target); renderer.compile(G.vmScene, G.vmCamera);
+  } finally { renderer.setRenderTarget(previous); }
   // v67 처음 보는 텍스처를 GPU 로 올리느라 게임 중에 멈칫하던 것 (숲에 처음 들어갈 때 등) → 판이 시작되면
-  //  프레임마다 3 ms 안에서 조금씩 미리 올린다 (한 번에 다 올리면 저사양에서 시작 화면이 수 초 멈춘다)
+  //  여유 프레임에서 한 장씩 올린다 (한 번에 올리면 저사양에서 시작 화면이 수 초 멈춘다)
   const texs = new Set();
   for (const root of [scene, G.vmScene]) root.traverse(o => {
     if (!o.material) return;
     for (const m of [].concat(o.material)) for (const k in m) { const v = m[k]; if (v && v.isTexture && !v.isRenderTargetTexture && v.image) texs.add(v); }
   });
-  G.prewarmTex = [...texs];
+  G.prewarmTex = [...texs].filter(t => !renderer.properties.get(t).__webglInit);
   for (const o of shown) o.visible = false;
   for (const t of temp) scene.remove(t);
   G.VM.set(null);
 }
 
+G.prepareViewmodel = root => {
+  const previous = renderer.getRenderTarget();
+  try { renderer.setRenderTarget(G.RT?.drawing() ? null : nativeVM.target); return renderer.compileAsync(root, G.vmCamera, G.vmScene); }
+  finally { renderer.setRenderTarget(previous); }
+};
 G.startGame = function (opts) {
   G.Audio.init();
   G.UI.hideMenu();
@@ -750,6 +762,7 @@ G.resume = function () {
   G.Input.lock();
 };
 G.toMenu = function () {
+  G.SessionPerf?.stop();
   if (nativeVM) nativeVM.target.setSize(1, 1);
   G.Game.cleanup();
   G.paused = false;
@@ -769,6 +782,7 @@ function frame(now) {
   if (dt <= 0) dt = 0.001;
   frameNo++;
   const Game = G.Game, tUpd = performance.now();
+  G.TrainingRecords?.tickClock(now, Game.state === 'playing' && !G.paused && !document.hidden);
   try {
     if (Game.state === 'menu') {
       menuAng += dt * 0.025;
@@ -797,11 +811,14 @@ function frame(now) {
   // 그림자 맵 갱신 주기: 중간·높음은 2프레임마다(느리면 매 프레임), 낮음은 3프레임마다, 최저는 그림자 없음
   const se = (QUALITY[G.quality] || QUALITY.high).shEvery;
   if (se && (frameNo % se === 0 || (se === 2 && ms > 14))) renderer.shadowMap.needsUpdate = true;
-  // v67 텍스처 미리 올리기 (warmup 이 모은 목록을 프레임당 3 ms 까지)
-  if (G.prewarmTex && G.prewarmTex.length) { const t0 = performance.now(); while (G.prewarmTex.length && performance.now() - t0 < 3) { try { renderer.initTexture(G.prewarmTex.pop()); } catch (e) { /* 무시 */ } } }
+  // 여유가 있을 때만 남은 텍스처를 한 장 준비한다.
+  const prepIdle = G.paused || Game.state === 'menu' || (!G.Input.lmb && G.Player.ads < .1 && !G.Player.reload && G.Player.time - G.Player.lastShot > .3 && ms < 22);
+  if (prepIdle && performance.now() - tUpd < 4 && G.prewarmTex?.length) { try { renderer.initTexture(G.prewarmTex.pop()); } catch (e) { /* 무시 */ } }
   const updMs = performance.now() - tUpd;
   if (G.Perf) G.Perf.frameStart();
+  if (G.SessionPerf?.recording) G.SessionPerf.renderStart = performance.now();
   renderFrame(dt);
+  if (G.SessionPerf?.recording) G.SessionPerf.frame(ms, updMs, performance.now() - G.SessionPerf.renderStart);
   if (G.Perf) G.Perf.frameEnd(ms, updMs);
   // 섬광: 맞은 순간의 화면을 잔상으로 붙잡는다 (그린 직후라야 WebGL 캔버스를 복사할 수 있다)
   if (G.Player && G.Player.freezeReq) { G.Player.freezeReq = false; G.UI.freezeFrame && G.UI.freezeFrame(renderer.domElement); }

@@ -118,11 +118,12 @@ const AV = G.AssetVM = {
   pack(id) {
     const P = this.packs[GUNS[id]];
     if (!P?.ready || (SWAP[id] && !P.swaps[id] && !P.swapFailed?.[id])) return null;
+    if (P.prepared && !P.prepared.has(id)) return null;
     // A downloaded pack must not change reload durations halfway through a
     // reload, or snap the sight while the player is aiming.
     P.activated ||= new Set();
     if (!P.activated.has(id)) {
-      if (G.VM.cur === id && (G.Player.reload || G.Player.ads > 0.15)) return null;
+      if (G.VM.cur === id && (G.Player.reload || G.Player.ads > 0.15 || G.PoseRecovery?.active)) return null;
       P.activated.add(id);
     }
     return P;
@@ -160,7 +161,7 @@ const AV = G.AssetVM = {
     if (!key || !this.initialized) return;
     let P = this.packs[key];
     if (!P) {
-      P = this.packs[key] = { key, ready: false, swapPending: {}, swapFailed: {} };
+      P = this.packs[key] = { key, ready: false, swapPending: {}, swapFailed: {}, prepared: new Set(), preparePending: {} };
       P.pending = (async () => {
         const gl = new T.GLTFLoader();
         if (T.MeshoptDecoder) gl.setMeshoptDecoder(T.MeshoptDecoder);
@@ -171,7 +172,8 @@ const AV = G.AssetVM = {
       })();
     }
     await P.pending;
-    if (P.failed || !SWAP[id]) return;
+    if (P.failed) return;
+    if (!SWAP[id]) { await this.prepare(P,id); return; }
     if (!P.swapPending[id]) P.swapPending[id] = (async () => {
       const gl = new T.GLTFLoader();
       if (T.MeshoptDecoder) gl.setMeshoptDecoder(T.MeshoptDecoder);
@@ -179,6 +181,11 @@ const AV = G.AssetVM = {
       catch (e) { P.swapFailed[id] = true; console.warn('[AssetVM] ' + id + ' 총 모델 실패 — 팩 총을 쓴다', e); }
     })();
     await P.swapPending[id];
+    await this.prepare(P,id);
+  },
+  prepare(P,id) {
+    if (!P.preparePending[id]) P.preparePending[id] = Promise.resolve(G.RenderPrep?.prepare(P.pivot)).then(() => P.prepared.add(id)).catch(e => { console.info('[AssetVM] 총기 준비 실패 · 기본 모델 유지',id,e.message); });
+    return P.preparePending[id];
   },
   // Explicit preloading is useful for offline validation. Normal play only
   // requests the player's inventory, leaving unused animation packs unloaded.
@@ -656,7 +663,7 @@ const AV = G.AssetVM = {
     this.syncMount(P, id, s.scope);
     // ADS: 총의 가늠선을 시선과 나란히 돌리고, 가늠쇠(또는 조준경 중심)를 화면 가운데로
     const aim = reload ? 0 : clamp(s.ads || 0, 0, 1), weight = 1 - aim, M = P.mount;
-    const sprint = (vm.sprint || 0) * (!reload && !draw ? 1 : 0);
+    const sprint = (vm.sprint || 0) * weight * weight * (!reload && !draw ? 1 : 0);
     // 흔들림·반동 기울기만 카메라 기준으로 돌린다 (전력질주 자세는 아래 sprintPose 에서 손잡이를 축으로)
     _e.set((vm.sway?.y || 0) * weight, (vm.sway?.x || 0) * weight, 0);
     this.place(P, aim, _e);

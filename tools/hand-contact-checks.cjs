@@ -2,6 +2,7 @@
 // the fitter's target points, so a detached glove or wrong rig can be detected.
 module.exports = function checkHandContacts() {
   const { VM, HandContact: H, Player: P, Game } = G, a = Game.player;
+  const ids = window.__handCheckIDs || G.GUN_IDS;
   const cases = [], failures = [], transitions = [], coordinates = [];
   const state = ads => ({ ads, sprint: false, crouch: false, moving: 0, phase: 0, lookDX: 0, lookDY: 0,
     landDip: 0, raise: 1, reload: null, pumpP: -1, cycleP: -1, empty: false, scope: null, hideVM: false });
@@ -29,7 +30,7 @@ module.exports = function checkHandContacts() {
     if (!Object.keys(regions).some(k => k.startsWith('L:')) || !Object.keys(regions).some(k => k.startsWith('R:'))) failures.push({ id, fps, pose, reason: 'Missing visible left/right hand skin' });
     return measurement;
   };
-  for (const id of G.GUN_IDS) for (const fps of [30, 60, 144]) {
+  for (const id of ids) for (const fps of [30, 60, 144]) {
     const { d, s } = prepare(id, 0, fps);
     const baseline = inspect(id, fps, 'hip');
     if (fps === 60) {
@@ -53,13 +54,16 @@ module.exports = function checkHandContacts() {
     s.ads = P.ads = 1; advance(.5, fps, s); inspect(id, fps, 'ADS'); grip('ADS');
     s.ads = P.ads = 0; s.moving = 1; s.phase = 2.1; advance(.5, fps, s); inspect(id, fps, 'walk'); grip('walk');
     s.sprint = true; advance(.6, fps, s); inspect(id, fps, 'sprint'); grip('sprint');
+    // 달리기의 잔여 보간값이 완전 조준의 총·손 정렬을 밀어내지 않아야 한다.
+    s.ads = P.ads = 1; s.sprint = false; VM.update(1 / fps, s); inspect(id, fps, 'sprint-to-ADS'); grip('sprint-to-ADS');
+    s.ads = P.ads = 0;
     s.sprint = false; s.moving = 0; advance(.6, fps, s);
     VM.fireKick(d.kick, true); advance(.05, fps, s); inspect(id, fps, 'fire');
     advance(1.5, fps, s);
   }
   // Imported clips and procedural actions are sampled continuously. The
   // support hand must be free to leave the furniture and return to its grip.
-  for (const id of G.GUN_IDS) for (const empty of [false, true]) {
+  for (const id of ids) for (const empty of [false, true]) {
     const fps = 60, { d, s } = prepare(id, 0, fps), samples = [.12, .4, .68, .92];
     const shell = d.reloadType === 'shell' || d.reloadType === 'break';
     const phases = shell ? ['start', 'load', 'last', 'end'] : [null];
@@ -86,6 +90,15 @@ module.exports = function checkHandContacts() {
     const drift = Math.max(...rig.hands.map((h, i) => h.hand.position.distanceTo(before[i])));
     transitions.push({ id, empty, hands: rig.hands.map(h => h.hand.name), drift });
     if (rig.hands.length !== 2 || !Number.isFinite(drift) || drift > 1e-5) failures.push({ id, empty, phase: 'pose accumulation', drift, hands: rig.hands.length });
+    // 취소 후의 짧은 복귀 중에도 손이 총몸 안으로 지나가지 않는지 실제 스킨으로 검사한다.
+    for (const recoveryFPS of [30, 60, 144]) for (const p of [.2, .5, .8]) {
+      s.reload = { type: d.reloadType, empty, phase: shell ? 'load' : null, p, pp: 0, shellP: p, per: 1, port: false };
+      VM.update(1 / recoveryFPS, s); s.reload = null;
+      for (let n = 0; n < Math.ceil(recoveryFPS * .15); n++) {
+        VM.update(1 / recoveryFPS, s);
+        if (n === Math.ceil(recoveryFPS * .03) - 1 || n === Math.ceil(recoveryFPS * .08) - 1) inspect(id, recoveryFPS, `reload-recovery-${empty}-${p}-${n}`);
+      }
+    }
   }
-  VM.set(null); return { cases, transitions, coordinates, failures };
+  VM.set(null); return { weapons: ids.length, cases, transitions, coordinates, failures };
 };

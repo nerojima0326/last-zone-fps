@@ -171,7 +171,7 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   this.pivot.position.x+=(vm.sway?.x||0)*.2*weight+Math.sin((vm.t||0)*.8)*.001*weight;
   this.pivot.position.y+=Math.sin(s.phase||0)*.006*(s.moving||0)*weight-(s.landDip||0)*.05;
   if(!draw)this.pivot.position.y-=(1-(s.raise??1))*.22;
-  const sprint=(vm.sprint||0)*(!reload&&!draw?1:0);
+  const sprint=(vm.sprint||0)*weight*weight*(!reload&&!draw?1:0);
   this.pivot.rotation.set((vm.sway?.y||0)*weight-sprint*.2,(vm.sway?.x||0)*weight+sprint*.5,sprint*.16);
   if(!s.scope)this.pivot.quaternion.multiply(aimQ.identity().slerp(this.ironQ,aim));
   if(firing)G.WeaponMotion?.stabilize(this.pivot,this.main,this.mainRestMatrix);
