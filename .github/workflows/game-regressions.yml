@@ -36,6 +36,8 @@ jobs:
         run: node tools/check-session-polish.cjs
       - name: 차량 내구도·투척 충돌·폭발 효과 풀 검사
         run: node tools/check-vehicle-throwable-vfx.cjs
+      - name: 바퀴 굴림·조향·타이어 피격·재생성 검사
+        run: node tools/check-vehicle-wheels.cjs
       - name: 화염 텍스처·무대기 로딩·누락 복귀 검사
         run: node tools/check-fire-flipbook.cjs
       - name: Check all weapon grips and hand animation

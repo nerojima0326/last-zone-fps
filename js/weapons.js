@@ -1362,7 +1362,8 @@ const Ballistics = G.Ballistics = {
       let L = sp * dt;
       _d.divideScalar(sp);
       let best = L, kind = null, target = null, head = false;
-      if (Wd.raycast(p.pos, _d, L)) { best = Wd.hit.t; kind = 'world'; }
+      // 정차 차량의 보행용 상자는 건너뛰고 아래의 차체·타이어 판정을 사용한다.
+      if (Wd.raycast(p.pos, _d, L, false, true)) { best = Wd.hit.t; kind = 'world'; }
       // 수면 (바다·호수·강)
       const ny = p.pos.y + _d.y * best;
       const wl = Wd.waterAt(p.pos.x + _d.x * best * 0.5, p.pos.z + _d.z * best * 0.5);
@@ -1411,10 +1412,12 @@ const Ballistics = G.Ballistics = {
         dead = true;
       } else if (kind === 'vehicle' || (kind === 'world' && Wd.hit.box && Wd.hit.box.vehicle)) {
         const v = vh ? vh.v : Wd.hit.box.vehicle, def = p.def;
-        G.Vehicles.damage(v, G.dmgAt(def, p.start.distanceTo(_p)) * 0.8, p.owner, 'bullet');
+        const tire=vh?.wheel,amount=G.dmgAt(def,p.start.distanceTo(_p));
+        if(tire)G.VehicleWheels.damage(v,tire,amount,p.owner,_p,vh.normal);else G.Vehicles.damage(v,amount*.8,p.owner,'bullet');
         _h.copy(_d).negate();
-        G.FX.impact(_p, kind === 'world' ? Wd.hit.normal : _h, 'metal', { direction: _d, weapon: def, dynamic: true });
-        G.Audio.impact(_p, 'metal');
+        if(!tire)G.FX.impact(_p, kind === 'world' ? Wd.hit.normal : _h, 'metal', { direction: _d, weapon: def, dynamic: true });
+        else G.FX.dust(_p,2,_h.x*.3,.15,_h.z*.3,.10,.095,.09,.2);
+        G.Audio.impact(_p, tire&&!tire.flat?'rubber':'metal');
         dead = true;
       } else if (kind === 'world') {
         G.FX.impact(_p, Wd.hit.normal, Wd.hit.mat, { direction: _d, weapon: p.def, box: Wd.hit.box });

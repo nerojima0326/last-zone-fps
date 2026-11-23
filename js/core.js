@@ -424,6 +424,7 @@ const A = G.Audio = {
     const t = this.ctx.currentTime, o = this.out(sp, 0.35);
     if (mat === 'metal') { this.tone(o, t, { type: 'triangle', f0: U.rand(1200, 2200), f1: 800, a: 0.3, dur: 0.12 }); this.noise(o, t, { dur: 0.04, a: 0.3, hp: 3000 }); }
     else if (mat === 'flesh') { this.noise(o, t, { dur: 0.07, a: 0.5, lp: 700 }); }
+    else if (mat === 'rubber') { this.noise(o,t,{dur:.045,a:.45,lp:1000,hp:160}); }
     else { this.noise(o, t, { dur: 0.06, a: 0.4, bp: mat === 'wood' ? 900 : 1600, q: 1.2 }); }
   },
   whiz(pos) {
@@ -431,6 +432,10 @@ const A = G.Audio = {
     const sp = this.spatial(pos, 4);
     const t = this.ctx.currentTime, o = this.out(sp, 0.45);
     this.noise(o, t, { dur: 0.09, a: 0.6, bp: 4200, bp1: 1800, q: 2.5 });
+  },
+  tireBurst(pos){
+    if(!this.ok())return;const sp=this.spatial(pos,12);if(sp.g<.04||!this._budget())return;
+    const t=this.ctx.currentTime,o=this.out(sp,.5);this.noise(o,t,{dur:.065,a:.8,hp:150,lp:3500});this.noise(o,t+.025,{dur:.42,attack:.008,a:.22,hp:1300,lp:6500});
   },
   footstep(pos, surface, vol, side = 0) {
     if (!this.ok() || this.vol?.ambient === 0) return;
