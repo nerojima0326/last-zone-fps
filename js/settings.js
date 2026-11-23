@@ -4,7 +4,7 @@
 'use strict';
 const G = window.G, U = G.U;
 const KEY = 'lastzone_settings';
-const DEF = { adsSens: 1, scopeSens: 1, fov: 80, invertY: false, visual: { grain: .15, aberration: 0, vignette: .45, shadows: .22 }, vol: { master: 1, weapons: 1, ambient: 1 }, binds: {} };
+const DEF = { adsSens: 1, scopeSens: 1, fov: 80, invertY: false, visual: { grain: .15, aberration: 0, vignette: .45, shadows: .22, sharpen: .35 }, vol: { master: 1, weapons: 1, ambient: 1 }, binds: {} };
 // 바꿀 수 있는 동작: 게임 코드가 쓰는 원래 키(논리 키) → 이름
 const ACTIONS = [
   ['KeyW', '앞으로'], ['KeyS', '뒤로'], ['KeyA', '왼쪽'], ['KeyD', '오른쪽'],
@@ -98,6 +98,7 @@ const S = G.Settings = {
     $('setReset').addEventListener('click', () => {
       this.waiting = null;
       this.data = JSON.parse(JSON.stringify(DEF));
+      G.setRenderResolution('auto');
       this.apply(); this.save(); this.render();
       // 메뉴의 마우스 감도는 그대로 둔다 (UI.opts.sens)
     });
@@ -117,11 +118,13 @@ const S = G.Settings = {
       ['setAberration', () => this.data.visual.aberration, v => this.data.visual.aberration = v, pct],
       ['setVignette', () => this.data.visual.vignette, v => this.data.visual.vignette = v, pct],
       ['setShadows', () => this.data.visual.shadows, v => this.data.visual.shadows = v, pct],
+      ['setSharp', () => this.data.visual.sharpen, v => this.data.visual.sharpen = v, v => v ? pct(v) : '꺼짐'],
       ['setVolMaster', () => this.data.vol.master, v => this.data.vol.master = v, pct],
       ['setVolWeapons', () => this.data.vol.weapons, v => this.data.vol.weapons = v, pct],
       ['setVolAmbient', () => this.data.vol.ambient, v => this.data.vol.ambient = v, pct]
     ].map(a => (slider(...a), a));
     const inv = $('setInvert');
+    $('setRenderResolution').addEventListener('change', e => G.setRenderResolution(e.target.value));
     inv.addEventListener('click', () => { this.data.invertY = !this.data.invertY; this.apply(); this.save(); this.render(); });
     // 실사 팔 (real-arms.js 가 따로 저장한다)
     const ra = $('setRealArms');
@@ -164,6 +167,7 @@ const S = G.Settings = {
     const $ = id => document.getElementById(id);
     if (!$('settingsPanel')) return;
     const d = this.data;
+    $('setRenderResolution').value = G.UI.opts.renderResolution;
     if (this.sliders) for (const [id, get, , fmt] of this.sliders) { $(id).value = get(); $(id + 'Val').textContent = fmt(get()); }
     const inv = $('setInvert');
     inv.textContent = d.invertY ? '켜짐' : '꺼짐'; inv.classList.toggle('on', d.invertY);

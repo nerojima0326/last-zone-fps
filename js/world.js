@@ -618,6 +618,7 @@ const W = G.World = {
       m.onBeforeCompile = (sh) => {
         G.StaticAO?.shader(sh);
         G.SurfaceWear?.shader(sh, k);
+        G.ThinDetails?.shader(sh, k);
         sh.uniforms.uLodTex = lodU;
         sh.vertexShader = sh.vertexShader
           .replace('#include <common>', '#include <common>\nattribute vec3 lodk;\nuniform highp usampler2D uLodTex;')
@@ -628,7 +629,7 @@ const W = G.World = {
               if (!vis) gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
             }`);
       };
-      m.customProgramCacheKey = () => 'lod-static-ao-wear-v80-' + (G.SurfaceWear?.supports(k) ? 'surface' : 'plain');
+      m.customProgramCacheKey = () => 'lod-static-ao-wear-v81-' + (G.SurfaceWear?.supports(k) ? 'surface' : 'plain') + (G.ThinDetails?.materials.has(k) ? '-thin' : '');
     }
     // 실사 텍스처 (있으면): 원래 절차적 텍스처의 평균색 쪽으로 일부 보정해 기존 색 배합(정점 색)을 살린다
     const A = G.Assets;
@@ -686,6 +687,7 @@ const W = G.World = {
     this.bChunks = {};
     for (const key in this.parts) {
       const ks = key.split('|'), mat = ks[1];
+      G.ThinDetails?.prepare(this.parts[key], mat);
       const geo = THREE.mergeGeometries(this.parts[key], false);
       if (!geo) continue;
       G.StaticAO?.apply(geo, key);
@@ -803,6 +805,7 @@ const W = G.World = {
   box(b, cx, cy, cz, w, h, d, mat, color, opts) {
     if (w <= 0.005 || h <= 0.005 || d <= 0.005) return;
     const g = this.boxGeom(w, h, d, TILE[mat] || 2);
+    G.ThinDetails?.geometry(g, w, h, d, b.m, mat);
     g.translate(cx, cy, cz);
     g.applyMatrix4(b.m);
     const p = this.tf(b, cx, cz);

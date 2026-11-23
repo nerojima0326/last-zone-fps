@@ -154,7 +154,7 @@
     P.hasGpu = !!(P.ext && !P.sync && Object.keys(P.gpu).length);
     return { fps: 1000 / avg, avg, low1: 1000 / worst, gpu: Object.assign({}, P.gpu), gpuTotal: gsum, cpu: Object.assign({}, P.cpu), info: Object.assign({}, P.info) };
   };
-  const ORDER = ['shadow', 'scene', 'viewmodel', 'bloom', 'grade', 'output', 'fxaa', 'upscale', 'post'];
+  const ORDER = ['shadow', 'scene', 'viewmodel', 'bloom', 'grade', 'output', 'fxaa', 'upscale+sharpen', 'post'];
   function draw() {
     const s = P.stats(300), r = P.renderer, D = G.DRS || {};
     const sz = r.getDrawingBufferSize(new THREE.Vector2());
@@ -162,7 +162,7 @@
     const vm = G.viewmodelRT && G.viewmodelRT();
     const lines = [
       `FPS ${s.fps.toFixed(0)}  ${s.avg.toFixed(1)}ms  1%low ${s.low1.toFixed(0)}`,
-      `품질 ${G.qualityLabel ? G.qualityLabel() : ''}  DRS ${((D.scale || 1) * 100).toFixed(0)}%`,
+      `품질 ${G.qualityLabel ? G.qualityLabel() : ''}  해상도 ${G.renderResolutionInfo().percent}% (${G.renderResolutionInfo().mode})`,
       `장면 ${cr ? Math.round(cr.width) + 'x' + Math.round(cr.height) : '-'}  화면 ${sz.x}x${sz.y}`,
       `CPU 갱신 ${s.cpu.update.toFixed(2)}ms  제출 ${s.cpu.submit.toFixed(2)}ms`,
       `GPU ${P.ext && !P.sync ? '' : P.sync ? '(sync) ' : '(타이머 없음: ?perf=sync) '}${s.gpuTotal.toFixed(2)}ms`

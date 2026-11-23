@@ -47,3 +47,7 @@ jobs:
           node tools/check-weapon-audio.cjs
       - name: Check acoustics, hit reactions, weapon obstruction and environment detail
         run: node tools/check-combat-environment.cjs
+      - name: Check native output, fixed resolution, MSAA and texture filtering
+        run: |
+          node tools/check-render-clarity.cjs
+          node tools/check-native-reticle.cjs

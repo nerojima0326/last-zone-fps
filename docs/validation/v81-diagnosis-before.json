@@ -1,0 +1,4742 @@
+{
+  "view": [
+    960,
+    540
+  ],
+  "devices": [
+    {
+      "dpr": 1,
+      "rows": [
+        {
+          "tier": "potato",
+          "initial": {
+            "dpr": 1,
+            "canvas": [
+              960,
+              540
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.6,
+            "scene": [
+              576,
+              324
+            ],
+            "sceneOfNative": 0.6,
+            "scale": 1,
+            "minScale": 0.5,
+            "base": 0.6,
+            "applied": 0.6,
+            "samples": 0,
+            "fxaa": true
+          },
+          "floor": {
+            "dpr": 1,
+            "canvas": [
+              960,
+              540
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.35,
+            "scene": [
+              336,
+              189
+            ],
+            "sceneOfNative": 0.35,
+            "scale": 0.5,
+            "minScale": 0.5,
+            "base": 0.6,
+            "applied": 0.35,
+            "samples": 0,
+            "fxaa": true
+          }
+        },
+        {
+          "tier": "low",
+          "initial": {
+            "dpr": 1,
+            "canvas": [
+              960,
+              540
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.75,
+            "scene": [
+              720,
+              405
+            ],
+            "sceneOfNative": 0.75,
+            "scale": 1,
+            "minScale": 0.55,
+            "base": 0.75,
+            "applied": 0.75,
+            "samples": 0,
+            "fxaa": true
+          },
+          "floor": {
+            "dpr": 1,
+            "canvas": [
+              960,
+              540
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.41250000000000003,
+            "scene": [
+              396.00000000000006,
+              222.75000000000003
+            ],
+            "sceneOfNative": 0.41250000000000003,
+            "scale": 0.55,
+            "minScale": 0.55,
+            "base": 0.75,
+            "applied": 0.41250000000000003,
+            "samples": 0,
+            "fxaa": true
+          }
+        },
+        {
+          "tier": "medium",
+          "initial": {
+            "dpr": 1,
+            "canvas": [
+              960,
+              540
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 1,
+            "scene": [
+              960,
+              540
+            ],
+            "sceneOfNative": 1,
+            "scale": 1,
+            "minScale": 0.55,
+            "base": 1,
+            "applied": 1,
+            "samples": 2,
+            "fxaa": false
+          },
+          "floor": {
+            "dpr": 1,
+            "canvas": [
+              960,
+              540
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.55,
+            "scene": [
+              528,
+              297
+            ],
+            "sceneOfNative": 0.55,
+            "scale": 0.55,
+            "minScale": 0.55,
+            "base": 1,
+            "applied": 0.55,
+            "samples": 2,
+            "fxaa": false
+          }
+        },
+        {
+          "tier": "high",
+          "initial": {
+            "dpr": 1,
+            "canvas": [
+              960,
+              540
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 1,
+            "scene": [
+              960,
+              540
+            ],
+            "sceneOfNative": 1,
+            "scale": 1,
+            "minScale": 0.55,
+            "base": 1,
+            "applied": 1,
+            "samples": 4,
+            "fxaa": false
+          },
+          "floor": {
+            "dpr": 1,
+            "canvas": [
+              960,
+              540
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.55,
+            "scene": [
+              528,
+              297
+            ],
+            "sceneOfNative": 0.55,
+            "scale": 0.55,
+            "minScale": 0.55,
+            "base": 1,
+            "applied": 0.55,
+            "samples": 4,
+            "fxaa": false
+          }
+        }
+      ],
+      "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "maxAniso": 16,
+      "maxSamples": 4,
+      "halfFloatSamples": [
+        4
+      ],
+      "textures": [
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "plastic_crate_01_nor_gl",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "plastic_crate_01_metal-plastic_crate_01_rough",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": true
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 4,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": true
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": true
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "FragGrenade_Base_Color",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "FragGrenade_Normal_DirectX",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "FragGrenade_Metallic-FragGrenade_Roughness",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Smoke_Grenade_Base_Color",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Smoke_Grenade_Normal_DirectX",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Smoke_Grenade_Metallic-Smoke_Grenade_Roughness",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Bottle_Base_Color-Bottle_Opacity",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Bottle_Metallic-Bottle_Roughness",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Fabric_Base_Colo",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Fabric_Normal_DirectX",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Liquid_Base_Color",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Flashbang_Base_Color",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Flashbang_Normal_DirectX",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Flashbang_Metallic-Flashbang_Roughness",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        }
+      ],
+      "errors": []
+    },
+    {
+      "dpr": 1.25,
+      "rows": [
+        {
+          "tier": "potato",
+          "initial": {
+            "dpr": 1.25,
+            "canvas": [
+              960,
+              540
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.6,
+            "scene": [
+              576,
+              324
+            ],
+            "sceneOfNative": 0.48,
+            "scale": 1,
+            "minScale": 0.5,
+            "base": 0.6,
+            "applied": 0.6,
+            "samples": 0,
+            "fxaa": true
+          },
+          "floor": {
+            "dpr": 1.25,
+            "canvas": [
+              960,
+              540
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.35,
+            "scene": [
+              336,
+              189
+            ],
+            "sceneOfNative": 0.28,
+            "scale": 0.5,
+            "minScale": 0.5,
+            "base": 0.6,
+            "applied": 0.35,
+            "samples": 0,
+            "fxaa": true
+          }
+        },
+        {
+          "tier": "low",
+          "initial": {
+            "dpr": 1.25,
+            "canvas": [
+              960,
+              540
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.75,
+            "scene": [
+              720,
+              405
+            ],
+            "sceneOfNative": 0.6,
+            "scale": 1,
+            "minScale": 0.55,
+            "base": 0.75,
+            "applied": 0.75,
+            "samples": 0,
+            "fxaa": true
+          },
+          "floor": {
+            "dpr": 1.25,
+            "canvas": [
+              960,
+              540
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.41250000000000003,
+            "scene": [
+              396.00000000000006,
+              222.75000000000003
+            ],
+            "sceneOfNative": 0.33000000000000007,
+            "scale": 0.55,
+            "minScale": 0.55,
+            "base": 0.75,
+            "applied": 0.41250000000000003,
+            "samples": 0,
+            "fxaa": true
+          }
+        },
+        {
+          "tier": "medium",
+          "initial": {
+            "dpr": 1.25,
+            "canvas": [
+              1200,
+              675
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1.25,
+            "composerPixelRatio": 1,
+            "scene": [
+              960,
+              540
+            ],
+            "sceneOfNative": 0.8,
+            "scale": 1,
+            "minScale": 0.55,
+            "base": 1,
+            "applied": 1,
+            "samples": 2,
+            "fxaa": false
+          },
+          "floor": {
+            "dpr": 1.25,
+            "canvas": [
+              1200,
+              675
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1.25,
+            "composerPixelRatio": 0.55,
+            "scene": [
+              528,
+              297
+            ],
+            "sceneOfNative": 0.44,
+            "scale": 0.55,
+            "minScale": 0.55,
+            "base": 1,
+            "applied": 0.55,
+            "samples": 2,
+            "fxaa": false
+          }
+        },
+        {
+          "tier": "high",
+          "initial": {
+            "dpr": 1.25,
+            "canvas": [
+              1200,
+              675
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1.25,
+            "composerPixelRatio": 1.25,
+            "scene": [
+              1200,
+              675
+            ],
+            "sceneOfNative": 1,
+            "scale": 1,
+            "minScale": 0.55,
+            "base": 1.25,
+            "applied": 1.25,
+            "samples": 4,
+            "fxaa": false
+          },
+          "floor": {
+            "dpr": 1.25,
+            "canvas": [
+              1200,
+              675
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1.25,
+            "composerPixelRatio": 0.6875,
+            "scene": [
+              660,
+              371.25
+            ],
+            "sceneOfNative": 0.55,
+            "scale": 0.55,
+            "minScale": 0.55,
+            "base": 1.25,
+            "applied": 0.6875,
+            "samples": 4,
+            "fxaa": false
+          }
+        }
+      ],
+      "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "maxAniso": 16,
+      "maxSamples": 4,
+      "halfFloatSamples": [
+        4
+      ],
+      "textures": [
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "plastic_crate_01_nor_gl",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "plastic_crate_01_metal-plastic_crate_01_rough",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": true
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 4,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": true
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": true
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "FragGrenade_Base_Color",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "FragGrenade_Normal_DirectX",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "FragGrenade_Metallic-FragGrenade_Roughness",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Smoke_Grenade_Base_Color",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Smoke_Grenade_Normal_DirectX",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Smoke_Grenade_Metallic-Smoke_Grenade_Roughness",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Bottle_Base_Color-Bottle_Opacity",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Bottle_Metallic-Bottle_Roughness",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Fabric_Base_Colo",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Fabric_Normal_DirectX",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Liquid_Base_Color",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Flashbang_Base_Color",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Flashbang_Normal_DirectX",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Flashbang_Metallic-Flashbang_Roughness",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        }
+      ],
+      "errors": []
+    },
+    {
+      "dpr": 1.5,
+      "rows": [
+        {
+          "tier": "potato",
+          "initial": {
+            "dpr": 1.5,
+            "canvas": [
+              960,
+              540
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.6,
+            "scene": [
+              576,
+              324
+            ],
+            "sceneOfNative": 0.4,
+            "scale": 1,
+            "minScale": 0.5,
+            "base": 0.6,
+            "applied": 0.6,
+            "samples": 0,
+            "fxaa": true
+          },
+          "floor": {
+            "dpr": 1.5,
+            "canvas": [
+              960,
+              540
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.35,
+            "scene": [
+              336,
+              189
+            ],
+            "sceneOfNative": 0.23333333333333334,
+            "scale": 0.5,
+            "minScale": 0.5,
+            "base": 0.6,
+            "applied": 0.35,
+            "samples": 0,
+            "fxaa": true
+          }
+        },
+        {
+          "tier": "low",
+          "initial": {
+            "dpr": 1.5,
+            "canvas": [
+              960,
+              540
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.75,
+            "scene": [
+              720,
+              405
+            ],
+            "sceneOfNative": 0.5,
+            "scale": 1,
+            "minScale": 0.55,
+            "base": 0.75,
+            "applied": 0.75,
+            "samples": 0,
+            "fxaa": true
+          },
+          "floor": {
+            "dpr": 1.5,
+            "canvas": [
+              960,
+              540
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.41250000000000003,
+            "scene": [
+              396.00000000000006,
+              222.75000000000003
+            ],
+            "sceneOfNative": 0.275,
+            "scale": 0.55,
+            "minScale": 0.55,
+            "base": 0.75,
+            "applied": 0.41250000000000003,
+            "samples": 0,
+            "fxaa": true
+          }
+        },
+        {
+          "tier": "medium",
+          "initial": {
+            "dpr": 1.5,
+            "canvas": [
+              1440,
+              810
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1.5,
+            "composerPixelRatio": 1,
+            "scene": [
+              960,
+              540
+            ],
+            "sceneOfNative": 0.6666666666666666,
+            "scale": 1,
+            "minScale": 0.55,
+            "base": 1,
+            "applied": 1,
+            "samples": 2,
+            "fxaa": false
+          },
+          "floor": {
+            "dpr": 1.5,
+            "canvas": [
+              1440,
+              810
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1.5,
+            "composerPixelRatio": 0.55,
+            "scene": [
+              528,
+              297
+            ],
+            "sceneOfNative": 0.36666666666666664,
+            "scale": 0.55,
+            "minScale": 0.55,
+            "base": 1,
+            "applied": 0.55,
+            "samples": 2,
+            "fxaa": false
+          }
+        },
+        {
+          "tier": "high",
+          "initial": {
+            "dpr": 1.5,
+            "canvas": [
+              1440,
+              810
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1.5,
+            "composerPixelRatio": 1.25,
+            "scene": [
+              1200,
+              675
+            ],
+            "sceneOfNative": 0.8333333333333334,
+            "scale": 1,
+            "minScale": 0.55,
+            "base": 1.25,
+            "applied": 1.25,
+            "samples": 4,
+            "fxaa": false
+          },
+          "floor": {
+            "dpr": 1.5,
+            "canvas": [
+              1440,
+              810
+            ],
+            "css": [
+              960,
+              540
+            ],
+            "rendererPixelRatio": 1.5,
+            "composerPixelRatio": 0.6875,
+            "scene": [
+              660,
+              371.25
+            ],
+            "sceneOfNative": 0.4583333333333333,
+            "scale": 0.55,
+            "minScale": 0.55,
+            "base": 1.25,
+            "applied": 0.6875,
+            "samples": 4,
+            "fxaa": false
+          }
+        }
+      ],
+      "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "maxAniso": 16,
+      "maxSamples": 4,
+      "halfFloatSamples": [
+        4
+      ],
+      "textures": [
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "plastic_crate_01_nor_gl",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "plastic_crate_01_metal-plastic_crate_01_rough",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": true
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": true,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 4,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": false,
+          "mips": 11,
+          "compressed": true,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 2,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "aoMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": true
+        },
+        {
+          "name": "normalMap",
+          "aniso": 8,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": true
+        },
+        {
+          "name": "roughnessMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "FragGrenade_Base_Color",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "FragGrenade_Normal_DirectX",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "FragGrenade_Metallic-FragGrenade_Roughness",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Smoke_Grenade_Base_Color",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Smoke_Grenade_Normal_DirectX",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Smoke_Grenade_Metallic-Smoke_Grenade_Roughness",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Bottle_Base_Color-Bottle_Opacity",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Bottle_Metallic-Bottle_Roughness",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Fabric_Base_Colo",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Fabric_Normal_DirectX",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Liquid_Base_Color",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Flashbang_Base_Color",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Flashbang_Normal_DirectX",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "Flashbang_Metallic-Flashbang_Roughness",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "normalMap",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        },
+        {
+          "name": "map",
+          "aniso": 1,
+          "min": 1008,
+          "generateMipmaps": true,
+          "mips": 0,
+          "compressed": false,
+          "renderTarget": false,
+          "data": false
+        }
+      ],
+      "errors": []
+    }
+  ]
+}

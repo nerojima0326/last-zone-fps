@@ -52,6 +52,9 @@ const RT = G.RT = {
   async setEnabled(on) {
     this.wanted = !!on; save(this.wanted);
     if (this.wanted) { await this.start(); await this.prepare(); } else this.stop();
+    G.DRS?.apply(true);
+    if (G.quality) G.Veg?.setQuality(G.quality);
+    G.TextureQuality?.scan(G.scene, true);
     if (G.Settings) G.Settings.render();
   },
   // v54: 장면 컴파일(BVH 만들기)은 몇 초 걸려 게임이 멈춘 것처럼 보인다 → 로딩 화면을 띄운 채로 미리 한다.
@@ -80,6 +83,9 @@ const RT = G.RT = {
       if (G.Settings) G.Settings.render();
     });
     if (this.wanted) await this.start();
+    G.DRS?.apply(true);
+    if (G.quality) G.Veg?.setQuality(G.quality);
+    G.TextureQuality?.scan(G.scene, true);
   },
   async start() {
     if (this.rt) { this.state = 'on'; this.dirty = true; return; }
@@ -112,6 +118,9 @@ const RT = G.RT = {
   },
   // 새 판·메뉴 전환 등 장면 구성이 크게 바뀌면 다시 컴파일
   invalidate() { this.dirty = true; },
+  // ThreeRT의 renderScale은 조명 버퍼 전용이다. 장면 배율은 setSize로 분리하고
+  // 라이브러리의 조명·반사 자동 조절은 유지한다. 출력 캔버스는 줄이지 않는다.
+  syncResolution() { this.sceneScale = G.DRS?.scale || 1; },
 
   /* ---------- 장면 분류 ---------- */
   tag(scene) {
@@ -201,7 +210,9 @@ const RT = G.RT = {
   /* ---------- 그리기 ---------- */
   render(renderer, scene, camera, vmScene, vmCamera) {
     const rt = this.rt;
+    this.syncResolution();
     renderer.getDrawingBufferSize(this.size);
+    this.size.multiplyScalar(this.sceneScale).floor();
     if (!this.size.equals(this.last)) { rt.setSize(this.size.x, this.size.y); this.last.copy(this.size); }
     if (this.dirty) this.compile(scene);
     else if (++this.frame % 60 === 0) {
@@ -230,6 +241,7 @@ const RT = G.RT = {
     camera.layers.set(OVER);
     renderer.render(scene, camera);
     camera.layers.mask = mask; scene.background = bg;
+    G.sharpenRT?.(renderer);
     // 1인칭 무기
     renderer.clearDepth();
     renderer.render(vmScene, vmCamera);

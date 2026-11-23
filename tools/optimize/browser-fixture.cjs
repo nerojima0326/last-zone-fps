@@ -16,7 +16,7 @@ module.exports = async function fixture(opts = {}) {
   try {
     browser = await chromium.launch({ executablePath: process.env.CHROME_BIN, headless: true,
       args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
-    const page = await browser.newPage({ viewport: opts.viewport || { width: 960, height: 540 } });
+    const page = await browser.newPage({ viewport: opts.viewport || { width: 960, height: 540 }, deviceScaleFactor: opts.deviceScaleFactor || 1 });
     const errors = [], requests = [];
     page.on('pageerror', e => errors.push(e.message));
     page.on('console', m => { if (m.type() === 'error' && /THREE\.WebGLProgram|Shader Error|VALIDATE_STATUS|INVALID_OPERATION|INVALID_FRAMEBUFFER_OPERATION/.test(m.text())) errors.push(m.text()); });
@@ -26,11 +26,13 @@ module.exports = async function fixture(opts = {}) {
       contentType: 'application/javascript', body: fs.readFileSync(path.join(process.env.THREE_DIR, r.request().url().split('/three@0.160.0/')[1]))
     }));
     await page.route(/fonts\.(googleapis|gstatic)\.com/, r => r.fulfill({ contentType: 'text/css', body: '' }));
-    await page.addInitScript(() => localStorage.setItem('lastzone_opts', JSON.stringify({ quality: 'potato', qv: 2, players: 4, loadout: 'all', fpsTarget: 60 })));
+    await page.addInitScript(preserve => {
+      if (!preserve || !localStorage.getItem('lastzone_opts')) localStorage.setItem('lastzone_opts', JSON.stringify({ quality: 'potato', qv: 2, players: 4, loadout: 'all', fpsTarget: 60 }));
+    }, !!opts.preserveOptions);
     if (opts.route) await opts.route(page);
     await page.goto('http://127.0.0.1:' + server.address().port + '/?' + (opts.query || ''));
     await page.waitForFunction(() => window.G?.VM && document.querySelector('#menu:not(.hidden)'), null, { timeout: 240000 });
-    await page.evaluate(() => { G.paused = true; G.DRS.frame = () => {}; });
+    await page.evaluate(liveDRS => { G.paused = true; if (!liveDRS) G.DRS.frame = () => {}; }, !!opts.liveDRS);
     return { page, errors, requests, close: async () => { await browser.close(); await new Promise(r => server.close(r)); } };
   } catch (e) { if (browser) await browser.close(); server.close(); throw e; }
 };
