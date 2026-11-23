@@ -6,6 +6,7 @@ const THREE = window.THREE, G = window.G, U = G.U;
 const V3 = THREE.Vector3;
 const _f = new V3(), _r = new V3(), _c = new V3(), _e = new V3(), _d = new V3();
 const _support = new V3();
+const _wheelRay=new THREE.Ray(),_wheelBox=new THREE.Box3(),_vehicleInv=new THREE.Matrix4(),_contact=new V3(),_axis=new V3();
 const HALF_L = 1.9, HALF_W = 0.95, MAX = 21, REV = 6;
 const HP = 1600;                // 모든 차량 내구도를 5배로 상향한다. 탑승자 피해·폭발 지연은 유지한다.
 const RESPAWN = 25;             // 폭발한 차는 잔해로 이 시간(초)만큼 남았다가, 처음 놓였던 자리에 새 차로 다시 나온다
@@ -35,8 +36,6 @@ function build() {
     bx(0.3, 0.14, 0.06, -0.62, 0.9, 1.91, 0xb01c14), bx(0.3, 0.14, 0.06, 0.62, 0.9, 1.91, 0xb01c14),
     bx(0.5, 0.5, 0.2, 0, 1.2, 2.0, dark)                                                           // 예비 타이어
   ];
-  for (const [x, z] of [[-0.95, -1.25], [0.95, -1.25], [-0.95, 1.25], [0.95, 1.25]])
-    parts.push(col(new THREE.CylinderGeometry(0.42, 0.42, 0.3, 14).rotateZ(Math.PI / 2).translate(x, 0.42, z), 0x17181a));
   return THREE.mergeGeometries(parts);
 }
 
@@ -54,17 +53,18 @@ const Vh = G.Vehicles = {
       const wheels = [];
       root.traverse(o => { if (/^wheel_(front|back)(Left|Right)$/.test(o.name)) wheels.push(o.name); });
       // 바퀴 바닥 = 땅, 앞뒤 바퀴 가운데 = 원점 (앞은 -Z)
-      const box = new THREE.Box3().setFromObject(root), wz = [], wx = [];
+      const box = new THREE.Box3().setFromObject(root), wz = [], wx = [], wheelDefs=[];
       let r = 0;
       for (const n of wheels) {
         const w = root.getObjectByName(n), wb = new THREE.Box3().setFromObject(w), c = wb.getCenter(new V3());
         wz.push(c.z); wx.push(Math.abs(c.x)); r = Math.max(r, (wb.max.y - wb.min.y) / 2);
+        wheelDefs.push({r:(wb.max.y-wb.min.y)*S/2,width:(wb.max.x-wb.min.x)*S});
       }
       const cz = (Math.min(...wz) + Math.max(...wz)) / 2;
       // 차체 상자 (거울 같은 튀어나온 것까지 포함하지 않게 차체 노드로)
       const body = root.getObjectByName('body'), bb = new THREE.Box3().setFromObject(body || root);
       this.models[k] = {
-        root, wheels, r: r * S, y0: -box.min.y * S, cz: -cz * S,
+        root, wheels, wheelDefs, r: r * S, y0: -box.min.y * S, cz: -cz * S,
         hl: (bb.max.z - bb.min.z) / 2 * S, hw: Math.min(bb.max.x - bb.min.x, 2 * Math.max(...wx) + r) / 2 * S, top: (box.max.y - box.min.y) * S,
         wheelPts: wheels.map(n => { const w = root.getObjectByName(n), c = new THREE.Box3().setFromObject(w).getCenter(new V3()); return [c.x * S, (c.z - cz) * S]; })
       };
@@ -128,8 +128,11 @@ const Vh = G.Vehicles = {
     const kind = KINDS.find(k => this.models[k] && k === v.kind) || KINDS.find(k => this.models[k]);
     if (!kind) {
       if (!this.geo) { this.geo = build(); this.mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.7, metalness: 0.2 }); }
-      const m = new THREE.Mesh(this.geo, this.mat); m.castShadow = true; m.rotation.order = 'YXZ';
+      const m=new THREE.Group(),body=new THREE.Mesh(this.geo,this.mat);body.name='body';body.castShadow=true;m.add(body);m.rotation.order='YXZ';
+      if(!this.tireGeo){this.tireGeo=new THREE.CylinderGeometry(.42,.42,.3,20).rotateZ(Math.PI/2);this.tireMat=new THREE.MeshStandardMaterial({color:0x151515,roughness:.95});this.rimGeo=new THREE.CylinderGeometry(.21,.21,.315,6).rotateZ(Math.PI/2);this.rimMat=new THREE.MeshStandardMaterial({color:0x85857d,metalness:.7,roughness:.5})}
+      v.wheels=JEEP.wheelPts.map(([x,z],i)=>{const w=new THREE.Group();w.name='wheel_'+(z<0?'front':'back')+(x<0?'Left':'Right');w.position.set(x,.42,z);const tire=new THREE.Mesh(this.tireGeo,this.tireMat),rim=new THREE.Mesh(this.rimGeo,this.rimMat);tire.castShadow=rim.castShadow=true;w.add(tire,rim);m.add(w);return{o:w,front:z<0,r:.42,width:.3}});
       v.dim = JEEP;
+      v.ownedMaterials=[];
       return m;
     }
     const M = this.models[kind], g = new THREE.Group(), inner = M.root.clone(true);
@@ -152,7 +155,8 @@ const Vh = G.Vehicles = {
       o.material = Array.isArray(o.material) ? out : out[0];
     });
     g.add(inner); g.rotation.order = 'YXZ';
-    v.wheels = M.wheels.map(n => { const w = inner.getObjectByName(n); return { o: w, base: w.quaternion.clone(), front: /front/.test(n) }; });
+    v.wheels = M.wheels.map((n,i) => { const w = inner.getObjectByName(n); return { o: w, front: /front/.test(n), ...M.wheelDefs[i] }; });
+    v.ownedMaterials=Array.from(paint.values());
     v.spin = 0;
     v.dim = { hl: M.hl, hw: M.hw, top: M.top, r: M.r, wheelPts: M.wheelPts };
     return g;
@@ -163,13 +167,15 @@ const Vh = G.Vehicles = {
     if (!v.home) v.home = { x, z, yaw };
     v.home.kind = v.kind;
     v.mesh = this.makeMesh(v);
+    G.VehicleWheels.setup(v);
     G.scene.add(v.mesh);
-    this.list.push(v); this.place(v, 1); this.block(v);
+    this.list.push(v); this.place(v, 1); G.VehicleWheels.sync(v);this.block(v);G.RT?.invalidate();
     return v;
   },
   reset() {
-    for (const v of this.list) { G.scene.remove(v.mesh); this.unblock(v); }
+    for (const v of this.list) { G.scene.remove(v.mesh); this.unblock(v);G.VehicleWheels.dispose(v); }
     this.list = [];
+    G.RT?.invalidate();
     if (this.skids) { this.skids.count = 0; this.skidN = 0; }
     if (G.Audio.ctx) G.Audio.setLoop('skid', 0);
     if (G.Audio.ctx) { G.Audio.setLoop('engine', 0); G.Audio.setLoop('engineBot', 0); }
@@ -212,19 +218,25 @@ const Vh = G.Vehicles = {
     const h = (ox, oz) => ground(v.pos.x + _f.x * oz + _r.x * ox, v.pos.z + _f.z * oz + _r.z * ox);
     const D = dimOf(v), L = D.hl * 0.75, Wd = D.hw;
     const hf = h(0, L), hb = h(0, -L), hl = h(-Wd, 0), hr = h(Wd, 0);
-    const pitch = Math.atan2(hf - hb, 2 * L), roll = Math.atan2((hr - hl) * Math.cos(pitch), 2 * Wd);
+    const drops=G.VehicleWheels.drops(v),pitch = Math.atan2(hf - hb-drops.front+drops.rear, 2 * L), roll = Math.atan2((hr - hl-drops.right+drops.left) * Math.cos(pitch), 2 * Wd);
     v.pitch = U.lerp(v.pitch, pitch, k); v.roll = U.lerp(v.roll, roll, k);
     v.mesh.rotation.set(v.pitch + (v.tilt ? v.tilt.x : 0), v.yaw, v.roll + (v.tilt ? v.tilt.z : 0));
-    // Support the tilted wheel treads instead of sinking the uphill wheels into the terrain.
+    // 기울어진 바퀴의 접점으로 차체를 받쳐 비탈 안으로 타이어가 들어가지 않게 한다.
     let supportY = -Infinity;
-    for (const [x, z] of D.wheelPts) {
-      _support.set(x, 0, z).applyQuaternion(v.mesh.quaternion);
+    for (let i=0;i<D.wheelPts.length;i++) {
+      const [x,z]=D.wheelPts[i],w=v.wheels?.[i];
+      _support.set(x,w?w.r-w.radius:0,z).applyQuaternion(v.mesh.quaternion);
       supportY = Math.max(supportY, ground(v.pos.x + _support.x, v.pos.z + _support.z) - _support.y);
     }
     v.pos.y = Math.max(supportY, U.lerp(v.pos.y, supportY, k));
     v.mesh.position.copy(v.pos);
     if (v.hop) v.mesh.position.y += v.hop.y;
     v.mesh.updateMatrixWorld(true);
+    if(v.wheelDamage){
+      // 파손된 코너의 높이를 낮추고 남은 작은 접점 오차는 바퀴 이동 범위 안에서 흡수한다.
+      for(const w of v.wheels){w.o.position.y=w.rest.y;w.o.updateWorldMatrix(true,false);w.o.getWorldPosition(_support);const floor=ground(_support.x,_support.z),axis=_axis.set(1,0,0).applyQuaternion(v.mesh.quaternion),extent=w.radius*Math.sqrt(Math.max(0,1-axis.y*axis.y))+w.width*.5*Math.abs(axis.y);w.o.position.y+=U.clamp((floor-(_support.y-extent))/Math.max(.5,v.mesh.matrixWorld.elements[5]),-.12,.12)}
+      v.mesh.updateMatrixWorld(true);
+    }
   },
   near(a) {
     let best = null, bd = 3.4;
@@ -263,6 +275,7 @@ const Vh = G.Vehicles = {
     a.vel.set(-Math.sin(v.yaw) * v.speed * 0.5, 0, -Math.cos(v.yaw) * v.speed * 0.5);
     a.yaw = P.orbitYaw; a.pitch = 0;
     v.driver = null; P.vehicle = null;
+    v.handbrake=false;
     if (Math.abs(v.speed) < 1.5) { v.speed = 0; this.block(v); }
     P.camY = a.pos.y + a.eyeH();
     P.raise = 0; P.sw = { t: 0.2, to: a.cur };
@@ -287,7 +300,7 @@ const Vh = G.Vehicles = {
     if (Math.abs(v.speed) > 7 && Math.random() < dt * 14) G.FX.dust(_c.copy(v.pos).addScaledVector(_f, -1.7 * Math.sign(v.speed)), 1, 0, 0.3, 0, 0.5, 0.45, 0.36, 1.4);
     // 내리기
     const hpP = Math.round(v.hp / HP * 100);
-    P.prompt = '<kbd>' + G.Settings.label('KeyF') + '</kbd> 내리기 · <kbd>' + G.Settings.label('Space') + '</kbd> 드리프트 · <b>' + Math.round(Math.hypot(v.speed, v.lat) * 3.6) + '</b> km/h · 차량 ' + (v.burnT > 0 ? '<b style="color:#ff5a3c">불붙음!</b>' : '<b' + (hpP < 30 ? ' style="color:#ff8a3c"' : '') + '>' + hpP + '%</b>') + (v.drift ? ' · <b style="color:#ffd23f">DRIFT</b>' : ''); P.lootTarget = null; P.reviveTarget = null;
+    P.prompt = '<kbd>' + G.Settings.label('KeyF') + '</kbd> 내리기 · <kbd>' + G.Settings.label('Space') + '</kbd> 드리프트 · <b>' + Math.round(Math.hypot(v.speed, v.lat) * 3.6) + '</b> km/h · 차량 ' + (v.burnT > 0 ? '<b style="color:#ff5a3c">불붙음!</b>' : '<b' + (hpP < 30 ? ' style="color:#ff8a3c"' : '') + '>' + hpP + '%</b>') + (v.wheelDamage?' · <b style="color:#ffb45e">타이어 파손 '+v.wheelDamage+'/4</b>':'') + (v.drift ? ' · <b style="color:#ffd23f">DRIFT</b>' : ''); P.lootTarget = null; P.reviveTarget = null;
     if (I.hit('KeyF')) { this.exit(P); return; }
     // 3인칭 카메라
     const dist = 7.5;
@@ -317,10 +330,11 @@ const Vh = G.Vehicles = {
   step(v, a, dt, thr, st, brake, hand) {
     const W = G.World;
     const wet = W.waterAt(v.pos.x, v.pos.z) - W.heightAt(v.pos.x, v.pos.z);
-    const top = wet > 0.5 ? 4 : MAX;
+    const punctures=v.wheelDamage||0,top = (wet > 0.5 ? 4 : MAX)*Math.max(.38,1-punctures*.15);
+    v.handbrake=!!hand;
     if (v.dead) { thr = 0; st = 0; brake = true; hand = false; }
     // 많이 부서지면 힘이 빠진다
-    const weak = v.hp < HP * 0.3 ? 0.65 : 1;
+    const weak = (v.hp < HP * 0.3 ? 0.65 : 1)*Math.pow(.88,punctures);
     if (hand) {
       // 꺾으면서 당기면 뒷바퀴만 미끄러진다: 거의 감속하지 않고, 가속 페달을 밟고 있으면 속도를 유지
       if (Math.abs(st) > 0.2 && Math.abs(v.speed) > 6) {
@@ -330,17 +344,17 @@ const Vh = G.Vehicles = {
     }
     else if (brake) v.speed = approach(v.speed, 0, 26 * dt);
     else if (thr > 0) v.speed = v.speed < 0 ? approach(v.speed, 0, 22 * dt) : Math.min(top, v.speed + 9.5 * weak * (1 - v.speed / (top + 4)) * dt);
-    else if (thr < 0) v.speed = v.speed > 0.5 ? approach(v.speed, 0, 20 * dt) : Math.max(-REV, v.speed - 6 * dt);
+    else if (thr < 0) v.speed = v.speed > 0.5 ? approach(v.speed, 0, 20 * dt) : Math.max(-REV*Math.max(.45,1-punctures*.14), v.speed - 6*Math.pow(.88,punctures) * dt);
     else v.speed = approach(v.speed, 0, (2.2 + Math.abs(v.speed) * 0.12) * dt);
     if (v.speed > top) v.speed = approach(v.speed, top, 14 * dt);
     v.steer = U.damp(v.steer, st, 7, dt);
-    const lock = 0.55 / (1 + Math.abs(v.speed) * 0.06);
+    const lock = 0.55 / (1 + Math.abs(v.speed) * 0.06);v.steerAngle=v.steer*lock;
     // 지금 속도 (세계 좌표)
     _f.set(-Math.sin(v.yaw), 0, -Math.cos(v.yaw)); _r.set(Math.cos(v.yaw), 0, -Math.sin(v.yaw));
     _vel.copy(_f).multiplyScalar(v.speed).addScaledVector(_r, v.lat || 0);
     // 핸드브레이크로 뒷바퀴를 잠그면 차 머리가 더 잘 돈다
     const slide = hand && Math.abs(v.speed) > 6;
-    let yawRate = v.steer * lock * v.speed / 2.6;
+    let yawRate = Math.tan(v.steerAngle) * v.speed / (v.wheelbase||2.6)+(v.tirePull||0)*U.clamp(v.speed/8,-1,1);
     if (slide) yawRate *= 1.25;
     else if (Math.abs(v.lat) > 1.5) yawRate += v.steer * 0.35 * Math.sign(v.speed);   // 미끄러지는 동안 카운터 스티어
     v.yaw += yawRate * dt;
@@ -348,7 +362,7 @@ const Vh = G.Vehicles = {
     _f.set(-Math.sin(v.yaw), 0, -Math.cos(v.yaw)); _r.set(Math.cos(v.yaw), 0, -Math.sin(v.yaw));
     v.speed = _vel.dot(_f); v.lat = _vel.dot(_r);
     // 옆 접지력: 평소 강하게, 핸드브레이크면 약하게. 잃은 옆 속도 일부는 앞으로 (드리프트를 빠져나올 때 가속)
-    const grip = slide ? 2.2 : wet > 0.3 ? 2.5 : 7.5;
+    const grip = (slide ? 2.2 : wet > 0.3 ? 2.5 : 7.5)*Math.max(.35,1-punctures*.16);
     const lat0 = v.lat;
     v.lat *= Math.exp(-grip * dt);
     if (!slide && v.speed > 0) v.speed = Math.min(top, v.speed + Math.abs(lat0 - v.lat) * 0.25);
@@ -409,14 +423,7 @@ const Vh = G.Vehicles = {
   },
   /* ---------------- 바퀴 · 타이어 자국 ---------------- */
   wheelAnim(v, dt) {
-    if (!v.wheels) return;
-    v.spin = (v.spin + v.speed / Math.max(0.2, v.dim.r) * dt) % (Math.PI * 2);
-    for (const w of v.wheels) {
-      // 부모 공간에서 꺾고(앞바퀴) 굴린다: 원래 자세(base) 위에
-      _q.setFromAxisAngle(_Y, w.front ? v.steer * 0.42 : 0);
-      _q2.setFromAxisAngle(_X, -v.spin);
-      w.o.quaternion.copy(_q).multiply(_q2).multiply(w.base);
-    }
+    G.VehicleWheels.update(v);
   },
   // 드리프트: 뒷바퀴 자국 · 타이어 연기 · 끼익 소리
   tires(v, dt) {
@@ -450,7 +457,7 @@ const Vh = G.Vehicles = {
     this.skids.instanceMatrix.needsUpdate = true;
   },
   /* ---------------- 부서짐 · 폭발 ---------------- */
-  // 총알 등이 차체에 맞았는지 (차 방향으로 돌린 상자). 맞으면 { v, t }
+  // 차체 상자와 실제 조향된 바퀴를 분리한다. 바퀴 구멍은 차체 삼각형으로 가림을 확인한다.
   rayHit(o, d, maxT) {
     let best = null;
     for (const v of this.list) {
@@ -459,19 +466,13 @@ const Vh = G.Vehicles = {
       // 광선과 차 중심의 거리로 먼저 거른다
       const tc = dx * d.x + dz * d.z, h = dx * dx + dz * dz - tc * tc / (d.x * d.x + d.z * d.z + 1e-9);
       if (h > R * R || tc < -R || tc > maxT + R) continue;
-      const c = Math.cos(v.yaw), s = Math.sin(v.yaw);
-      // 세계 → 차 (Y 축으로 -yaw)
-      const lx = c * (o.x - v.pos.x) - s * (o.z - v.pos.z), lz = s * (o.x - v.pos.x) + c * (o.z - v.pos.z), ly = o.y - v.pos.y - (v.hop ? v.hop.y : 0);
-      const ldx = c * d.x - s * d.z, ldz = s * d.x + c * d.z, ldy = d.y;
-      let t0 = 0, t1 = maxT;
-      for (const [p, q, lo, hi] of [[lx, ldx, -D.hw, D.hw], [ly, ldy, 0.3, D.top * 0.92], [lz, ldz, -D.hl, D.hl]]) {
-        if (Math.abs(q) < 1e-9) { if (p < lo || p > hi) { t0 = Infinity; break; } continue; }
-        let a = (lo - p) / q, b = (hi - p) / q;
-        if (a > b) { const t = a; a = b; b = t; }
-        t0 = Math.max(t0, a); t1 = Math.min(t1, b);
-        if (t0 > t1) break;
-      }
-      if (t0 <= t1 && t0 < maxT && (!best || t0 < best.t)) best = { v, t: t0 };
+      const limit=best?Math.min(best.t,maxT):maxT;
+      _vehicleInv.copy(v.mesh.matrixWorld).invert();_wheelRay.set(o,d).applyMatrix4(_vehicleInv);_wheelBox.min.set(-D.hw,.3,-D.hl);_wheelBox.max.set(D.hw,D.top*.92,D.hl);
+      let body=Infinity;if(_wheelBox.containsPoint(_wheelRay.origin)){body=0;_contact.copy(_wheelRay.origin)}else if(_wheelRay.intersectBox(_wheelBox,_contact))body=_e.copy(_contact).applyMatrix4(v.mesh.matrixWorld).distanceTo(o);
+      const wheel=G.VehicleWheels.ray(v,o,d,limit);
+      if(wheel){const cover=G.VehicleWheels.occluder(v,o,d,wheel.t-.025);if(cover===Infinity){best=wheel;continue}body=Math.min(body,cover)}
+      else if(body<limit&&G.VehicleWheels.well(v,_contact,_vehicleInv))body=G.VehicleWheels.occluder(v,o,d,limit);
+      if(body<limit)best={v,t:body};
     }
     return best;
   },
@@ -537,6 +538,7 @@ const Vh = G.Vehicles = {
       if (o.isMesh) o.material = Array.isArray(o.material) ? o.material.map(m => /window|glass/i.test(m.name) ? this.burnt.glass : this.burnt.body) : (/window|glass/i.test(o.material.name) ? this.burnt.glass : this.burnt.body);
     });
     if (v.wheels) for (const w of v.wheels) w.o.visible = Math.random() < 0.6;
+    G.RT?.invalidate();
     v.wreckT = 0;
     if (!v.box) this.block(v);
   },
@@ -569,7 +571,7 @@ const Vh = G.Vehicles = {
   freeNear(a, r) {
     let best = null, bd = r;
     for (const v of this.list) {
-      if (v.driver || v.dead || v.hp < HP * 0.3 || (v.claim && v.claim !== a && v.claim.alive)) continue;
+      if (v.driver || v.dead || v.hp < HP * 0.3 || v.wheelDamage>2 || (v.claim && v.claim !== a && v.claim.alive)) continue;
       if (G.World.waterAt(v.pos.x, v.pos.z) - G.World.heightAt(v.pos.x, v.pos.z) > 0.3) continue;
       const d = Math.hypot(v.pos.x - a.pos.x, v.pos.z - a.pos.z);
       if (d < bd && Math.abs(v.pos.y - a.pos.y) < 3) { bd = d; best = v; }
@@ -601,7 +603,7 @@ const Vh = G.Vehicles = {
     if (!done) a.pos.set(v.pos.x, v.pos.y + 1.8, v.pos.z);
     a.vel.set(-Math.sin(v.yaw) * v.speed * 0.4, 0, -Math.cos(v.yaw) * v.speed * 0.4);
     a.yaw = v.yaw; a.pitch = 0;
-    v.driver = null; bot.vehicle = null; a.inVehicle = null;
+    v.driver = null;v.handbrake=false; bot.vehicle = null; a.inVehicle = null;
     if (Math.abs(v.speed) < 1.5) { v.speed = 0; this.block(v); }
   },
   // 봇 운전: 목표 쪽으로 핸들을 꺾고, 막히면 후진해서 돌아 나온다. 다 오면 true(내릴 때)
@@ -648,7 +650,7 @@ const Vh = G.Vehicles = {
     const H = v.home;
     for (const a of G.Game.actors) if (a.alive && Math.hypot(a.pos.x - H.x, a.pos.z - H.z) < 5) return false;
     for (const o of this.list) if (o !== v && Math.hypot(o.pos.x - H.x, o.pos.z - H.z) < 5) return false;
-    G.scene.remove(v.mesh); this.unblock(v);
+    G.scene.remove(v.mesh); this.unblock(v);G.VehicleWheels.dispose(v);
     this.list.splice(this.list.indexOf(v), 1);
     const n = this.newVehicle(H.x, G.World.heightAt(H.x, H.z), H.z, H.yaw, { home: H, kind: H.kind });
     G.FX.dust(_e.copy(n.pos).add(_o.set(0, 0.4, 0)), 10, 0, 0.6, 0, 0.55, 0.52, 0.48, 1.6);
@@ -690,6 +692,7 @@ const Vh = G.Vehicles = {
         continue;
       }
       if (v.speed === 0 && !v.lat) continue;
+      v.handbrake=false;
       v.speed = approach(v.speed, 0, 9 * dt); v.lat = approach(v.lat || 0, 0, 12 * dt);
       _f.set(-Math.sin(v.yaw), 0, -Math.cos(v.yaw)); _r.set(Math.cos(v.yaw), 0, -Math.sin(v.yaw));
       const nx = v.pos.x + (_f.x * v.speed + _r.x * v.lat) * dt, nz = v.pos.z + (_f.z * v.speed + _r.z * v.lat) * dt;

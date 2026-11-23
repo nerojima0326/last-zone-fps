@@ -1,0 +1,221 @@
+{
+  "version": 86,
+  "base": "401a95292dae33004113cb06264fcebba1934177",
+  "branch": "feat/vehicle-wheel-damage-v86",
+  "recordedAt": "2026-11-23T14:51:44.762617+00:00",
+  "environment": {
+    "chromium": "156",
+    "three": "r160",
+    "renderer": "SwiftShader",
+    "hardwareGPU": false
+  },
+  "checks": [
+    {
+      "command": "node tools/check-vehicle-wheels.cjs",
+      "result": "통과",
+      "gunModelCases": 120,
+      "wheelAxesMaxResidualDegrees": 0.17734170629858403,
+      "resourceWaves": [
+        {
+          "objects": 0,
+          "geometries": 0,
+          "textures": 0
+        },
+        {
+          "objects": 0,
+          "geometries": 0,
+          "textures": 0
+        },
+        {
+          "objects": 0,
+          "geometries": 0,
+          "textures": 0
+        },
+        {
+          "objects": 0,
+          "geometries": 0,
+          "textures": 0
+        }
+      ]
+    },
+    {
+      "command": "node tools/check-vehicle-throwable-vfx.cjs",
+      "result": "통과",
+      "bodyHP": 1600,
+      "vehicleLifecycle": [
+        {
+          "kind": "porter",
+          "hp": 1600,
+          "shots": 84,
+          "burn": 2.4,
+          "respawned": true,
+          "restored": 1600,
+          "countStable": true
+        },
+        {
+          "kind": "e2200",
+          "hp": 1600,
+          "shots": 84,
+          "burn": 2.4,
+          "respawned": true,
+          "restored": 1600,
+          "countStable": true
+        },
+        {
+          "kind": "izh",
+          "hp": 1600,
+          "shots": 84,
+          "burn": 2.4,
+          "respawned": true,
+          "restored": 1600,
+          "countStable": true
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "node tools/check-training-range.cjs",
+      "result": "통과",
+      "slopeAndCameraCases": 24,
+      "training": {
+        "version": "86",
+        "booths": 4,
+        "bags": 20,
+        "crates": 4,
+        "cases": 6,
+        "targets": 14,
+        "killhouse": 11,
+        "grenadeTargets": 3,
+        "base": true,
+        "guns": 30,
+        "attachments": 14,
+        "attachmentCatalog": 14,
+        "importedSandbags": true,
+        "floorTexture": true,
+        "instances": [
+          {
+            "name": "range-sandbag",
+            "count": 20
+          },
+          {
+            "name": "range-crate",
+            "count": 4
+          }
+        ],
+        "checks": {
+          "clearTargets": 14,
+          "bulletBlocked": true,
+          "walkingBlocked": true,
+          "aisleClear": true,
+          "attachmentPickup": true,
+          "shotHits": 1
+        },
+        "repeated": {
+          "targets": 14,
+          "groups": 1,
+          "crates": 4,
+          "version": "86"
+        },
+        "errors": [],
+        "assets": [
+          {
+            "url": "sandbag-wall-section-7075ee.glb",
+            "status": 200
+          },
+          {
+            "url": "plastic_crate_01.glb",
+            "status": 200
+          },
+          {
+            "url": "concreteFloorPainted/concrete_floor_painted_baseColor.jpg",
+            "status": 200
+          },
+          {
+            "url": "concreteFloorPainted/concrete_floor_painted_normal.jpg",
+            "status": 200
+          },
+          {
+            "url": "concreteFloorPainted/concrete_floor_painted_arm.jpg",
+            "status": 200
+          }
+        ]
+      }
+    },
+    {
+      "command": "node tools/check-combat.cjs",
+      "result": "통과",
+      "combat": {
+        "training": true,
+        "checked": [
+          "ar7",
+          "aa12",
+          "p92",
+          "de7",
+          "s12",
+          "r45"
+        ],
+        "fired": [
+          "ar7",
+          "ka47",
+          "sc17",
+          "mk14",
+          "kr98",
+          "s12",
+          "m1014",
+          "db2",
+          "sa12",
+          "aa12",
+          "p92",
+          "g18",
+          "m1911",
+          "de7",
+          "r45",
+          "mp9",
+          "v45",
+          "cx9",
+          "sm45",
+          "ar416",
+          "sg56",
+          "ms56",
+          "lm86",
+          "rk762",
+          "mg60",
+          "sr25",
+          "dm56",
+          "m24",
+          "sp12",
+          "p226"
+        ],
+        "version": "86"
+      }
+    },
+    {
+      "command": "node tools/capture-vehicle-wheels.cjs before /tmp/lz-v86-evidence",
+      "result": "통과",
+      "screenshots": 6,
+      "errors": []
+    },
+    {
+      "command": "WHEEL_ANIMATE=1 node tools/capture-vehicle-wheels.cjs after /tmp/lz-v86-evidence",
+      "result": "통과",
+      "screenshots": 9,
+      "videoFrames": 24,
+      "errors": []
+    },
+    {
+      "command": "NODE_PATH=/tmp/lz-v86-asset-tools/node_modules node tools/vehicles/repair-wheels.cjs /tmp/lz-v86-rebuild",
+      "result": "통과",
+      "reproducibleGLB": 3,
+      "manifestIdentical": true,
+      "textureBytesUnchanged": true
+    },
+    {
+      "command": "node --check (수정·추가 JS/CJS 8개), git diff --check, CI YAML 파싱",
+      "result": "통과"
+    }
+  ],
+  "limits": {
+    "hardwareFPS": "측정하지 않음",
+    "hardwareRayTracing": "실기기에서 측정하지 않음"
+  }
+}

@@ -2422,7 +2422,7 @@ const W = G.World = {
     }
   },
   // 박스 레이캐스트 (DDA) — 가장 가까운 t 반환
-  rayBoxes(ox, oy, oz, dx, dy, dz, maxD, out) {
+  rayBoxes(ox, oy, oz, dx, dy, dz, maxD, out, skipVehicles) {
     const s = ++this.stamp;
     let best = maxD, hb = null, ax = 0, sg = 0;
     let gx = Math.floor((ox + HALF) / GCELL), gz = Math.floor((oz + HALF) / GCELL);
@@ -2439,6 +2439,7 @@ const W = G.World = {
           const b = cell[i];
           if (b.stamp === s) continue;
           b.stamp = s;
+          if(skipVehicles&&b.vehicle)continue;
           let t0 = (b.minX - ox) * idx, t1 = (b.maxX - ox) * idx, a = 0, sgn = dx > 0 ? -1 : 1;
           if (t0 > t1) { const tmp = t0; t0 = t1; t1 = tmp; }
           let ty0 = (b.minY - oy) * idy, ty1 = (b.maxY - oy) * idy;
@@ -2483,9 +2484,9 @@ const W = G.World = {
     return Infinity;
   },
   // 통합 레이캐스트: 결과는 this.hit
-  raycast(o, d, maxD, noTerrain) {
+  raycast(o, d, maxD, noTerrain, skipVehicles) {
     const h = this.hit;
-    const tb = this.rayBoxes(o.x, o.y, o.z, d.x, d.y, d.z, maxD, h);
+    const tb = this.rayBoxes(o.x, o.y, o.z, d.x, d.y, d.z, maxD, h, skipVehicles);
     const tt = noTerrain ? Infinity : this.rayTerrain(o.x, o.y, o.z, d.x, d.y, d.z, Math.min(maxD, tb));
     if (tt < tb) {
       h.t = tt; h.box = null; h.mat = 'terrain';
