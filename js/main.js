@@ -160,6 +160,51 @@ const UpscaleShader = {
       gl_FragColor = vec4(clamp(aC / aW, mn, mx), 1.0);   // 링잉 없이 이웃 4점 범위로
     }`
 };
+// 업스케일이 끝난 네이티브 화면에서만 실행하는 대비 적응형 선명화.
+// 이웃의 최소·최대값으로 묶어 밝은 테두리와 조준선 번짐을 막는다.
+const SharpenShader = {
+  uniforms: { tDiffuse: { value: null }, uTexel: { value: new THREE.Vector2() }, uStrength: { value: .35 } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
+  fragmentShader: `uniform sampler2D tDiffuse; uniform vec2 uTexel; uniform float uStrength; varying vec2 vUv;
+    void main(){
+      vec3 c=texture2D(tDiffuse,vUv).rgb;
+      vec3 n=texture2D(tDiffuse,vUv+vec2(0.0,uTexel.y)).rgb,s=texture2D(tDiffuse,vUv-vec2(0.0,uTexel.y)).rgb;
+      vec3 e=texture2D(tDiffuse,vUv+vec2(uTexel.x,0.0)).rgb,w=texture2D(tDiffuse,vUv-vec2(uTexel.x,0.0)).rgb;
+      vec3 mn=min(min(n,s),min(e,w)),mx=max(max(n,s),max(e,w));
+      vec3 lo=mn/max(4.0*mx,vec3(.0001)),hi=(1.0-mx)/min(4.0*mn-4.0,vec3(-.0001));
+      vec3 limit=max(-lo,hi);float weight=clamp(max(max(limit.r,limit.g),limit.b),-.1875,0.0)*uStrength;
+      vec3 sharp=(c+weight*(n+s+e+w))/(1.0+4.0*weight);
+      gl_FragColor=vec4(clamp(sharp,min(c,mn),max(c,mx)),1.0);
+    }`
+};
+class PresentationPass extends THREE.Pass {
+  constructor() {
+    super(); this.needsSwap = false;
+    this.upscale = new THREE.ShaderPass(UpscaleShader);
+    this.sharpen = new THREE.ShaderPass(SharpenShader);
+    for (const pass of [this.upscale, this.sharpen]) { pass.material.toneMapped = false; pass.material.depthTest = pass.material.depthWrite = false; }
+    this.target = new THREE.WebGLRenderTarget(1, 1, { depthBuffer: false });
+    this.target.texture.name = '네이티브 선명화 입력';
+    this.size = new THREE.Vector2();
+  }
+  render(r, writeBuffer, readBuffer) {
+    r.getDrawingBufferSize(this.size);
+    const scaled = readBuffer.width !== this.size.x || readBuffer.height !== this.size.y;
+    const sharp = this.sharpen.uniforms.uStrength.value > 0;
+    if (scaled && sharp) {
+      if (this.target.width !== this.size.x || this.target.height !== this.size.y) this.target.setSize(this.size.x, this.size.y);
+      this.upscale.renderToScreen = false; this.upscale.render(r, this.target, readBuffer);
+      this.sharpen.uniforms.uTexel.value.set(1 / this.size.x, 1 / this.size.y);
+      this.sharpen.renderToScreen = true; this.sharpen.render(r, null, this.target);
+    } else {
+      if (this.target.width > 1) this.target.setSize(1, 1);
+      const pass = sharp ? this.sharpen : this.upscale;
+      this.sharpen.uniforms.uTexel.value.set(1 / readBuffer.width, 1 / readBuffer.height);
+      pass.renderToScreen = true; pass.render(r, null, readBuffer);
+    }
+  }
+  dispose() { this.target.dispose(); this.upscale.dispose(); this.sharpen.dispose(); }
+}
 // v78: draw a downscaled world first, then grade/composite the hands at
 // output resolution. Transparent background preserves the world framebuffer.
 // Reuse the same lighting, camera and grade; ADS geometry never changes.
@@ -199,15 +244,15 @@ class NativeViewmodel {
 }
 G.viewmodelRT = () => nativeVM && nativeVM.target;
 // Diagnostic switch used by the paired, same-scene quality benchmark.
-G.renderFeatures = { nativeViewmodel: true };
+G.renderFeatures = { nativeViewmodel: true, lowMSAA: true };
 
 // 품질 프리셋
-// dpr 해상도 배율 상한 · msaa · shadow 그림자 맵(0 = 끔) · range 그림자 범위 · bloom · post 후처리(끄면 화면에 바로 그림)
+// dpr 네이티브 화면 대비 자동 해상도 예산 · msaa · shadow 그림자 맵(0 = 끔) · range 그림자 범위 · bloom · post 후처리
 // far 시야 거리 · fog 안개 배율 · lod 건물 상세 거리 배율 · terr 지형 상세 거리 배율 · shEvery 그림자 갱신 주기(프레임)
 const QUALITY = {
   // v67 최저도 후처리(가벼운 길)를 쓴다: 장면은 낮은 해상도로 그리고, 화면 해상도로 늘리며 FXAA (fxaa)
   potato: { dpr: 0.6,  msaa: 0, shadow: 0,    range: 0,  bloom: false, post: true,  far: 750,  fog: 1.45, lod: 0.6, terr: 0.5,  shEvery: 0, fxaa: true, lite: true },
-  low:    { dpr: 0.75, msaa: 0, shadow: 1024, range: 42, bloom: false, post: true,  far: 1100, fog: 1.2,  lod: 0.8, terr: 0.7,  shEvery: 3, fxaa: true },
+  low:    { dpr: 0.75, msaa: 2, shadow: 1024, range: 42, bloom: false, post: true,  far: 1100, fog: 1.2,  lod: 0.8, terr: 0.7,  shEvery: 3, fxaa: true },
   medium: { dpr: 1.0,  msaa: 2, shadow: 2048, range: 62, bloom: true,  post: true,  far: 2200, fog: 1.0,  lod: 1,   terr: 1,    shEvery: 2 },
   high:   { dpr: 1.25, msaa: 4, shadow: 2048, range: 75, bloom: true,  post: true,  far: 4000, fog: 1.0,  lod: 1,   terr: 1.25, shEvery: 2 }
 };
@@ -239,7 +284,7 @@ function autoGovern(now, fps, drs) {
   const ti = TIERS.indexOf(G.quality);
   const hz = 1000 / drs.refresh;
   // 내려가기: 60fps 아래인데 해상도를 이미 최저로 낮췄거나, 아주 느릴 때
-  if (fps < 57 && (drs.scale <= drs.minScale + 0.01 || fps < 42)) Auto.downN++; else Auto.downN = Math.max(0, Auto.downN - 1);
+  if (fps < 57 && (drs.fixed || drs.scale <= drs.minScale + 0.01 || fps < 42)) Auto.downN++; else Auto.downN = Math.max(0, Auto.downN - 1);
   if (ti > 0 && Auto.downN >= (fps < 42 ? 3 : 6) && now - Auto.lastChange > 3000) {
     if (now - Auto.lastUp < 30000) Auto.failed[G.quality] = true;   // 방금 올렸다가 버티지 못하면 다시 올리지 않는다
     Auto.downN = 0; Auto.upT = 0; Auto.lastChange = now;
@@ -247,7 +292,7 @@ function autoGovern(now, fps, drs) {
     return;
   }
   // 올라가기: 해상도 100%로 화면 주사율을 꽉 채운 채 25초 버티면 한 단계 위를 시험
-  if (drs.scale >= 1 && fps >= Math.min(hz, drs.target) - 3) Auto.upT += 0.5; else Auto.upT = 0;
+  if ((drs.fixed || drs.scale >= drs.maxScale) && fps >= Math.min(hz, drs.target) - 3) Auto.upT += 0.5; else Auto.upT = 0;
   if (ti < Auto.max && Auto.upT >= 25 && now - Auto.lastChange > 20000 && !Auto.failed[TIERS[ti + 1]]) {
     Auto.upT = 0; Auto.lastChange = Auto.lastUp = now;
     setTier(TIERS[ti + 1]);
@@ -294,57 +339,50 @@ function benchFrame(ms) {
   if (G.UI && G.UI.toast) G.UI.toast('그래픽 자동 설정: ' + TIER_NAME[G.quality] + (gpu ? ' (GPU ' + gpu.toFixed(1) + 'ms)' : ''));
   if (G.Settings && G.Settings.render) try { G.Settings.render(); } catch (e) { /* 무시 */ }
 }
-// v68 단계별 비등방 필터 상한 (아직 GPU 에 올라가지 않은 텍스처만 — 올린 것을 다시 올리면 멈칫한다)
-const ANISO = { potato: 2, low: 4, medium: 8, high: 16 };
-function applyAniso(q) {
-  const cap = Math.min(ANISO[q] || 16, renderer.capabilities.getMaxAnisotropy() || 1), seen = new Set();
-  const visit = t => {
-    if (!t || !t.isTexture || seen.has(t)) return; seen.add(t);
-    if (t.userData.aniso0 === undefined) t.userData.aniso0 = t.anisotropy;
-    if (renderer.properties.get(t).__webglInit) return;
-    t.anisotropy = Math.max(1, Math.min(t.userData.aniso0, cap));
-  };
-  for (const root of [scene, G.vmScene]) root.traverse(o => {
-    if (!o.material) return;
-    for (const m of [].concat(o.material)) {
-      for (const k in m) { const v = m[k]; if (v && v.isTexture) visit(v); }
-      if (m.uniforms) for (const k in m.uniforms) visit(m.uniforms[k] && m.uniforms[k].value);
-    }
-  });
-}
+function applyAniso() { G.TextureQuality?.scan(scene, true); G.TextureQuality?.scan(G.vmScene, true); }
 const MAX_PIXELS = 2560 * 1440;
 // v67 화면(캔버스) 해상도: 후처리를 쓰면 장면 해상도와 따로 — 마지막 패스만 이 해상도로 그린다
 function outputPixelRatio() {
-  const Q = QUALITY[G.quality];
-  let pr = Math.min(devicePixelRatio || 1, Q && !Q.msaa ? 1 : 1.5);   // 저사양은 화면 1 배까지 (그 위는 브라우저가 늘린다)
-  const px = innerWidth * innerHeight * pr * pr;
-  if (px > MAX_PIXELS) pr *= Math.sqrt(MAX_PIXELS / px);
-  return pr;
+  return window.devicePixelRatio || 1;
 }
 
-let renderer, scene, camera, composer, bloom, grade, fxaa, upAA, vmPass, nativeVM, last = 0, menuAng = 0, frameNo = 0;
+let renderer, scene, camera, composer, bloom, grade, fxaa, upAA, presentation, vmPass, nativeVM, rtCapture, last = 0, menuAng = 0, frameNo = 0;
 G.paused = false;
 
 /* ------------------------------------------------------------------ */
 /* 동적 해상도 — 목표 FPS를 유지하도록 렌더 해상도를 자동 조절          */
 /* ------------------------------------------------------------------ */
 const DRS = {
-  base: 1, scale: 1, applied: 0, minScale: 0.55, target: 120,
+  base: 1, scale: 1, applied: 0, output: 1, minScale: .85, maxScale: 1, target: 120,
+  get mode() { return String(G.UI?.opts?.renderResolution || 'auto'); },
+  get fixed() { return ['67', '75', '85', '100'].includes(this.mode); },
   iv: new Float32Array(120), ivN: 0, refresh: 1000 / 60, refreshEst: 1e9,
   acc: 0, cnt: 0, checkT: 0, lastDown: -1e9, lastChange: 0, fps: 0, fpsAcc: 0, fpsN: 0, fpsT: 0,
   lastUp: -1e9, ceil: 0, upWait: 4000,
-  reset(base) { this.base = base; this.scale = 1; this.lastDown = -1e9; this.lastUp = -1e9; this.ceil = 0; this.upWait = 4000; this.apply(true); },
+  reset(base) {
+    this.base = base;
+    const q = G.quality || 'high', floor = q === 'potato' ? .35 : q === 'low' ? .55 : .85;
+    this.minScale = floor;
+    const budget = Math.sqrt(MAX_PIXELS / (innerWidth * innerHeight * base * base));
+    this.maxScale = Math.max(floor, Math.min(1, QUALITY[q].dpr, budget));
+    this.scale = this.fixed ? Number(this.mode) / 100 : this.maxScale;
+    this.lastDown = this.lastUp = -1e9; this.ceil = 0; this.upWait = 4000; this.acc = this.cnt = 0; this.apply(true);
+  },
   apply(force) {
-    const pr = Math.max(0.35, this.base * this.scale);
-    // 레이트레이싱은 캔버스 크기로 자기 버퍼를 잡는다 → 그때는 예전처럼 캔버스 자체를 줄인다
-    const split = composer && usePost() && !(G.RT && G.RT.active()), out = split ? outputPixelRatio() : pr;
-    if (!force && Math.abs(pr - this.applied) < 0.01 && split === this.split) return;
-    this.applied = pr; this.split = split;
+    const out = outputPixelRatio(); this.base = out;
+    if (this.fixed) this.scale = Number(this.mode) / 100;
+    else this.scale = U.clamp(this.scale, this.minScale, this.maxScale);
+    const pr = out * this.scale;
+    if (!force && Math.abs(pr - this.applied) < .001 && out === this.output) return;
+    this.applied = pr; this.output = out;
     if (Math.abs(renderer.getPixelRatio() - out) > 1e-3) renderer.setPixelRatio(out);
     if (composer && usePost()) composer.setPixelRatio(pr);
+    G.ThinDetails?.resolution(composer?.renderTarget1.height || innerHeight * pr, !!G.RT?.active());
+    G.RT?.syncResolution?.();
     if (upAA) syncUpAA();
   },
   frame(now, ms) {
+    if (Math.abs(outputPixelRatio() - this.output) > .001) this.reset(outputPixelRatio());
     // 모니터 주사율 추정 (최근 프레임 간격의 하위 20%)
     this.iv[this.ivN++ % this.iv.length] = ms;
     if (this.ivN >= this.iv.length && this.ivN % 30 === 0) {
@@ -355,7 +393,7 @@ const DRS = {
     }
     // FPS 표시용
     this.fpsAcc += ms; this.fpsN++;
-    if (now - this.fpsT > 500) { this.fps = 1000 / (this.fpsAcc / this.fpsN); this.fpsAcc = 0; this.fpsN = 0; this.fpsT = now; G.UI.fps(this.fps, this.applied, this.refresh); }
+    if (now - this.fpsT > 500) { this.fps = 1000 / (this.fpsAcc / this.fpsN); this.fpsAcc = 0; this.fpsN = 0; this.fpsT = now; G.UI.fps(this.fps, this.scale, this.refresh); }
     if (G.Game.state !== 'playing' || G.paused) { this.acc = 0; this.cnt = 0; return; }
     // 레이트레이싱은 자체 품질 조절을 한다: 동적 해상도·자동 품질은 쉰다
     const rt = !!(G.RT && G.RT.active());
@@ -366,7 +404,8 @@ const DRS = {
     if (now - this.checkT < 500) return;
     this.checkT = now;
     const avg = this.acc / this.cnt; this.acc = 0; this.cnt = 0;
-    autoGovern(now, 1000 / avg, this);
+    const quality = G.quality; autoGovern(now, 1000 / avg, this);
+    if (quality !== G.quality || this.fixed) return;
     const goal = Math.max(1000 / this.target, this.refresh * 0.98);
     // v68 해상도가 오르락내리락 깜빡이지 않게:
     //  · 내릴 때는 픽셀 수 ∝ 시간으로 보고 목표에 맞는 배율로 한 번에 (최소 0.04, 최대 0.15)
@@ -376,8 +415,8 @@ const DRS = {
       const ns = Math.max(this.minScale, Math.min(this.scale - 0.04, Math.max(this.scale - 0.15, want)));
       if (now - this.lastUp < 3000) { this.ceil = this.scale; this.upWait = Math.min(32000, (this.upWait || 4000) * 2); }
       this.scale = ns; this.lastDown = now; this.apply();
-    } else if (this.scale < 1 && now - this.lastDown > (this.upWait || 4000) && now - this.lastChange > 2500) {
-      const ns = Math.min(1, this.scale + 0.05);
+    } else if (this.scale < this.maxScale && now - this.lastDown > (this.upWait || 4000) && now - this.lastChange > 2500) {
+      const ns = Math.min(this.maxScale, this.scale + 0.05);
       const pred = avg * (ns * ns) / (this.scale * this.scale);
       const blocked = this.ceil && ns >= this.ceil - 1e-3 && now - this.lastDown < 30000;
       const capped = avg < this.refresh * 1.04 && avg < goal * 1.03;   // 화면 주사율에 묶여 있으면 여유를 잴 수 없다 → 예전처럼 한 칸 시도
@@ -396,7 +435,7 @@ G.boot = async function () {
   progress(0.3, '렌더러 초기화 중...');
   G.Footsteps?.prefetch();
   renderer = G.renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance', stencil: false });
-  renderer.setPixelRatio(1);
+  renderer.setPixelRatio(outputPixelRatio());
   renderer.setSize(innerWidth, innerHeight);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -404,6 +443,7 @@ G.boot = async function () {
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.6;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
+  G.TextureQuality?.init(renderer);
   document.getElementById('app').appendChild(renderer.domElement);
   if (G.Perf) G.Perf.init(renderer);
 
@@ -477,14 +517,21 @@ function showError(msg) {
 }
 
 function setupComposer(samples) {
+  samples = Math.min(samples, renderer.capabilities.maxSamples || 0);
+  G.msaaSamples = samples;
   if (nativeVM) { nativeVM.dispose(); nativeVM = null; }
   if (composer) {
     composer.renderTarget1.dispose(); composer.renderTarget2.dispose();
     for (const p of composer.passes) if (p.dispose) p.dispose();
   }
   const pr = renderer.getPixelRatio();
-  const rt = new THREE.WebGLRenderTarget(innerWidth * pr, innerHeight * pr, { type: THREE.HalfFloatType, samples });
+  const rt = new THREE.WebGLRenderTarget(Math.floor(innerWidth * pr + 1e-6), Math.floor(innerHeight * pr + 1e-6), { type: THREE.HalfFloatType, samples });
   composer = new THREE.EffectComposer(renderer, rt);
+  // GPU의 실제 크기와 텍셀 중심을 일치시킨다.
+  for (const target of [composer.renderTarget1, composer.renderTarget2]) {
+    const setSize = target.setSize.bind(target);
+    target.setSize = (w, h) => setSize(Math.max(1, Math.floor(w + 1e-6)), Math.max(1, Math.floor(h + 1e-6)));
+  }
   composer.addPass(new THREE.RenderPass(scene, camera));
   vmPass = new ViewmodelPass(G.vmScene, G.vmCamera);
   composer.addPass(vmPass);
@@ -497,13 +544,16 @@ function setupComposer(samples) {
   grade.material.toneMapped = false;   // 톤매핑은 셰이더 안에서 (화면에 바로 그려도 두 번 걸리지 않게)
   composer.addPass(grade);
   nativeVM = new NativeViewmodel(QualitySamples(samples));
-  // v67 FXAA (장면 해상도) → 업스케일 (화면 해상도, 마지막)
+  // MSAA가 없는 기기만 FXAA로 보완하고, 업스케일 뒤 네이티브 해상도에서 선명화한다.
   fxaa = G.fxaaPass = new THREE.ShaderPass(FXAAShader);
   composer.addPass(fxaa);
-  upAA = G.upAA = new THREE.ShaderPass(UpscaleShader);
-  composer.addPass(upAA);
+  presentation = new PresentationPass();
+  upAA = G.upAA = presentation.upscale;
+  G.sharpenPass = presentation.sharpen;
+  G.presentationRT = () => presentation.target;
+  composer.addPass(presentation);
   composer.setSize(innerWidth, innerHeight);
-  if (G.Perf) G.Perf.hookComposer(composer, new Map([[grade, 'grade'], [fxaa, 'fxaa'], [upAA, 'upscale']]));
+  if (G.Perf) G.Perf.hookComposer(composer, new Map([[grade, 'grade'], [fxaa, 'fxaa'], [presentation, 'upscale+sharpen']]));
   G.renderNow = () => renderFrame(0.016);
 }
 
@@ -513,33 +563,61 @@ function syncUpAA() {
   upAA.uniforms.uIn.value.set(1 / Math.max(1, rt.width), 1 / Math.max(1, rt.height));
   upAA.uniforms.uInSize.value.set(Math.max(1, rt.width), Math.max(1, rt.height));
   fxaa.uniforms.uIn.value.copy(upAA.uniforms.uIn.value);
-  const ratio = DRS.applied / Math.max(1e-3, renderer.getPixelRatio());
-  if (ratio >= 0.97 && nativeVM?.target.width > 1) nativeVM.target.setSize(1, 1);
-  fxaa.enabled = !!Q.fxaa;
-  upAA.uniforms.uEasu.value = ratio >= 0.97 ? 0 : Q.lite ? 1 : 2;   // 최저는 싼 선형+선명화, 그 위는 EASU
-  upAA.uniforms.uSharp.value = U.clamp((1 - ratio) * 0.5, 0.06, 0.25);
-  upAA.enabled = !!Q.fxaa || ratio < 0.97;   // FXAA 를 쓰면 늘 마지막에 (FXAA 가 화면 해상도에서 돌지 않게)
+  const output = renderer.getDrawingBufferSize(new THREE.Vector2()), ratio = rt.width / output.x;
+  const scaled = rt.width !== output.x || rt.height !== output.y;
+  if (!scaled && nativeVM?.target.width > 1) nativeVM.target.setSize(1, 1);
+  fxaa.enabled = !G.msaaSamples;
+  upAA.uniforms.uEasu.value = scaled ? Q.lite ? 1 : 2 : 0;
+  upAA.uniforms.uSharp.value = 0;
   // 장면 해상도가 낮을 때는 필름 그레인·색수차·선명화를 줄인다 (늘리면 큰 점으로 번져 '점점이' 보였다)
   const k = U.clamp((ratio - 0.55) / 0.4, 0, 1);
-  const visual = G.Settings?.data?.visual || { grain: .15, aberration: 0, vignette: .45, shadows: .22 };
+  const visual = G.Settings?.data?.visual || { grain: .15, aberration: 0, vignette: .45, shadows: .22, sharpen: .35 };
+  G.sharpenPass.uniforms.uStrength.value = visual.sharpen;
+  presentation.enabled = scaled || visual.sharpen > 0;
+  if ((!scaled || !visual.sharpen) && presentation.target.width > 1) presentation.target.setSize(1, 1);
+  G.ThinDetails?.resolution(rt.height, !!G.RT?.active());
   grade.uniforms.uGrain.value = 0.07 * k * (Q.lite ? 0 : visual.grain);
   grade.uniforms.uVig.value = 1.2 * visual.vignette;
   grade.uniforms.uShadowLift.value = visual.shadows;
-  grade.uniforms.uSharp.value = 0.2 * k;
+  grade.uniforms.uSharp.value = 0;
   grade.uniforms.uCA.value = 0.006 * (Q.lite ? 0 : visual.aberration);
 }
 G.refreshVisuals = () => { if (grade && G.quality) syncUpAA(); };
+// ThreeRT는 자체 합성으로 화면에 그리므로, 완성된 월드만 복사해 선명화한다.
+// HUD와 그 뒤에 그리는 총·조준경은 이 패스를 거치지 않는다.
+G.sharpenRT = r => {
+  if (!(G.Settings.data.visual.sharpen > 0)) { if (rtCapture) { rtCapture.dispose(); rtCapture = null; } return; }
+  const size = r.getDrawingBufferSize(new THREE.Vector2());
+  if (!rtCapture || rtCapture.image.width !== size.x || rtCapture.image.height !== size.y) {
+    if (rtCapture) rtCapture.dispose();
+    rtCapture = new THREE.FramebufferTexture(size.x, size.y, THREE.RGBAFormat);
+  }
+  r.copyFramebufferToTexture(new THREE.Vector2(), rtCapture);
+  G.sharpenPass.uniforms.uTexel.value.set(1 / size.x, 1 / size.y);
+  G.sharpenPass.renderToScreen = true; G.sharpenPass.render(r, null, { texture: rtCapture });
+};
 function basePixelRatio(q) {
-  let pr = Math.min(devicePixelRatio || 1, QUALITY[q].dpr);
-  const px = innerWidth * innerHeight * pr * pr;
-  if (px > MAX_PIXELS) pr *= Math.sqrt(MAX_PIXELS / px);
-  return pr;
+  return outputPixelRatio();
 }
+G.setRenderResolution = value => {
+  value = String(value);
+  if (!['auto', '67', '75', '85', '100'].includes(value)) return;
+  G.UI.opts.renderResolution = value;
+  try { localStorage.setItem('lastzone_opts', JSON.stringify(G.UI.opts)); } catch (e) { /* 이번 실행에만 적용 */ }
+  document.querySelectorAll('[data-opt="renderResolution"] button').forEach(b => b.classList.toggle('on', b.dataset.v === value));
+  const select = document.getElementById('setRenderResolution'); if (select) select.value = value;
+  DRS.reset(outputPixelRatio());
+};
+G.renderResolutionInfo = () => {
+  const scale = DRS.scale;
+  return { scale, percent: Math.round(scale * 100), mode: DRS.fixed ? '고정' : '자동', rendererPixelRatio: renderer.getPixelRatio(), composerPixelRatio: composer._pixelRatio };
+};
 
 function applyQuality(q) {
   if (!QUALITY[q]) q = 'high';
   const Q = QUALITY[q];
-  if (Q.post && (!composer || !QUALITY[G.quality] || QUALITY[G.quality].msaa !== Q.msaa || !QUALITY[G.quality].post)) setupComposer(Q.msaa);
+  const samples = Math.min(q === 'low' && !G.renderFeatures.lowMSAA ? 0 : Q.msaa, renderer.capabilities.maxSamples || 0);
+  if (Q.post && (!composer || G.msaaSamples !== samples || !QUALITY[G.quality]?.post)) setupComposer(samples);
   if (!composer) setupComposer(0);
   // 후처리를 끄는 단계에서는 composer 의 큰 렌더 타깃(HDR·MSAA·블룸)을 놓아 그래픽 메모리를 돌려준다
   if (!Q.post) { composer.renderTarget1.dispose(); composer.renderTarget2.dispose(); for (const p of composer.passes) if (p.dispose) p.dispose(); }
@@ -558,7 +636,6 @@ function applyQuality(q) {
   if (G.World.setFogScale) G.World.setFogScale(Q.fog);
   camera.far = Q.far; camera.updateProjectionMatrix();
   G.quality = q;
-  DRS.minScale = q === 'potato' ? 0.5 : 0.55;
   DRS.reset(basePixelRatio(q));
   onResize();
   renderer.shadowMap.needsUpdate = true;
@@ -572,6 +649,7 @@ function renderFrame(dt) {
   // 레이트레이싱 (설정에서 켰고 지원되는 기기일 때)
   const PF = G.Perf && G.Perf.on ? G.Perf : null;
   if (G.RT && G.RT.drawing()) { if (PF) PF.seg('rt'); G.RT.render(renderer, scene, camera, G.vmScene, G.vmCamera); return; }
+  if (rtCapture) { rtCapture.dispose(); rtCapture = null; }
   const Q = QUALITY[G.quality];
   if (!Q || Q.post) {
     const rt = composer.renderTarget1;   // 색보정은 장면 해상도에서 돈다
@@ -580,7 +658,7 @@ function renderFrame(dt) {
     // Keep the inexpensive single-composer path when the world already has
     // enough pixels. Only a downscaled world needs the native overlay.
     const output = renderer.getDrawingBufferSize(_db);
-    const splitVM = G.renderFeatures.nativeViewmodel && (rt.width < output.x * 0.97 || rt.height < output.y * 0.97);
+    const splitVM = G.renderFeatures.nativeViewmodel && (rt.width < output.x || rt.height < output.y);
     vmPass.enabled = !splitVM;
     composer.render(dt);
     if (splitVM && G.VM.cur && G.VM.root.visible) {
@@ -608,8 +686,8 @@ function onResize() {
   renderer.setSize(innerWidth, innerHeight);
   camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
   G.vmCamera.aspect = innerWidth / innerHeight; G.vmCamera.updateProjectionMatrix();
-  if (G.quality) { DRS.base = basePixelRatio(G.quality); DRS.apply(true); }
-  if (composer && usePost()) { composer.setSize(innerWidth, innerHeight); if (upAA) syncUpAA(); }
+  if (composer && usePost()) composer.setSize(innerWidth, innerHeight);
+  if (G.quality) DRS.reset(outputPixelRatio());
 }
 
 // 매치 시작 시 사용될 셰이더를 미리 컴파일해 첫 사용 시 끊김을 없앤다

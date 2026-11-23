@@ -1,0 +1,55 @@
+{
+  "environment": {
+    "node": "24.22.3",
+    "chromium": "156",
+    "three": "r160",
+    "gpu": "ANGLE SwiftShader 소프트웨어 렌더러"
+  },
+  "checks": [
+    {
+      "command": "node tools/check-render-clarity.cjs",
+      "status": "통과",
+      "log": "PASS v81 DPR 1 네이티브 출력·85% 하한·고정 설정·MSAA·선명화·텍스처·RT 크기\nPASS v81 DPR 1.25 네이티브 출력·85% 하한·고정 설정·MSAA·선명화·텍스처·RT 크기\nPASS v81 DPR 1.5 네이티브 출력·85% 하한·고정 설정·MSAA·선명화·텍스처·RT 크기\n"
+    },
+    {
+      "command": "node tools/check-native-reticle.cjs",
+      "status": "통과",
+      "log": "PASS 네이티브 HUD·레티클 {\"rows\":[{\"dpr\":1,\"type\":\"x2\",\"size\":[960,540],\"css\":[960,540],\"transform\":1},{\"dpr\":1,\"type\":\"x4\",\"size\":[960,540],\"css\":[960,540],\"transform\":1},{\"dpr\":1,\"type\":\"x8\",\"size\":[960,540],\"css\":[960,540],\"transform\":1},{\"dpr\":1.25,\"type\":\"x2\",\"size\":[1200,675],\"css\":[960,540],\"transform\":1.25},{\"dpr\":1.25,\"type\":\"x4\",\"size\":[1200,675],\"css\":[960,540],\"transform\":1.25},{\"dpr\":1.25,\"type\":\"x8\",\"size\":[1200,675],\"css\":[960,540],\"transform\":1.25},{\"dpr\":1.5,\"type\":\"x2\",\"size\":[1440,810],\"css\":[960,540],\"transform\":1.5},{\"dpr\":1.5,\"type\":\"x4\",\"size\":[1440,810],\"css\":[960,540],\"transform\":1.5},{\"dpr\":1.5,\"type\":\"x8\",\"size\":[1440,810],\"css\":[960,540],\"transform\":1.5},{\"dpr\":2,\"type\":\"x2\",\"size\":[1920,1080],\"css\":[960,540],\"transform\":2},{\"dpr\":2,\"type\":\"x4\",\"size\":[1920,1080],\"css\":[960,540],\"transform\":2},{\"dpr\":2,\"type\":\"x8\",\"size\":[1920,1080],\"css\":[960,540],\"transform\":2}],\"output\":[1440,810],\"world\":[964,542],\"viewmodel\":[1440,810],\"crosshair\":\"DIV\",\"fps\":\"60 FPS · 해상도 67% (고정) · 그래픽 낮음\"}\n"
+    },
+    {
+      "command": "node tools/check-quality-performance.cjs",
+      "status": "통과",
+      "log": "Composite { changed: 69763, corners: 0 }\nPASS v78 quality/performance contracts {\"boot\":{\"models\":[\"ar7\",\"fists\",\"g18\",\"throw\"],\"packs\":[],\"gpu\":39,\"textureCount\":39,\"ao\":{\"applied\":394,\"rejected\":0},\"lods\":30,\"gpuBytes\":54526992,\"rgbaBytes\":218103808.0000001},\"inventory\":{\"models\":[\"ar7\",\"g18\",\"fists\",\"throw\",\"s12\",\"p92\"],\"packs\":[\"remington\",\"p9mm\"],\"equipped\":[\"ar7\",\"s12\",\"p92\"]},\"native\":{\"world\":[528,297],\"viewmodel\":[960,540],\"output\":[960,540],\"gun\":\"ar7\"},\"composite\":{\"changed\":69763,\"corners\":0},\"fallback\":{\"gpu\":0,\"model\":true,\"real\":true,\"pack\":true,\"ao\":391,\"rejected\":3,\"render\":true}}\n"
+    },
+    {
+      "command": "node tools/check-gameplay-polish.cjs",
+      "status": "통과",
+      "log": "44886902842941534,0.3562659611918735],\"hip\":0.8406713834624064,\"sole\":0.10857003738476477,\"swing\":true},\"feet\":2}]\nPASS gameplay polish {\"gait\":12,\"feet\":[{\"fps\":30,\"slopeError\":5.551115123125783e-17,\"maxHipDelta\":0.11604636746950181,\"crouchHeight\":0.6200007459087044,\"pronePitch\":-1.4998148852938702,\"finite\":true},{\"fps\":60,\"slopeError\":5.551115123125783e-17,\"maxHipDelta\":0.06428455307403669,\"crouchHeight\":0.6200007459087042,\"pronePitch\":-1.49981488529387,\"finite\":true},{\"fps\":144,\"slopeError\":1.3877787807814457e-16,\"maxHipDelta\":0.028486474251190552,\"crouchHeight\":0.6200007459087042,\"pronePitch\":-1.49981488529387,\"finite\":true}],\"bots\":{\"flips\":0,\"narrowSpeed\":0,\"arrived\":true,\"held\":true,\"resumed\":true},\"samples\":25,\"lod\":{\"partitionError\":0,\"clones\":[0,4,4],\"states\":[{\"d\":10,\"visible\":[true,false,false],\"casters\":1},{\"d\":12,\"visible\":[true,true,false],\"casters\":1},{\"d\":18,\"visible\":[false,true,false],\"casters\":1},{\"d\":28,\"visible\":[false,true,true],\"casters\":1},{\"d\":40,\"visible\":[false,false,true],\"casters\":1}]},\"audio\":{\"muted\":true,\"unchanged\":true,\"voices\":20,\"fallback\":true}}\n"
+    },
+    {
+      "command": "node tools/check-combat-environment.cjs",
+      "status": "통과",
+      "log": "Acoustics and rendered room tails PASS\nAll 30 weapons, hip/ADS clearance, grip and blocked-shot conservation PASS\nDirectional hit reactions and wall-aware death pose PASS\nReal soldier skin contact: all variants, four directions and two slopes PASS\nPASS: combat/environment integration /tmp/lz-v81-combat-env.json\n"
+    },
+    {
+      "command": "node tools/check-aim.cjs",
+      "status": "통과",
+      "log": "PASS: real right-mouse ADS and left-mouse shot hit the centered 10m training target.\nPASS: real right-mouse ADS and left-mouse shot hit the centered 50m training target.\nPASS: real right-mouse ADS and left-mouse shot hit the centered 100m training target.\n{\"viewport\":{\"width\":1280,\"height\":720},\"cases\":83,\"samples\":3564,\"maxPixels\":2.9443884819790403e-13,\"failures\":[]}\n{\"viewport\":{\"width\":960,\"height\":720},\"cases\":83,\"samples\":3564,\"maxPixels\":2.9443884819790403e-13,\"failures\":[]}\n{\"impacts\":270,\"maxImpactCm\":0.13576063572733332,\"recovery\":30,\"reloads\":60,\"failures\":[]}\n{\"recoilSingles\":60,\"recoilBursts\":180,\"visibleRigs\":120,\"failures\":[]}\nPASS: all 30 guns, iron/red-dot/holo sights, full idle clips, mouse/walk/crouch motion, 30/60/144 FPS, 16:9 and 4:3.\n"
+    },
+    {
+      "command": "node tools/check-hand-poses.cjs",
+      "status": "통과",
+      "log": "{\n  \"cases\": 810,\n  \"transitions\": 60,\n  \"failures\": [],\n  \"failureCount\": 0\n}\nPASS: all 30 weapons; holding/ADS/walk/sprint/fire at 30/60/144 FPS; reloads and repeated poses at 60 FPS.\n"
+    },
+    {
+      "command": "node tools/check-reloads.cjs",
+      "status": "통과",
+      "log": ":\"tactical\",\"source\":\"allanims\",\"handTravelMm\":60.6217782649107},{\"id\":\"sr25\",\"mode\":\"empty\",\"source\":\"reload_m4a1_empty\",\"handTravelMm\":60.08224084258386},{\"id\":\"sr25\",\"mode\":\"tactical\",\"source\":\"reload_m4a1_tactical\",\"handTravelMm\":59.95079758837602},{\"id\":\"dm56\",\"mode\":\"empty\",\"source\":\"reload_scarl_empty\",\"handTravelMm\":60.6217782649107},{\"id\":\"dm56\",\"mode\":\"tactical\",\"source\":\"reload_scarl_tactical\",\"handTravelMm\":60.6217782649107},{\"id\":\"m24\",\"mode\":\"empty\",\"source\":\"reload_m24_empty\",\"handTravelMm\":60.6217782649107},{\"id\":\"m24\",\"mode\":\"tactical\",\"source\":\"reload_m24_tactical\",\"handTravelMm\":41.03691276245212},{\"id\":\"sp12\",\"mode\":\"empty\",\"source\":\"Armature|SG_FPS_Reload\",\"handTravelMm\":48.707067495268014},{\"id\":\"sp12\",\"mode\":\"tactical\",\"source\":\"Armature|SG_FPS_Reload\",\"handTravelMm\":47.73554530131894},{\"id\":\"p226\",\"mode\":\"empty\",\"source\":\"reload_p226_empty\",\"handTravelMm\":23.11300000822396},{\"id\":\"p226\",\"mode\":\"tactical\",\"source\":\"reload_p226_tactical\",\"handTravelMm\":37.759475397879626}]\nPASS: 60 weapon/reload cases, continuous hand rigs, 720 ammo/sound cases; no page errors.\n"
+    },
+    {
+      "command": "node tools/check-clearance.cjs",
+      "status": "통과",
+      "log": "Studio loaded\n{\n  \"cases\": 180,\n  \"frames\": 32334,\n  \"maxActiveMm\": 0,\n  \"maxReturnMm\": 9.973774594964985,\n  \"failures\": []\n}\nPASS: empty/tactical reload clearance at 30, 60, 144 FPS; moving handles stay in the solved hand.\n"
+    }
+  ]
+}

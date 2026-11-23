@@ -282,9 +282,11 @@ const Veg = G.Veg = {
 
   setQuality(q) {
     this.q = q;
-    this.leafAA.value = (q === 'high' || q === 'medium') && (G.renderer.capabilities.maxSamples || 0) > 0 ? 1 : 0;
+    this.leafAA.value = (G.msaaSamples || 0) > 0 && !G.RT?.active() ? 1 : 0;
     this.applyMats();
-    for (const v of this.variants) for (const mat of [v.leaf, v.imp.mat, v.lam?.l, v.lam?.f]) if (mat) mat.alphaToCoverage = this.leafAA.value > 0;
+    for (const v of this.variants) for (const mat of [v.leaf, v.imp.mat, v.lam?.l, v.lam?.f]) if (mat && mat.alphaToCoverage !== (this.leafAA.value > 0)) {
+      mat.alphaToCoverage = this.leafAA.value > 0; mat.needsUpdate = true;
+    }
     this.range = RANGE[q] || RANGE.high;
     // 낮음·최저: 나무 그림자 생략 (그림자 패스에서 나무를 다시 그리는 비용이 크다)
     this.treeShadow = q === 'medium' || q === 'high';

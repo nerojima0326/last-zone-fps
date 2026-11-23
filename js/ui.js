@@ -14,7 +14,7 @@ const _v = new V3();
 const $ = id => document.getElementById(id);
 
 const UI = G.UI = {
-  opts: { size: 1, players: 40, diff: 'normal', loadout: 'rifle', tod: 'day', quality: 'auto', sens: 1, name: 'Player', fpsTarget: 120, showFps: 'on', qv: 2 },
+  opts: { size: 1, players: 40, diff: 'normal', loadout: 'rifle', tod: 'day', quality: 'auto', renderResolution: 'auto', sens: 1, name: 'Player', fpsTarget: 120, showFps: 'on', qv: 2 },
   feed: [], dmgDirs: [], hmT: 0, hurtV: 0, lowPulse: 0, centerT: 0, killT: 0, pickT: 0, mapOpen: false,
   init() {
     let saved;
@@ -72,6 +72,7 @@ const UI = G.UI = {
           if (key === 'tod' && G.Game.state === 'menu') G.World.setTimeOfDay(this.opts.tod);
           if (key === 'fpsTarget' && G.DRS) G.DRS.target = this.opts.fpsTarget;
           if (key === 'showFps') this.fpsEl.classList.toggle('hidden', this.opts.showFps !== 'on');
+          if (key === 'renderResolution') G.setRenderResolution(b.dataset.v);
         });
       });
     });
@@ -127,7 +128,8 @@ const UI = G.UI = {
     if (!show) return;
     const hz = Math.round(1000 / refreshMs);
     const target = Math.min(this.opts.fpsTarget || 120, hz + 2);
-    let t = Math.round(fps) + ' FPS · 해상도 ' + Math.round(pr * 100) + '% · 그래픽 ' + (G.qualityLabel ? G.qualityLabel() : '');
+    const res = G.renderResolutionInfo();
+    let t = Math.round(fps) + ' FPS · 해상도 ' + res.percent + '% (' + res.mode + ') · 그래픽 ' + (G.qualityLabel ? G.qualityLabel() : '');
     if (hz < (this.opts.fpsTarget || 120) - 5) t += ' · 모니터 ' + hz + 'Hz';
     this.fpsEl.textContent = t;
     this.fpsEl.className = fps >= target * 0.92 ? '' : fps >= target * 0.7 ? 'warn' : 'bad';
@@ -420,11 +422,14 @@ const UI = G.UI = {
       return;
     }
     const W = innerWidth, H = innerHeight;
-    const key = type + W + 'x' + H;
+    const dpr = window.devicePixelRatio || 1;
+    const key = type + W + 'x' + H + '@' + dpr;
     if (this.scopeKey !== key) {
       this.scopeKey = key;
-      c.width = W; c.height = H;
+      // 레티클도 실제 화면 픽셀로 그려 브라우저의 확대를 막는다.
+      c.width = Math.floor(W * dpr); c.height = Math.floor(H * dpr);
       const x = c.getContext('2d'), cx = W / 2, cy = H / 2, R = Math.min(W, H) * 0.46;
+      x.setTransform(dpr, 0, 0, dpr, 0, 0);
       x.clearRect(0, 0, W, H);
       x.fillStyle = '#000'; x.beginPath(); x.rect(0, 0, W, H); x.arc(cx, cy, R, 0, Math.PI * 2, true); x.fill();
       // 렌즈 가장자리 그림자

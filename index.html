@@ -11,7 +11,7 @@
 <script>
 // 새 버전이 올라왔는데 휴대폰이 예전 페이지를 기억하고 있으면 새로 불러온다
 (function () {
-  var BUILD = '80';
+  var BUILD = '81';
   window.LZ_BUILD = BUILD;
   try {
     fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (v) {
@@ -157,6 +157,7 @@
       </div>
       <div class="opts" data-pane="gfx" hidden>
         <div class="opt"><span>그래픽</span><div class="seg" data-opt="quality"><button data-v="auto" class="on">자동</button><button data-v="potato">최저</button><button data-v="low">낮음</button><button data-v="medium">중간</button><button data-v="high">높음</button></div></div>
+        <div class="opt"><span>렌더 해상도</span><div class="seg" data-opt="renderResolution"><button data-v="auto" class="on">자동</button><button data-v="67">67%</button><button data-v="75">75%</button><button data-v="85">85%</button><button data-v="100">100%</button></div></div>
         <div class="opt"><span>목표 FPS <small class="hint">해상도 자동 조절</small></span><div class="seg" data-opt="fpsTarget"><button data-v="60">60</button><button data-v="120" class="on">120</button><button data-v="144">144</button></div></div>
         <div class="opt"><span>FPS 표시</span><div class="seg" data-opt="showFps"><button data-v="on" class="on">켜기</button><button data-v="off">끄기</button></div></div>
         <div class="opt"><span>마우스 감도</span><div class="range"><input type="range" id="optSens" min="0.2" max="3" step="0.05" value="1"><b id="sensVal">1.00</b></div></div>
@@ -337,6 +338,8 @@
     <div class="set-row"><span>실사 팔 <small>M4 팔·손을 모든 총에</small></span><button id="setRealArms" class="tog">켜짐</button></div>
     <div class="set-row"><span>레이트레이싱 <small>실험 · ThreeRT · 고사양 그래픽카드</small></span><button id="setRT" class="tog">꺼짐</button></div>
     <div class="set-sec">화면 효과</div>
+    <div class="set-row"><span>렌더 해상도 <small>실제 화면 픽셀 기준 · 자동: 중간 이상 최소 85%</small></span><select id="setRenderResolution" aria-label="렌더 해상도"><option value="auto">자동</option><option value="67">67%</option><option value="75">75%</option><option value="85">85%</option><option value="100">100%</option></select></div>
+    <div class="set-row"><span>선명화 <small>업스케일 뒤 적용 · 0이면 끄기</small></span><div class="range"><input type="range" id="setSharp" min="0" max="1" step="0.05"><b id="setSharpVal"></b></div></div>
     <div class="set-row"><span>필름 입자</span><div class="range"><input type="range" id="setGrain" min="0" max="1" step="0.05"><b id="setGrainVal"></b></div></div>
     <div class="set-row"><span>렌즈 색 번짐</span><div class="range"><input type="range" id="setAberration" min="0" max="1" step="0.05"><b id="setAberrationVal"></b></div></div>
     <div class="set-row"><span>가장자리 어둡게</span><div class="range"><input type="range" id="setVignette" min="0" max="1" step="0.05"><b id="setVignetteVal"></b></div></div>
@@ -386,7 +389,7 @@ try {
     try { window.EZTree = await import('./vendor/ez-tree.es.js'); } catch (e) { console.info('[veg] vendor/ez-tree.es.js 없음 — 기존 나무 사용'); }
   }
   loadFill.style.width = '15%';
-  const files = ['core', 'acoustics', 'surface-wear', 'room-lighting', 'hit-response', 'impact-detail', 'weapon-obstruction', 'footsteps', 'locomotion', 'weapon-finish', 'lod-fade', 'assets', 'range-props', 'vegetation', 'static-ao', 'world', 'effects', 'ambient', 'plane', 'character', 'soldiers', 'weapon-catalog', 'gunlib', 'weapon-expansion-models', 'gunmodels', 'world-weapon-lods', 'reload-assets', 'weapons','weapon-motion','hand-contact','weapon-sound-design','weapon-audio','attachments','g17-pilot','m4-viewmodel','asset-viewmodels','real-arms', 'throwable-models', 'throwables', 'actor', 'player', 'bots', 'extras', 'vehicles', 'game', 'training', 'ui', 'settings', 'armory', 'raytrace', 'perf', 'main', 'touch'];
+  const files = ['core', 'texture-quality', 'thin-details', 'acoustics', 'surface-wear', 'room-lighting', 'hit-response', 'impact-detail', 'weapon-obstruction', 'footsteps', 'locomotion', 'weapon-finish', 'lod-fade', 'assets', 'range-props', 'vegetation', 'static-ao', 'world', 'effects', 'ambient', 'plane', 'character', 'soldiers', 'weapon-catalog', 'gunlib', 'weapon-expansion-models', 'gunmodels', 'world-weapon-lods', 'reload-assets', 'weapons','weapon-motion','hand-contact','weapon-sound-design','weapon-audio','attachments','g17-pilot','m4-viewmodel','asset-viewmodels','real-arms', 'throwable-models', 'throwables', 'actor', 'player', 'bots', 'extras', 'vehicles', 'game', 'training', 'ui', 'settings', 'armory', 'raytrace', 'perf', 'main', 'touch'];
   for (let i = 0; i < files.length; i++) {
     loadText.textContent = '스크립트 불러오는 중... (' + files[i] + ')';
     await new Promise((res, rej) => {

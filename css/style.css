@@ -409,6 +409,7 @@ html.mobile #weaponPanel #slots { justify-content: center; }
 .set-row > span { font-size: 15px; }
 .set-row > span small { color: var(--muted); font-size: 12px; margin-left: 6px; }
 .set-row .range b { width: 48px; }
+.set-row select { color: var(--text); background: #202b35; border: 1px solid var(--line); border-radius: 8px; padding: 7px 12px; font: inherit; }
 .set-row .tog { min-width: 84px; padding: 7px 12px; border-radius: 8px; color: #fff; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); font-weight: 700; }
 .set-row .tog.on { background: rgba(255,181,38,0.35); border-color: #ffd27a; }
 #setKeys { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 18px; }

@@ -1,0 +1,438 @@
+{
+  "threshold": 8,
+  "unit": "8비트 RGB 평균 대비",
+  "rows": [
+    {
+      "mode": "before",
+      "distance": 8,
+      "phase": 0,
+      "thickness": 0.006,
+      "meanContrast": 6.8191304347826085,
+      "minContrast": 0,
+      "weakPercent": 88.17391304347827
+    },
+    {
+      "mode": "before",
+      "distance": 8,
+      "phase": 0,
+      "thickness": 0.02,
+      "meanContrast": 30.817391304347826,
+      "minContrast": 0,
+      "weakPercent": 62.26086956521739
+    },
+    {
+      "mode": "before",
+      "distance": 8,
+      "phase": 0,
+      "thickness": 0.08,
+      "meanContrast": 113.3640579710145,
+      "minContrast": 73.0,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "before",
+      "distance": 8,
+      "phase": 0.25,
+      "thickness": 0.006,
+      "meanContrast": 7.695942028985508,
+      "minContrast": 0,
+      "weakPercent": 87.65217391304348
+    },
+    {
+      "mode": "before",
+      "distance": 8,
+      "phase": 0.25,
+      "thickness": 0.02,
+      "meanContrast": 30.67391304347826,
+      "minContrast": 0,
+      "weakPercent": 61.91304347826087
+    },
+    {
+      "mode": "before",
+      "distance": 8,
+      "phase": 0.25,
+      "thickness": 0.08,
+      "meanContrast": 113.1240579710145,
+      "minContrast": 73.0,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "before",
+      "distance": 8,
+      "phase": 0.5,
+      "thickness": 0.006,
+      "meanContrast": 8.321449275362319,
+      "minContrast": 0,
+      "weakPercent": 86.08695652173913
+    },
+    {
+      "mode": "before",
+      "distance": 8,
+      "phase": 0.5,
+      "thickness": 0.02,
+      "meanContrast": 33.61797101449276,
+      "minContrast": 0,
+      "weakPercent": 58.78260869565217
+    },
+    {
+      "mode": "before",
+      "distance": 8,
+      "phase": 0.5,
+      "thickness": 0.08,
+      "meanContrast": 112.81942028985507,
+      "minContrast": 72.33333333333336,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "before",
+      "distance": 8,
+      "phase": 0.75,
+      "thickness": 0.006,
+      "meanContrast": 8.339710144927537,
+      "minContrast": 0,
+      "weakPercent": 86.08695652173913
+    },
+    {
+      "mode": "before",
+      "distance": 8,
+      "phase": 0.75,
+      "thickness": 0.02,
+      "meanContrast": 34.40347826086956,
+      "minContrast": 0,
+      "weakPercent": 58.78260869565217
+    },
+    {
+      "mode": "before",
+      "distance": 8,
+      "phase": 0.75,
+      "thickness": 0.08,
+      "meanContrast": 112.12289855072464,
+      "minContrast": 73.00000000000001,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "before",
+      "distance": 35,
+      "phase": 0,
+      "thickness": 0.006,
+      "meanContrast": 2.2628726287262877,
+      "minContrast": 0,
+      "weakPercent": 92.6829268292683
+    },
+    {
+      "mode": "before",
+      "distance": 35,
+      "phase": 0,
+      "thickness": 0.02,
+      "meanContrast": 12.453929539295395,
+      "minContrast": 0,
+      "weakPercent": 80.48780487804878
+    },
+    {
+      "mode": "before",
+      "distance": 35,
+      "phase": 0,
+      "thickness": 0.08,
+      "meanContrast": 32.1869918699187,
+      "minContrast": 0,
+      "weakPercent": 60.97560975609756
+    },
+    {
+      "mode": "before",
+      "distance": 35,
+      "phase": 0.25,
+      "thickness": 0.006,
+      "meanContrast": 2.2737127371273718,
+      "minContrast": 0,
+      "weakPercent": 92.6829268292683
+    },
+    {
+      "mode": "before",
+      "distance": 35,
+      "phase": 0.25,
+      "thickness": 0.02,
+      "meanContrast": 7.1775067750677515,
+      "minContrast": 0,
+      "weakPercent": 86.99186991869918
+    },
+    {
+      "mode": "before",
+      "distance": 35,
+      "phase": 0.25,
+      "thickness": 0.08,
+      "meanContrast": 23.021505376344088,
+      "minContrast": 0,
+      "weakPercent": 71.7741935483871
+    },
+    {
+      "mode": "before",
+      "distance": 35,
+      "phase": 0.5,
+      "thickness": 0.006,
+      "meanContrast": 2.6084010840108407,
+      "minContrast": 0,
+      "weakPercent": 95.1219512195122
+    },
+    {
+      "mode": "before",
+      "distance": 35,
+      "phase": 0.5,
+      "thickness": 0.02,
+      "meanContrast": 7.295392953929541,
+      "minContrast": 0,
+      "weakPercent": 86.99186991869918
+    },
+    {
+      "mode": "before",
+      "distance": 35,
+      "phase": 0.5,
+      "thickness": 0.08,
+      "meanContrast": 20.70161290322581,
+      "minContrast": 0,
+      "weakPercent": 72.58064516129032
+    },
+    {
+      "mode": "before",
+      "distance": 35,
+      "phase": 0.75,
+      "thickness": 0.006,
+      "meanContrast": 2.6260162601626025,
+      "minContrast": 0,
+      "weakPercent": 94.3089430894309
+    },
+    {
+      "mode": "before",
+      "distance": 35,
+      "phase": 0.75,
+      "thickness": 0.02,
+      "meanContrast": 7.216802168021681,
+      "minContrast": 0,
+      "weakPercent": 86.99186991869918
+    },
+    {
+      "mode": "before",
+      "distance": 35,
+      "phase": 0.75,
+      "thickness": 0.08,
+      "meanContrast": 18.260752688172044,
+      "minContrast": 0,
+      "weakPercent": 74.19354838709677
+    },
+    {
+      "mode": "after",
+      "distance": 8,
+      "phase": 0,
+      "thickness": 0.006,
+      "meanContrast": 94.4385507246377,
+      "minContrast": 33.0,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 8,
+      "phase": 0,
+      "thickness": 0.02,
+      "meanContrast": 89.85188405797102,
+      "minContrast": 33.0,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 8,
+      "phase": 0,
+      "thickness": 0.08,
+      "meanContrast": 141.63159420289855,
+      "minContrast": 137.0,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 8,
+      "phase": 0.25,
+      "thickness": 0.006,
+      "meanContrast": 97.97797101449275,
+      "minContrast": 33.33333333333334,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 8,
+      "phase": 0.25,
+      "thickness": 0.02,
+      "meanContrast": 87.04028985507247,
+      "minContrast": 33.0,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 8,
+      "phase": 0.25,
+      "thickness": 0.08,
+      "meanContrast": 141.63536231884058,
+      "minContrast": 137.0,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 8,
+      "phase": 0.5,
+      "thickness": 0.006,
+      "meanContrast": 97.89043478260871,
+      "minContrast": 33.0,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 8,
+      "phase": 0.5,
+      "thickness": 0.02,
+      "meanContrast": 91.06695652173914,
+      "minContrast": 32.666666666666686,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 8,
+      "phase": 0.5,
+      "thickness": 0.08,
+      "meanContrast": 141.63710144927535,
+      "minContrast": 137.0,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 8,
+      "phase": 0.75,
+      "thickness": 0.006,
+      "meanContrast": 95.56869565217393,
+      "minContrast": 32.666666666666686,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 8,
+      "phase": 0.75,
+      "thickness": 0.02,
+      "meanContrast": 91.04550724637681,
+      "minContrast": 32.666666666666686,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 8,
+      "phase": 0.75,
+      "thickness": 0.08,
+      "meanContrast": 141.64637681159422,
+      "minContrast": 137.0,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 35,
+      "phase": 0,
+      "thickness": 0.006,
+      "meanContrast": 90.26422764227644,
+      "minContrast": 32.666666666666686,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 35,
+      "phase": 0,
+      "thickness": 0.02,
+      "meanContrast": 69.10704607046071,
+      "minContrast": 9.333333333333343,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 35,
+      "phase": 0,
+      "thickness": 0.08,
+      "meanContrast": 95.7018970189702,
+      "minContrast": 32.666666666666686,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 35,
+      "phase": 0.25,
+      "thickness": 0.006,
+      "meanContrast": 90.74254742547426,
+      "minContrast": 32.666666666666686,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 35,
+      "phase": 0.25,
+      "thickness": 0.02,
+      "meanContrast": 77.36043360433605,
+      "minContrast": 19.0,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 35,
+      "phase": 0.25,
+      "thickness": 0.08,
+      "meanContrast": 92.16666666666667,
+      "minContrast": 32.666666666666686,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 35,
+      "phase": 0.5,
+      "thickness": 0.006,
+      "meanContrast": 90.29132791327913,
+      "minContrast": 32.666666666666686,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 35,
+      "phase": 0.5,
+      "thickness": 0.02,
+      "meanContrast": 86.21273712737128,
+      "minContrast": 18.666666666666657,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 35,
+      "phase": 0.5,
+      "thickness": 0.08,
+      "meanContrast": 83.40860215053765,
+      "minContrast": 32.666666666666686,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 35,
+      "phase": 0.75,
+      "thickness": 0.006,
+      "meanContrast": 80.33739837398376,
+      "minContrast": 32.666666666666686,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 35,
+      "phase": 0.75,
+      "thickness": 0.02,
+      "meanContrast": 89.82520325203254,
+      "minContrast": 23.333333333333343,
+      "weakPercent": 0.0
+    },
+    {
+      "mode": "after",
+      "distance": 35,
+      "phase": 0.75,
+      "thickness": 0.08,
+      "meanContrast": 81.05241935483872,
+      "minContrast": 32.666666666666686,
+      "weakPercent": 0.0
+    }
+  ]
+}

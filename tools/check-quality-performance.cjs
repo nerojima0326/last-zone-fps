@@ -47,7 +47,7 @@ const out = process.env.REPORT || '/tmp/lastzone-v78-quality.json';
       return {world:[rt.width,rt.height],viewmodel:[native.width,native.height],output:[size.x,size.y],gun:G.VM.cur};
     });
     assert.deepEqual(result.native.viewmodel,result.native.output);
-    assert(result.native.world[0]<result.native.viewmodel[0]*.5);
+    assert(Math.abs(result.native.world[0]/result.native.viewmodel[0]-.55)<.002,'낮음의 DRS 하한은 네이티브 화면의 55%');
     const dir=path.dirname(out);fs.mkdirSync(dir,{recursive:true});
     await f.page.screenshot({path:path.join(dir,'v78-native-hands.png')});
     // Compare framebuffer corners with/without the native weapon. The overlay
