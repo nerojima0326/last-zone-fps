@@ -1,0 +1,161 @@
+{
+  "before": {
+    "mode": "before",
+    "base": "83563f6eecc062ca3b4f07196f51840a19434bf2",
+    "rows": [
+      {
+        "time": 0.05,
+        "ms": 2440.60000000149,
+        "calls": 140,
+        "triangles": 544201,
+        "legacySprites": 138,
+        "sprites": 0,
+        "chunks": 0,
+        "marks": 0,
+        "lights": 2,
+        "kind": "frag"
+      },
+      {
+        "time": 0.25,
+        "ms": 1982.1000000014901,
+        "calls": 140,
+        "triangles": 544201,
+        "legacySprites": 138,
+        "sprites": 0,
+        "chunks": 0,
+        "marks": 0,
+        "lights": 2,
+        "kind": "frag"
+      },
+      {
+        "time": 0.85,
+        "ms": 1910.1000000014901,
+        "calls": 140,
+        "triangles": 544073,
+        "legacySprites": 74,
+        "sprites": 0,
+        "chunks": 0,
+        "marks": 0,
+        "lights": 2,
+        "kind": "frag"
+      },
+      {
+        "time": 0.08,
+        "ms": 2522.9000000059605,
+        "calls": 140,
+        "triangles": 543989,
+        "legacySprites": 32,
+        "sprites": 0,
+        "chunks": 0,
+        "marks": 0,
+        "lights": 2,
+        "kind": "molotov"
+      },
+      {
+        "time": 1.2,
+        "ms": 2146,
+        "calls": 140,
+        "triangles": 544233,
+        "legacySprites": 154,
+        "sprites": 0,
+        "chunks": 0,
+        "marks": 0,
+        "lights": 2,
+        "kind": "molotov"
+      },
+      {
+        "time": 5,
+        "ms": 2604.8000000044703,
+        "calls": 140,
+        "triangles": 544345,
+        "legacySprites": 210,
+        "sprites": 0,
+        "chunks": 0,
+        "marks": 0,
+        "lights": 2,
+        "kind": "molotov"
+      }
+    ],
+    "errors": []
+  },
+  "after": {
+    "mode": "after",
+    "base": "83563f6eecc062ca3b4f07196f51840a19434bf2",
+    "rows": [
+      {
+        "time": 0.05,
+        "ms": 4028.5,
+        "calls": 142,
+        "triangles": 544087,
+        "legacySprites": 1,
+        "sprites": 34,
+        "chunks": 22,
+        "marks": 2,
+        "lights": 2,
+        "kind": "frag"
+      },
+      {
+        "time": 0.25,
+        "ms": 1868.5,
+        "calls": 141,
+        "triangles": 544073,
+        "legacySprites": 0,
+        "sprites": 28,
+        "chunks": 22,
+        "marks": 2,
+        "lights": 2,
+        "kind": "frag"
+      },
+      {
+        "time": 0.85,
+        "ms": 1795.5,
+        "calls": 141,
+        "triangles": 544049,
+        "legacySprites": 0,
+        "sprites": 21,
+        "chunks": 20,
+        "marks": 1,
+        "lights": 2,
+        "kind": "frag"
+      },
+      {
+        "time": 0.08,
+        "ms": 1853.9000000059605,
+        "calls": 141,
+        "triangles": 544061,
+        "legacySprites": 0,
+        "sprites": 12,
+        "chunks": 24,
+        "marks": 8,
+        "lights": 2,
+        "kind": "molotov"
+      },
+      {
+        "time": 1.2,
+        "ms": 1573,
+        "calls": 141,
+        "triangles": 544119,
+        "legacySprites": 0,
+        "sprites": 41,
+        "chunks": 24,
+        "marks": 8,
+        "lights": 2,
+        "kind": "molotov"
+      },
+      {
+        "time": 5,
+        "ms": 1593.3999999985099,
+        "calls": 140,
+        "triangles": 544015,
+        "legacySprites": 0,
+        "sprites": 37,
+        "chunks": 0,
+        "marks": 8,
+        "lights": 2,
+        "kind": "molotov"
+      }
+    ],
+    "errors": []
+  },
+  "주의": "같은 품질·해상도의 단일 프레임 원시 자료다. 소프트웨어 렌더러이며 병렬 검사 구간도 있어 실제 GPU의 FPS 비교나 속도 개선률로 환산하지 않는다."
+}

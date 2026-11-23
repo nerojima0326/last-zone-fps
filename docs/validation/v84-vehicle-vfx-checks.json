@@ -1,0 +1,136 @@
+{
+  "vehicles": {
+    "rows": [
+      {
+        "kind": "porter",
+        "hp": 1600,
+        "shots": 84,
+        "burn": 2.4,
+        "respawned": true,
+        "restored": 1600,
+        "countStable": true
+      },
+      {
+        "kind": "e2200",
+        "hp": 1600,
+        "shots": 84,
+        "burn": 2.4,
+        "respawned": true,
+        "restored": 1600,
+        "countStable": true
+      },
+      {
+        "kind": "izh",
+        "hp": 1600,
+        "shots": 84,
+        "burn": 2.4,
+        "respawned": true,
+        "restored": 1600,
+        "countStable": true
+      }
+    ],
+    "blast": {
+      "grenades": 7,
+      "burn": 0.7847761975035781
+    }
+  },
+  "collision": {
+    "removed": true,
+    "listed": false,
+    "fires": 1,
+    "duplicate": true,
+    "glass": 13,
+    "normal": [
+      0,
+      1,
+      0
+    ],
+    "radius": 3.4,
+    "duration": 8.983333333333333
+  },
+  "quality": [
+    {
+      "quality": "potato",
+      "sprites": 26,
+      "chunks": 24,
+      "marks": 10,
+      "caps": [
+        80,
+        24
+      ],
+      "pool": 256,
+      "lights": 2
+    },
+    {
+      "quality": "low",
+      "sprites": 41,
+      "chunks": 36,
+      "marks": 10,
+      "caps": [
+        128,
+        48
+      ],
+      "pool": 256,
+      "lights": 2
+    },
+    {
+      "quality": "medium",
+      "sprites": 47,
+      "chunks": 46,
+      "marks": 10,
+      "caps": [
+        192,
+        72
+      ],
+      "pool": 256,
+      "lights": 2
+    },
+    {
+      "quality": "high",
+      "sprites": 60,
+      "chunks": 53,
+      "marks": 10,
+      "caps": [
+        256,
+        96
+      ],
+      "pool": 256,
+      "lights": 2
+    }
+  ],
+  "stress": {
+    "max": {
+      "sprites": 74,
+      "chunks": 24,
+      "marks": 48,
+      "objects": 0,
+      "geometries": 0,
+      "textures": 0
+    },
+    "cleared": {
+      "sprites": 0,
+      "chunks": 0,
+      "marks": 0,
+      "free": 256
+    },
+    "cadence": [
+      {
+        "fps": 30,
+        "sprites": 27,
+        "flames": 21
+      },
+      {
+        "fps": 60,
+        "sprites": 25,
+        "flames": 19
+      },
+      {
+        "fps": 144,
+        "sprites": 26,
+        "flames": 20
+      }
+    ],
+    "fallback": true
+  },
+  "errors": []
+}

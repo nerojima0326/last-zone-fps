@@ -1,66 +1,68 @@
 {
  "schema": 2,
  "sampleRate": 44100,
- "source": "Original generated reports; CC0 recorded handling",
+ "source": "새 압력파 총성·총기별 CC0 조작음 재가공 v84",
  "weapons": {
   "ar7": {
    "rate": 1,
    "shot": {
-    "path": "ar7-report-v76.mp3",
-    "sha": "57c016719f73",
+    "path": "ar7-report-v84.mp3",
+    "sha": "f2837472b924",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.3660090702947846
+      "duration": 0.38081632653061226
      },
      "own1": {
-      "offset": 0.7660090702947846,
-      "duration": 0.3660090702947846
+      "offset": 0.7808163265306123,
+      "duration": 0.38081632653061226
      },
      "own2": {
-      "offset": 1.3320181405895692,
-      "duration": 0.3660090702947846
+      "offset": 1.3616326530612244,
+      "duration": 0.38081632653061226
      },
      "own3": {
-      "offset": 1.8980272108843537,
-      "duration": 0.3660090702947846
+      "offset": 1.9424489795918367,
+      "duration": 0.38081632653061226
      },
      "near": {
-      "offset": 2.4640362811791383,
-      "duration": 0.4860090702947846
+      "offset": 2.523265306122449,
+      "duration": 0.48081632653061224
      },
      "far": {
-      "offset": 3.150045351473923,
-      "duration": 0.9160090702947846
+      "offset": 3.204081632653061,
+      "duration": 0.8208163265306122
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "ar7-fx.mp3",
-    "sha": "f0e5b6632b03",
+    "path": "ar7-handling-v84.mp3",
+    "sha": "8c60036c5edd",
     "cues": {
      "magout": {
-      "offset": 2.819977,
-      "duration": 0.197596
+      "offset": 0.2,
+      "duration": 0.20959183673469386
      },
      "magin": {
-      "offset": 3.217574,
-      "duration": 0.1661
+      "offset": 0.6095918367346939,
+      "duration": 0.17643990929705217
      },
      "open": {
-      "offset": 3.583673,
-      "duration": 0.326349
+      "offset": 0.986031746031746,
+      "duration": 0.28
      },
      "close": {
-      "offset": 4.110023,
-      "duration": 0.146848
+      "offset": 1.466031746031746,
+      "duration": 0.15603174603174602
      },
      "dry": {
-      "offset": 4.456871,
-      "duration": 0.15068
+      "offset": 1.8220634920634922,
+      "duration": 0.15975056689342404
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "D_5",
@@ -68,72 +70,76 @@
     "open": "D_9",
     "close": "D_13",
     "dry": "D_16",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.048,
     "handling": 0.8
-   }
+   },
+   "handleRate": 1
   },
   "ka47": {
    "rate": 1,
    "shot": {
-    "path": "ka47-report-v76.mp3",
-    "sha": "825b5726b3a2",
+    "path": "ka47-report-v84.mp3",
+    "sha": "b7279cfb01d4",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.5160090702947846
+      "duration": 0.5212018140589569
      },
      "own1": {
-      "offset": 0.9160090702947846,
-      "duration": 0.5160090702947846
+      "offset": 0.921201814058957,
+      "duration": 0.5212018140589569
      },
      "own2": {
-      "offset": 1.632018140589569,
-      "duration": 0.5160090702947846
+      "offset": 1.6424036281179137,
+      "duration": 0.5212018140589569
      },
      "own3": {
-      "offset": 2.3480272108843536,
-      "duration": 0.5160090702947846
+      "offset": 2.363605442176871,
+      "duration": 0.5212018140589569
      },
      "near": {
-      "offset": 3.0640362811791384,
-      "duration": 0.6360090702947846
+      "offset": 3.0848072562358277,
+      "duration": 0.6212018140589569
      },
      "far": {
-      "offset": 3.900045351473923,
-      "duration": 1.0660090702947846
+      "offset": 3.9060090702947847,
+      "duration": 0.9612018140589569
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "ka47-fx.mp3",
-    "sha": "4591b052a043",
+    "path": "ka47-handling-v84.mp3",
+    "sha": "7d4829f6ff06",
     "cues": {
      "magout": {
-      "offset": 3.194989,
-      "duration": 0.14449
+      "offset": 0.2,
+      "duration": 0.15090702947845805
      },
      "magin": {
-      "offset": 3.539478,
-      "duration": 0.144717
+      "offset": 0.550907029478458,
+      "duration": 0.1512018140589569
      },
      "open": {
-      "offset": 3.884195,
-      "duration": 0.273605
+      "offset": 0.9021088435374149,
+      "duration": 0.28
      },
      "close": {
-      "offset": 4.3578,
-      "duration": 0.151565
+      "offset": 1.382108843537415,
+      "duration": 0.1512018140589569
      },
      "dry": {
-      "offset": 4.709365,
-      "duration": 0.143832
+      "offset": 1.733310657596372,
+      "duration": 0.15029478458049886
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "C_11",
@@ -141,72 +147,76 @@
     "open": "C_12",
     "close": "C_13",
     "dry": "C_7",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.058,
     "handling": 0.8
-   }
+   },
+   "handleRate": 1
   },
   "sc17": {
    "rate": 1,
    "shot": {
-    "path": "sc17-report-v76.mp3",
-    "sha": "def8ab119663",
+    "path": "sc17-report-v84.mp3",
+    "sha": "7d052c8b5d48",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.5820181405895691
+      "duration": 0.5806122448979592
      },
      "own1": {
-      "offset": 0.9820181405895692,
-      "duration": 0.5820181405895691
+      "offset": 0.9806122448979592,
+      "duration": 0.5806122448979592
      },
      "own2": {
-      "offset": 1.7640362811791384,
-      "duration": 0.5820181405895691
+      "offset": 1.7612244897959184,
+      "duration": 0.5806122448979592
      },
      "own3": {
-      "offset": 2.5460544217687073,
-      "duration": 0.5820181405895691
+      "offset": 2.5418367346938777,
+      "duration": 0.5806122448979592
      },
      "near": {
-      "offset": 3.3280725623582765,
-      "duration": 0.7020181405895691
+      "offset": 3.3224489795918366,
+      "duration": 0.6806122448979591
      },
      "far": {
-      "offset": 4.230090702947845,
-      "duration": 1.132018140589569
+      "offset": 4.203061224489796,
+      "duration": 1.020612244897959
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "sc17-fx.mp3",
-    "sha": "4c8e68fe5a5a",
+    "path": "sc17-handling-v84.mp3",
+    "sha": "5b936f7b3c88",
     "cues": {
      "magout": {
-      "offset": 3.27,
-      "duration": 0.197528
+      "offset": 0.2,
+      "duration": 0.20317460317460317
      },
      "magin": {
-      "offset": 3.667528,
-      "duration": 0.166122
+      "offset": 0.6031746031746031,
+      "duration": 0.17113378684807257
      },
      "open": {
-      "offset": 4.033651,
-      "duration": 0.239932
+      "offset": 0.9743083900226758,
+      "duration": 0.24696145124716554
      },
      "close": {
-      "offset": 4.473583,
-      "duration": 0.160544
+      "offset": 1.4212698412698412,
+      "duration": 0.16537414965986394
      },
      "dry": {
-      "offset": 4.834127,
-      "duration": 0.145011
+      "offset": 1.7866439909297052,
+      "duration": 0.1493877551020408
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "D_5",
@@ -214,72 +224,76 @@
     "open": "U_3",
     "close": "U_4",
     "dry": "U_6",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.9,
     "action": 0.055,
     "handling": 0.8
-   }
+   },
+   "handleRate": 1
   },
   "mk14": {
    "rate": 1,
    "shot": {
-    "path": "mk14-report-v76.mp3",
-    "sha": "97b8816dd8d7",
+    "path": "mk14-report-v84.mp3",
+    "sha": "96842a239089",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.47401360544217686
+      "duration": 0.5050113378684807
      },
      "own1": {
-      "offset": 0.8740136054421769,
-      "duration": 0.47401360544217686
+      "offset": 0.9050113378684808,
+      "duration": 0.5050113378684807
      },
      "own2": {
-      "offset": 1.5480272108843538,
-      "duration": 0.47401360544217686
+      "offset": 1.6100226757369616,
+      "duration": 0.5050113378684807
      },
      "own3": {
-      "offset": 2.2220408163265306,
-      "duration": 0.47401360544217686
+      "offset": 2.3150340136054424,
+      "duration": 0.5050113378684807
      },
      "near": {
-      "offset": 2.8960544217687074,
-      "duration": 0.5940136054421769
+      "offset": 3.020045351473923,
+      "duration": 0.6050113378684807
      },
      "far": {
-      "offset": 3.6900680272108843,
-      "duration": 1.024013605442177
+      "offset": 3.8250566893424036,
+      "duration": 0.9450113378684807
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "mk14-fx.mp3",
-    "sha": "aa5f3bfb5323",
+    "path": "mk14-handling-v84.mp3",
+    "sha": "e947e20aa4c0",
     "cues": {
      "magout": {
-      "offset": 3.42,
-      "duration": 0.143991
+      "offset": 0.2,
+      "duration": 0.15244897959183673
      },
      "magin": {
-      "offset": 3.763991,
-      "duration": 0.147687
+      "offset": 0.5524489795918367,
+      "duration": 0.15632653061224488
      },
      "open": {
-      "offset": 4.111678,
-      "duration": 0.235896
+      "offset": 0.9087755102040816,
+      "duration": 0.24959183673469387
      },
      "close": {
-      "offset": 4.547574,
-      "duration": 0.145442
+      "offset": 1.3583673469387756,
+      "duration": 0.1539909297052154
      },
      "dry": {
-      "offset": 4.893016,
-      "duration": 0.144898
+      "offset": 1.7123582766439909,
+      "duration": 0.15340136054421769
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "G_9",
@@ -287,80 +301,84 @@
     "open": "U_1",
     "close": "U_2",
     "dry": "U_6",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.06,
     "handling": 0.8
-   }
+   },
+   "handleRate": 1
   },
   "kr98": {
    "rate": 1,
    "shot": {
-    "path": "kr98-report-v76.mp3",
-    "sha": "e9a2275ea3db",
+    "path": "kr98-report-v84.mp3",
+    "sha": "e53d49fdedd4",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.78
+      "duration": 0.7750113378684808
      },
      "own1": {
-      "offset": 1.18,
-      "duration": 0.78
+      "offset": 1.1750113378684808,
+      "duration": 0.7750113378684808
      },
      "own2": {
-      "offset": 2.16,
-      "duration": 0.78
+      "offset": 2.1500226757369614,
+      "duration": 0.7750113378684808
      },
      "own3": {
-      "offset": 3.14,
-      "duration": 0.78
+      "offset": 3.125034013605442,
+      "duration": 0.7750113378684808
      },
      "near": {
-      "offset": 4.12,
-      "duration": 0.9
+      "offset": 4.100045351473923,
+      "duration": 0.8750113378684807
      },
      "far": {
-      "offset": 5.22,
-      "duration": 1.33
+      "offset": 5.175056689342403,
+      "duration": 1.2150113378684808
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "kr98-fx.mp3",
-    "sha": "3da08143ec80",
+    "path": "kr98-handling-v84.mp3",
+    "sha": "0366b74f5169",
     "cues": {
      "magout": {
-      "offset": 4.315261,
-      "duration": 0.145896
+      "offset": 0.2,
+      "duration": 0.14591836734693878
      },
      "magin": {
-      "offset": 4.661156,
-      "duration": 0.143923
+      "offset": 0.5459183673469388,
+      "duration": 0.1439455782312925
      },
      "open": {
-      "offset": 5.005079,
-      "duration": 0.149773
+      "offset": 0.8898639455782313,
+      "duration": 0.14979591836734693
      },
      "close": {
-      "offset": 5.354853,
-      "duration": 0.213424
+      "offset": 1.2396598639455783,
+      "duration": 0.21351473922902495
      },
      "dry": {
-      "offset": 5.768277,
-      "duration": 0.143991
+      "offset": 1.653174603174603,
+      "duration": 0.14405895691609977
      },
      "up": {
-      "offset": 6.112268,
-      "duration": 0.151202
+      "offset": 1.997233560090703,
+      "duration": 0.15054421768707482
      },
      "down": {
-      "offset": 6.463469,
-      "duration": 0.180794
+      "offset": 2.347777777777778,
+      "duration": 0.1791156462585034
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "W_5",
@@ -370,72 +388,76 @@
     "dry": "W_13",
     "up": "W_6",
     "down": "M_7",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.9,
     "action": null,
     "handling": 0.8
-   }
+   },
+   "handleRate": 1
   },
   "s12": {
    "rate": 1,
    "shot": {
-    "path": "s12-report-v76.mp3",
-    "sha": "0b1c9a065838",
+    "path": "s12-report-v84.mp3",
+    "sha": "04207db59ecf",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.6480045351473923
+      "duration": 0.6508163265306123
      },
      "own1": {
-      "offset": 1.0480045351473923,
-      "duration": 0.6480045351473923
+      "offset": 1.0508163265306123,
+      "duration": 0.6508163265306123
      },
      "own2": {
-      "offset": 1.8960090702947845,
-      "duration": 0.6480045351473923
+      "offset": 1.9016326530612244,
+      "duration": 0.6508163265306123
      },
      "own3": {
-      "offset": 2.7440136054421767,
-      "duration": 0.6480045351473923
+      "offset": 2.7524489795918368,
+      "duration": 0.6508163265306123
      },
      "near": {
-      "offset": 3.5920181405895693,
-      "duration": 0.7680045351473923
+      "offset": 3.603265306122449,
+      "duration": 0.7508163265306123
      },
      "far": {
-      "offset": 4.5600226757369615,
-      "duration": 1.1980045351473922
+      "offset": 4.5540816326530615,
+      "duration": 1.0908163265306123
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "s12-fx.mp3",
-    "sha": "13a985856b21",
+    "path": "s12-handling-v84.mp3",
+    "sha": "7eb4afbe1d8e",
     "cues": {
      "open": {
-      "offset": 3.494989,
-      "duration": 0.151565
+      "offset": 0.2,
+      "duration": 0.15229024943310657
      },
      "close": {
-      "offset": 3.846553,
-      "duration": 0.189252
+      "offset": 0.5522902494331066,
+      "duration": 0.1901360544217687
      },
      "shell": {
-      "offset": 4.235805,
-      "duration": 0.15161
+      "offset": 0.9424263038548752,
+      "duration": 0.15233560090702947
      },
      "port": {
-      "offset": 4.587415,
-      "duration": 0.179274
+      "offset": 1.2947619047619048,
+      "duration": 0.1800907029478458
      },
      "dry": {
-      "offset": 4.966689,
-      "duration": 0.147596
+      "offset": 1.6748526077097505,
+      "duration": 0.14829931972789115
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "open": "O_4",
@@ -443,72 +465,76 @@
     "shell": "O_3",
     "port": "O_7",
     "dry": "O_8",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.9,
     "action": null,
     "handling": 0.8
-   }
+   },
+   "handleRate": 1
   },
   "m1014": {
    "rate": 1,
    "shot": {
-    "path": "m1014-report-v76.mp3",
-    "sha": "27a086d05f45",
+    "path": "m1014-report-v84.mp3",
+    "sha": "be6be3724457",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.4860090702947846
+      "duration": 0.5374149659863946
      },
      "own1": {
-      "offset": 0.8860090702947846,
-      "duration": 0.4860090702947846
+      "offset": 0.9374149659863945,
+      "duration": 0.5374149659863946
      },
      "own2": {
-      "offset": 1.5720181405895692,
-      "duration": 0.4860090702947846
+      "offset": 1.674829931972789,
+      "duration": 0.5374149659863946
      },
      "own3": {
-      "offset": 2.2580272108843538,
-      "duration": 0.4860090702947846
+      "offset": 2.4122448979591837,
+      "duration": 0.5374149659863946
      },
      "near": {
-      "offset": 2.9440362811791383,
-      "duration": 0.6060090702947846
+      "offset": 3.1496598639455784,
+      "duration": 0.6374149659863946
      },
      "far": {
-      "offset": 3.750045351473923,
-      "duration": 1.0360090702947846
+      "offset": 3.9870748299319727,
+      "duration": 0.9774149659863945
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "m1014-fx.mp3",
-    "sha": "1e87f5a889b1",
+    "path": "m1014-handling-v84.mp3",
+    "sha": "a6ce5cb790cb",
     "cues": {
      "open": {
-      "offset": 3.12,
-      "duration": 0.235941
+      "offset": 0.2,
+      "duration": 0.24678004535147394
      },
      "close": {
-      "offset": 3.555941,
-      "duration": 0.14542
+      "offset": 0.6467800453514739,
+      "duration": 0.15083900226757369
      },
      "shell": {
-      "offset": 3.901361,
-      "duration": 0.146463
+      "offset": 0.9976190476190476,
+      "duration": 0.15328798185941042
      },
      "port": {
-      "offset": 4.247823,
-      "duration": 0.199796
+      "offset": 1.350907029478458,
+      "duration": 0.20909297052154194
      },
      "dry": {
-      "offset": 4.647619,
-      "duration": 0.144331
+      "offset": 1.76,
+      "duration": 0.15104308390022675
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "open": "U_1",
@@ -516,140 +542,148 @@
     "shell": "K_3",
     "port": "K_13",
     "dry": "K_7",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.065,
     "handling": 0.8
-   }
+   },
+   "handleRate": 1
   },
   "db2": {
    "rate": 1,
    "shot": {
-    "path": "db2-report-v76.mp3",
-    "sha": "639316364295",
+    "path": "db2-report-v84.mp3",
+    "sha": "2df5d0e84efc",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.84
+      "duration": 0.8668027210884354
      },
      "own1": {
-      "offset": 1.24,
-      "duration": 0.84
+      "offset": 1.2668027210884354,
+      "duration": 0.8668027210884354
      },
      "own2": {
-      "offset": 2.28,
-      "duration": 0.84
+      "offset": 2.3336054421768706,
+      "duration": 0.8668027210884354
      },
      "own3": {
-      "offset": 3.32,
-      "duration": 0.84
+      "offset": 3.4004081632653063,
+      "duration": 0.8668027210884354
      },
      "near": {
-      "offset": 4.36,
-      "duration": 0.96
+      "offset": 4.467210884353742,
+      "duration": 0.9668027210884353
      },
      "far": {
-      "offset": 5.52,
-      "duration": 1.3900226757369614
+      "offset": 5.634013605442177,
+      "duration": 1.3068027210884354
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "db2-fx.mp3",
-    "sha": "ad3ae70f039d",
+    "path": "db2-handling-v84.mp3",
+    "sha": "5fbd3cd1516d",
     "cues": {
      "open": {
-      "offset": 4.02,
-      "duration": 0.149229
+      "offset": 0.2,
+      "duration": 0.14498866213151929
      },
      "close": {
-      "offset": 4.369229,
-      "duration": 0.168753
+      "offset": 0.5449886621315193,
+      "duration": 0.16403628117913832
      },
      "shell": {
-      "offset": 4.737982,
-      "duration": 0.201927
+      "offset": 0.9090249433106576,
+      "duration": 0.19621315192743763
      },
      "dry": {
-      "offset": 5.139909,
-      "duration": 0.146259
+      "offset": 1.3052380952380953,
+      "duration": 0.14217687074829932
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "open": "H_13",
     "close": "H_1",
     "shell": "H_7",
     "dry": "H_8",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.9,
     "action": null,
     "handling": 0.8
-   }
+   },
+   "handleRate": 1
   },
   "sa12": {
    "rate": 1,
    "shot": {
-    "path": "sa12-report-v76.mp3",
-    "sha": "38600f162a56",
+    "path": "sa12-report-v84.mp3",
+    "sha": "c5449f467895",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.46201814058956914
+      "duration": 0.48882086167800454
      },
      "own1": {
-      "offset": 0.8620181405895692,
-      "duration": 0.46201814058956914
+      "offset": 0.8888208616780046,
+      "duration": 0.48882086167800454
      },
      "own2": {
-      "offset": 1.5240362811791384,
-      "duration": 0.46201814058956914
+      "offset": 1.5776417233560092,
+      "duration": 0.48882086167800454
      },
      "own3": {
-      "offset": 2.1860544217687075,
-      "duration": 0.46201814058956914
+      "offset": 2.2664625850340134,
+      "duration": 0.48882086167800454
      },
      "near": {
-      "offset": 2.8480725623582765,
-      "duration": 0.5820181405895691
+      "offset": 2.955283446712018,
+      "duration": 0.5888208616780045
      },
      "far": {
-      "offset": 3.6300907029478457,
-      "duration": 1.0120181405895692
+      "offset": 3.7441043083900225,
+      "duration": 0.9288208616780045
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "sa12-fx.mp3",
-    "sha": "6f501b2941bc",
+    "path": "sa12-handling-v84.mp3",
+    "sha": "a56211118d08",
     "cues": {
      "magout": {
-      "offset": 2.97,
-      "duration": 0.223764
+      "offset": 0.2,
+      "duration": 0.23521541950113378
      },
      "magin": {
-      "offset": 3.393764,
-      "duration": 0.144422
+      "offset": 0.6352154195011338,
+      "duration": 0.15183673469387754
      },
      "open": {
-      "offset": 3.738186,
-      "duration": 0.269138
+      "offset": 0.9870521541950114,
+      "duration": 0.28
      },
      "close": {
-      "offset": 4.207324,
-      "duration": 0.150975
+      "offset": 1.4670521541950114,
+      "duration": 0.15870748299319729
      },
      "dry": {
-      "offset": 4.558299,
-      "duration": 0.144558
+      "offset": 1.8257596371882086,
+      "duration": 0.1517687074829932
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "N_11",
@@ -657,72 +691,76 @@
     "open": "C_0",
     "close": "C_1",
     "dry": "N_18",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.07,
     "handling": 0.8
-   }
+   },
+   "handleRate": 1
   },
   "aa12": {
    "rate": 1,
    "shot": {
-    "path": "aa12-report-v76.mp3",
-    "sha": "d57b1e956a96",
+    "path": "aa12-report-v84.mp3",
+    "sha": "f2cb6a1efe7b",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.3360090702947846
+      "duration": 0.3592063492063492
      },
      "own1": {
-      "offset": 0.7360090702947846,
-      "duration": 0.3360090702947846
+      "offset": 0.7592063492063492,
+      "duration": 0.3592063492063492
      },
      "own2": {
-      "offset": 1.2720181405895692,
-      "duration": 0.3360090702947846
+      "offset": 1.3184126984126985,
+      "duration": 0.3592063492063492
      },
      "own3": {
-      "offset": 1.8080272108843538,
-      "duration": 0.3360090702947846
+      "offset": 1.8776190476190475,
+      "duration": 0.3592063492063492
      },
      "near": {
-      "offset": 2.344036281179138,
-      "duration": 0.4560090702947846
+      "offset": 2.436825396825397,
+      "duration": 0.45920634920634923
      },
      "far": {
-      "offset": 3.000045351473923,
-      "duration": 0.8860090702947846
+      "offset": 3.096031746031746,
+      "duration": 0.7992063492063493
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "aa12-fx.mp3",
-    "sha": "e46cbd69e9d2",
+    "path": "aa12-handling-v84.mp3",
+    "sha": "361eb6a616f0",
     "cues": {
      "magout": {
-      "offset": 2.744989,
-      "duration": 0.158095
+      "offset": 0.2,
+      "duration": 0.15922902494331065
      },
      "magin": {
-      "offset": 3.103084,
-      "duration": 0.144875
+      "offset": 0.5592290249433106,
+      "duration": 0.1458956916099773
      },
      "open": {
-      "offset": 3.447959,
-      "duration": 0.145215
+      "offset": 0.905124716553288,
+      "duration": 0.14609977324263038
      },
      "close": {
-      "offset": 3.793175,
-      "duration": 0.14542
+      "offset": 1.2512244897959184,
+      "duration": 0.1464625850340136
      },
      "dry": {
-      "offset": 4.138594,
-      "duration": 0.143991
+      "offset": 1.5976870748299319,
+      "duration": 0.14501133786848072
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "P_7",
@@ -730,72 +768,76 @@
     "open": "P_8",
     "close": "U_2",
     "dry": "P_1",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.075,
     "handling": 0.8
-   }
+   },
+   "handleRate": 1
   },
   "p92": {
    "rate": 1,
    "shot": {
-    "path": "p92-report-v76.mp3",
-    "sha": "35db4edeb8d2",
+    "path": "p92-report-v84.mp3",
+    "sha": "f042d071e532",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.30002267573696145
+      "duration": 0.2890022675736961
      },
      "own1": {
-      "offset": 0.7000226757369614,
-      "duration": 0.30002267573696145
+      "offset": 0.6890022675736961,
+      "duration": 0.2890022675736961
      },
      "own2": {
-      "offset": 1.2000453514739229,
-      "duration": 0.30002267573696145
+      "offset": 1.1780045351473922,
+      "duration": 0.2890022675736961
      },
      "own3": {
-      "offset": 1.7000680272108843,
-      "duration": 0.30002267573696145
+      "offset": 1.6670068027210885,
+      "duration": 0.2890022675736961
      },
      "near": {
-      "offset": 2.2000907029478456,
-      "duration": 0.42
+      "offset": 2.1560090702947847,
+      "duration": 0.38900226757369616
      },
      "far": {
-      "offset": 2.8200907029478457,
-      "duration": 0.8500226757369614
+      "offset": 2.7450113378684806,
+      "duration": 0.7290022675736961
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "p92-fx.mp3",
-    "sha": "5d9d97f7191d",
+    "path": "p92-handling-v84.mp3",
+    "sha": "8ccc8d671fef",
     "cues": {
      "magout": {
-      "offset": 2.594966,
-      "duration": 0.259342
+      "offset": 0.2,
+      "duration": 0.24918367346938775
      },
      "magin": {
-      "offset": 3.054308,
-      "duration": 0.159297
+      "offset": 0.6491836734693878,
+      "duration": 0.15340136054421769
      },
      "open": {
-      "offset": 3.413605,
-      "duration": 0.148118
+      "offset": 1.0025850340136055,
+      "duration": 0.14263038548752835
      },
      "close": {
-      "offset": 3.761723,
-      "duration": 0.150726
+      "offset": 1.3452154195011339,
+      "duration": 0.14517006802721089
      },
      "dry": {
-      "offset": 4.112449,
-      "duration": 0.147234
+      "offset": 1.6903854875283446,
+      "duration": 0.14179138321995466
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "F_5",
@@ -803,19 +845,21 @@
     "open": "F_8",
     "close": "F_17",
     "dry": "F_23",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.045,
     "handling": 0.8
-   }
+   },
+   "handleRate": 1
   },
   "g18": {
    "rate": 1,
    "shot": {
-    "path": "g18-report-v76.mp3",
-    "sha": "4bb983818368",
+    "path": "g18-report-v84.mp3",
+    "sha": "d0a9cc2ce1dd",
     "cues": {
      "own0": {
       "offset": 0.2,
@@ -835,40 +879,42 @@
      },
      "near": {
       "offset": 2.120090702947846,
-      "duration": 0.4
+      "duration": 0.38
      },
      "far": {
-      "offset": 2.7200907029478456,
-      "duration": 0.83
+      "offset": 2.7000907029478456,
+      "duration": 0.72
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "g18-fx.mp3",
-    "sha": "1870f1bcb66e",
+    "path": "g18-handling-v84.mp3",
+    "sha": "6025ed8bca73",
     "cues": {
      "magout": {
-      "offset": 2.37,
-      "duration": 0.149819
+      "offset": 0.2,
+      "duration": 0.14369614512471654
      },
      "magin": {
-      "offset": 2.719819,
-      "duration": 0.172018
+      "offset": 0.5436961451247165,
+      "duration": 0.16589569160997733
      },
      "open": {
-      "offset": 3.091837,
-      "duration": 0.211995
+      "offset": 0.9095918367346939,
+      "duration": 0.204421768707483
      },
      "close": {
-      "offset": 3.503832,
-      "duration": 0.156689
+      "offset": 1.314013605442177,
+      "duration": 0.14852607709750568
      },
      "dry": {
-      "offset": 3.860522,
-      "duration": 0.145941
+      "offset": 1.6625396825396825,
+      "duration": 0.1407482993197279
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "X_5",
@@ -876,72 +922,76 @@
     "open": "X_8",
     "close": "X_11",
     "dry": "X_18",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.032,
     "handling": 0.8
-   }
+   },
+   "handleRate": 1
   },
   "m1911": {
    "rate": 1,
    "shot": {
-    "path": "m1911-report-v76.mp3",
-    "sha": "14dd03a4365d",
+    "path": "m1911-report-v84.mp3",
+    "sha": "4cfa246d8cfc",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.43201814058956917
+      "duration": 0.43480725623582767
      },
      "own1": {
-      "offset": 0.8320181405895691,
-      "duration": 0.43201814058956917
+      "offset": 0.8348072562358276,
+      "duration": 0.43480725623582767
      },
      "own2": {
-      "offset": 1.4640362811791383,
-      "duration": 0.43201814058956917
+      "offset": 1.4696145124716553,
+      "duration": 0.43480725623582767
      },
      "own3": {
-      "offset": 2.0960544217687076,
-      "duration": 0.43201814058956917
+      "offset": 2.104421768707483,
+      "duration": 0.43480725623582767
      },
      "near": {
-      "offset": 2.7280725623582764,
-      "duration": 0.5520181405895691
+      "offset": 2.7392290249433104,
+      "duration": 0.5348072562358277
      },
      "far": {
-      "offset": 3.480090702947846,
-      "duration": 0.9820181405895692
+      "offset": 3.4740362811791385,
+      "duration": 0.8748072562358277
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "m1911-fx.mp3",
-    "sha": "86b08570e50a",
+    "path": "m1911-handling-v84.mp3",
+    "sha": "00fb8b725ce7",
     "cues": {
      "magout": {
-      "offset": 2.894989,
-      "duration": 0.151383
+      "offset": 0.2,
+      "duration": 0.15147392290249434
      },
      "magin": {
-      "offset": 3.246372,
-      "duration": 0.170726
+      "offset": 0.5514739229024943,
+      "duration": 0.1709750566893424
      },
      "open": {
-      "offset": 3.617098,
-      "duration": 0.145057
+      "offset": 0.9224489795918367,
+      "duration": 0.14517006802721089
      },
      "close": {
-      "offset": 3.962154,
-      "duration": 0.170431
+      "offset": 1.2676190476190476,
+      "duration": 0.17015873015873015
      },
      "dry": {
-      "offset": 4.332585,
-      "duration": 0.146122
+      "offset": 1.6377777777777778,
+      "duration": 0.1462358276643991
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "A_5",
@@ -949,72 +999,76 @@
     "open": "A_8",
     "close": "A_11",
     "dry": "A_19",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.055,
     "handling": 0.8
-   }
+   },
+   "handleRate": 1
   },
   "de7": {
    "rate": 1,
    "shot": {
-    "path": "de7-report-v76.mp3",
-    "sha": "dc2a52616460",
+    "path": "de7-report-v84.mp3",
+    "sha": "eb71293f3dde",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.72
+      "duration": 0.7372108843537415
      },
      "own1": {
-      "offset": 1.12,
-      "duration": 0.72
+      "offset": 1.1372108843537414,
+      "duration": 0.7372108843537415
      },
      "own2": {
-      "offset": 2.04,
-      "duration": 0.72
+      "offset": 2.074421768707483,
+      "duration": 0.7372108843537415
      },
      "own3": {
-      "offset": 2.96,
-      "duration": 0.72
+      "offset": 3.0116326530612243,
+      "duration": 0.7372108843537415
      },
      "near": {
-      "offset": 3.88,
-      "duration": 0.84
+      "offset": 3.948843537414966,
+      "duration": 0.8372108843537415
      },
      "far": {
-      "offset": 4.92,
-      "duration": 1.27
+      "offset": 4.986054421768707,
+      "duration": 1.1772108843537414
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "de7-fx.mp3",
-    "sha": "b2dcfba99924",
+    "path": "de7-handling-v84.mp3",
+    "sha": "9099f4413733",
     "cues": {
      "magout": {
-      "offset": 3.794989,
-      "duration": 0.150068
+      "offset": 0.2,
+      "duration": 0.1590702947845805
      },
      "magin": {
-      "offset": 4.145057,
-      "duration": 0.170748
+      "offset": 0.5590702947845805,
+      "duration": 0.18108843537414965
      },
      "open": {
-      "offset": 4.515805,
-      "duration": 0.146644
+      "offset": 0.9401587301587302,
+      "duration": 0.1539002267573696
      },
      "close": {
-      "offset": 4.862449,
-      "duration": 0.154921
+      "offset": 1.2940589569160998,
+      "duration": 0.16442176870748298
      },
      "dry": {
-      "offset": 5.21737,
-      "duration": 0.146122
+      "offset": 1.6584807256235827,
+      "duration": 0.15507936507936507
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "A_5",
@@ -1022,72 +1076,76 @@
     "open": "A_8",
     "close": "A_17",
     "dry": "A_19",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.9,
     "action": 0.065,
     "handling": 0.8
-   }
+   },
+   "handleRate": 1
   },
   "r45": {
    "rate": 1,
    "shot": {
-    "path": "r45-report-v76.mp3",
-    "sha": "ebb498a955c5",
+    "path": "r45-report-v84.mp3",
+    "sha": "bcc7682870b3",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.5580045351473923
+      "duration": 0.5752154195011338
      },
      "own1": {
-      "offset": 0.9580045351473923,
-      "duration": 0.5580045351473923
+      "offset": 0.9752154195011338,
+      "duration": 0.5752154195011338
      },
      "own2": {
-      "offset": 1.7160090702947846,
-      "duration": 0.5580045351473923
+      "offset": 1.7504308390022676,
+      "duration": 0.5752154195011338
      },
      "own3": {
-      "offset": 2.474013605442177,
-      "duration": 0.5580045351473923
+      "offset": 2.5256462585034014,
+      "duration": 0.5752154195011338
      },
      "near": {
-      "offset": 3.2320181405895694,
-      "duration": 0.6780045351473923
+      "offset": 3.300861678004535,
+      "duration": 0.6752154195011338
      },
      "far": {
-      "offset": 4.110022675736961,
-      "duration": 1.1080045351473924
+      "offset": 4.176077097505669,
+      "duration": 1.0152154195011338
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "r45-fx.mp3",
-    "sha": "1e81504de3ad",
+    "path": "r45-handling-v84.mp3",
+    "sha": "40cae77420a1",
     "cues": {
      "open": {
-      "offset": 3.494989,
-      "duration": 0.143946
+      "offset": 0.2,
+      "duration": 0.14709750566893423
      },
      "shell": {
-      "offset": 3.838934,
-      "duration": 0.144104
+      "offset": 0.5470975056689342,
+      "duration": 0.1472108843537415
      },
      "magin": {
-      "offset": 4.183039,
-      "duration": 0.143968
+      "offset": 0.8943083900226757,
+      "duration": 0.14709750566893423
      },
      "close": {
-      "offset": 4.527007,
-      "duration": 0.155374
+      "offset": 1.24140589569161,
+      "duration": 0.15873015873015872
      },
      "dry": {
-      "offset": 4.882381,
-      "duration": 0.148866
+      "offset": 1.6001360544217686,
+      "duration": 0.1520861678004535
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "open": "V_9",
@@ -1095,72 +1153,76 @@
     "magin": "V_2",
     "close": "V_10",
     "dry": "V_5",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": null,
     "handling": 0.8
-   }
+   },
+   "handleRate": 1
   },
   "mp9": {
    "rate": 1,
    "shot": {
-    "path": "mp9-report-v76.mp3",
-    "sha": "c9539fe6cc48",
+    "path": "mp9-report-v84.mp3",
+    "sha": "b7bddb196fd0",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.28002267573696143
+      "duration": 0.3052154195011338
      },
      "own1": {
-      "offset": 0.6800226757369614,
-      "duration": 0.28002267573696143
+      "offset": 0.7052154195011338,
+      "duration": 0.3052154195011338
      },
      "own2": {
-      "offset": 1.1600453514739228,
-      "duration": 0.28002267573696143
+      "offset": 1.2104308390022676,
+      "duration": 0.3052154195011338
      },
      "own3": {
-      "offset": 1.6400680272108843,
-      "duration": 0.28002267573696143
+      "offset": 1.7156462585034014,
+      "duration": 0.3052154195011338
      },
      "near": {
-      "offset": 2.120090702947846,
-      "duration": 0.4
+      "offset": 2.220861678004535,
+      "duration": 0.40521541950113377
      },
      "far": {
-      "offset": 2.7200907029478456,
-      "duration": 0.83
+      "offset": 2.826077097505669,
+      "duration": 0.7452154195011338
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "g18-fx.mp3",
-    "sha": "1870f1bcb66e",
+    "path": "mp9-handling-v84.mp3",
+    "sha": "41682468db46",
     "cues": {
      "magout": {
-      "offset": 2.37,
-      "duration": 0.149819
+      "offset": 0.2,
+      "duration": 0.14900226757369614
      },
      "magin": {
-      "offset": 2.719819,
-      "duration": 0.172018
+      "offset": 0.5490022675736962,
+      "duration": 0.17201814058956916
      },
      "open": {
-      "offset": 3.091837,
-      "duration": 0.211995
+      "offset": 0.9210204081632654,
+      "duration": 0.21197278911564627
      },
      "close": {
-      "offset": 3.503832,
-      "duration": 0.156689
+      "offset": 1.3329931972789115,
+      "duration": 0.15401360544217688
      },
      "dry": {
-      "offset": 3.860522,
-      "duration": 0.145941
+      "offset": 1.6870068027210885,
+      "duration": 0.14594104308390024
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "X_5",
@@ -1168,20 +1230,21 @@
     "open": "X_8",
     "close": "X_11",
     "dry": "X_18",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.036,
-    "handling": 0.84
+    "handling": 0.82
    },
-   "handleRate": 1.06
+   "handleRate": 1
   },
   "v45": {
    "rate": 1,
    "shot": {
-    "path": "v45-report-v76.mp3",
-    "sha": "a8ace3ddd7c9",
+    "path": "v45-report-v84.mp3",
+    "sha": "b8acef5579f5",
     "cues": {
      "own0": {
       "offset": 0.2,
@@ -1201,40 +1264,42 @@
      },
      "near": {
       "offset": 2.120090702947846,
-      "duration": 0.4
+      "duration": 0.38
      },
      "far": {
-      "offset": 2.7200907029478456,
-      "duration": 0.83
+      "offset": 2.7000907029478456,
+      "duration": 0.72
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "m1911-fx.mp3",
-    "sha": "86b08570e50a",
+    "path": "v45-handling-v84.mp3",
+    "sha": "c87ef71b910d",
     "cues": {
      "magout": {
-      "offset": 2.894989,
-      "duration": 0.151383
+      "offset": 0.2,
+      "duration": 0.14802721088435375
      },
      "magin": {
-      "offset": 3.246372,
-      "duration": 0.170726
+      "offset": 0.5480272108843537,
+      "duration": 0.16707482993197278
      },
      "open": {
-      "offset": 3.617098,
-      "duration": 0.145057
+      "offset": 0.9151020408163265,
+      "duration": 0.14188208616780046
      },
      "close": {
-      "offset": 3.962154,
-      "duration": 0.170431
+      "offset": 1.256984126984127,
+      "duration": 0.166281179138322
      },
      "dry": {
-      "offset": 4.332585,
-      "duration": 0.146122
+      "offset": 1.623265306122449,
+      "duration": 0.1429251700680272
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "A_5",
@@ -1242,20 +1307,21 @@
     "open": "A_8",
     "close": "A_11",
     "dry": "A_19",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.028,
-    "handling": 0.84
+    "handling": 0.82
    },
-   "handleRate": 1.048
+   "handleRate": 1
   },
   "cx9": {
    "rate": 1,
    "shot": {
-    "path": "cx9-report-v76.mp3",
-    "sha": "a5f465da8bce",
+    "path": "cx9-report-v84.mp3",
+    "sha": "a13c2e6dbbf8",
     "cues": {
      "own0": {
       "offset": 0.2,
@@ -1275,40 +1341,42 @@
      },
      "near": {
       "offset": 2.120090702947846,
-      "duration": 0.4
+      "duration": 0.38
      },
      "far": {
-      "offset": 2.7200907029478456,
-      "duration": 0.83
+      "offset": 2.7000907029478456,
+      "duration": 0.72
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "p92-fx.mp3",
-    "sha": "5d9d97f7191d",
+    "path": "cx9-handling-v84.mp3",
+    "sha": "8b36118fd8e6",
     "cues": {
      "magout": {
-      "offset": 2.594966,
-      "duration": 0.259342
+      "offset": 0.2,
+      "duration": 0.25054421768707485
      },
      "magin": {
-      "offset": 3.054308,
-      "duration": 0.159297
+      "offset": 0.6505442176870748,
+      "duration": 0.15424036281179138
      },
      "open": {
-      "offset": 3.413605,
-      "duration": 0.148118
+      "offset": 1.0047845804988662,
+      "duration": 0.14340136054421768
      },
      "close": {
-      "offset": 3.761723,
-      "duration": 0.150726
+      "offset": 1.3481859410430839,
+      "duration": 0.14596371882086168
      },
      "dry": {
-      "offset": 4.112449,
-      "duration": 0.147234
+      "offset": 1.6941496598639456,
+      "duration": 0.14258503401360545
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "F_5",
@@ -1316,73 +1384,76 @@
     "open": "F_8",
     "close": "F_17",
     "dry": "F_23",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.033,
-    "handling": 0.84
+    "handling": 0.82
    },
-   "handleRate": 1.036
+   "handleRate": 1
   },
   "sm45": {
    "rate": 1,
    "shot": {
-    "path": "sm45-report-v76.mp3",
-    "sha": "ab29d24680fe",
+    "path": "sm45-report-v84.mp3",
+    "sha": "06fbcea6d17f",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.3840136054421769
+      "duration": 0.45102040816326533
      },
      "own1": {
-      "offset": 0.7840136054421769,
-      "duration": 0.3840136054421769
+      "offset": 0.8510204081632653,
+      "duration": 0.45102040816326533
      },
      "own2": {
-      "offset": 1.3680272108843536,
-      "duration": 0.3840136054421769
+      "offset": 1.5020408163265306,
+      "duration": 0.45102040816326533
      },
      "own3": {
-      "offset": 1.9520408163265306,
-      "duration": 0.3840136054421769
+      "offset": 2.1530612244897958,
+      "duration": 0.45102040816326533
      },
      "near": {
-      "offset": 2.5360544217687075,
-      "duration": 0.5040136054421769
+      "offset": 2.804081632653061,
+      "duration": 0.5510204081632653
      },
      "far": {
-      "offset": 3.240068027210884,
-      "duration": 0.9340136054421768
+      "offset": 3.5551020408163265,
+      "duration": 0.8910204081632653
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "m1911-fx.mp3",
-    "sha": "86b08570e50a",
+    "path": "sm45-handling-v84.mp3",
+    "sha": "25e85a3c9abe",
     "cues": {
      "magout": {
-      "offset": 2.894989,
-      "duration": 0.151383
+      "offset": 0.2,
+      "duration": 0.14927437641723357
      },
      "magin": {
-      "offset": 3.246372,
-      "duration": 0.170726
+      "offset": 0.5492743764172335,
+      "duration": 0.16848072562358277
      },
      "open": {
-      "offset": 3.617098,
-      "duration": 0.145057
+      "offset": 0.9177551020408163,
+      "duration": 0.14308390022675738
      },
      "close": {
-      "offset": 3.962154,
-      "duration": 0.170431
+      "offset": 1.2608390022675737,
+      "duration": 0.16768707482993198
      },
      "dry": {
-      "offset": 4.332585,
-      "duration": 0.146122
+      "offset": 1.6285260770975056,
+      "duration": 0.14412698412698413
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "A_5",
@@ -1390,73 +1461,76 @@
     "open": "A_8",
     "close": "A_11",
     "dry": "A_19",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.9,
     "action": 0.049,
-    "handling": 0.84
+    "handling": 0.82
    },
-   "handleRate": 1.024
+   "handleRate": 1
   },
   "ar416": {
    "rate": 1,
    "shot": {
-    "path": "ar416-report-v76.mp3",
-    "sha": "15e9fad7dc4e",
+    "path": "ar416-report-v84.mp3",
+    "sha": "0d36e8a88eec",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.34800453514739227
+      "duration": 0.40240362811791386
      },
      "own1": {
-      "offset": 0.7480045351473923,
-      "duration": 0.34800453514739227
+      "offset": 0.8024036281179139,
+      "duration": 0.40240362811791386
      },
      "own2": {
-      "offset": 1.2960090702947846,
-      "duration": 0.34800453514739227
+      "offset": 1.4048072562358276,
+      "duration": 0.40240362811791386
      },
      "own3": {
-      "offset": 1.844013605442177,
-      "duration": 0.34800453514739227
+      "offset": 2.0072108843537415,
+      "duration": 0.40240362811791386
      },
      "near": {
-      "offset": 2.392018140589569,
-      "duration": 0.46800453514739226
+      "offset": 2.6096145124716554,
+      "duration": 0.5024036281179138
      },
      "far": {
-      "offset": 3.0600226757369615,
-      "duration": 0.8980045351473923
+      "offset": 3.312018140589569,
+      "duration": 0.8424036281179138
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "ar7-fx.mp3",
-    "sha": "f0e5b6632b03",
+    "path": "ar416-handling-v84.mp3",
+    "sha": "92fcc0fd13c5",
     "cues": {
      "magout": {
-      "offset": 2.819977,
-      "duration": 0.197596
+      "offset": 0.2,
+      "duration": 0.20666666666666667
      },
      "magin": {
-      "offset": 3.217574,
-      "duration": 0.1661
+      "offset": 0.6066666666666667,
+      "duration": 0.17399092970521543
      },
      "open": {
-      "offset": 3.583673,
-      "duration": 0.326349
+      "offset": 0.9806575963718821,
+      "duration": 0.28
      },
      "close": {
-      "offset": 4.110023,
-      "duration": 0.146848
+      "offset": 1.4606575963718822,
+      "duration": 0.1538548752834467
      },
      "dry": {
-      "offset": 4.456871,
-      "duration": 0.15068
+      "offset": 1.8145124716553287,
+      "duration": 0.1575283446712018
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "D_5",
@@ -1464,73 +1538,76 @@
     "open": "D_9",
     "close": "D_13",
     "dry": "D_16",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.047,
-    "handling": 0.84
+    "handling": 0.82
    },
-   "handleRate": 1.012
+   "handleRate": 1
   },
   "sg56": {
    "rate": 1,
    "shot": {
-    "path": "sg56-report-v76.mp3",
-    "sha": "14374df7746b",
+    "path": "sg56-report-v84.mp3",
+    "sha": "4b1010f43b8d",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.45
+      "duration": 0.4780045351473923
      },
      "own1": {
-      "offset": 0.85,
-      "duration": 0.45
+      "offset": 0.8780045351473923,
+      "duration": 0.4780045351473923
      },
      "own2": {
-      "offset": 1.5,
-      "duration": 0.45
+      "offset": 1.5560090702947846,
+      "duration": 0.4780045351473923
      },
      "own3": {
-      "offset": 2.15,
-      "duration": 0.45
+      "offset": 2.234013605442177,
+      "duration": 0.4780045351473923
      },
      "near": {
-      "offset": 2.8,
-      "duration": 0.57
+      "offset": 2.912018140589569,
+      "duration": 0.5780045351473923
      },
      "far": {
-      "offset": 3.57,
-      "duration": 1
+      "offset": 3.6900226757369614,
+      "duration": 0.9180045351473923
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "ka47-fx.mp3",
-    "sha": "4591b052a043",
+    "path": "sg56-handling-v84.mp3",
+    "sha": "a78f46b92260",
     "cues": {
      "magout": {
-      "offset": 3.194989,
-      "duration": 0.14449
+      "offset": 0.2,
+      "duration": 0.14453514739229026
      },
      "magin": {
-      "offset": 3.539478,
-      "duration": 0.144717
+      "offset": 0.5445351473922903,
+      "duration": 0.14480725623582766
      },
      "open": {
-      "offset": 3.884195,
-      "duration": 0.273605
+      "offset": 0.8893424036281179,
+      "duration": 0.27383219954648524
      },
      "close": {
-      "offset": 4.3578,
-      "duration": 0.151565
+      "offset": 1.3631746031746033,
+      "duration": 0.14480725623582766
      },
      "dry": {
-      "offset": 4.709365,
-      "duration": 0.143832
+      "offset": 1.7079818594104308,
+      "duration": 0.1439455782312925
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "C_11",
@@ -1538,73 +1615,76 @@
     "open": "C_12",
     "close": "C_13",
     "dry": "C_7",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.053,
-    "handling": 0.84
+    "handling": 0.82
    },
    "handleRate": 1
   },
   "ms56": {
    "rate": 1,
    "shot": {
-    "path": "ms56-report-v76.mp3",
-    "sha": "0463dc2fb98d",
+    "path": "ms56-report-v84.mp3",
+    "sha": "c6cd5f381483",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.30002267573696145
+      "duration": 0.38621315192743766
      },
      "own1": {
-      "offset": 0.7000226757369614,
-      "duration": 0.30002267573696145
+      "offset": 0.7862131519274377,
+      "duration": 0.38621315192743766
      },
      "own2": {
-      "offset": 1.2000453514739229,
-      "duration": 0.30002267573696145
+      "offset": 1.3724263038548752,
+      "duration": 0.38621315192743766
      },
      "own3": {
-      "offset": 1.7000680272108843,
-      "duration": 0.30002267573696145
+      "offset": 1.958639455782313,
+      "duration": 0.38621315192743766
      },
      "near": {
-      "offset": 2.2000907029478456,
-      "duration": 0.42
+      "offset": 2.5448526077097506,
+      "duration": 0.48621315192743764
      },
      "far": {
-      "offset": 2.8200907029478457,
-      "duration": 0.8500226757369614
+      "offset": 3.2310657596371883,
+      "duration": 0.8262131519274376
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "ar7-fx.mp3",
-    "sha": "f0e5b6632b03",
+    "path": "ms56-handling-v84.mp3",
+    "sha": "f63095981064",
     "cues": {
      "magout": {
-      "offset": 2.819977,
-      "duration": 0.197596
+      "offset": 0.2,
+      "duration": 0.1898185941043084
      },
      "magin": {
-      "offset": 3.217574,
-      "duration": 0.1661
+      "offset": 0.5898185941043084,
+      "duration": 0.15979591836734694
      },
      "open": {
-      "offset": 3.583673,
-      "duration": 0.326349
+      "offset": 0.9496145124716553,
+      "duration": 0.28
      },
      "close": {
-      "offset": 4.110023,
-      "duration": 0.146848
+      "offset": 1.4296145124716553,
+      "duration": 0.14129251700680273
      },
      "dry": {
-      "offset": 4.456871,
-      "duration": 0.15068
+      "offset": 1.7709070294784581,
+      "duration": 0.14467120181405896
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "D_5",
@@ -1612,73 +1692,76 @@
     "open": "D_9",
     "close": "D_13",
     "dry": "D_16",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.041,
-    "handling": 0.84
+    "handling": 0.82
    },
-   "handleRate": 0.988
+   "handleRate": 1
   },
   "lm86": {
    "rate": 1,
    "shot": {
-    "path": "lm86-report-v76.mp3",
-    "sha": "2b5a786a72c5",
+    "path": "lm86-report-v84.mp3",
+    "sha": "10ef1c30cebd",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.37201814058956917
+      "duration": 0.4078004535147392
      },
      "own1": {
-      "offset": 0.7720181405895692,
-      "duration": 0.37201814058956917
+      "offset": 0.8078004535147393,
+      "duration": 0.4078004535147392
      },
      "own2": {
-      "offset": 1.3440362811791384,
-      "duration": 0.37201814058956917
+      "offset": 1.4156009070294784,
+      "duration": 0.4078004535147392
      },
      "own3": {
-      "offset": 1.9160544217687074,
-      "duration": 0.37201814058956917
+      "offset": 2.023401360544218,
+      "duration": 0.4078004535147392
      },
      "near": {
-      "offset": 2.4880725623582767,
-      "duration": 0.49201814058956916
+      "offset": 2.631201814058957,
+      "duration": 0.5078004535147392
      },
      "far": {
-      "offset": 3.180090702947846,
-      "duration": 0.9220181405895692
+      "offset": 3.3390022675736963,
+      "duration": 0.8478004535147392
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "aa12-fx.mp3",
-    "sha": "e46cbd69e9d2",
+    "path": "lm86-handling-v84.mp3",
+    "sha": "66f0373a7515",
     "cues": {
      "magout": {
-      "offset": 2.744989,
-      "duration": 0.158095
+      "offset": 0.2,
+      "duration": 0.16068027210884353
      },
      "magin": {
-      "offset": 3.103084,
-      "duration": 0.144875
+      "offset": 0.5606802721088435,
+      "duration": 0.14723356009070296
      },
      "open": {
-      "offset": 3.447959,
-      "duration": 0.145215
+      "offset": 0.9079138321995465,
+      "duration": 0.14743764172335602
      },
      "close": {
-      "offset": 3.793175,
-      "duration": 0.14542
+      "offset": 1.2553514739229026,
+      "duration": 0.14780045351473922
      },
      "dry": {
-      "offset": 4.138594,
-      "duration": 0.143991
+      "offset": 1.6031519274376418,
+      "duration": 0.1463265306122449
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "P_7",
@@ -1686,73 +1769,76 @@
     "open": "P_8",
     "close": "U_2",
     "dry": "P_1",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.052,
-    "handling": 1.05
+    "handling": 0.94
    },
-   "handleRate": 0.976
+   "handleRate": 1
   },
   "rk762": {
    "rate": 1,
    "shot": {
-    "path": "rk762-report-v76.mp3",
-    "sha": "56285d1b9722",
+    "path": "rk762-report-v84.mp3",
+    "sha": "44641639c89d",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.5760090702947845
+      "duration": 0.5698185941043084
      },
      "own1": {
-      "offset": 0.9760090702947846,
-      "duration": 0.5760090702947845
+      "offset": 0.9698185941043084,
+      "duration": 0.5698185941043084
      },
      "own2": {
-      "offset": 1.7520181405895692,
-      "duration": 0.5760090702947845
+      "offset": 1.7396371882086168,
+      "duration": 0.5698185941043084
      },
      "own3": {
-      "offset": 2.528027210884354,
-      "duration": 0.5760090702947845
+      "offset": 2.509455782312925,
+      "duration": 0.5698185941043084
      },
      "near": {
-      "offset": 3.304036281179138,
-      "duration": 0.6960090702947845
+      "offset": 3.2792743764172334,
+      "duration": 0.6698185941043084
      },
      "far": {
-      "offset": 4.200045351473923,
-      "duration": 1.1260090702947845
+      "offset": 4.149092970521542,
+      "duration": 1.0098185941043083
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "ka47-fx.mp3",
-    "sha": "4591b052a043",
+    "path": "rk762-handling-v84.mp3",
+    "sha": "c9d7994aeba2",
     "cues": {
      "magout": {
-      "offset": 3.194989,
-      "duration": 0.14449
+      "offset": 0.2,
+      "duration": 0.1404081632653061
      },
      "magin": {
-      "offset": 3.539478,
-      "duration": 0.144717
+      "offset": 0.5404081632653062,
+      "duration": 0.14068027210884354
      },
      "open": {
-      "offset": 3.884195,
-      "duration": 0.273605
+      "offset": 0.8810884353741497,
+      "duration": 0.2660090702947846
      },
      "close": {
-      "offset": 4.3578,
-      "duration": 0.151565
+      "offset": 1.3470975056689343,
+      "duration": 0.14068027210884354
      },
      "dry": {
-      "offset": 4.709365,
-      "duration": 0.143832
+      "offset": 1.6877777777777778,
+      "duration": 0.13984126984126985
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "C_11",
@@ -1760,73 +1846,76 @@
     "open": "C_12",
     "close": "C_13",
     "dry": "C_7",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.9,
     "action": 0.06,
-    "handling": 1.05
+    "handling": 0.94
    },
-   "handleRate": 0.964
+   "handleRate": 1
   },
   "mg60": {
    "rate": 1,
    "shot": {
-    "path": "mg60-report-v76.mp3",
-    "sha": "f94087954dc2",
+    "path": "mg60-report-v84.mp3",
+    "sha": "110a2b16f8d9",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.5580045351473923
+      "duration": 0.6076190476190476
      },
      "own1": {
-      "offset": 0.9580045351473923,
-      "duration": 0.5580045351473923
+      "offset": 1.0076190476190476,
+      "duration": 0.6076190476190476
      },
      "own2": {
-      "offset": 1.7160090702947846,
-      "duration": 0.5580045351473923
+      "offset": 1.8152380952380953,
+      "duration": 0.6076190476190476
      },
      "own3": {
-      "offset": 2.474013605442177,
-      "duration": 0.5580045351473923
+      "offset": 2.6228571428571428,
+      "duration": 0.6076190476190476
      },
      "near": {
-      "offset": 3.2320181405895694,
-      "duration": 0.6780045351473923
+      "offset": 3.4304761904761905,
+      "duration": 0.7076190476190476
      },
      "far": {
-      "offset": 4.110022675736961,
-      "duration": 1.1080045351473924
+      "offset": 4.338095238095238,
+      "duration": 1.0476190476190477
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "aa12-fx.mp3",
-    "sha": "e46cbd69e9d2",
+    "path": "mg60-handling-v84.mp3",
+    "sha": "dcdd85ada170",
     "cues": {
      "magout": {
-      "offset": 2.744989,
-      "duration": 0.158095
+      "offset": 0.2,
+      "duration": 0.1545124716553288
      },
      "magin": {
-      "offset": 3.103084,
-      "duration": 0.144875
+      "offset": 0.5545124716553288,
+      "duration": 0.14156462585034013
      },
      "open": {
-      "offset": 3.447959,
-      "duration": 0.145215
+      "offset": 0.8960770975056689,
+      "duration": 0.1417687074829932
      },
      "close": {
-      "offset": 3.793175,
-      "duration": 0.14542
+      "offset": 1.237845804988662,
+      "duration": 0.14213151927437642
      },
      "dry": {
-      "offset": 4.138594,
-      "duration": 0.143991
+      "offset": 1.5799773242630386,
+      "duration": 0.14070294784580498
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "P_7",
@@ -1834,73 +1923,76 @@
     "open": "P_8",
     "close": "U_2",
     "dry": "P_1",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.9,
     "action": 0.057,
-    "handling": 1.05
+    "handling": 0.94
    },
-   "handleRate": 0.952
+   "handleRate": 1
   },
   "sr25": {
    "rate": 1,
    "shot": {
-    "path": "sr25-report-v76.mp3",
-    "sha": "0738e25538c7",
+    "path": "sr25-report-v84.mp3",
+    "sha": "354acb59c0eb",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.6240136054421769
+      "duration": 0.5590022675736962
      },
      "own1": {
-      "offset": 1.024013605442177,
-      "duration": 0.6240136054421769
+      "offset": 0.9590022675736961,
+      "duration": 0.5590022675736962
      },
      "own2": {
-      "offset": 1.8480272108843538,
-      "duration": 0.6240136054421769
+      "offset": 1.7180045351473923,
+      "duration": 0.5590022675736962
      },
      "own3": {
-      "offset": 2.672040816326531,
-      "duration": 0.6240136054421769
+      "offset": 2.4770068027210885,
+      "duration": 0.5590022675736962
      },
      "near": {
-      "offset": 3.4960544217687075,
-      "duration": 0.7440136054421769
+      "offset": 3.236009070294785,
+      "duration": 0.6590022675736962
      },
      "far": {
-      "offset": 4.440068027210884,
-      "duration": 1.1740136054421768
+      "offset": 4.095011337868481,
+      "duration": 0.9990022675736961
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "mk14-fx.mp3",
-    "sha": "aa5f3bfb5323",
+    "path": "sr25-handling-v84.mp3",
+    "sha": "190ea8093db5",
     "cues": {
      "magout": {
-      "offset": 3.42,
-      "duration": 0.143991
+      "offset": 0.2,
+      "duration": 0.15306122448979592
      },
      "magin": {
-      "offset": 3.763991,
-      "duration": 0.147687
+      "offset": 0.5530612244897959,
+      "duration": 0.15696145124716554
      },
      "open": {
-      "offset": 4.111678,
-      "duration": 0.235896
+      "offset": 0.9100226757369615,
+      "duration": 0.2505895691609977
      },
      "close": {
-      "offset": 4.547574,
-      "duration": 0.145442
+      "offset": 1.3606122448979592,
+      "duration": 0.1546031746031746
      },
      "dry": {
-      "offset": 4.893016,
-      "duration": 0.144898
+      "offset": 1.7152154195011338,
+      "duration": 0.1540362811791383
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "G_9",
@@ -1908,73 +2000,76 @@
     "open": "U_1",
     "close": "U_2",
     "dry": "U_6",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.9,
     "action": 0.06,
-    "handling": 0.84
+    "handling": 0.82
    },
-   "handleRate": 0.94
+   "handleRate": 1
   },
   "dm56": {
    "rate": 1,
    "shot": {
-    "path": "dm56-report-v76.mp3",
-    "sha": "71100297206c",
+    "path": "dm56-report-v84.mp3",
+    "sha": "057c63a8f587",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.3960090702947846
+      "duration": 0.45641723356009073
      },
      "own1": {
-      "offset": 0.7960090702947846,
-      "duration": 0.3960090702947846
+      "offset": 0.8564172335600907,
+      "duration": 0.45641723356009073
      },
      "own2": {
-      "offset": 1.392018140589569,
-      "duration": 0.3960090702947846
+      "offset": 1.5128344671201814,
+      "duration": 0.45641723356009073
      },
      "own3": {
-      "offset": 1.9880272108843537,
-      "duration": 0.3960090702947846
+      "offset": 2.169251700680272,
+      "duration": 0.45641723356009073
      },
      "near": {
-      "offset": 2.5840362811791384,
-      "duration": 0.5160090702947846
+      "offset": 2.8256689342403627,
+      "duration": 0.5564172335600907
      },
      "far": {
-      "offset": 3.3000453514739228,
-      "duration": 0.9460090702947845
+      "offset": 3.5820861678004534,
+      "duration": 0.8964172335600907
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "ar7-fx.mp3",
-    "sha": "f0e5b6632b03",
+    "path": "dm56-handling-v84.mp3",
+    "sha": "c464b2b59b95",
     "cues": {
      "magout": {
-      "offset": 2.819977,
-      "duration": 0.197596
+      "offset": 0.2,
+      "duration": 0.19616780045351473
      },
      "magin": {
-      "offset": 3.217574,
-      "duration": 0.1661
+      "offset": 0.5961678004535147,
+      "duration": 0.16514739229024944
      },
      "open": {
-      "offset": 3.583673,
-      "duration": 0.326349
+      "offset": 0.9613151927437642,
+      "duration": 0.28
      },
      "close": {
-      "offset": 4.110023,
-      "duration": 0.146848
+      "offset": 1.4413151927437642,
+      "duration": 0.14603174603174604
      },
      "dry": {
-      "offset": 4.456871,
-      "duration": 0.15068
+      "offset": 1.78734693877551,
+      "duration": 0.14952380952380953
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "D_5",
@@ -1982,81 +2077,84 @@
     "open": "D_9",
     "close": "D_13",
     "dry": "D_16",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.049,
-    "handling": 0.84
+    "handling": 0.82
    },
-   "handleRate": 0.928
+   "handleRate": 1
   },
   "m24": {
    "rate": 1,
    "shot": {
-    "path": "m24-report-v76.mp3",
-    "sha": "ae7da929c7e3",
+    "path": "m24-report-v84.mp3",
+    "sha": "161b3db64887",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.8580045351473923
+      "duration": 0.8290022675736961
      },
      "own1": {
-      "offset": 1.2580045351473923,
-      "duration": 0.8580045351473923
+      "offset": 1.2290022675736962,
+      "duration": 0.8290022675736961
      },
      "own2": {
-      "offset": 2.3160090702947844,
-      "duration": 0.8580045351473923
+      "offset": 2.2580045351473923,
+      "duration": 0.8290022675736961
      },
      "own3": {
-      "offset": 3.374013605442177,
-      "duration": 0.8580045351473923
+      "offset": 3.2870068027210886,
+      "duration": 0.8290022675736961
      },
      "near": {
-      "offset": 4.4320181405895696,
-      "duration": 0.9780045351473923
+      "offset": 4.316009070294784,
+      "duration": 0.9290022675736962
      },
      "far": {
-      "offset": 5.610022675736961,
-      "duration": 1.4080045351473922
+      "offset": 5.445011337868481,
+      "duration": 1.269002267573696
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "kr98-fx.mp3",
-    "sha": "3da08143ec80",
+    "path": "m24-handling-v84.mp3",
+    "sha": "090a4d64ec51",
     "cues": {
      "magout": {
-      "offset": 4.315261,
-      "duration": 0.145896
+      "offset": 0.2,
+      "duration": 0.15020408163265306
      },
      "magin": {
-      "offset": 4.661156,
-      "duration": 0.143923
+      "offset": 0.5502040816326531,
+      "duration": 0.14816326530612245
      },
      "open": {
-      "offset": 5.005079,
-      "duration": 0.149773
+      "offset": 0.8983673469387755,
+      "duration": 0.15419501133786848
      },
      "close": {
-      "offset": 5.354853,
-      "duration": 0.213424
+      "offset": 1.252562358276644,
+      "duration": 0.2197732426303855
      },
      "dry": {
-      "offset": 5.768277,
-      "duration": 0.143991
+      "offset": 1.6723356009070294,
+      "duration": 0.1482766439909297
      },
      "up": {
-      "offset": 6.112268,
-      "duration": 0.151202
+      "offset": 2.020612244897959,
+      "duration": 0.15496598639455783
      },
      "down": {
-      "offset": 6.463469,
-      "duration": 0.180794
+      "offset": 2.375578231292517,
+      "duration": 0.18435374149659864
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "W_5",
@@ -2066,72 +2164,75 @@
     "dry": "W_13",
     "up": "W_6",
     "down": "M_7",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
-    "handling": 0.84
+    "shot": 0.9,
+    "handling": 0.82
    },
-   "handleRate": 0.916
+   "handleRate": 1
   },
   "sp12": {
    "rate": 1,
    "shot": {
-    "path": "sp12-report-v76.mp3",
-    "sha": "663b3bc719ea",
+    "path": "sp12-report-v84.mp3",
+    "sha": "083a9379c7c8",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.6120181405895692
+      "duration": 0.6616099773242631
      },
      "own1": {
-      "offset": 1.0120181405895692,
-      "duration": 0.6120181405895692
+      "offset": 1.061609977324263,
+      "duration": 0.6616099773242631
      },
      "own2": {
-      "offset": 1.8240362811791384,
-      "duration": 0.6120181405895692
+      "offset": 1.923219954648526,
+      "duration": 0.6616099773242631
      },
      "own3": {
-      "offset": 2.6360544217687076,
-      "duration": 0.6120181405895692
+      "offset": 2.784829931972789,
+      "duration": 0.6616099773242631
      },
      "near": {
-      "offset": 3.4480725623582766,
-      "duration": 0.7320181405895692
+      "offset": 3.6464399092970523,
+      "duration": 0.761609977324263
      },
      "far": {
-      "offset": 4.380090702947846,
-      "duration": 1.162018140589569
+      "offset": 4.608049886621315,
+      "duration": 1.1016099773242631
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "s12-fx.mp3",
-    "sha": "13a985856b21",
+    "path": "sp12-handling-v84.mp3",
+    "sha": "20ec600c7d78",
     "cues": {
      "open": {
-      "offset": 3.494989,
-      "duration": 0.151565
+      "offset": 0.2,
+      "duration": 0.15317460317460319
      },
      "close": {
-      "offset": 3.846553,
-      "duration": 0.189252
+      "offset": 0.5531746031746032,
+      "duration": 0.19122448979591836
      },
      "shell": {
-      "offset": 4.235805,
-      "duration": 0.15161
+      "offset": 0.9443990929705215,
+      "duration": 0.15321995464852609
      },
      "port": {
-      "offset": 4.587415,
-      "duration": 0.179274
+      "offset": 1.2976190476190477,
+      "duration": 0.1811111111111111
      },
      "dry": {
-      "offset": 4.966689,
-      "duration": 0.147596
+      "offset": 1.6787301587301586,
+      "duration": 0.1491609977324263
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "open": "O_4",
@@ -2139,72 +2240,75 @@
     "shell": "O_3",
     "port": "O_7",
     "dry": "O_8",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
-    "handling": 0.84
+    "shot": 0.9,
+    "handling": 0.82
    },
-   "handleRate": 0.904
+   "handleRate": 1
   },
   "p226": {
    "rate": 1,
    "shot": {
-    "path": "p226-report-v76.mp3",
-    "sha": "d40c906c3d87",
+    "path": "p226-report-v84.mp3",
+    "sha": "0c9bbc36ba13",
     "cues": {
      "own0": {
       "offset": 0.2,
-      "duration": 0.3240136054421769
+      "duration": 0.3268027210884354
      },
      "own1": {
-      "offset": 0.7240136054421769,
-      "duration": 0.3240136054421769
+      "offset": 0.7268027210884354,
+      "duration": 0.3268027210884354
      },
      "own2": {
-      "offset": 1.2480272108843538,
-      "duration": 0.3240136054421769
+      "offset": 1.2536054421768708,
+      "duration": 0.3268027210884354
      },
      "own3": {
-      "offset": 1.7720408163265307,
-      "duration": 0.3240136054421769
+      "offset": 1.7804081632653062,
+      "duration": 0.3268027210884354
      },
      "near": {
-      "offset": 2.2960544217687073,
-      "duration": 0.4440136054421769
+      "offset": 2.3072108843537413,
+      "duration": 0.42680272108843537
      },
      "far": {
-      "offset": 2.9400680272108843,
-      "duration": 0.8740136054421769
+      "offset": 2.934013605442177,
+      "duration": 0.7668027210884354
      }
     },
-    "source": "original-pressure-noise-v1"
+    "source": "original-pressure-transient-v2"
    },
    "fx": {
-    "path": "p92-fx.mp3",
-    "sha": "5d9d97f7191d",
+    "path": "p226-handling-v84.mp3",
+    "sha": "deea24c64bef",
     "cues": {
      "magout": {
-      "offset": 2.594966,
-      "duration": 0.259342
+      "offset": 0.2,
+      "duration": 0.2677551020408163
      },
      "magin": {
-      "offset": 3.054308,
-      "duration": 0.159297
+      "offset": 0.6677551020408163,
+      "duration": 0.1648299319727891
      },
      "open": {
-      "offset": 3.413605,
-      "duration": 0.148118
+      "offset": 1.0325850340136054,
+      "duration": 0.15326530612244899
      },
      "close": {
-      "offset": 3.761723,
-      "duration": 0.150726
+      "offset": 1.3858503401360545,
+      "duration": 0.15598639455782312
      },
      "dry": {
-      "offset": 4.112449,
-      "duration": 0.147234
+      "offset": 1.7418367346938775,
+      "duration": 0.15235827664399093
      }
-    }
+    },
+    "source": "CC0 recorded contacts + original contact layers v84",
+    "sourceCommit": "83563f6eecc062ca3b4f07196f51840a19434bf2"
    },
    "src": {
     "magout": "F_5",
@@ -2212,14 +2316,15 @@
     "open": "F_8",
     "close": "F_17",
     "dry": "F_23",
-    "report": "Original synthesis: js/weapon-sound-design.js"
+    "report": "Original synthesis: js/weapon-sound-design.js",
+    "handling": "CC0 조작음 재가공 · 고정 원본 83563f6"
    },
    "mix": {
-    "shot": 0.86,
+    "shot": 0.84,
     "action": 0.046,
-    "handling": 0.84
+    "handling": 0.82
    },
-   "handleRate": 0.892
+   "handleRate": 1
   }
  },
  "switch": {
@@ -2233,12 +2338,12 @@
   },
   "src": "C_4"
  },
- "edition": 76,
+ "edition": 84,
  "design": {
   "generator": "js/weapon-sound-design.js",
-  "generatorSha": "f94e4d6532f8",
+  "generatorSha": "ca53d25ff906",
   "catalogSha": "e2d9f8e2e107",
-  "generatorVersion": 1,
+  "generatorVersion": 2,
   "variants": 4,
   "recordedShotInputs": 0,
   "tool": "tools/build-original-weapon-audio.cjs"

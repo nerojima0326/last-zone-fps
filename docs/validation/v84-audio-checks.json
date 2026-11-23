@@ -1,0 +1,2841 @@
+{
+  "timing": [
+    {
+      "id": "ar7",
+      "empty": false,
+      "seconds": 3.633999999999711,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "ar7",
+          "at": 0.8180000000000006
+        },
+        {
+          "type": "magin",
+          "weaponId": "ar7",
+          "at": 2.161999999999873
+        }
+      ]
+    },
+    {
+      "id": "ar7",
+      "empty": true,
+      "seconds": 3.996999999999671,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "ar7",
+          "at": 0.9000000000000007
+        },
+        {
+          "type": "magin",
+          "weaponId": "ar7",
+          "at": 2.198999999999869
+        },
+        {
+          "type": "close",
+          "weaponId": "ar7",
+          "at": 2.777999999999805
+        }
+      ]
+    },
+    {
+      "id": "ka47",
+      "empty": false,
+      "seconds": 2.6009999999998246,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "ka47",
+          "at": 1.178999999999981
+        },
+        {
+          "type": "magin",
+          "weaponId": "ka47",
+          "at": 1.8659999999999053
+        }
+      ]
+    },
+    {
+      "id": "ka47",
+      "empty": true,
+      "seconds": 2.860999999999796,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "ka47",
+          "at": 0.9820000000000008
+        },
+        {
+          "type": "magin",
+          "weaponId": "ka47",
+          "at": 1.5539999999999397
+        },
+        {
+          "type": "open",
+          "weaponId": "ka47",
+          "at": 2.0199999999998886
+        },
+        {
+          "type": "close",
+          "weaponId": "ka47",
+          "at": 2.141999999999875
+        }
+      ]
+    },
+    {
+      "id": "sc17",
+      "empty": false,
+      "seconds": 1.632999999999931,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "sc17",
+          "at": 0.4950000000000004
+        },
+        {
+          "type": "magin",
+          "weaponId": "sc17",
+          "at": 0.8110000000000006
+        }
+      ]
+    },
+    {
+      "id": "sc17",
+      "empty": true,
+      "seconds": 1.795999999999913,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "sc17",
+          "at": 0.5450000000000004
+        },
+        {
+          "type": "magin",
+          "weaponId": "sc17",
+          "at": 0.8920000000000007
+        },
+        {
+          "type": "close",
+          "weaponId": "sc17",
+          "at": 1.3899999999999577
+        }
+      ]
+    },
+    {
+      "id": "mk14",
+      "empty": false,
+      "seconds": 1.8369999999999085,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "mk14",
+          "at": 0.5570000000000004
+        },
+        {
+          "type": "magin",
+          "weaponId": "mk14",
+          "at": 0.9130000000000007
+        }
+      ]
+    },
+    {
+      "id": "mk14",
+      "empty": true,
+      "seconds": 2.0199999999998886,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "mk14",
+          "at": 0.6130000000000004
+        },
+        {
+          "type": "magin",
+          "weaponId": "mk14",
+          "at": 1.0040000000000002
+        },
+        {
+          "type": "close",
+          "weaponId": "mk14",
+          "at": 1.5639999999999386
+        }
+      ]
+    },
+    {
+      "id": "kr98",
+      "empty": false,
+      "seconds": 2.559999999999829,
+      "events": [
+        {
+          "type": "open",
+          "weaponId": "kr98",
+          "at": 0.2600000000000002
+        },
+        {
+          "type": "shell",
+          "weaponId": "kr98",
+          "at": 0.9040000000000007
+        },
+        {
+          "type": "shell",
+          "weaponId": "kr98",
+          "at": 1.3999999999999566
+        },
+        {
+          "type": "shell",
+          "weaponId": "kr98",
+          "at": 1.895999999999902
+        },
+        {
+          "type": "close",
+          "weaponId": "kr98",
+          "at": 2.2129999999998673
+        }
+      ]
+    },
+    {
+      "id": "kr98",
+      "empty": true,
+      "seconds": 2.5449999999998307,
+      "events": [
+        {
+          "type": "open",
+          "weaponId": "kr98",
+          "at": 0.2860000000000002
+        },
+        {
+          "type": "magin",
+          "weaponId": "kr98",
+          "at": 1.3979999999999568
+        },
+        {
+          "type": "shell",
+          "weaponId": "kr98",
+          "at": 1.5619999999999388
+        },
+        {
+          "type": "shell",
+          "weaponId": "kr98",
+          "at": 1.6439999999999297
+        },
+        {
+          "type": "shell",
+          "weaponId": "kr98",
+          "at": 1.7259999999999207
+        },
+        {
+          "type": "close",
+          "weaponId": "kr98",
+          "at": 2.162999999999873
+        }
+      ]
+    },
+    {
+      "id": "s12",
+      "empty": false,
+      "seconds": 2.9359999999997877,
+      "events": [
+        {
+          "type": "shell",
+          "weaponId": "s12",
+          "at": 0.7740000000000006
+        },
+        {
+          "type": "shell",
+          "weaponId": "s12",
+          "at": 1.4539999999999507
+        },
+        {
+          "type": "shell",
+          "weaponId": "s12",
+          "at": 2.133999999999876
+        },
+        {
+          "type": "open",
+          "weaponId": "s12",
+          "at": 2.469999999999839
+        },
+        {
+          "type": "close",
+          "weaponId": "s12",
+          "at": 2.588999999999826
+        }
+      ]
+    },
+    {
+      "id": "s12",
+      "empty": true,
+      "seconds": 4.945999999999986,
+      "events": [
+        {
+          "type": "open",
+          "weaponId": "s12",
+          "at": 0.19800000000000015
+        },
+        {
+          "type": "port",
+          "weaponId": "s12",
+          "at": 0.3960000000000003
+        },
+        {
+          "type": "close",
+          "weaponId": "s12",
+          "at": 0.5610000000000004
+        },
+        {
+          "type": "shell",
+          "weaponId": "s12",
+          "at": 1.0719999999999927
+        },
+        {
+          "type": "shell",
+          "weaponId": "s12",
+          "at": 1.8199999999999104
+        },
+        {
+          "type": "shell",
+          "weaponId": "s12",
+          "at": 2.567999999999828
+        },
+        {
+          "type": "shell",
+          "weaponId": "s12",
+          "at": 3.315999999999746
+        },
+        {
+          "type": "shell",
+          "weaponId": "s12",
+          "at": 4.063999999999692
+        },
+        {
+          "type": "open",
+          "weaponId": "s12",
+          "at": 4.432999999999815
+        },
+        {
+          "type": "close",
+          "weaponId": "s12",
+          "at": 4.563999999999859
+        }
+      ]
+    },
+    {
+      "id": "m1014",
+      "empty": false,
+      "seconds": 3.6159999999997128,
+      "events": [
+        {
+          "type": "shell",
+          "weaponId": "m1014",
+          "at": 0.7740000000000006
+        },
+        {
+          "type": "shell",
+          "weaponId": "m1014",
+          "at": 1.4539999999999507
+        },
+        {
+          "type": "shell",
+          "weaponId": "m1014",
+          "at": 2.133999999999876
+        },
+        {
+          "type": "shell",
+          "weaponId": "m1014",
+          "at": 2.813999999999801
+        },
+        {
+          "type": "open",
+          "weaponId": "m1014",
+          "at": 3.149999999999764
+        },
+        {
+          "type": "close",
+          "weaponId": "m1014",
+          "at": 3.268999999999751
+        }
+      ]
+    },
+    {
+      "id": "m1014",
+      "empty": true,
+      "seconds": 5.694000000000236,
+      "events": [
+        {
+          "type": "open",
+          "weaponId": "m1014",
+          "at": 0.19800000000000015
+        },
+        {
+          "type": "port",
+          "weaponId": "m1014",
+          "at": 0.3960000000000003
+        },
+        {
+          "type": "close",
+          "weaponId": "m1014",
+          "at": 0.5610000000000004
+        },
+        {
+          "type": "shell",
+          "weaponId": "m1014",
+          "at": 1.0719999999999927
+        },
+        {
+          "type": "shell",
+          "weaponId": "m1014",
+          "at": 1.8199999999999104
+        },
+        {
+          "type": "shell",
+          "weaponId": "m1014",
+          "at": 2.567999999999828
+        },
+        {
+          "type": "shell",
+          "weaponId": "m1014",
+          "at": 3.315999999999746
+        },
+        {
+          "type": "shell",
+          "weaponId": "m1014",
+          "at": 4.063999999999692
+        },
+        {
+          "type": "shell",
+          "weaponId": "m1014",
+          "at": 4.811999999999942
+        },
+        {
+          "type": "open",
+          "weaponId": "m1014",
+          "at": 5.181000000000065
+        },
+        {
+          "type": "close",
+          "weaponId": "m1014",
+          "at": 5.312000000000109
+        }
+      ]
+    },
+    {
+      "id": "db2",
+      "empty": false,
+      "seconds": 1.1359999999999857,
+      "events": [
+        {
+          "type": "open",
+          "weaponId": "db2",
+          "at": 0.16000000000000011
+        },
+        {
+          "type": "shell",
+          "weaponId": "db2",
+          "at": 0.20800000000000016
+        },
+        {
+          "type": "shell",
+          "weaponId": "db2",
+          "at": 0.6320000000000005
+        },
+        {
+          "type": "close",
+          "weaponId": "db2",
+          "at": 0.9010000000000007
+        }
+      ]
+    },
+    {
+      "id": "db2",
+      "empty": true,
+      "seconds": 1.3819999999999586,
+      "events": [
+        {
+          "type": "open",
+          "weaponId": "db2",
+          "at": 0.17600000000000013
+        },
+        {
+          "type": "shell",
+          "weaponId": "db2",
+          "at": 0.22900000000000018
+        },
+        {
+          "type": "shell",
+          "weaponId": "db2",
+          "at": 0.7720000000000006
+        },
+        {
+          "type": "close",
+          "weaponId": "db2",
+          "at": 1.1229999999999871
+        }
+      ]
+    },
+    {
+      "id": "sa12",
+      "empty": false,
+      "seconds": 1.8809999999999036,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "sa12",
+          "at": 0.7000000000000005
+        },
+        {
+          "type": "magin",
+          "weaponId": "sa12",
+          "at": 1.1309999999999862
+        }
+      ]
+    },
+    {
+      "id": "sa12",
+      "empty": true,
+      "seconds": 2.316999999999856,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "sa12",
+          "at": 0.6300000000000004
+        },
+        {
+          "type": "magin",
+          "weaponId": "sa12",
+          "at": 1.0709999999999928
+        },
+        {
+          "type": "open",
+          "weaponId": "sa12",
+          "at": 1.8309999999999091
+        },
+        {
+          "type": "close",
+          "weaponId": "sa12",
+          "at": 1.9709999999998937
+        }
+      ]
+    },
+    {
+      "id": "aa12",
+      "empty": false,
+      "seconds": 2.0409999999998862,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "aa12",
+          "at": 0.7600000000000006
+        },
+        {
+          "type": "magin",
+          "weaponId": "aa12",
+          "at": 1.2269999999999757
+        }
+      ]
+    },
+    {
+      "id": "aa12",
+      "empty": true,
+      "seconds": 2.316999999999856,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "aa12",
+          "at": 0.6300000000000004
+        },
+        {
+          "type": "magin",
+          "weaponId": "aa12",
+          "at": 1.0709999999999928
+        },
+        {
+          "type": "open",
+          "weaponId": "aa12",
+          "at": 1.8309999999999091
+        },
+        {
+          "type": "close",
+          "weaponId": "aa12",
+          "at": 1.9709999999998937
+        }
+      ]
+    },
+    {
+      "id": "p92",
+      "empty": false,
+      "seconds": 1.5089999999999446,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "p92",
+          "at": 0.25000000000000017
+        },
+        {
+          "type": "magin",
+          "weaponId": "p92",
+          "at": 0.8300000000000006
+        }
+      ]
+    },
+    {
+      "id": "p92",
+      "empty": true,
+      "seconds": 1.658999999999928,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "p92",
+          "at": 0.19900000000000015
+        },
+        {
+          "type": "magin",
+          "weaponId": "p92",
+          "at": 0.6590000000000005
+        },
+        {
+          "type": "close",
+          "weaponId": "p92",
+          "at": 1.3369999999999636
+        }
+      ]
+    },
+    {
+      "id": "g18",
+      "empty": false,
+      "seconds": 1.2809999999999697,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "g18",
+          "at": 0.19200000000000014
+        },
+        {
+          "type": "magin",
+          "weaponId": "g18",
+          "at": 0.7300000000000005
+        }
+      ]
+    },
+    {
+      "id": "g18",
+      "empty": true,
+      "seconds": 1.4089999999999556,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "g18",
+          "at": 0.11300000000000009
+        },
+        {
+          "type": "magin",
+          "weaponId": "g18",
+          "at": 0.7040000000000005
+        },
+        {
+          "type": "open",
+          "weaponId": "g18",
+          "at": 0.9370000000000007
+        },
+        {
+          "type": "close",
+          "weaponId": "g18",
+          "at": 1.0129999999999992
+        }
+      ]
+    },
+    {
+      "id": "m1911",
+      "empty": false,
+      "seconds": 1.3169999999999658,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "m1911",
+          "at": 0.3700000000000003
+        },
+        {
+          "type": "magin",
+          "weaponId": "m1911",
+          "at": 0.9000000000000007
+        }
+      ]
+    },
+    {
+      "id": "m1911",
+      "empty": true,
+      "seconds": 1.649999999999929,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "m1911",
+          "at": 0.3700000000000003
+        },
+        {
+          "type": "magin",
+          "weaponId": "m1911",
+          "at": 0.9000000000000007
+        },
+        {
+          "type": "close",
+          "weaponId": "m1911",
+          "at": 1.360999999999961
+        }
+      ]
+    },
+    {
+      "id": "de7",
+      "empty": false,
+      "seconds": 1.3169999999999658,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "de7",
+          "at": 0.3700000000000003
+        },
+        {
+          "type": "magin",
+          "weaponId": "de7",
+          "at": 0.9000000000000007
+        }
+      ]
+    },
+    {
+      "id": "de7",
+      "empty": true,
+      "seconds": 1.649999999999929,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "de7",
+          "at": 0.3700000000000003
+        },
+        {
+          "type": "magin",
+          "weaponId": "de7",
+          "at": 0.9000000000000007
+        },
+        {
+          "type": "close",
+          "weaponId": "de7",
+          "at": 1.360999999999961
+        }
+      ]
+    },
+    {
+      "id": "r45",
+      "empty": false,
+      "seconds": 3.1209999999997673,
+      "events": [
+        {
+          "type": "open",
+          "weaponId": "r45",
+          "at": 0.35900000000000026
+        },
+        {
+          "type": "shell",
+          "weaponId": "r45",
+          "at": 0.5030000000000003
+        },
+        {
+          "type": "magin",
+          "weaponId": "r45",
+          "at": 1.4349999999999528
+        },
+        {
+          "type": "close",
+          "weaponId": "r45",
+          "at": 2.725999999999811
+        }
+      ]
+    },
+    {
+      "id": "r45",
+      "empty": true,
+      "seconds": 3.432999999999733,
+      "events": [
+        {
+          "type": "open",
+          "weaponId": "r45",
+          "at": 0.3950000000000003
+        },
+        {
+          "type": "shell",
+          "weaponId": "r45",
+          "at": 0.5530000000000004
+        },
+        {
+          "type": "magin",
+          "weaponId": "r45",
+          "at": 1.577999999999937
+        },
+        {
+          "type": "close",
+          "weaponId": "r45",
+          "at": 2.9989999999997807
+        }
+      ]
+    },
+    {
+      "id": "mp9",
+      "empty": false,
+      "seconds": 1.64099999999993,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "mp9",
+          "at": 0.2460000000000002
+        },
+        {
+          "type": "magin",
+          "weaponId": "mp9",
+          "at": 0.9350000000000007
+        }
+      ]
+    },
+    {
+      "id": "mp9",
+      "empty": true,
+      "seconds": 1.804999999999912,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "mp9",
+          "at": 0.18100000000000013
+        },
+        {
+          "type": "magin",
+          "weaponId": "mp9",
+          "at": 0.8480000000000006
+        },
+        {
+          "type": "open",
+          "weaponId": "mp9",
+          "at": 1.1549999999999836
+        },
+        {
+          "type": "close",
+          "weaponId": "mp9",
+          "at": 1.268999999999971
+        }
+      ]
+    },
+    {
+      "id": "v45",
+      "empty": false,
+      "seconds": 1.8809999999999036,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "v45",
+          "at": 0.2820000000000002
+        },
+        {
+          "type": "magin",
+          "weaponId": "v45",
+          "at": 1.0719999999999927
+        }
+      ]
+    },
+    {
+      "id": "v45",
+      "empty": true,
+      "seconds": 2.068999999999883,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "v45",
+          "at": 0.20700000000000016
+        },
+        {
+          "type": "magin",
+          "weaponId": "v45",
+          "at": 0.9720000000000008
+        },
+        {
+          "type": "open",
+          "weaponId": "v45",
+          "at": 1.323999999999965
+        },
+        {
+          "type": "close",
+          "weaponId": "v45",
+          "at": 1.4539999999999507
+        }
+      ]
+    },
+    {
+      "id": "cx9",
+      "empty": false,
+      "seconds": 1.9209999999998992,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "cx9",
+          "at": 0.2880000000000002
+        },
+        {
+          "type": "magin",
+          "weaponId": "cx9",
+          "at": 1.0949999999999902
+        }
+      ]
+    },
+    {
+      "id": "cx9",
+      "empty": true,
+      "seconds": 2.1129999999998783,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "cx9",
+          "at": 0.21200000000000016
+        },
+        {
+          "type": "magin",
+          "weaponId": "cx9",
+          "at": 0.9930000000000008
+        },
+        {
+          "type": "open",
+          "weaponId": "cx9",
+          "at": 1.351999999999962
+        },
+        {
+          "type": "close",
+          "weaponId": "cx9",
+          "at": 1.4849999999999473
+        }
+      ]
+    },
+    {
+      "id": "sm45",
+      "empty": false,
+      "seconds": 1.840999999999908,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "sm45",
+          "at": 0.2760000000000002
+        },
+        {
+          "type": "magin",
+          "weaponId": "sm45",
+          "at": 1.0489999999999953
+        }
+      ]
+    },
+    {
+      "id": "sm45",
+      "empty": true,
+      "seconds": 2.024999999999888,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "sm45",
+          "at": 0.20300000000000015
+        },
+        {
+          "type": "magin",
+          "weaponId": "sm45",
+          "at": 0.9520000000000007
+        },
+        {
+          "type": "open",
+          "weaponId": "sm45",
+          "at": 1.295999999999968
+        },
+        {
+          "type": "close",
+          "weaponId": "sm45",
+          "at": 1.422999999999954
+        }
+      ]
+    },
+    {
+      "id": "ar416",
+      "empty": false,
+      "seconds": 1.9609999999998948,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "ar416",
+          "at": 0.2940000000000002
+        },
+        {
+          "type": "magin",
+          "weaponId": "ar416",
+          "at": 1.1179999999999877
+        }
+      ]
+    },
+    {
+      "id": "ar416",
+      "empty": true,
+      "seconds": 2.1569999999998735,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "ar416",
+          "at": 0.21600000000000016
+        },
+        {
+          "type": "magin",
+          "weaponId": "ar416",
+          "at": 1.0139999999999991
+        },
+        {
+          "type": "open",
+          "weaponId": "ar416",
+          "at": 1.3799999999999588
+        },
+        {
+          "type": "close",
+          "weaponId": "ar416",
+          "at": 1.5159999999999438
+        }
+      ]
+    },
+    {
+      "id": "sg56",
+      "empty": false,
+      "seconds": 2.1209999999998774,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "sg56",
+          "at": 0.3180000000000002
+        },
+        {
+          "type": "magin",
+          "weaponId": "sg56",
+          "at": 1.2089999999999776
+        }
+      ]
+    },
+    {
+      "id": "sg56",
+      "empty": true,
+      "seconds": 2.332999999999854,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "sg56",
+          "at": 0.23400000000000018
+        },
+        {
+          "type": "magin",
+          "weaponId": "sg56",
+          "at": 1.09699999999999
+        },
+        {
+          "type": "open",
+          "weaponId": "sg56",
+          "at": 1.4929999999999464
+        },
+        {
+          "type": "close",
+          "weaponId": "sg56",
+          "at": 1.6399999999999302
+        }
+      ]
+    },
+    {
+      "id": "ms56",
+      "empty": false,
+      "seconds": 1.7609999999999169,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "ms56",
+          "at": 0.2640000000000002
+        },
+        {
+          "type": "magin",
+          "weaponId": "ms56",
+          "at": 1.0040000000000002
+        }
+      ]
+    },
+    {
+      "id": "ms56",
+      "empty": true,
+      "seconds": 1.9369999999998975,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "ms56",
+          "at": 0.19400000000000014
+        },
+        {
+          "type": "magin",
+          "weaponId": "ms56",
+          "at": 0.9100000000000007
+        },
+        {
+          "type": "open",
+          "weaponId": "ms56",
+          "at": 1.2399999999999742
+        },
+        {
+          "type": "close",
+          "weaponId": "ms56",
+          "at": 1.3619999999999608
+        }
+      ]
+    },
+    {
+      "id": "lm86",
+      "empty": false,
+      "seconds": 3.760999999999697,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "lm86",
+          "at": 0.5640000000000004
+        },
+        {
+          "type": "magin",
+          "weaponId": "lm86",
+          "at": 2.2569999999998624
+        }
+      ]
+    },
+    {
+      "id": "lm86",
+      "empty": true,
+      "seconds": 4.136999999999716,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "lm86",
+          "at": 0.45500000000000035
+        },
+        {
+          "type": "magin",
+          "weaponId": "lm86",
+          "at": 2.2749999999998605
+        },
+        {
+          "type": "close",
+          "weaponId": "lm86",
+          "at": 3.0819999999997716
+        }
+      ]
+    },
+    {
+      "id": "rk762",
+      "empty": false,
+      "seconds": 2.9209999999997893,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "rk762",
+          "at": 1.0079999999999998
+        },
+        {
+          "type": "magin",
+          "weaponId": "rk762",
+          "at": 1.5479999999999403
+        }
+      ]
+    },
+    {
+      "id": "rk762",
+      "empty": true,
+      "seconds": 3.212999999999757,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "rk762",
+          "at": 1.1089999999999887
+        },
+        {
+          "type": "magin",
+          "weaponId": "rk762",
+          "at": 1.7029999999999232
+        },
+        {
+          "type": "open",
+          "weaponId": "rk762",
+          "at": 2.28099999999986
+        },
+        {
+          "type": "close",
+          "weaponId": "rk762",
+          "at": 2.4829999999998376
+        }
+      ]
+    },
+    {
+      "id": "mg60",
+      "empty": false,
+      "seconds": 5.1200000000000445,
+      "events": [
+        {
+          "type": "coveropen",
+          "weaponId": "mg60",
+          "at": 0.35900000000000026
+        },
+        {
+          "type": "magout",
+          "weaponId": "mg60",
+          "at": 1.331999999999964
+        },
+        {
+          "type": "magin",
+          "weaponId": "mg60",
+          "at": 2.6629999999998177
+        },
+        {
+          "type": "coverclose",
+          "weaponId": "mg60",
+          "at": 3.430999999999733
+        }
+      ]
+    },
+    {
+      "id": "mg60",
+      "empty": true,
+      "seconds": 5.6320000000002155,
+      "events": [
+        {
+          "type": "coveropen",
+          "weaponId": "mg60",
+          "at": 0.3950000000000003
+        },
+        {
+          "type": "magout",
+          "weaponId": "mg60",
+          "at": 1.4649999999999495
+        },
+        {
+          "type": "magin",
+          "weaponId": "mg60",
+          "at": 2.9289999999997884
+        },
+        {
+          "type": "coverclose",
+          "weaponId": "mg60",
+          "at": 3.7739999999996954
+        },
+        {
+          "type": "open",
+          "weaponId": "mg60",
+          "at": 4.449999999999821
+        },
+        {
+          "type": "close",
+          "weaponId": "mg60",
+          "at": 4.804999999999939
+        }
+      ]
+    },
+    {
+      "id": "sr25",
+      "empty": false,
+      "seconds": 2.3209999999998554,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "sr25",
+          "at": 0.34800000000000025
+        },
+        {
+          "type": "magin",
+          "weaponId": "sr25",
+          "at": 1.3929999999999574
+        }
+      ]
+    },
+    {
+      "id": "sr25",
+      "empty": true,
+      "seconds": 2.55299999999983,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "sr25",
+          "at": 0.2810000000000002
+        },
+        {
+          "type": "magin",
+          "weaponId": "sr25",
+          "at": 1.4039999999999562
+        },
+        {
+          "type": "close",
+          "weaponId": "sr25",
+          "at": 1.9019999999999013
+        }
+      ]
+    },
+    {
+      "id": "dm56",
+      "empty": false,
+      "seconds": 2.0009999999998906,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "dm56",
+          "at": 0.3000000000000002
+        },
+        {
+          "type": "magin",
+          "weaponId": "dm56",
+          "at": 1.1409999999999851
+        }
+      ]
+    },
+    {
+      "id": "dm56",
+      "empty": true,
+      "seconds": 2.2009999999998686,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "dm56",
+          "at": 0.22000000000000017
+        },
+        {
+          "type": "magin",
+          "weaponId": "dm56",
+          "at": 1.0349999999999968
+        },
+        {
+          "type": "open",
+          "weaponId": "dm56",
+          "at": 1.4089999999999556
+        },
+        {
+          "type": "close",
+          "weaponId": "dm56",
+          "at": 1.5469999999999404
+        }
+      ]
+    },
+    {
+      "id": "m24",
+      "empty": false,
+      "seconds": 2.7209999999998113,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "m24",
+          "at": 0.4080000000000003
+        },
+        {
+          "type": "magin",
+          "weaponId": "m24",
+          "at": 1.604999999999934
+        }
+      ]
+    },
+    {
+      "id": "m24",
+      "empty": true,
+      "seconds": 2.9929999999997814,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "m24",
+          "at": 0.3000000000000002
+        },
+        {
+          "type": "magin",
+          "weaponId": "m24",
+          "at": 1.496999999999946
+        },
+        {
+          "type": "open",
+          "weaponId": "m24",
+          "at": 2.070999999999883
+        },
+        {
+          "type": "close",
+          "weaponId": "m24",
+          "at": 2.3759999999998493
+        }
+      ]
+    },
+    {
+      "id": "sp12",
+      "empty": false,
+      "seconds": 2.3759999999998493,
+      "events": [
+        {
+          "type": "shell",
+          "weaponId": "sp12",
+          "at": 0.5360000000000004
+        },
+        {
+          "type": "shell",
+          "weaponId": "sp12",
+          "at": 1.0000000000000007
+        },
+        {
+          "type": "shell",
+          "weaponId": "sp12",
+          "at": 1.4639999999999496
+        },
+        {
+          "type": "shell",
+          "weaponId": "sp12",
+          "at": 1.9279999999998985
+        }
+      ]
+    },
+    {
+      "id": "sp12",
+      "empty": true,
+      "seconds": 4.808999999999941,
+      "events": [
+        {
+          "type": "open",
+          "weaponId": "sp12",
+          "at": 0.1360000000000001
+        },
+        {
+          "type": "port",
+          "weaponId": "sp12",
+          "at": 0.45500000000000035
+        },
+        {
+          "type": "close",
+          "weaponId": "sp12",
+          "at": 0.7940000000000006
+        },
+        {
+          "type": "shell",
+          "weaponId": "sp12",
+          "at": 1.2489999999999732
+        },
+        {
+          "type": "shell",
+          "weaponId": "sp12",
+          "at": 1.759999999999917
+        },
+        {
+          "type": "shell",
+          "weaponId": "sp12",
+          "at": 2.270999999999861
+        },
+        {
+          "type": "shell",
+          "weaponId": "sp12",
+          "at": 2.7819999999998046
+        },
+        {
+          "type": "shell",
+          "weaponId": "sp12",
+          "at": 3.2929999999997484
+        },
+        {
+          "type": "shell",
+          "weaponId": "sp12",
+          "at": 3.803999999999692
+        },
+        {
+          "type": "shell",
+          "weaponId": "sp12",
+          "at": 4.314999999999776
+        }
+      ]
+    },
+    {
+      "id": "p226",
+      "empty": false,
+      "seconds": 1.2409999999999741,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "p226",
+          "at": 0.18600000000000014
+        },
+        {
+          "type": "magin",
+          "weaponId": "p226",
+          "at": 0.7940000000000006
+        }
+      ]
+    },
+    {
+      "id": "p226",
+      "empty": true,
+      "seconds": 1.3649999999999605,
+      "events": [
+        {
+          "type": "magout",
+          "weaponId": "p226",
+          "at": 0.1370000000000001
+        },
+        {
+          "type": "magin",
+          "weaponId": "p226",
+          "at": 0.8050000000000006
+        },
+        {
+          "type": "close",
+          "weaponId": "p226",
+          "at": 1.0919999999999905
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "banks": 61,
+    "weapons": [
+      {
+        "id": "ar7",
+        "shot": {
+          "peak": 0.15845172107219696,
+          "rms": 0.011397915148996983,
+          "active": 15137,
+          "hash": 3692114652
+        },
+        "reload": {
+          "peak": 0.0989077016711235,
+          "rms": 0.0024617981355978765,
+          "active": 17673,
+          "hash": 2263332949
+        }
+      },
+      {
+        "id": "ka47",
+        "shot": {
+          "peak": 0.2910192608833313,
+          "rms": 0.022490176250515196,
+          "active": 21655,
+          "hash": 1180443423
+        },
+        "reload": {
+          "peak": 0.09652142226696014,
+          "rms": 0.003271033554102734,
+          "active": 20029,
+          "hash": 4236320027
+        }
+      },
+      {
+        "id": "sc17",
+        "shot": {
+          "peak": 0.3067324459552765,
+          "rms": 0.029531718189436486,
+          "active": 24594,
+          "hash": 2143634806
+        },
+        "reload": {
+          "peak": 0.0975910872220993,
+          "rms": 0.0036025343693541177,
+          "active": 17764,
+          "hash": 2135122392
+        }
+      },
+      {
+        "id": "mk14",
+        "shot": {
+          "peak": 0.19250398874282837,
+          "rms": 0.017058880117256866,
+          "active": 20907,
+          "hash": 1004417951
+        },
+        "reload": {
+          "peak": 0.12090948224067688,
+          "rms": 0.0029092620344678866,
+          "active": 14135,
+          "hash": 975632623
+        }
+      },
+      {
+        "id": "kr98",
+        "shot": {
+          "peak": 0.3548281490802765,
+          "rms": 0.034274820191486824,
+          "active": 32859,
+          "hash": 281608806
+        },
+        "reload": {
+          "peak": 0.08900227397680283,
+          "rms": 0.004422242358192327,
+          "active": 35435,
+          "hash": 528667329
+        }
+      },
+      {
+        "id": "s12",
+        "shot": {
+          "peak": 0.4123765528202057,
+          "rms": 0.03330120322415541,
+          "active": 27548,
+          "hash": 1124077998
+        },
+        "reload": {
+          "peak": 0.09778586030006409,
+          "rms": 0.00419943760735034,
+          "active": 56093,
+          "hash": 2272523027
+        }
+      },
+      {
+        "id": "m1014",
+        "shot": {
+          "peak": 0.258548766374588,
+          "rms": 0.021568197528767197,
+          "active": 22405,
+          "hash": 146591834
+        },
+        "reload": {
+          "peak": 0.08317069709300995,
+          "rms": 0.003233465043014275,
+          "active": 61012,
+          "hash": 513473771
+        }
+      },
+      {
+        "id": "db2",
+        "shot": {
+          "peak": 0.342071533203125,
+          "rms": 0.03756535496187932,
+          "active": 37031,
+          "hash": 1488684515
+        },
+        "reload": {
+          "peak": 0.08876500278711319,
+          "rms": 0.004387450970949701,
+          "active": 21093,
+          "hash": 2871876817
+        }
+      },
+      {
+        "id": "sa12",
+        "shot": {
+          "peak": 0.27976134419441223,
+          "rms": 0.020452104919580102,
+          "active": 20217,
+          "hash": 2899430603
+        },
+        "reload": {
+          "peak": 0.10330319404602051,
+          "rms": 0.005281686550921812,
+          "active": 24514,
+          "hash": 893314042
+        }
+      },
+      {
+        "id": "aa12",
+        "shot": {
+          "peak": 0.20456846058368683,
+          "rms": 0.016693140314478407,
+          "active": 14525,
+          "hash": 2958238181
+        },
+        "reload": {
+          "peak": 0.11102714389562607,
+          "rms": 0.003305536198232394,
+          "active": 19219,
+          "hash": 602843008
+        }
+      },
+      {
+        "id": "p92",
+        "shot": {
+          "peak": 0.18251252174377441,
+          "rms": 0.005876372311474212,
+          "active": 10502,
+          "hash": 2240708181
+        },
+        "reload": {
+          "peak": 0.08798421174287796,
+          "rms": 0.0028949995859550858,
+          "active": 16918,
+          "hash": 3169101422
+        }
+      },
+      {
+        "id": "g18",
+        "shot": {
+          "peak": 0.16393861174583435,
+          "rms": 0.004223951903537532,
+          "active": 8074,
+          "hash": 3979652113
+        },
+        "reload": {
+          "peak": 0.08016591519117355,
+          "rms": 0.0032019368344292664,
+          "active": 17024,
+          "hash": 3083869710
+        }
+      },
+      {
+        "id": "m1911",
+        "shot": {
+          "peak": 0.3270435631275177,
+          "rms": 0.020422889501645804,
+          "active": 17918,
+          "hash": 1614631226
+        },
+        "reload": {
+          "peak": 0.09233163297176361,
+          "rms": 0.003628747774692099,
+          "active": 14867,
+          "hash": 746411570
+        }
+      },
+      {
+        "id": "de7",
+        "shot": {
+          "peak": 0.31663790345191956,
+          "rms": 0.0328590362472281,
+          "active": 31319,
+          "hash": 3223001258
+        },
+        "reload": {
+          "peak": 0.0810503140091896,
+          "rms": 0.0035433363950286476,
+          "active": 15277,
+          "hash": 4227289964
+        }
+      },
+      {
+        "id": "r45",
+        "shot": {
+          "peak": 0.27846649289131165,
+          "rms": 0.021856987701520808,
+          "active": 24121,
+          "hash": 2626073220
+        },
+        "reload": {
+          "peak": 0.07871340960264206,
+          "rms": 0.0021339156276501325,
+          "active": 19208,
+          "hash": 1904277425
+        }
+      },
+      {
+        "id": "mp9",
+        "shot": {
+          "peak": 0.16739411652088165,
+          "rms": 0.006815335331942125,
+          "active": 11459,
+          "hash": 4270879049
+        },
+        "reload": {
+          "peak": 0.10010892152786255,
+          "rms": 0.003546115034238384,
+          "active": 19211,
+          "hash": 2893083809
+        }
+      },
+      {
+        "id": "v45",
+        "shot": {
+          "peak": 0.17782363295555115,
+          "rms": 0.008687380812619433,
+          "active": 9708,
+          "hash": 3660605149
+        },
+        "reload": {
+          "peak": 0.0961899384856224,
+          "rms": 0.003472647497546116,
+          "active": 19113,
+          "hash": 1150693079
+        }
+      },
+      {
+        "id": "cx9",
+        "shot": {
+          "peak": 0.17579028010368347,
+          "rms": 0.0049766645053674775,
+          "active": 9369,
+          "hash": 1610274504
+        },
+        "reload": {
+          "peak": 0.09645228832960129,
+          "rms": 0.0031789125378625964,
+          "active": 22017,
+          "hash": 155748742
+        }
+      },
+      {
+        "id": "sm45",
+        "shot": {
+          "peak": 0.28501421213150024,
+          "rms": 0.02242775944972013,
+          "active": 18724,
+          "hash": 142505081
+        },
+        "reload": {
+          "peak": 0.09808900952339172,
+          "rms": 0.0038565860455827593,
+          "active": 19731,
+          "hash": 309857547
+        }
+      },
+      {
+        "id": "ar416",
+        "shot": {
+          "peak": 0.18689808249473572,
+          "rms": 0.01220710997486126,
+          "active": 16118,
+          "hash": 2130716232
+        },
+        "reload": {
+          "peak": 0.0979062169790268,
+          "rms": 0.004119233588055874,
+          "active": 24675,
+          "hash": 3516591332
+        }
+      },
+      {
+        "id": "sg56",
+        "shot": {
+          "peak": 0.219854936003685,
+          "rms": 0.01881880985667219,
+          "active": 19824,
+          "hash": 3535719330
+        },
+        "reload": {
+          "peak": 0.09759769588708878,
+          "rms": 0.0035272020313878334,
+          "active": 20490,
+          "hash": 1441237519
+        }
+      },
+      {
+        "id": "ms56",
+        "shot": {
+          "peak": 0.1890345960855484,
+          "rms": 0.014263161445189616,
+          "active": 15595,
+          "hash": 3998937014
+        },
+        "reload": {
+          "peak": 0.1018916666507721,
+          "rms": 0.0041230355875454166,
+          "active": 23260,
+          "hash": 3860343887
+        }
+      },
+      {
+        "id": "lm86",
+        "shot": {
+          "peak": 0.19367121160030365,
+          "rms": 0.015090013533582454,
+          "active": 16569,
+          "hash": 3043727815
+        },
+        "reload": {
+          "peak": 0.11034159362316132,
+          "rms": 0.0023827208909552116,
+          "active": 14413,
+          "hash": 242786617
+        }
+      },
+      {
+        "id": "rk762",
+        "shot": {
+          "peak": 0.341584175825119,
+          "rms": 0.028957239503234936,
+          "active": 24005,
+          "hash": 971959525
+        },
+        "reload": {
+          "peak": 0.11462442576885223,
+          "rms": 0.003396669740517394,
+          "active": 22656,
+          "hash": 724693488
+        }
+      },
+      {
+        "id": "mg60",
+        "shot": {
+          "peak": 0.36059537529945374,
+          "rms": 0.0320066060327495,
+          "active": 25627,
+          "hash": 624207438
+        },
+        "reload": {
+          "peak": 0.1124519556760788,
+          "rms": 0.0030486054710344907,
+          "active": 29437,
+          "hash": 546528701
+        }
+      },
+      {
+        "id": "sr25",
+        "shot": {
+          "peak": 0.260425329208374,
+          "rms": 0.023662937360980903,
+          "active": 23373,
+          "hash": 3056055866
+        },
+        "reload": {
+          "peak": 0.10093149542808533,
+          "rms": 0.002553142054040375,
+          "active": 14342,
+          "hash": 2842719639
+        }
+      },
+      {
+        "id": "dm56",
+        "shot": {
+          "peak": 0.17593789100646973,
+          "rms": 0.012638341369879442,
+          "active": 18561,
+          "hash": 1212791293
+        },
+        "reload": {
+          "peak": 0.09932009875774384,
+          "rms": 0.003991553341217918,
+          "active": 23882,
+          "hash": 4181764305
+        }
+      },
+      {
+        "id": "m24",
+        "shot": {
+          "peak": 0.39866888523101807,
+          "rms": 0.034247269031916834,
+          "active": 35230,
+          "hash": 1100214592
+        },
+        "reload": {
+          "peak": 0.08518765866756439,
+          "rms": 0.0039508582916598315,
+          "active": 29079,
+          "hash": 3141269143
+        }
+      },
+      {
+        "id": "sp12",
+        "shot": {
+          "peak": 0.3511081039905548,
+          "rms": 0.029430243936970375,
+          "active": 27913,
+          "hash": 2091765903
+        },
+        "reload": {
+          "peak": 0.08293305337429047,
+          "rms": 0.003506801857034264,
+          "active": 55262,
+          "hash": 548639783
+        }
+      },
+      {
+        "id": "p226",
+        "shot": {
+          "peak": 0.17587576806545258,
+          "rms": 0.007157511291331228,
+          "active": 12540,
+          "hash": 3105326008
+        },
+        "reload": {
+          "peak": 0.09028247743844986,
+          "rms": 0.0034445484031499374,
+          "active": 18097,
+          "hash": 2076350095
+        }
+      }
+    ],
+    "bursts": [
+      {
+        "id": "ar7",
+        "peak": 0.6945245862007141,
+        "rms": 0.08163755651221334,
+        "active": 92889,
+        "hash": 129744129
+      },
+      {
+        "id": "aa12",
+        "peak": 0.7102731466293335,
+        "rms": 0.07580379069237855,
+        "active": 93768,
+        "hash": 785227574
+      },
+      {
+        "id": "g18",
+        "peak": 0.6746397018432617,
+        "rms": 0.0561722100594049,
+        "active": 87989,
+        "hash": 4246943309
+      }
+    ],
+    "far": {
+      "peak": 0.047404348850250244,
+      "rms": 0.0015361359334752,
+      "active": 18183,
+      "hash": 1801568742
+    }
+  },
+  "mix": {
+    "weapons": [
+      {
+        "id": "ar7",
+        "shot": {
+          "peak": 0.15845172107219696,
+          "rms": 0.010194605229972759,
+          "attackRms": 0.04488696981713816
+        },
+        "burst": {
+          "peak": 0.6906911134719849,
+          "rms": 0.07164344157217505,
+          "attackRms": 0.04488696981713816
+        },
+        "reload": {
+          "peak": 0.0989077016711235,
+          "rms": 0.0025159456825231807,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.050021737813949585,
+          "rms": 0.003160450931121103,
+          "attackRms": 0.012828435940857127
+        }
+      },
+      {
+        "id": "ka47",
+        "shot": {
+          "peak": 0.2910192608833313,
+          "rms": 0.020115825168841327,
+          "attackRms": 0.06100357428897637
+        },
+        "burst": {
+          "peak": 0.6762124300003052,
+          "rms": 0.10559884601830169,
+          "attackRms": 0.06100357428897637
+        },
+        "reload": {
+          "peak": 0.09652142226696014,
+          "rms": 0.003366949911679164,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.09371697157621384,
+          "rms": 0.00650374870911252,
+          "attackRms": 0.018646801929653546
+        }
+      },
+      {
+        "id": "sc17",
+        "shot": {
+          "peak": 0.3067324459552765,
+          "rms": 0.026413971745578798,
+          "attackRms": 0.07154603418964867
+        },
+        "burst": {
+          "peak": 0.7022423148155212,
+          "rms": 0.11146242268087783,
+          "attackRms": 0.07154603418964867
+        },
+        "reload": {
+          "peak": 0.0975910872220993,
+          "rms": 0.003756162847429517,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.10663628578186035,
+          "rms": 0.008670217375032784,
+          "attackRms": 0.021897273094737702
+        }
+      },
+      {
+        "id": "mk14",
+        "shot": {
+          "peak": 0.19250398874282837,
+          "rms": 0.015257926224882375,
+          "attackRms": 0.04588732493160535
+        },
+        "burst": {
+          "peak": 0.6839770674705505,
+          "rms": 0.06249643150000286,
+          "attackRms": 0.04588732493160535
+        },
+        "reload": {
+          "peak": 0.12090948224067688,
+          "rms": 0.0030225049523856743,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.06943926960229874,
+          "rms": 0.004700868012700149,
+          "attackRms": 0.012715744411676175
+        }
+      },
+      {
+        "id": "kr98",
+        "shot": {
+          "peak": 0.3548281490802765,
+          "rms": 0.030656331145898757,
+          "attackRms": 0.06154419970018685
+        },
+        "burst": {
+          "peak": 0.3548281490802765,
+          "rms": 0.030656331145898757,
+          "attackRms": 0.06154419970018685
+        },
+        "reload": {
+          "peak": 0.08900227397680283,
+          "rms": 0.0045651619873823945,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.11287780106067657,
+          "rms": 0.009843797516335063,
+          "attackRms": 0.017942723279670933
+        }
+      },
+      {
+        "id": "s12",
+        "shot": {
+          "peak": 0.4123765528202057,
+          "rms": 0.029785501656698667,
+          "attackRms": 0.06767178694236713
+        },
+        "burst": {
+          "peak": 0.6695830821990967,
+          "rms": 0.057432915379377614,
+          "attackRms": 0.06767178694236713
+        },
+        "reload": {
+          "peak": 0.09778586030006409,
+          "rms": 0.004275852730425993,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.13599321246147156,
+          "rms": 0.009868173316777014,
+          "attackRms": 0.02074998389189244
+        }
+      },
+      {
+        "id": "m1014",
+        "shot": {
+          "peak": 0.258548766374588,
+          "rms": 0.019291182330586572,
+          "attackRms": 0.047168399294944464
+        },
+        "burst": {
+          "peak": 0.64756178855896,
+          "rms": 0.05946802655620457,
+          "attackRms": 0.047168399294944464
+        },
+        "reload": {
+          "peak": 0.08317069709300995,
+          "rms": 0.003285253379252283,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.07997778803110123,
+          "rms": 0.006137231921337461,
+          "attackRms": 0.013922387590628527
+        }
+      },
+      {
+        "id": "db2",
+        "shot": {
+          "peak": 0.342071533203125,
+          "rms": 0.03359947491746847,
+          "attackRms": 0.07144678524281535
+        },
+        "burst": {
+          "peak": 0.6994991898536682,
+          "rms": 0.055162597851130826,
+          "attackRms": 0.07144678524281535
+        },
+        "reload": {
+          "peak": 0.08876500278711319,
+          "rms": 0.004614691025079125,
+          "attackRms": 0
+        }
+      },
+      {
+        "id": "sa12",
+        "shot": {
+          "peak": 0.27976134419441223,
+          "rms": 0.01829291875325559,
+          "attackRms": 0.057755348158717475
+        },
+        "burst": {
+          "peak": 0.675372302532196,
+          "rms": 0.06165951042418634,
+          "attackRms": 0.057755348158717475
+        },
+        "reload": {
+          "peak": 0.10330319404602051,
+          "rms": 0.005465964675159422,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.09013290703296661,
+          "rms": 0.005932617701064073,
+          "attackRms": 0.01753525191195148
+        }
+      },
+      {
+        "id": "aa12",
+        "shot": {
+          "peak": 0.20456846058368683,
+          "rms": 0.014930798600446375,
+          "attackRms": 0.058086746660001416
+        },
+        "burst": {
+          "peak": 0.6972362995147705,
+          "rms": 0.0610882989518388,
+          "attackRms": 0.058086746660001416
+        },
+        "reload": {
+          "peak": 0.11102714389562607,
+          "rms": 0.0034208664065544818,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.07104619592428207,
+          "rms": 0.00472255727349044,
+          "attackRms": 0.017800465582666687
+        }
+      },
+      {
+        "id": "p92",
+        "shot": {
+          "peak": 0.18251252174377441,
+          "rms": 0.005255987179821563,
+          "attackRms": 0.030910425802017423
+        },
+        "burst": {
+          "peak": 0.701836347579956,
+          "rms": 0.035023750135446854,
+          "attackRms": 0.030910425802017423
+        },
+        "reload": {
+          "peak": 0.08798421174287796,
+          "rms": 0.0030261199305089775,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.048762593418359756,
+          "rms": 0.0017467127121228705,
+          "attackRms": 0.008266286868012507
+        }
+      },
+      {
+        "id": "g18",
+        "shot": {
+          "peak": 0.16393861174583435,
+          "rms": 0.0037780174359998225,
+          "attackRms": 0.030484643637876122
+        },
+        "burst": {
+          "peak": 0.6715939044952393,
+          "rms": 0.048719920955331494,
+          "attackRms": 0.030484643637876122
+        },
+        "reload": {
+          "peak": 0.08016591519117355,
+          "rms": 0.0033654881166230535,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.0414753332734108,
+          "rms": 0.0012157438123274501,
+          "attackRms": 0.007213238993109703
+        }
+      },
+      {
+        "id": "m1911",
+        "shot": {
+          "peak": 0.3270435631275177,
+          "rms": 0.01826678768905873,
+          "attackRms": 0.07354551425585053
+        },
+        "burst": {
+          "peak": 0.6872451305389404,
+          "rms": 0.09064290495148357,
+          "attackRms": 0.07354551425585053
+        },
+        "reload": {
+          "peak": 0.09233163297176361,
+          "rms": 0.0037937742432607845,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.10627837479114532,
+          "rms": 0.0059773929974339425,
+          "attackRms": 0.022240938548342533
+        }
+      },
+      {
+        "id": "de7",
+        "shot": {
+          "peak": 0.31663790345191956,
+          "rms": 0.02939001548957265,
+          "attackRms": 0.05489496983929225
+        },
+        "burst": {
+          "peak": 0.6724309921264648,
+          "rms": 0.08140380022737786,
+          "attackRms": 0.05489496983929225
+        },
+        "reload": {
+          "peak": 0.0810503140091896,
+          "rms": 0.0037044785654215986,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.1112603023648262,
+          "rms": 0.009607318922149534,
+          "attackRms": 0.016241944065495745
+        }
+      },
+      {
+        "id": "r45",
+        "shot": {
+          "peak": 0.27846649289131165,
+          "rms": 0.019549484113590962,
+          "attackRms": 0.05352419290209769
+        },
+        "burst": {
+          "peak": 0.6736476421356201,
+          "rms": 0.05350617929821821,
+          "attackRms": 0.05352419290209769
+        },
+        "reload": {
+          "peak": 0.07871340960264206,
+          "rms": 0.002187499341684033,
+          "attackRms": 0
+        }
+      },
+      {
+        "id": "mp9",
+        "shot": {
+          "peak": 0.16739411652088165,
+          "rms": 0.0060958212366714745,
+          "attackRms": 0.0318494831884671
+        },
+        "burst": {
+          "peak": 0.6995689272880554,
+          "rms": 0.053013301768202965,
+          "attackRms": 0.0318494831884671
+        },
+        "reload": {
+          "peak": 0.10010892152786255,
+          "rms": 0.0036967589650107172,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.041382212191820145,
+          "rms": 0.0019381910520732046,
+          "attackRms": 0.008615992480380275
+        }
+      },
+      {
+        "id": "v45",
+        "shot": {
+          "peak": 0.17782363295555115,
+          "rms": 0.007770229617377766,
+          "attackRms": 0.0510224365025815
+        },
+        "burst": {
+          "peak": 0.6881465911865234,
+          "rms": 0.08754666675515972,
+          "attackRms": 0.0510224365025815
+        },
+        "reload": {
+          "peak": 0.0961899384856224,
+          "rms": 0.0036052892445612825,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.051298342645168304,
+          "rms": 0.0024891211566846405,
+          "attackRms": 0.015275655186254932
+        }
+      },
+      {
+        "id": "cx9",
+        "shot": {
+          "peak": 0.17579028010368347,
+          "rms": 0.004451264054084819,
+          "attackRms": 0.02979959200713962
+        },
+        "burst": {
+          "peak": 0.6899347305297852,
+          "rms": 0.04677269011067107,
+          "attackRms": 0.02979959200713962
+        },
+        "reload": {
+          "peak": 0.09645228832960129,
+          "rms": 0.0032983265197508546,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.04642152413725853,
+          "rms": 0.0014234162595560492,
+          "attackRms": 0.007306943419105459
+        }
+      },
+      {
+        "id": "sm45",
+        "shot": {
+          "peak": 0.28501421213150024,
+          "rms": 0.020059997885034996,
+          "attackRms": 0.07166977404271428
+        },
+        "burst": {
+          "peak": 0.7242092490196228,
+          "rms": 0.115519876510923,
+          "attackRms": 0.07166977404271428
+        },
+        "reload": {
+          "peak": 0.09808900952339172,
+          "rms": 0.004006411151457867,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.09127996861934662,
+          "rms": 0.006419489089645155,
+          "attackRms": 0.021957432772782812
+        }
+      },
+      {
+        "id": "ar416",
+        "shot": {
+          "peak": 0.18689808249473572,
+          "rms": 0.01091837108504221,
+          "attackRms": 0.04504049570481267
+        },
+        "burst": {
+          "peak": 0.6790997982025146,
+          "rms": 0.07709182261720686,
+          "attackRms": 0.04504049570481267
+        },
+        "reload": {
+          "peak": 0.0979062169790268,
+          "rms": 0.0042714539054317414,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.0945790559053421,
+          "rms": 0.003408862030955574,
+          "attackRms": 0.012871022406543609
+        }
+      },
+      {
+        "id": "sg56",
+        "shot": {
+          "peak": 0.219854936003685,
+          "rms": 0.016832055238064837,
+          "attackRms": 0.06377343812089986
+        },
+        "burst": {
+          "peak": 0.7086156606674194,
+          "rms": 0.10389566000665787,
+          "attackRms": 0.06377343812089986
+        },
+        "reload": {
+          "peak": 0.09759769588708878,
+          "rms": 0.003649582400331749,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.08121832460165024,
+          "rms": 0.005354843319729197,
+          "attackRms": 0.019357389329790028
+        }
+      },
+      {
+        "id": "ms56",
+        "shot": {
+          "peak": 0.1890345960855484,
+          "rms": 0.012757359426199249,
+          "attackRms": 0.05001904732722444
+        },
+        "burst": {
+          "peak": 0.7063695788383484,
+          "rms": 0.08955512849843829,
+          "attackRms": 0.05001904732722444
+        },
+        "reload": {
+          "peak": 0.1018916666507721,
+          "rms": 0.0042888843706737345,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.062425076961517334,
+          "rms": 0.003969814971180209,
+          "attackRms": 0.015143465078221756
+        }
+      },
+      {
+        "id": "lm86",
+        "shot": {
+          "peak": 0.19367121160030365,
+          "rms": 0.01349691841699287,
+          "attackRms": 0.057310251892866565
+        },
+        "burst": {
+          "peak": 0.6955081224441528,
+          "rms": 0.08864596539798984,
+          "attackRms": 0.057310251892866565
+        },
+        "reload": {
+          "peak": 0.11034159362316132,
+          "rms": 0.0024335633442948137,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.06455383449792862,
+          "rms": 0.0041690528217344655,
+          "attackRms": 0.01684939407699948
+        }
+      },
+      {
+        "id": "rk762",
+        "shot": {
+          "peak": 0.341584175825119,
+          "rms": 0.025900142387990224,
+          "attackRms": 0.06219193319523249
+        },
+        "burst": {
+          "peak": 0.7107641696929932,
+          "rms": 0.12317559581557758,
+          "attackRms": 0.06219193319523249
+        },
+        "reload": {
+          "peak": 0.11462442576885223,
+          "rms": 0.0034869500337397566,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.12463663518428802,
+          "rms": 0.008678405525006169,
+          "attackRms": 0.019122652138592725
+        }
+      },
+      {
+        "id": "mg60",
+        "shot": {
+          "peak": 0.36059537529945374,
+          "rms": 0.028627578727313096,
+          "attackRms": 0.06829306567061509
+        },
+        "burst": {
+          "peak": 0.7813119888305664,
+          "rms": 0.1361824554853308,
+          "attackRms": 0.06829306567061509
+        },
+        "reload": {
+          "peak": 0.1124519556760788,
+          "rms": 0.0030979227530735323,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.12037970870733261,
+          "rms": 0.009449714068609422,
+          "attackRms": 0.02066243669776629
+        }
+      },
+      {
+        "id": "sr25",
+        "shot": {
+          "peak": 0.260425329208374,
+          "rms": 0.02116477459458911,
+          "attackRms": 0.04868367343260597
+        },
+        "burst": {
+          "peak": 0.7032910585403442,
+          "rms": 0.07222341933921134,
+          "attackRms": 0.04868367343260597
+        },
+        "reload": {
+          "peak": 0.10093149542808533,
+          "rms": 0.002635442463571475,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.10284645855426788,
+          "rms": 0.006665052209625917,
+          "attackRms": 0.013760514165046995
+        }
+      },
+      {
+        "id": "dm56",
+        "shot": {
+          "peak": 0.17593789100646973,
+          "rms": 0.0113040761703593,
+          "attackRms": 0.04149394928932488
+        },
+        "burst": {
+          "peak": 0.7032268643379211,
+          "rms": 0.05502343306628496,
+          "attackRms": 0.04149394928932488
+        },
+        "reload": {
+          "peak": 0.09932009875774384,
+          "rms": 0.004136694001355207,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.06885700672864914,
+          "rms": 0.0034675187991454275,
+          "attackRms": 0.011266956074437406
+        }
+      },
+      {
+        "id": "m24",
+        "shot": {
+          "peak": 0.39866888523101807,
+          "rms": 0.030631688639635783,
+          "attackRms": 0.05910363736859406
+        },
+        "burst": {
+          "peak": 0.39866888523101807,
+          "rms": 0.030631688639635783,
+          "attackRms": 0.05910363736859406
+        },
+        "reload": {
+          "peak": 0.08518765866756439,
+          "rms": 0.004062391364736704,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.13570334017276764,
+          "rms": 0.009811713294700224,
+          "attackRms": 0.017159212652887893
+        }
+      },
+      {
+        "id": "sp12",
+        "shot": {
+          "peak": 0.3511081039905548,
+          "rms": 0.026323210414986715,
+          "attackRms": 0.06997687422820946
+        },
+        "burst": {
+          "peak": 0.6671598553657532,
+          "rms": 0.049770429405465486,
+          "attackRms": 0.06997687422820946
+        },
+        "reload": {
+          "peak": 0.08293305337429047,
+          "rms": 0.003572245090335127,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.11936551332473755,
+          "rms": 0.008518026209083849,
+          "attackRms": 0.021161801434261274
+        }
+      },
+      {
+        "id": "p226",
+        "shot": {
+          "peak": 0.17587576806545258,
+          "rms": 0.006401872718855571,
+          "attackRms": 0.034314779001239346
+        },
+        "burst": {
+          "peak": 0.6781740188598633,
+          "rms": 0.0387180679147266,
+          "attackRms": 0.034314779001239346
+        },
+        "reload": {
+          "peak": 0.09028247743844986,
+          "rms": 0.0036245389735817387,
+          "attackRms": 0
+        },
+        "suppressed": {
+          "peak": 0.04412761703133583,
+          "rms": 0.0020573597668209,
+          "attackRms": 0.009332815730805398
+        }
+      }
+    ],
+    "fallback": [
+      {
+        "id": "ar7",
+        "peak": 0.16951227188110352,
+        "rms": 0.010750262737671375,
+        "attackRms": 0.047448311469253816
+      },
+      {
+        "id": "ka47",
+        "peak": 0.3034077286720276,
+        "rms": 0.02097718261583869,
+        "attackRms": 0.0642512908822705
+      },
+      {
+        "id": "sc17",
+        "peak": 0.31697893142700195,
+        "rms": 0.027505954188441057,
+        "attackRms": 0.07519379700437959
+      },
+      {
+        "id": "mk14",
+        "peak": 0.1991274505853653,
+        "rms": 0.01603288991769099,
+        "attackRms": 0.04758871827976859
+      },
+      {
+        "id": "kr98",
+        "peak": 0.3702804446220398,
+        "rms": 0.03200135160069316,
+        "attackRms": 0.06486483638990041
+      },
+      {
+        "id": "s12",
+        "peak": 0.42738455533981323,
+        "rms": 0.030950548631040194,
+        "attackRms": 0.07174570177563475
+      },
+      {
+        "id": "m1014",
+        "peak": 0.2684405744075775,
+        "rms": 0.020144631552394432,
+        "attackRms": 0.04984131879636762
+      },
+      {
+        "id": "db2",
+        "peak": 0.35282009840011597,
+        "rms": 0.03503774595125696,
+        "attackRms": 0.07485004834699735
+      },
+      {
+        "id": "sa12",
+        "peak": 0.2839261293411255,
+        "rms": 0.019044508321388962,
+        "attackRms": 0.0601621431545293
+      },
+      {
+        "id": "aa12",
+        "peak": 0.21160675585269928,
+        "rms": 0.015566684054018351,
+        "attackRms": 0.06037306127681807
+      },
+      {
+        "id": "p92",
+        "peak": 0.19619686901569366,
+        "rms": 0.005540613059009552,
+        "attackRms": 0.03268887590318615
+      },
+      {
+        "id": "g18",
+        "peak": 0.17336541414260864,
+        "rms": 0.0038796839666918872,
+        "attackRms": 0.031047085172917165
+      },
+      {
+        "id": "m1911",
+        "peak": 0.3401499390602112,
+        "rms": 0.019045300949889616,
+        "attackRms": 0.07696353517715016
+      },
+      {
+        "id": "de7",
+        "peak": 0.32357051968574524,
+        "rms": 0.030622968987263768,
+        "attackRms": 0.05746356515846007
+      },
+      {
+        "id": "r45",
+        "peak": 0.28337362408638,
+        "rms": 0.020376748389787053,
+        "attackRms": 0.05559329479606067
+      },
+      {
+        "id": "mp9",
+        "peak": 0.1813020259141922,
+        "rms": 0.0064060863420546095,
+        "attackRms": 0.033421068595106164
+      },
+      {
+        "id": "v45",
+        "peak": 0.18544290959835052,
+        "rms": 0.008160184652203218,
+        "attackRms": 0.0534014807305401
+      },
+      {
+        "id": "cx9",
+        "peak": 0.1861935704946518,
+        "rms": 0.004627224950620846,
+        "attackRms": 0.03061189167827239
+      },
+      {
+        "id": "sm45",
+        "peak": 0.29591941833496094,
+        "rms": 0.020914081314589678,
+        "attackRms": 0.07575681000260075
+      },
+      {
+        "id": "ar416",
+        "peak": 0.18902601301670074,
+        "rms": 0.011468749275338147,
+        "attackRms": 0.04713039055822617
+      },
+      {
+        "id": "sg56",
+        "peak": 0.23359926044940948,
+        "rms": 0.017550611113003867,
+        "attackRms": 0.06544181259986008
+      },
+      {
+        "id": "ms56",
+        "peak": 0.19736796617507935,
+        "rms": 0.01339637833219935,
+        "attackRms": 0.05239032764765057
+      },
+      {
+        "id": "lm86",
+        "peak": 0.2067551612854004,
+        "rms": 0.014193304165590134,
+        "attackRms": 0.060182968362730856
+      },
+      {
+        "id": "rk762",
+        "peak": 0.35668882727622986,
+        "rms": 0.026822040885793475,
+        "attackRms": 0.06384021808500011
+      },
+      {
+        "id": "mg60",
+        "peak": 0.36756667494773865,
+        "rms": 0.029738237166181763,
+        "attackRms": 0.07183570463144519
+      },
+      {
+        "id": "sr25",
+        "peak": 0.26789966225624084,
+        "rms": 0.02206281810902027,
+        "attackRms": 0.05226121363456896
+      },
+      {
+        "id": "dm56",
+        "peak": 0.1860024631023407,
+        "rms": 0.011899782812366182,
+        "attackRms": 0.043658305926048836
+      },
+      {
+        "id": "m24",
+        "peak": 0.4170511066913605,
+        "rms": 0.031950083702415144,
+        "attackRms": 0.06173865492880242
+      },
+      {
+        "id": "sp12",
+        "peak": 0.3603675663471222,
+        "rms": 0.027326810549180142,
+        "attackRms": 0.07281142225232567
+      },
+      {
+        "id": "p226",
+        "peak": 0.1851264387369156,
+        "rms": 0.006785647943159392,
+        "attackRms": 0.03722621413978015
+      }
+    ],
+    "originalFallback": true,
+    "staleManifest": true,
+    "stereoAttack": true,
+    "isolatedCues": true,
+    "mute": true,
+    "fallbackMute": true,
+    "cleanedUp": true
+  }
+}

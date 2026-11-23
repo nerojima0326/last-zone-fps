@@ -7,27 +7,40 @@
   else (root.G = root.G || {}).WeaponSound = design;
 })(typeof globalThis === 'object' ? globalThis : this, function (catalog) {
   'use strict';
-  // body Hz, bark Hz, crack Hz, body decay seconds, crack/body/bark balance,
-  // reflection spacing ms, diffuse decay seconds. These are different acoustic
-  // signatures, not pitch shifts of one shared sound.
-  const profiles = {
-    ar7:   { body: 210, bark: 2200, crack: 6800, decay: .046, balance: [1.1,.82,.60], space: 17, room: .16, tag: 'tight sharp rifle' },
-    ka47:  { body: 155, bark: 760,  crack: 3900, decay: .071, balance: [.78,1.1,1.00], space: 27, room: .22, tag: 'wooden midrange bark' },
-    sc17:  { body: 135, bark: 1250, crack: 5400, decay: .082, balance: [1.0,1.2,.86], space: 23, room: .26, tag: 'heavy steel rifle' },
-    mk14:  { body: 235, bark: 3100, crack: 8100, decay: .064, balance: [1.25,.92,.88], space: 31, room: .21, tag: 'bright long rifle crack' },
-    kr98:  { body: 118, bark: 1850, crack: 7200, decay: .115, balance: [1.35,1.2,1.05], space: 43, room: .39, tag: 'long bolt rifle report' },
-    s12:   { body: 145, bark: 530,  crack: 4500, decay: .093, balance: [.72,1.3,1.12], space: 35, room: .27, tag: 'wide shotgun blast' },
-    m1014: { body: 190, bark: 1120, crack: 6200, decay: .066, balance: [1.02,1.12,.82], space: 21, room: .19, tag: 'compact shotgun slam' },
-    db2:   { body: 102, bark: 420,  crack: 3400, decay: .125, balance: [.85,1.42,1.20], space: 39, room: .33, tag: 'deep open barrel blast' },
-    sa12:  { body: 175, bark: 920,  crack: 4800, decay: .062, balance: [.90,1.08,1.25], space: 19, room: .18, tag: 'raspy semi-auto bark' },
-    aa12:  { body: 270, bark: 1450, crack: 3700, decay: .041, balance: [.80,1.23,1.12], space: 13, room: .13, tag: 'dense automatic hammer' },
-    p92:   { body: 330, bark: 2700, crack: 8500, decay: .035, balance: [1.20,.60,.82], space: 11, room: .13, tag: 'dry nine millimetre clap' },
-    g18:   { body: 440, bark: 3900, crack: 9700, decay: .025, balance: [1.15,.54,.68], space: 8,  room: .09, tag: 'short automatic pistol snap' },
-    m1911: { body: 205, bark: 880,  crack: 5200, decay: .057, balance: [.88,1.10,.84], space: 16, room: .18, tag: 'hollow heavy pistol thock' },
-    de7:   { body: 128, bark: 1600, crack: 7600, decay: .105, balance: [1.25,1.36,1.10], space: 33, room: .31, tag: 'large pistol pressure blast' },
-    r45:   { body: 285, bark: 1700, crack: 6500, decay: .078, balance: [1.12,1.0,1.12], space: 25, room: .25, tag: 'raw revolver side blast' }
-  };
-  for (const [id, entry] of Object.entries(catalog || {})) profiles[id] = entry.audio;
+  // 저음·중음·파열음·감쇠·세 대역 비중·반사 간격·잔향·조작음 공명 주파수. 30종을 각각 조율한다.
+  const signatures = {
+    ar7:[180,1700,7300,.052,1.30,.95,.72,14,.15,1480,'짧고 단단한 소총'],
+    ka47:[135,900,5100,.078,.82,1.26,1.10,29,.23,880,'낮고 거친 소총'],
+    sc17:[104,1200,6000,.089,1.04,1.42,.88,24,.27,1120,'무거운 강철 소총'],
+    mk14:[160,2900,8500,.075,1.42,1.03,.96,33,.24,2120,'밝은 장거리 소총'],
+    kr98:[91,2100,7400,.125,1.42,1.55,.84,46,.40,970,'긴 볼트액션 압력음'],
+    s12:[110,650,4100,.102,.78,1.50,1.24,37,.28,750,'넓고 묵직한 산탄'],
+    m1014:[170,1500,6200,.081,1.20,1.13,.86,20,.21,1510,'날카로운 반자동 산탄'],
+    db2:[82,410,3200,.142,.82,1.72,1.32,42,.35,610,'낮고 긴 더블배럴'],
+    sa12:[145,1000,5200,.072,.91,1.25,1.40,18,.20,1290,'거친 가스 작동 산탄'],
+    aa12:[220,1300,4000,.048,.92,1.38,1.12,12,.14,1800,'짧은 자동 산탄 타격'],
+    p92:[290,2200,7900,.035,1.35,.58,.72,10,.12,2740,'건조한 9mm 파열'],
+    g18:[365,3700,9300,.028,1.45,.44,.54,7,.085,3370,'짧은 자동권총 파열'],
+    m1911:[165,740,4900,.062,.86,1.26,.94,17,.19,1390,'속이 빈 중저음 권총'],
+    de7:[92,1800,7000,.118,1.23,1.65,1.18,35,.33,1060,'큰 구경의 압력음'],
+    r45:[185,1650,6600,.088,1.12,1.23,1.35,26,.27,1770,'실린더 배기와 금속음'],
+    mp9:[260,2450,8100,.038,1.32,.64,.78,11,.12,2870,'가벼운 금속성 연사'],
+    v45:[155,1100,5700,.029,.96,1.21,.88,8,.10,1650,'낮고 빠른 연사'],
+    cx9:[325,3100,9000,.031,1.46,.53,.61,9,.11,3150,'촘촘하고 밝은 연사'],
+    sm45:[125,680,4500,.065,.78,1.39,1.06,19,.19,1210,'느리고 무거운 연사'],
+    ar416:[200,2350,7800,.056,1.38,1.02,.82,16,.17,1930,'맑고 단단한 작동음'],
+    sg56:[145,1600,6000,.070,1.05,1.26,1.14,25,.23,1180,'긴 총열의 중음 파열'],
+    ms56:[235,900,6500,.053,1.18,.98,1.20,13,.16,2320,'짧은 불펍 공명'],
+    lm86:[175,2200,6900,.057,1.20,1.18,1.01,17,.19,1570,'묵직한 경기관총'],
+    rk762:[115,800,4800,.087,.86,1.50,1.16,30,.28,820,'거친 7.62mm 연사'],
+    mg60:[85,1300,5900,.094,1.10,1.65,1.25,28,.30,1020,'급탄식 기관총의 무게감'],
+    sr25:[125,2550,8000,.085,1.36,1.28,.90,32,.27,1690,'선명한 지정사수 소총'],
+    dm56:[195,3200,9000,.066,1.50,.93,.91,23,.21,2460,'가늘고 빠른 정밀 사격'],
+    m24:[75,2100,7800,.135,1.47,1.64,.92,49,.43,910,'긴 저격총 잔향'],
+    sp12:[120,950,5300,.104,.95,1.46,1.16,34,.29,1160,'강한 펌프 산탄'],
+    p226:[310,2900,8600,.042,1.43,.63,.86,12,.14,3010,'밝은 슬라이드 권총']
+  }, profiles={};
+  for(const [id,v] of Object.entries(signatures))profiles[id]={body:v[0],bark:v[1],crack:v[2],decay:v[3],balance:v.slice(4,7),space:v[7],room:v[8],handle:v[9],tag:v[10]};
   function random(seed) {
     return function () {
       seed |= 0; seed = seed + 0x6D2B79F5 | 0;
@@ -37,7 +50,7 @@
     };
   }
   function seedOf(id, take) {
-    let seed = 0x7519A23F;
+    let seed = 0x8429A23F;
     for (const c of id) seed = Math.imul(seed ^ c.charCodeAt(0), 16777619);
     return seed ^ Math.imul(take + 1, 0x45d9f3b);
   }
@@ -93,28 +106,30 @@
     if(!Number.isFinite(sr)||sr<16000||sr>192000)throw Error('Unsupported report sample rate');
     const rng=random(seedOf(id,take)), variation=1+(rng()-.5)*.055;
     const far=perspective==='far', near=perspective==='near';
-    const duration=Math.max(.28,p.decay*6+.09)+(far?.55:near?.12:0);
+    const duration=Math.max(.28,p.decay*5.4+.10)+(far?.44:near?.10:0);
     const n=Math.ceil(duration*sr), lead=Math.ceil(.002*sr), count=n-lead;
-    const white=noise(count,rng), other=noise(count,rng);
-    const crack=envelope(filter(filter(white,sr,'high',p.crack*.30),sr,'low',p.crack),sr,.00012,.0045*variation,p.balance[0]*(far?.28:1));
-    const body=envelope(filter(white,sr,'band',p.body*variation,.68),sr,.0018,p.decay*variation,p.balance[1]);
-    const bark=envelope(filter(other,sr,'band',p.bark*variation,.85),sr,.0005,p.decay*.42,p.balance[2]);
-    const gas=envelope(filter(other,sr,'low',780),sr,.003,p.decay*.8,.24);
+    const white=noise(count,rng), other=noise(count,rng), vent=noise(count,rng);
+    const crack=envelope(filter(filter(white,sr,'high',p.crack*.38),sr,'low',p.crack),sr,.00008,.0027*variation,p.balance[0]*(far?.24:1));
+    const body=envelope(filter(other,sr,'band',p.body*variation,.82),sr,.0010,p.decay*variation,p.balance[1],.0012);
+    const bark=envelope(filter(vent,sr,'band',p.bark*variation,1.05),sr,.00035,p.decay*.31,p.balance[2]);
+    const gas=envelope(filter(other,sr,'low',1100),sr,.004,p.decay*1.12,.30,.003);
+    const chamber=envelope(filter(vent,sr,'band',p.bark*.58,1.9),sr,.0003,.012,.16,.019+p.space*.00013);
     const dry=new Float32Array(n);
-    // A short bipolar pressure front: no periodic oscillator or bass note.
-    const pressureTime=.0008*(210/p.body)**.23;
+    // 짧은 압력파 뒤에 독립적인 몸통·총구 가스·약실 공명을 둔다. 이전의 강한 포화를 피한다.
+    const pressureTime=.00065*(180/p.body)**.28;
     for(let i=0;i<count;i++) {
       const t=i/sr, u=t/pressureTime;
-      const front=(1-u)*Math.exp(-u)*p.balance[0]*.42;
-      dry[i+lead]=Math.tanh((crack[i]+body[i]+bark[i]+gas[i]+front)*.62);
+      const front=(1-u)*Math.exp(-u)*p.balance[0]*1.4;
+      const x=crack[i]*.62+body[i]*.42+bark[i]*.34+gas[i]*.25+chamber[i]+front;
+      dry[i+lead]=x/(1+.15*Math.abs(x));
     }
     // The revolver's cylinder gap contributes a second short, diffuse vent.
     if(id==='r45')for(let i=Math.ceil(.004*sr);i<n;i++)dry[i]+=dry[i-Math.ceil(.004*sr)]*.075*Math.exp(-i/sr/.025);
-    const direct=filter(filter(dry,sr,'high',55),sr,'low',far?3100:near?8200:12500);
+    const direct=filter(filter(dry,sr,'high',42),sr,'low',far?2800:near?9400:14200);
     const reverbInput=filter(direct,sr,'low',far?1900:4300);
     const left=diffuse(reverbInput,sr,p.space/1000,p.room*(far?2.1:1),-1);
     const right=diffuse(reverbInput,sr,p.space/1000,p.room*(far?2.1:1),1);
-    const wet=far?.90:near?.32:.14;
+    const wet=far?1.05:near?.38:.11;
     let peak=0, mean=0;
     for(let i=0;i<n;i++) {
       left[i]=direct[i]+left[i]*wet; right[i]=direct[i]+right[i]*wet;
@@ -127,9 +142,20 @@
       left[i]=i<lead?0:(left[i]-mean)*gain; right[i]=i<lead?0:(right[i]-mean)*gain;
       peak=Math.max(peak,Math.abs(left[i]),Math.abs(right[i]));
     }
-    const scale=(far?.78:.86)/Math.max(peak,1e-8);
+    const scale=(far?.76:.84)/Math.max(peak,1e-8);
     for(let i=0;i<n;i++) {left[i]*=scale;right[i]*=scale;}
     return {left,right,sampleRate:sr,duration:n/sr};
   }
-  return { version:1, edition:76, variants:4, profiles, generate };
+  function handling(id,name,sr=44100){
+    const p=profiles[id];if(!p)throw Error('알 수 없는 조작음: '+id);
+    const seed=seedOf(id+':'+name,17),rng=random(seed),close=/close|magin|down|port/.test(name),duration=name==='dry'?.065:close?.16:.21;
+    const n=Math.ceil(duration*sr),raw=noise(n,rng),click=envelope(filter(raw,sr,'high',1400),sr,.0003,.008,close?.30:.18);
+    const body=envelope(filter(raw,sr,'band',p.handle,.85),sr,.001,close?.023:.034,.27);
+    const rattle=envelope(filter(noise(n,rng),sr,'band',p.handle*1.8,1.6),sr,.001,.022,.13,close?.013:.028);
+    const out=new Float32Array(n);let peak=0;
+    for(let i=0;i<n;i++){out[i]=Math.tanh((click[i]+body[i]+rattle[i])*.28);peak=Math.max(peak,Math.abs(out[i]))}
+    for(let i=0;i<n;i++)out[i]*=.6/Math.max(peak,1e-8)*Math.min(1,(n-i)/(sr*.018));
+    return {mono:out,sampleRate:sr,duration:n/sr};
+  }
+  return { version:2, edition:84, source:'original-pressure-transient-v2', variants:4, profiles, generate, handling, filter };
 });

@@ -7,7 +7,7 @@ const V3 = THREE.Vector3;
 const _f = new V3(), _r = new V3(), _c = new V3(), _e = new V3(), _d = new V3();
 const _support = new V3();
 const HALF_L = 1.9, HALF_W = 0.95, MAX = 21, REV = 6;
-const HP = 320;                 // 차량 내구도 (소총 약 12발, 수류탄 두 개)
+const HP = 1600;                // 모든 차량 내구도를 5배로 상향한다. 탑승자 피해·폭발 지연은 유지한다.
 const RESPAWN = 25;             // 폭발한 차는 잔해로 이 시간(초)만큼 남았다가, 처음 놓였던 자리에 새 차로 다시 나온다
 // v53 실사 차량 (Sketchfab CC-BY-4.0, tools/vehicles/build-real.cjs): 현대 포터 II 탑차 · 마쓰다 E2200 트럭 · IZH-2715 픽업
 const KINDS = ['porter', 'e2200', 'izh'];
