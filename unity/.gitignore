@@ -1,0 +1,19 @@
+# 유니티가 만드는 폴더
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+*.csproj
+*.sln
+*.suo
+*.user
+.vs/
+.idea/
+.DS_Store
+
+# 섬 맵 데이터 (130MB+): unity/Tools/map-export 로 웹판에서 다시 뽑는다
+/Assets/LastZone/Map/

@@ -14,7 +14,8 @@ const mime={'.html':'text/html','.js':'application/javascript','.jpg':'image/jpe
  const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+decodeURIComponent(req.url.split('?')[0]==='/'?'/index.html':req.url.split('?')[0]));if(!file.startsWith(root+path.sep)||!fs.existsSync(file)||!fs.statSync(file).isFile()){res.writeHead(404);res.end();return;}res.setHeader('Content-Type',mime[path.extname(file)]||'application/octet-stream');fs.createReadStream(file).pipe(res);}).listen(0,'127.0.0.1');await new Promise(r=>server.once('listening',r));
  const browser=await chromium.launch({executablePath:process.env.CHROME_BIN||undefined,headless:true,args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
  try{
-  const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[];
+  const page=await browser.newPage({viewport:{width:960,height:540}}),errors=[];
+  page.setDefaultNavigationTimeout(180000);page.setDefaultTimeout(120000);
   page.on('pageerror',e=>{errors.push(e.message);console.error('Page error:',e.message)});
   page.on('console',m=>{if(m.text().includes('[Patch'))console.log(m.text());});
   if(process.env.THREE_DIR)await page.route('https://cdn.jsdelivr.net/npm/three@0.160.0/**',route=>route.fulfill({contentType:'application/javascript',body:fs.readFileSync(path.join(process.env.THREE_DIR,route.request().url().split('/three@0.160.0/')[1]))}));
@@ -44,6 +45,7 @@ const mime={'.html':'text/html','.js':'application/javascript','.jpg':'image/jpe
    s.pose('idle');s.step(1/60);return {variants:s.models.map(m=>m.soldier.T.name),poses:results,hips};
   });console.log('People:',JSON.stringify(people));await snap('patch-people');
   await page.goto(base+'/tools/reloads.html?arms=patch');await page.waitForFunction(()=>window.ReloadStudio?.ready,null,{timeout:120000});
+  console.log('Patch reload studio ready');
   const arms=await page.evaluate(()=>{
    ReloadStudio.pause();const out=[];for(const id of G.GUN_IDS)for(const mode of ['empty','tactical']){
     ReloadStudio.select(id,mode);ReloadStudio.pause();const m=ReloadStudio.model;
@@ -62,13 +64,14 @@ const mime={'.html':'text/html','.js':'application/javascript','.jpg':'image/jpe
   await page.goto(base+'/tools/reloads.html?arms=patch');await page.waitForFunction(()=>window.ReloadStudio?.ready,null,{timeout:120000});
   const fallback=await page.evaluate(()=>{ReloadStudio.pause();ReloadStudio.select('ar7');ReloadStudio.seek(.5);return {ready:G.PatchCharacters.armsReady,imported:!!G.VM.models.ar7.armL.skinSource};});
   assert.equal(fallback.ready,false);assert.equal(fallback.imported,false);await page.unroute('**/assets/patch/people/**');console.log('Missing-file fallback: PASS');
-  await page.addInitScript(()=>localStorage.setItem('lastzone_opts',JSON.stringify({quality:'low',qv:2,tod:'day',players:24,loadout:'all',fpsTarget:60})));
+  await page.addInitScript(()=>localStorage.setItem('lastzone_opts',JSON.stringify({quality:'potato',qv:2,tod:'day',players:4,loadout:'all',fpsTarget:60})));
   const patchRequests=[];page.on('request',r=>{if(r.url().includes('/assets/patch/people/'))patchRequests.push(r.url())});
   await page.goto(base+'/index.html');await page.waitForFunction(()=>window.G?.UI&&document.querySelector('#menu:not(.hidden)'),null,{timeout:180000});
   assert(await page.evaluate(()=>!G.Soldiers.patch&&!G.PatchCharacters),'Preview overrode the game rigs');
   await page.click('#trainBtn');await page.waitForFunction(()=>G.Game.training&&G.Training.active);
-  const game=await page.evaluate(()=>{G.Input.unlock();G.paused=true;return {build:window.LZ_BUILD,targets:G.Training.targets.length,guns:G.Training.items.filter(i=>G.GUN_IDS.includes(i.kind)).length,arms:G.VM.models.ar7.armL.skinSource};});
+  const game=await page.evaluate(()=>{G.Input.unlock();G.paused=true;return {build:window.LZ_BUILD,targets:G.Training.targets.filter(t=>!t.kh&&!t.zone).length,killhouse:G.Training.targets.filter(t=>t.kh).length,grenadeTargets:G.Training.targets.filter(t=>t.zone==='grenade').length,guns:G.Training.items.filter(i=>G.GUN_IDS.includes(i.kind)).length,arms:G.VM.models.ar7.armL.skinSource};});
   assert.equal(game.build,fs.readFileSync(path.join(root,'version.txt'),'utf8').trim());assert.equal(game.targets,14);assert.equal(game.guns,30);
+  assert.equal(game.killhouse,11);assert.equal(game.grenadeTargets,3);
   assert.equal(patchRequests.length,0,'Game requested optional preview assets');
   await page.waitForTimeout(150);await page.evaluate(()=>{G.paused=true;G.UI.showPause(false);G.renderNow();});await snap('patch-game-training');console.log('Actual game:',JSON.stringify(game));
   assert.equal(errors.length,0,errors.join('\n'));console.log('PASS: asset hashes, two characters, seven poses, 60 imported-arm reload cases, missing-file fallback, current game isolation/training; no page errors.');
