@@ -20,6 +20,10 @@ jobs:
           node-version: '22'
       - name: Install test dependencies
         run: |
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
           npm install --prefix "$RUNNER_TEMP/lz-tests" --no-audit --no-fund playwright@1.62.1 three@0.160.0 three-mesh-bvh@0.7.8
           "$RUNNER_TEMP/lz-tests/node_modules/.bin/playwright" install --with-deps chromium
           echo "NODE_PATH=$RUNNER_TEMP/lz-tests/node_modules" >> "$GITHUB_ENV"
@@ -32,6 +36,8 @@ jobs:
         run: node tools/check-session-polish.cjs
       - name: 차량 내구도·투척 충돌·폭발 효과 풀 검사
         run: node tools/check-vehicle-throwable-vfx.cjs
+      - name: 화염 텍스처·무대기 로딩·누락 복귀 검사
+        run: node tools/check-fire-flipbook.cjs
       - name: Check all weapon grips and hand animation
         run: node tools/check-hand-poses.cjs
       - name: Import bundled models
