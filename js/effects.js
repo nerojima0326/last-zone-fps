@@ -146,12 +146,15 @@ const FX = G.FX = {
     this.shellColors = { brass, red: new THREE.Color(0xa02020) };
     this.shellIdx = 0;
     G.ImpactDetail?.init(this);
+    G.ThrowableVFX?.init(this);
   },
   setFog(color, d) {
     for (const s of [this.add, this.norm]) { s.mat.uniforms.fogColor.value.copy(color); s.mat.uniforms.fogD.value = d; }
+    G.ThrowableVFX?.setFog(color,d);
   },
   reset() {
     G.ImpactDetail?.reset();
+    G.ThrowableVFX?.reset();
     this.add.clear(); this.norm.clear();
     for (const t of this.tracers) { t.visible = false; t.userData.busy = false; }
     for (const im of [this.decalIM, this.scorchIM]) { for (let i = 0; i < im.count; i++) im.setMatrixAt(i, ZERO); im.instanceMatrix.needsUpdate = true; }
@@ -280,6 +283,7 @@ const FX = G.FX = {
 
   update(dt) {
     this.add.update(dt); this.norm.update(dt); G.ImpactDetail?.update(dt);
+    G.ThrowableVFX?.update(dt);
     for (const l of this.lights) {
       const u = l.userData;
       if (u.t > 0) { u.t -= dt; l.intensity = u.t > 0 ? u.i0 * (u.t / u.dur) * (u.flicker ? 0.7 + Math.random() * 0.6 : 1) : 0; }

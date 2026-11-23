@@ -26,7 +26,7 @@ for(const id of Object.keys(D.profiles)){
  assert(Math.max(...levels)/Math.min(...levels)<1.8,'Firing variants change volume excessively');
  for(const perspective of ['near','far']){const s=D.generate(id,0,perspective),h=hash(s);measure(s);assert(!hashes.has(h));hashes.add(h);}
  const at48=D.generate(id,0,'own',48000);measure(at48);assert(Math.abs(at48.duration-D.generate(id).duration)<1/44100,'Hardware sample rate changes duration');
- const w=manifest.weapons[id];assert.equal(w.shot.source,'original-pressure-noise-v1');
+ const w=manifest.weapons[id];assert.equal(w.shot.source,D.source);
  assert.equal(Object.keys(w.shot.cues).filter(n=>n.startsWith('own')).length,D.variants);
  assert(w.shot.cues.near&&w.shot.cues.far&&!w.fx.cues.near&&!w.fx.cues.far,'Firing and handling regions are mixed');
  rows.push({id,variants:D.variants,minRms:Math.min(...levels),maxRms:Math.max(...levels)});

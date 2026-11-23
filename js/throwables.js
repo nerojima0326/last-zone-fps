@@ -23,7 +23,7 @@ const T = G.Throwables = {
     mesh.traverse(m => { if (m.isMesh) m.castShadow = true; });
     G.scene.add(mesh);
     mesh.position.copy(pos);
-    this.list.push({ owner, team: owner.team, kind, pos: pos.clone(), vel: vel.clone(), mesh, t: 0, fuse: fuse ?? FUSE[kind], rest: false, spin: new V3(U.rand(-12, 12), U.rand(-6, 6), U.rand(-12, 12)), lastBounce: 0 });
+    this.list.push({ owner, team: owner.team, kind, pos: pos.clone(), vel: vel.clone(), mesh, t: 0, fuse: fuse ?? FUSE[kind], rest: false, contactNormal: new V3(0,1,0), spin: new V3(U.rand(-12, 12), U.rand(-6, 6), U.rand(-12, 12)), lastBounce: 0 });
     G.Audio.click('throw');
   },
   // 목표 지점까지의 투척 속도 계산
@@ -47,7 +47,7 @@ const T = G.Throwables = {
         _d.copy(o.vel).divideScalar(sp || 1);
         if (L > 0 && W.raycast(o.pos, _d, L + 0.06)) {
           const n = W.hit.normal;
-          if (o.kind === 'molotov') { o.pos.copy(W.hit.point).addScaledVector(n, 0.1); this.detonate(o); this.list.splice(i--, 1); continue; }
+          if (o.kind === 'molotov') { o.contactNormal.copy(n);o.pos.copy(W.hit.point).addScaledVector(n, 0.1); this.detonate(o); this.list.splice(i--, 1); continue; }
           o.pos.copy(W.hit.point).addScaledVector(n, 0.06);
           const vn = o.vel.dot(n);
           o.vel.addScaledVector(n, -1.45 * vn).multiplyScalar(0.55);
@@ -95,7 +95,7 @@ const T = G.Throwables = {
       const f = this.fires[i];
       f.t -= dt; f.tick -= dt; f.lt -= dt;
       const k = U.clamp(f.t / 2, 0, 1);
-      for (const p of f.patches) {
+      if(!G.ThrowableVFX?.fire(f,dt))for (const p of f.patches) {
         if (Math.random() < dt * 22 * k) G.FX.add.spawn({ x: p.x + U.rand(-0.5, 0.5), y: p.y + 0.1, z: p.z + U.rand(-0.5, 0.5), vx: U.rand(-0.3, 0.3), vy: 1.5 + Math.random() * 2, vz: U.rand(-0.3, 0.3),
           life: 0.5 + Math.random() * 0.5, s0: 0.9, s1: 0.2, r: 5, g: 1.8 + Math.random(), b: 0.4, a: 0.8, drag: 0.8 });
         if (Math.random() < dt * 3 * k) G.FX.norm.spawn({ x: p.x, y: p.y + 1.2, z: p.z, vy: 1.6, vx: U.rand(-0.3, 0.3), vz: U.rand(-0.3, 0.3), life: 3, s0: 0.8, s1: 3.5, r: 0.12, g: 0.11, b: 0.1, a: 0.45, drag: 0.4, fin: 0.1 });
@@ -118,11 +118,14 @@ const T = G.Throwables = {
     if (G.Audio.ctx) G.Audio.setLoop('fire', fireVol);
   },
   detonate(o) {
-    if (G.Game.training && G.Training) G.Training.onBlast(o);   // v66 투척 훈련장 판정
+    if(o.done)return;
     o.done = true;
+    // 충돌 경로는 아래의 퓨즈 만료 정리를 거치지 않으므로 여기서 병·수류탄 모델을 제거한다.
+    if(o.kind!=='smoke'&&o.mesh)G.scene.remove(o.mesh);
+    if (G.Game.training && G.Training) G.Training.onBlast(o);   // v66 투척 훈련장 판정
     const W = G.World, Game = G.Game, p = o.pos;
     if (o.kind === 'frag') {
-      G.FX.explosion(p);
+      if(!G.ThrowableVFX?.grenade(p))G.FX.explosion(p);
       G.Audio.explosion(p);
       const camD = G.camera.position.distanceTo(p);
       G.FX.shake(U.clamp(1.4 - camD / 22, 0, 1.2));
@@ -154,8 +157,8 @@ const T = G.Throwables = {
         const y = W.ground(x, z, gy + 0.6, 0.1, 0.9);
         if (Math.abs(y - gy) < 1.2) patches.push(new V3(x, y, z));
       }
-      this.fires.push({ pos: base, r: 3.4, t: 9, tick: 0, lt: 0, patches, owner: o.owner, team: o.team });
-      for (let i = 0; i < 20; i++) G.FX.add.spawn({ x: p.x, y: p.y + 0.3, z: p.z, vx: U.rand(-4, 4), vy: U.rand(1, 5), vz: U.rand(-4, 4), life: 0.6, s0: 0.8, s1: 0.2, r: 6, g: 2.5, b: 0.5, grav: 6, drag: 1 });
+      const fire={ pos: base, r: 3.4, t: 9, tick: 0, lt: 0, patches, owner: o.owner, team: o.team };this.fires.push(fire);
+      if(!G.ThrowableVFX?.ignite(o,fire))for (let i = 0; i < 20; i++) G.FX.add.spawn({ x: p.x, y: p.y + 0.3, z: p.z, vx: U.rand(-4, 4), vy: U.rand(1, 5), vz: U.rand(-4, 4), life: 0.6, s0: 0.8, s1: 0.2, r: 6, g: 2.5, b: 0.5, grav: 6, drag: 1 });
       Game.onNoise(p, 50, o.owner);
     } else if (o.kind === 'flash') {
       G.FX.flashbang(p);

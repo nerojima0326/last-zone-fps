@@ -1,12 +1,12 @@
 # Weapon audio — original reports and CC0 handling
 
-## Current firing reports (v76)
+## 현재 총성·조작음 (v84)
 
-All 30 firing reports are original synthesized sounds authored for LAST ZONE. `js/weapon-sound-design.js` creates the pressure front, shaped gas/crack/body noise and diffuse reflections without loading any previous firing waveform. The 15 expansion profiles are in `js/weapon-catalog.js`. Each weapon has four firing variants plus near/far perspectives: 180 reports in 30 `*-report-v76.mp3` banks. The original 15 acoustic profiles retain their v75 sound.
+총기 30종의 발사음 180개는 LAST ZONE에서 새로 합성했다. `js/weapon-sound-design.js`의 압력파·몸통·총구 가스·약실 공명·반사 모델을 사용하며 이전 발사 PCM은 입력으로 읽지 않는다. 총별 네 개 발사 변형과 근거리·원거리를 `*-report-v84.mp3` 30개에 담는다.
 
-`node tools/build-original-weapon-audio.cjs` renders these banks with ffmpeg. The browser uses the same deterministic generator when a bank is missing or its manifest is obsolete. Recorded handling sounds remain from the CC0 sources below. Expansion weapons share appropriate handling banks, with separate event timing, rate and level. The retired near/far regions in those handling atlases have no firing cues and are never selected by the firing mixer.
+장전·조작음은 아래 CC0 녹음의 기존 편집본을 고정 커밋 `83563f6eecc062ca3b4f07196f51840a19434bf2`에서 읽어 재가공했다. 총별 필터·접촉 공명층을 적용한 `*-handling-v84.mp3` 30개로 교체했고, 예전 발사 구간과 사용하지 않는 부분은 새 조작 뱅크에 포함하지 않았다. 원저작자·라이선스와 트랙 출처는 아래 표를 유지한다. 새 합성층은 이 저장소에서 작성했다.
 
-The following recording table and processing notes document the retained handling and historical v43–v74 firing banks.
+`node tools/build-original-weapon-audio.cjs`로 재생성한다. 다운로드 파일이 없거나 이전 매니페스트가 남으면 브라우저도 동일한 v84 총성 생성기를 사용한다. 아래 편집 이력의 v43–v76 파일은 역사적 출처 자료이며 현재 재생 경로는 v84 매니페스트에 명시한다.
 
 ## Source (CC0 1.0)
 

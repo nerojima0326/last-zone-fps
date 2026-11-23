@@ -11,6 +11,7 @@ try{
 const page=await browser.newPage({viewport:{width:1440,height:900}});const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')console.log('console:',m.text())});
 if(process.env.THREE_DIR) await page.route('https://cdn.jsdelivr.net/npm/three@0.160.0/**',route=>{const file=path.join(process.env.THREE_DIR,route.request().url().split('/three@0.160.0/')[1]);return route.fulfill({status:200,contentType:'application/javascript',body:fs.readFileSync(file)})});
 await page.addInitScript(()=>localStorage.setItem('lastzone_opts',JSON.stringify({quality:'potato',qv:2,players:24,loadout:'all',fpsTarget:60})));
+await page.route(/fonts\.(googleapis|gstatic)\.com/,r=>r.fulfill({contentType:'text/css',body:''}));
 await page.goto(`http://127.0.0.1:${server.address().port}/index.html`);
 await page.waitForFunction(()=>window.G&&G.UI&&G.Game&&document.querySelector('#menu:not(.hidden)'),null,{timeout:180000});
 console.log('Full game menu ready');
@@ -72,7 +73,8 @@ const checks=await page.evaluate(()=>{
  const ranges=[],saveNoise=G.Game.onNoise;G.Game.onNoise=(pos,r)=>ranges.push(r);const shooter=G.Game.player,inst=shooter.weapons.rifle;inst.attachments.muzzle=null;G.Game.onShot(shooter,G.WEAPONS.ar7);inst.attachments.muzzle='suppressor';G.Game.onShot(shooter,G.WEAPONS.ar7);G.Game.onNoise=saveNoise;if(!(ranges[1]<ranges[0]))throw Error('suppressor noise');
  const W=G.World,old={queryBoxes:W.queryBoxes,rayBoxes:W.rayBoxes,heightAt:W.heightAt};const actor={pos:new THREE.Vector3(0,0,0)};const bot=new G.Bot(actor);
  W.queryBoxes=(x,z,x1,z1,cb)=>cb({minX:2,maxX:3,minY:0,maxY:2,minZ:-1,maxZ:1});W.heightAt=()=>0;let n=0;W.rayBoxes=()=>++n%2===1?Infinity:1;
- const cover=bot.findCover({pos:new THREE.Vector3(10,0,0)});Object.assign(W,old);if(!cover||!Number.isFinite(bot.coverPos.x))throw Error('bot cover selection');
+ const target=new G.Actor({id:997,team:0});target.pos.set(10,0,0);
+ const cover=bot.findCover(target);Object.assign(W,old);if(!cover||!Number.isFinite(bot.coverPos.x))throw Error('bot cover selection');
  for(const id of G.GUN_IDS)G.VM.ensure(id);
  let optics=0;for(const id of G.GUN_IDS)for(const o of Object.values(G.VM.models[id].scopes)){if(!o.sight.toArray().every(Number.isFinite)||!o.ads.toArray().every(Number.isFinite))throw Error('invalid sight '+id);optics++}
  return {town:town.name,lootSpots:G.World.lootSpots.filter(p=>Math.hypot(p.x-town.x,p.z-town.z)<town.r).length,noise:ranges,cover:bot.coverPos.toArray(),optics};

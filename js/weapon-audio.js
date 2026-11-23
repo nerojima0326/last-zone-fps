@@ -92,7 +92,7 @@ const W=G.WeaponAudio={
  fire(a,id,pos,own,suppressed=false){
   const D=G.WeaponSound;if(!D?.profiles[id])return false;
   // An old cached manifest must not silently bring back the retired shots.
-  let w=this.bank(id);if(this.manifest?.edition!==D.edition||w?.shot?.source!=='original-pressure-noise-v1')w=null;
+  let w=this.bank(id);if(this.manifest?.edition!==D.edition||w?.shot?.source!==D.source)w=null;
   const cut=suppressed?3100:18000,sg=suppressed?.30:1;
   if(own){
    // 연사: 앞 발의 잔향은 줄이고(겹쳐 쌓이지 않게) 최대 4발까지만 남긴다
