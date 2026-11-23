@@ -1,6 +1,6 @@
 // gunmodels.js — 총기 3D 모델
 //  · AR-7: M4A1 (3DModelsCC0, CC0, FBX)   · P-92: Service Pistol (Poly Haven, CC0, glTF)
-//  · 나머지 13종: assets/models/guns/<id>.glb — tools/guns 로 만든 게임용 GLB
+//  · 기존 13종 + 확장 15종: assets/models/guns/<id>.glb — tools/guns 로 만든 게임용 GLB
 //      실사 CC0 (3DModelsCC0 팩): KA-47(AK-47) · KR-98(Sniper) · S-12(펌프 산탄총)
 //      CC0 추가: SC-17 · M-1014 · SA-12 · AA-12 (Flat Guns), DB-2 (Boomstick)
 //      직접 설계: MK-14 · G-18 · M-1911 · DE-7 · R-45
@@ -17,7 +17,7 @@ const BLANK = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAw
 // 1인칭에서 방아쇠→총구 길이를 맞출 기준 (실사 모델 크기 보정)
 const VMLEN = { rifle: 0.86, pistol: 0.145 };
 // 게임용 GLB (tools/guns/run.cjs build 로 생성)
-const GLB_IDS = ['ka47', 'sc17', 'mk14', 'kr98', 's12', 'm1014', 'db2', 'sa12', 'aa12', 'g18', 'm1911', 'de7', 'r45'];
+const GLB_IDS = ['ka47', 'sc17', 'mk14', 'kr98', 's12', 'm1014', 'db2', 'sa12', 'aa12', 'g18', 'm1911', 'de7', 'r45', ...Object.keys(G.WeaponCatalog || {})];
 // v60 1인칭에서 바꿔 낀 실사 모델을 3인칭·전리품에도 (AA-12 · SC-17 · M-1014 · M-1911 · DE-7)
 const TP_SWAP = ['aa12', 'sc17', 'm1014', 'm1911', 'de7', 'kr98'];   // v63 KR-98 = Kar98k
 // 3인칭(손에 든 총·전리품) 방아쇠 위치
@@ -70,7 +70,7 @@ const GM = G.GunModels = {
       }
       this.setup('pistol', grp, mat, n => /slide/.test(n) ? 'slide' : /magazine/.test(n) ? 'mag' : 'body', 'trigger', 'slide', 1);
     })().catch(e => console.info('[guns] 권총 모델 없음', e.message)));
-    // 게임용 GLB 13종
+    // 기존 13종과 라이선스 출처를 기록한 확장 15종
     if (THREE.GLTFLoader) {
       const gl = new THREE.GLTFLoader();
       if (THREE.MeshoptDecoder) gl.setMeshoptDecoder(THREE.MeshoptDecoder);
@@ -87,6 +87,7 @@ const GM = G.GunModels = {
     await Promise.all(tasks);
     for (const k in this.guns) {
       const D = this.guns[k], list = D.mats ? Object.values(D.mats) : [D.mat];
+      for (const m of list) G.WeaponFinish?.material(m);
       for (const m of list) for (const t of [m.map, m.normalMap, m.roughnessMap]) if (t) renderer.initTexture(t);
     }
     console.info('[guns] 실사 총기: ' + (Object.keys(this.guns).join(', ') || '없음'));
@@ -202,7 +203,11 @@ const GM = G.GunModels = {
     const parts = {}, mats = {};
     root.traverse(o => {
       if (!o.isMesh) return;
-      const part = o.userData.part || 'body', mk = o.material.name || 'm';
+      // A glTF mesh with several material primitives becomes a Group in Three.
+      // Its part tag belongs to that parent, rather than to each child Mesh.
+      let owner = o;
+      while (owner.parent && !owner.userData.part) owner = owner.parent;
+      const part = owner.userData.part || 'body', mk = o.material.name || 'm';
       const g = unpack(o.geometry).applyMatrix4(o.matrixWorld);
       const P = parts[part] || (parts[part] = {});
       P[mk] = P[mk] ? THREE.mergeGeometries([P[mk], g], false) : g;
@@ -221,7 +226,7 @@ const GM = G.GunModels = {
         sourceAsset: meta.sourceAsset || null, credit: meta.credit || null,
         sight: meta.sight ? { y: meta.sight[0], z: meta.sight[1] } : null,
         rail: meta.rail ? { y: meta.rail[0], z: meta.rail[1], on: meta.rail[2] || 'body' } : null,
-        fore: v(meta.fore), port: v(meta.port), charge: v(meta.charge), slideTop: v(meta.slideTop),
+        fore: v(meta.fore), grip: v(meta.grip), port: v(meta.port), charge: v(meta.charge), slideTop: v(meta.slideTop),
         magDir: v(meta.magDir || [0, -1, 0]).normalize(), ironDist: meta.ironDist || 0, extra
       }
     };
@@ -298,7 +303,7 @@ const GM = G.GunModels = {
         let g = byMat[mk].length === 1 ? byMat[mk][0].clone() : THREE.mergeGeometries(byMat[mk], false);
         if (g.index) g = g.toNonIndexed();
         if (bake) {
-          const c = bakeColor(D.mats[mk]), n = g.attributes.position.count, col = new Float32Array(n * 3);
+          const c = bakeColor(D.mats[mk], D.data.extra?.importedExpansion), n = g.attributes.position.count, col = new Float32Array(n * 3);
           for (let i = 0; i < n; i++) { col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b; }
           g.deleteAttribute('uv');
           g.setAttribute('color', new THREE.BufferAttribute(col, 3));
@@ -319,9 +324,9 @@ const GM = G.GunModels = {
 // 양자화(정수) 속성 → float, uv 없으면 0 으로 채움 (병합할 때 속성이 같아야 한다)
 function unpack(src) {
   const g = new THREE.BufferGeometry();
-  for (const k of ['position', 'normal', 'uv']) {
-    const a = src.attributes[k];
-    const n = src.attributes.position.count, s = k === 'uv' ? 2 : 3, arr = new Float32Array(n * s);
+  for (const k of ['position', 'normal', 'uv', 'uv1']) {
+    const a = src.attributes[k] || (k === 'uv1' ? src.attributes.uv : null);
+    const n = src.attributes.position.count, s = k.startsWith('uv') ? 2 : 3, arr = new Float32Array(n * s);
     if (a) for (let i = 0; i < n; i++) { arr[i * s] = a.getX(i); arr[i * s + 1] = a.getY(i); if (s === 3) arr[i * s + 2] = a.getZ(i); }
     g.setAttribute(k, new THREE.BufferAttribute(arr, s));
   }
@@ -331,7 +336,26 @@ function unpack(src) {
 }
 // 3인칭용 정점 색: 재질 색 (나뭇결 등 텍스처 재질은 대표 색)
 const _bc = new THREE.Color();
-function bakeColor(m) {
+const _textureColors = new WeakMap();
+function bakeColor(m, textured) {
+  if (textured && m.map?.image) {
+    let average = _textureColors.get(m.map);
+    if (!average) {
+      try {
+        const canvas = document.createElement('canvas'); canvas.width = canvas.height = 24;
+        const context = canvas.getContext('2d', { willReadFrequently: true });
+        context.drawImage(m.map.image, 0, 0, 24, 24);
+        const pixels = context.getImageData(0, 0, 24, 24).data, color = new THREE.Color();
+        average = new THREE.Color(0, 0, 0); let count = 0;
+        for (let i = 0; i < pixels.length; i += 4) if (pixels[i + 3] > 25) {
+          color.setRGB(pixels[i] / 255, pixels[i + 1] / 255, pixels[i + 2] / 255, THREE.SRGBColorSpace);
+          average.add(color); count++;
+        }
+        average.multiplyScalar(1 / Math.max(1, count)); _textureColors.set(m.map, average);
+      } catch (_) { average = new THREE.Color(1, 1, 1); }
+    }
+    return _bc.copy(m.color).multiply(average);
+  }
   if (/wood/i.test(m.name)) return _bc.setHex(0x5e3a1e);
   if (m.name === 'cased') return _bc.setHex(0x6f6a72);
   return _bc.copy(m.color);

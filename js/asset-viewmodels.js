@@ -115,13 +115,24 @@ const ADS_DIST = { reddot: 0.32, holo: 0.3, x2: 0.25, x4: 0.22, x8: 0.2 };
 
 const AV = G.AssetVM = {
   packs: {}, GUNS, PACKS, SWAP,
-  pack(id) { const P = this.packs[GUNS[id]]; return P && P.ready ? P : null; },
+  pack(id) {
+    const P = this.packs[GUNS[id]];
+    if (!P?.ready || (SWAP[id] && !P.swaps[id] && !P.swapFailed?.[id])) return null;
+    // A downloaded pack must not change reload durations halfway through a
+    // reload, or snap the sight while the player is aiming.
+    P.activated ||= new Set();
+    if (!P.activated.has(id)) {
+      if (G.VM.cur === id && (G.Player.reload || G.Player.ads > 0.15)) return null;
+      P.activated.add(id);
+    }
+    return P;
+  },
   owns(id) { return !!this.pack(id); },
   init() {
     if (location.protocol === 'file:' || !T.GLTFLoader || !G.VM) return;
     const vm = G.VM, update = vm.update, fire = vm.fireKick, muzzle = vm.muzzleWorld, set = vm.set;
     vm.update = function (dt, s) { update.call(this, dt, s); AV.update(dt, s, this); };
-    vm.set = function (id) { set.call(this, id); for (const k in AV.packs) { const P = AV.packs[k]; if (P.pivot && GUNS[id] !== k) { P.pivot.visible = false; P.active = false; } } };
+    vm.set = function (id) { const changed = this.cur !== id; set.call(this, id); if (changed) AV.request(id); for (const k in AV.packs) { const P = AV.packs[k]; if (P.pivot && GUNS[id] !== k) { P.pivot.visible = false; P.active = false; } } };
     vm.fireKick = function (a, sup) { fire.call(this, a, sup); const P = AV.pack(this.cur); if (P) { P.shotT = 0; P.drawT = 99; } };
     vm.muzzleWorld = function (cam, out) {
       const P = AV.pack(this.cur);
@@ -140,32 +151,41 @@ const AV = G.AssetVM = {
       if (S && R.phase !== 'load') return (R.phase === 'start' ? S.startDur * (R.port ? 1.5 : 1) : S.endDur) * G.Guns.reloadFactor(R.empty) / (G.RELOAD_SPEED || 1);
       return pd.call(this, R, def);
     };
-    this.loadAll();
+    this.initialized = true;
   },
-  // 들고 있는 총의 팩부터 하나씩 받는다 (시작을 막지 않는다)
-  async loadAll() {
-    const gl = new T.GLTFLoader();
-    if (T.MeshoptDecoder) gl.setMeshoptDecoder(T.MeshoptDecoder);
-    const v = window.LZ_BUILD || '';
-    const order = () => {
-      const a = G.Game?.player, want = [];
-      if (a?.weapons) for (const k of ['rifle', 'shotgun', 'pistol']) { const w = a.weapons[k]; if (w && GUNS[w.id]) want.push(GUNS[w.id]); }
-      return [...new Set([...want, 'ak74', 'p9mm', 'remington', 'saiga', 'acr', 'xdm', 'sniper', 'revolver'])].filter(k => !this.packs[k]);
-    };
-    for (let next = order()[0]; next; next = order()[0]) {
-      const P = this.packs[next] = { key: next, ready: false };
-      try {
-        const g = await gl.loadAsync('assets/models/viewmodels/' + PACKS[next].file + '.glb' + (v ? '?v=' + v : ''));
-        this.install(P, g);
-        for (const id in SWAP) if (GUNS[id] === next) {
-          try { this.installSwap(P, id, await G.loadGLB(gl, SWAP[id].file + (v ? '?v=' + v : ''))); }
-          catch (e) { console.warn('[AssetVM] ' + id + ' 총 모델 실패 — 팩 총을 쓴다', e); }
-        }
-      } catch (e) { P.failed = true; console.warn('[AssetVM] ' + next + ' 팩 실패', e); }
+  // Only equipped/requested packs are fetched. Shared packs and swaps each
+  // have one in-flight promise; visiting the catalogue doesn't fetch all arms.
+  async request(id) {
+    const key = GUNS[id];
+    if (!key || !this.initialized) return;
+    let P = this.packs[key];
+    if (!P) {
+      P = this.packs[key] = { key, ready: false, swapPending: {}, swapFailed: {} };
+      P.pending = (async () => {
+        const gl = new T.GLTFLoader();
+        if (T.MeshoptDecoder) gl.setMeshoptDecoder(T.MeshoptDecoder);
+        try {
+          const v = '?v=' + (window.LZ_BUILD || '');
+          this.install(P, await G.loadGLB(gl, 'assets/models/viewmodels/' + PACKS[key].file + '.glb' + v));
+        } catch (e) { P.failed = true; console.warn('[AssetVM] ' + key + ' 팩 실패', e); }
+      })();
     }
+    await P.pending;
+    if (P.failed || !SWAP[id]) return;
+    if (!P.swapPending[id]) P.swapPending[id] = (async () => {
+      const gl = new T.GLTFLoader();
+      if (T.MeshoptDecoder) gl.setMeshoptDecoder(T.MeshoptDecoder);
+      try { this.installSwap(P, id, await G.loadGLB(gl, SWAP[id].file + '?v=' + (window.LZ_BUILD || ''))); }
+      catch (e) { P.swapFailed[id] = true; console.warn('[AssetVM] ' + id + ' 총 모델 실패 — 팩 총을 쓴다', e); }
+    })();
+    await P.swapPending[id];
   },
+  // Explicit preloading is useful for offline validation. Normal play only
+  // requests the player's inventory, leaving unused animation packs unloaded.
+  async loadAll() { for (const id in GUNS) await this.request(id); },
   install(P, g) {
     const C = PACKS[P.key], model = g.scene, clips = {};
+    G.WeaponFinish?.root(model);
     for (const c of g.animations) clips[c.name] = c;
     if (C.cut) {
       // 한 클립을 구간마다 잘라 쓴다 (시간 기준, 앞을 0 으로)
@@ -394,6 +414,7 @@ const AV = G.AssetVM = {
   // 휴식 자세의 총 정점(피벗 공간, 앞 = −Z)으로 총구·가늠쇠·가늠자·손잡이 자리를 잰다
   // 팩의 총 대신 다른 총 메시를 같은 손·같은 동작에 끼운다: 두 총의 가늠선·위 방향을 맞추고 가늠자 위치를 맞춘다
   installSwap(P, id, g) {
+    G.WeaponFinish?.root(g.scene);
     const C = SWAP[id], root = g.scene;
     root.updateMatrixWorld(true);
     const pts = [];

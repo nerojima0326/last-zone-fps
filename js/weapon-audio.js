@@ -126,6 +126,7 @@ const W=G.WeaponAudio={
  },
  // 다른 사람의 조작음 (위치 기반): 가까이 있는 적의 재장전을 들을 수 있다
  eventAt(a,type,id,pos){
+  if(type==='coveropen')type='open';else if(type==='coverclose')type='close';
   const w=this.bank(id);if(!w||!this.buffers[w.fx.path])return false;
   const sp=a.spatial(pos,5);if(sp.g<.05||!a._budget())return false;
   const name=w.fx.cues[type]?type:type==='magin'&&w.fx.cues.shell?'shell':w.fx.cues.close?'close':null;if(!name)return false;
@@ -137,6 +138,8 @@ const W=G.WeaponAudio={
   const c=w.fx.cues;
   switch(type){
    // 볼트액션: 손잡이 들기 → 뒤로 / 앞으로 → 내리기
+   case 'coveropen':return this.handle(a,id,'open');
+   case 'coverclose':return this.handle(a,id,'close');
    case 'open':if(c.up){this.handle(a,id,'up',0,.75);return this.handle(a,id,'open',.09)}return this.handle(a,id,'open');
    case 'close':if(c.down){this.handle(a,id,'close');return this.handle(a,id,'down',.09,.75)}return this.handle(a,id,'close');
    case 'bolt':case 'pump':this.event(a,'open',id);this.handle(a,id,'close',.26);return true;

@@ -11,7 +11,7 @@
 <script>
 // 새 버전이 올라왔는데 휴대폰이 예전 페이지를 기억하고 있으면 새로 불러온다
 (function () {
-  var BUILD = '76';
+  var BUILD = '79';
   window.LZ_BUILD = BUILD;
   try {
     fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (v) {
@@ -336,6 +336,11 @@
     <div class="set-row"><span>마우스 상하 반전</span><button id="setInvert" class="tog">꺼짐</button></div>
     <div class="set-row"><span>실사 팔 <small>M4 팔·손을 모든 총에</small></span><button id="setRealArms" class="tog">켜짐</button></div>
     <div class="set-row"><span>레이트레이싱 <small>실험 · ThreeRT · 고사양 그래픽카드</small></span><button id="setRT" class="tog">꺼짐</button></div>
+    <div class="set-sec">화면 효과</div>
+    <div class="set-row"><span>필름 입자</span><div class="range"><input type="range" id="setGrain" min="0" max="1" step="0.05"><b id="setGrainVal"></b></div></div>
+    <div class="set-row"><span>렌즈 색 번짐</span><div class="range"><input type="range" id="setAberration" min="0" max="1" step="0.05"><b id="setAberrationVal"></b></div></div>
+    <div class="set-row"><span>가장자리 어둡게</span><div class="range"><input type="range" id="setVignette" min="0" max="1" step="0.05"><b id="setVignetteVal"></b></div></div>
+    <div class="set-row"><span>어두운 부분 보정</span><div class="range"><input type="range" id="setShadows" min="0" max="1" step="0.05"><b id="setShadowsVal"></b></div></div>
     <div class="set-sec">소리</div>
     <div class="set-row"><span>전체 음량</span><div class="range"><input type="range" id="setVolMaster" min="0" max="1.5" step="0.05"><b id="setVolMasterVal"></b></div></div>
     <div class="set-row"><span>총소리 <small>사격 · 장전</small></span><div class="range"><input type="range" id="setVolWeapons" min="0" max="1.5" step="0.05"><b id="setVolWeaponsVal"></b></div></div>
@@ -372,15 +377,16 @@ try {
   const { RGBELoader } = await import('three/addons/loaders/RGBELoader.js');
   const { FBXLoader } = await import('three/addons/loaders/FBXLoader.js');
   const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+  const { KTX2Loader } = await import('three/addons/loaders/KTX2Loader.js');
   const { MeshoptDecoder } = await import('three/addons/libs/meshopt_decoder.module.js');
   const SkeletonUtils = await import('three/addons/utils/SkeletonUtils.js');
-  window.THREE = Object.assign({}, T, { Sky, EffectComposer, RenderPass, UnrealBloomPass, OutputPass, ShaderPass, Pass, mergeGeometries, RGBELoader, FBXLoader, GLTFLoader, MeshoptDecoder, SkeletonUtils });
+  window.THREE = Object.assign({}, T, { Sky, EffectComposer, RenderPass, UnrealBloomPass, OutputPass, ShaderPass, Pass, mergeGeometries, RGBELoader, FBXLoader, GLTFLoader, KTX2Loader, MeshoptDecoder, SkeletonUtils });
   // 실사 나무 생성기 (download-assets.bat 으로 받음). 없으면 기존 나무를 쓴다
   if (location.protocol !== 'file:') {
     try { window.EZTree = await import('./vendor/ez-tree.es.js'); } catch (e) { console.info('[veg] vendor/ez-tree.es.js 없음 — 기존 나무 사용'); }
   }
   loadFill.style.width = '15%';
-  const files = ['core', 'assets', 'range-props', 'vegetation', 'world', 'effects', 'ambient', 'plane', 'character', 'soldiers', 'weapon-catalog', 'gunlib', 'weapon-expansion-models', 'gunmodels', 'reload-assets', 'weapons','weapon-motion','hand-contact','weapon-sound-design','weapon-audio','attachments','g17-pilot','m4-viewmodel','asset-viewmodels','real-arms', 'throwable-models', 'throwables', 'actor', 'player', 'bots', 'extras', 'vehicles', 'game', 'training', 'ui', 'settings', 'armory', 'raytrace', 'perf', 'main', 'touch'];
+  const files = ['core', 'footsteps', 'locomotion', 'weapon-finish', 'lod-fade', 'assets', 'range-props', 'vegetation', 'static-ao', 'world', 'effects', 'ambient', 'plane', 'character', 'soldiers', 'weapon-catalog', 'gunlib', 'weapon-expansion-models', 'gunmodels', 'world-weapon-lods', 'reload-assets', 'weapons','weapon-motion','hand-contact','weapon-sound-design','weapon-audio','attachments','g17-pilot','m4-viewmodel','asset-viewmodels','real-arms', 'throwable-models', 'throwables', 'actor', 'player', 'bots', 'extras', 'vehicles', 'game', 'training', 'ui', 'settings', 'armory', 'raytrace', 'perf', 'main', 'touch'];
   for (let i = 0; i < files.length; i++) {
     loadText.textContent = '스크립트 불러오는 중... (' + files[i] + ')';
     await new Promise((res, rej) => {

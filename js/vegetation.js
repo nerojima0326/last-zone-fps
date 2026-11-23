@@ -104,13 +104,23 @@ const Veg = G.Veg = {
 
   // v67 잎 투명도 밉 보정: 멀어질수록(밉 단계가 오를수록) 알파를 키워 alphaTest 에 잎이 숭숭 뚫리지 않게.
   //  낮은 렌더 해상도에서 나뭇잎이 점점이 깜빡이며 보이던 주된 원인 (Ben Golus 'alpha to coverage' 글의 밉 보정)
+  leafAA: { value: 0 },
   alphaMip(sh) {
+    sh.uniforms.lzLeafAA = this.leafAA;
+    sh.fragmentShader = 'uniform float lzLeafAA;\n' + sh.fragmentShader;
     sh.fragmentShader = sh.fragmentShader.replace('#include <alphatest_fragment>', `#ifdef USE_MAP
       { vec2 tsz = vec2(textureSize(map, 0)); vec2 ddx = dFdx(vMapUv * tsz), ddy = dFdy(vMapUv * tsz);
         float mipL = 0.5 * log2(max(dot(ddx, ddx), dot(ddy, ddy)));
         diffuseColor.a *= 1.0 + max(0.0, mipL) * 0.25; }
       #endif
-      #include <alphatest_fragment>`);
+      #ifdef USE_ALPHATEST
+        if(lzLeafAA>0.5){
+          float width=max(fwidth(diffuseColor.a),0.015);
+          diffuseColor.a=smoothstep(alphaTest-width,alphaTest+width,diffuseColor.a);
+          if(diffuseColor.a<0.001)discard;
+        }else{if(diffuseColor.a<alphaTest)discard;}
+      #endif`);
+    sh.fragmentShader = sh.fragmentShader.replace('#include <opaque_fragment>', '#include <opaque_fragment>\n gl_FragColor.a = diffuseColor.a;');
   },
   // 잎 흔들림 (인스턴스 위치마다 위상이 다르게)
   addWind(mat, amp) {
@@ -167,10 +177,11 @@ const Veg = G.Veg = {
       sh.vertexShader = 'uniform vec3 uCam;\nuniform float uNearR;\n' + sh.vertexShader.replace('#include <begin_vertex>', `#include <begin_vertex>
         #ifdef USE_INSTANCING
         vec3 iw = (modelMatrix * instanceMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
-        if (distance(iw.xz, uCam.xz) < uNearR) transformed = vec3(0.0);
+        if (distance(iw.xz, uCam.xz) < uNearR - 6.0) transformed = vec3(0.0);
         #endif`);
     };
-    mat.customProgramCacheKey = () => 'imp2' + (uR === this.uR ? 't' : 'b');
+    mat.customProgramCacheKey = () => 'imp3' + (uR === this.uR ? 't' : 'b');
+    G.LODFade?.foliage(mat, uR, false);
   },
 
   // world.genVegetation 에서 호출: lists = { pine, oak, bush }, 각 항목 [x, y, z]
@@ -184,6 +195,8 @@ const Veg = G.Veg = {
       for (const it of lists[kind]) vs[Math.floor(r() * vs.length)].items.push(it);
       for (const v of vs) {
         const n = v.items.length;
+        const radius = kind === 'bush' ? this.uRB : this.uR;
+        G.LODFade?.foliage(v.bark, radius, true); G.LODFade?.foliage(v.leaf, radius, true);
         v.mats = new Float32Array(n * 16);
         v.items.forEach((it, i) => {
           const s = kind === 'bush' ? 0.7 + r() * 0.6 : 0.8 + r() * 0.45;
@@ -269,18 +282,25 @@ const Veg = G.Veg = {
 
   setQuality(q) {
     this.q = q;
+    this.leafAA.value = (q === 'high' || q === 'medium') && (G.renderer.capabilities.maxSamples || 0) > 0 ? 1 : 0;
     this.applyMats();
+    for (const v of this.variants) for (const mat of [v.leaf, v.imp.mat, v.lam?.l, v.lam?.f]) if (mat) mat.alphaToCoverage = this.leafAA.value > 0;
     this.range = RANGE[q] || RANGE.high;
     // 낮음·최저: 나무 그림자 생략 (그림자 패스에서 나무를 다시 그리는 비용이 크다)
     this.treeShadow = q === 'medium' || q === 'high';
     for (const v of this.variants) if (v.near) v.near.castShadow = v.nearLeaf.castShadow = v.kind !== 'bush' && this.treeShadow;
-    this.uR.value = this.range.tree; this.uRB.value = this.range.bush;
+    if (!Number.isFinite(this.targetR)) { this.uR.value = this.range.tree; this.uRB.value = this.range.bush; }
+    this.targetR = this.range.tree; this.targetRB = this.range.bush;
     this.lastT = -1e9;
   },
 
   update(dt, camPos, cam) {
     if (!this.variants.length) return;
     this.time.value += dt;
+    if (Number.isFinite(this.targetR)) {
+      this.uR.value = U.damp(this.uR.value, this.targetR, 3, dt);
+      this.uRB.value = U.damp(this.uRB.value, this.targetRB, 3, dt);
+    }
     this.cam.value.copy(camPos);
     this.lastT += dt;
     // v68 시야 밖(뒤쪽) 나무는 상세 모델에서 뺀다 — 둘레를 다 그리던 것을 앞쪽 부채꼴 + 발밑 + 그림자가 시야로 드리우는 것만
@@ -301,15 +321,15 @@ const Veg = G.Veg = {
     // 해 반대쪽으로 떨어지는 그림자 (나무 높이 ~14 m 기준, 30 m 까지)
     const W = G.World, sd = W && W.sunDir, sh = this.treeShadow && sd && sd.y > 0.05 ? Math.min(30, 14 * Math.hypot(sd.x, sd.z) / sd.y) : 0;
     const sx = sd ? -sd.x / Math.max(1e-3, Math.hypot(sd.x, sd.z)) * sh : 0, sz = sd ? -sd.z / Math.max(1e-3, Math.hypot(sd.x, sd.z)) * sh : 0;
-    const inView = (ex, ez) => {
+    const inView = (ex, ez, pad) => {
       if (cosL < -1.5) return true;
       const d2 = ex * ex + ez * ez;
       if (d2 < 196) return true;   // 14 m 안은 늘 (돌아서는 순간·발밑)
       const d = Math.sqrt(d2);
-      if (fx * ex + fz * ez > cosL * d - 7) return true;   // 7 m 여유 (나무 폭)
+      if (fx * ex + fz * ez > cosL * d - pad) return true;   // 7 m 여유 (나무 폭)
       if (!sh) return false;
       const gx = ex + sx, gz = ez + sz, g = Math.hypot(gx, gz);
-      return fx * gx + fz * gz > cosL * g - 7;
+      return fx * gx + fz * gz > cosL * g - pad;
     };
     // 반경 안 그루 수가 예산을 넘으면 반경을 줄인다 (그 밖은 임포스터가 그린다)
     const count = (bush, R) => {
@@ -324,15 +344,15 @@ const Veg = G.Veg = {
     let rt = this.range.tree, rb = this.range.bush;
     const ct = count(false, rt + 8); if (ct > this.range.tb) rt = Math.max(this.range.minT || 45, rt * Math.sqrt(this.range.tb / ct));
     const cb = count(true, rb + 8); if (cb > this.range.bb) rb = Math.max(this.range.minB || 25, rb * Math.sqrt(this.range.bb / cb));
-    this.uR.value = rt; this.uRB.value = rb;
+    this.targetR = rt; this.targetRB = rb;
     for (const v of this.variants) {
       if (!v.near) continue;
-      const R = (v.kind === 'bush' ? rb : rt) + 8, R2 = R * R;
+      const R = (v.kind === 'bush' ? Math.max(rb, this.uRB.value) : Math.max(rt, this.uR.value)) + 8, R2 = R * R;
       const arr = v.near.instanceMatrix.array, M = v.mats;
       let c = 0;
       for (let i = 0, n = v.items.length; i < n; i++) {
         const ex = M[i * 16 + 12] - camPos.x, ez = M[i * 16 + 14] - camPos.z;
-        if (ex * ex + ez * ez < R2 && inView(ex, ez)) { arr.set(M.subarray(i * 16, i * 16 + 16), c * 16); c++; }
+        if (ex * ex + ez * ez < R2 && inView(ex, ez, Math.max(7, v.w * .5 + 2))) { arr.set(M.subarray(i * 16, i * 16 + 16), c * 16); c++; }
       }
       v.near.count = v.nearLeaf.count = c;
       const im = v.near.instanceMatrix;

@@ -73,6 +73,7 @@ const checks=await page.evaluate(()=>{
  const W=G.World,old={queryBoxes:W.queryBoxes,rayBoxes:W.rayBoxes,heightAt:W.heightAt};const actor={pos:new THREE.Vector3(0,0,0)};const bot=new G.Bot(actor);
  W.queryBoxes=(x,z,x1,z1,cb)=>cb({minX:2,maxX:3,minY:0,maxY:2,minZ:-1,maxZ:1});W.heightAt=()=>0;let n=0;W.rayBoxes=()=>++n%2===1?Infinity:1;
  const cover=bot.findCover({pos:new THREE.Vector3(10,0,0)});Object.assign(W,old);if(!cover||!Number.isFinite(bot.coverPos.x))throw Error('bot cover selection');
+ for(const id of G.GUN_IDS)G.VM.ensure(id);
  let optics=0;for(const id of G.GUN_IDS)for(const o of Object.values(G.VM.models[id].scopes)){if(!o.sight.toArray().every(Number.isFinite)||!o.ads.toArray().every(Number.isFinite))throw Error('invalid sight '+id);optics++}
  return {town:town.name,lootSpots:G.World.lootSpots.filter(p=>Math.hypot(p.x-town.x,p.z-town.z)<town.r).length,noise:ranges,cover:bot.coverPos.toArray(),optics};
 });console.log('Combat checks',checks);if(checks.lootSpots<1)throw Error('new area lacks loot');

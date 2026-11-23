@@ -195,8 +195,8 @@ class CharacterModel {
       chestRX = 0.5; headRX = 0.6;
       if (a.prone && !a.knocked) {
         // 엎드려 쏴: 상체를 팔꿈치로 받치고 총을 앞으로
-        r.rotation.x = -1.45; yOff = 0.02;
-        lT = 0.12 + s * 0.25; rT = 0.12 - s * 0.25; lK = -0.12; rK = -0.12;
+        r.rotation.x = -1.5; yOff = 0.14;
+        lT = -0.05 + s * 0.10; rT = -0.05 - s * 0.10; lK = -0.08; rK = -0.08;
         chestRX = this.proneChest + U.clamp(a.pitch, -0.4, 0.4) * 0.6; spineRX = this.proneSpine; headRX = this.proneHead;
         this.setGun(a.gun || gun);
         this.ikGun = (gun === 'rifle' || gun === 'shotgun' || gun === 'pistol') ? gun : null;
@@ -215,11 +215,11 @@ class CharacterModel {
     } else {
       const sp = a.speed;
       const amp = U.clamp(sp / 4.2, 0, 1.25);
-      this.phase += sp * dt * 1.9;
+      if (a.gait) this.phase = a.gait.phase; else this.phase += sp * dt * 1.9;
       const ph = this.phase;
       lT = Math.sin(ph) * 0.6 * amp; rT = -lT;
       lK = -Math.max(0, Math.sin(ph - 1.2)) * 1.0 * amp; rK = -Math.max(0, Math.sin(ph + Math.PI - 1.2)) * 1.0 * amp;
-      hipY += Math.abs(Math.cos(ph)) * 0.035 * amp;
+      hipY += Math.abs(Math.cos(ph)) * 0.02 * amp - .09 * Math.min(1, amp);
       spineRX = -0.08 * amp;
       if (a.crouch) {
         hipY = 0.62 + Math.abs(Math.cos(ph)) * 0.02 * amp;
@@ -233,18 +233,21 @@ class CharacterModel {
     }
     // 기울이기: 발을 축으로 몸을 옆으로 눕힌다 (머리가 leanX 만큼 나오게)
     if (a.lean && !a.dead && !a.knocked && !a.prone) r.rotation.z = -Math.asin(U.clamp(a.lean / Math.max(0.8, a.eyeH || 1.62), -0.5, 0.5));
-    r.position.y += yOff;
+    this.gunMount.position.y = a.prone && !a.knocked ? .03 : -.1;
+    this.poseTargetY = yOff;
+    if (!G.Locomotion) r.position.y += yOff;
     this.hip.position.y = hipY;
     this.spine.rotation.x = spineRX - this.flinch * 0.3;
     this.chest.rotation.x = chestRX + this.kick * 0.25 - spineRX;
     this.head.rotation.x = headRX;
-    this.legL.rotation.x = lT; this.legR.rotation.x = rT;
-    this.kneeL.rotation.x = lK; this.kneeR.rotation.x = rK;
+    this.legL.rotation.set(lT, 0, 0); this.legR.rotation.set(rT, 0, 0);
+    this.kneeL.rotation.set(lK, 0, 0); this.kneeR.rotation.set(rK, 0, 0);
     this.armL.rotation.set(aL[0], aL[1], aL[2]); this.elbowL.rotation.x = eL;
     this.armR.rotation.set(aR[0] + this.kick * 0.3, aR[1], aR[2]); this.elbowR.rotation.x = eR;
     if (this.chute && this.chute.visible) {
       this.chute.rotation.z = Math.sin(this.phase * 0.7) * 0.05;
     }
+    G.Locomotion?.pose(this, a, dt);
     if (this.soldier && !this.lod) G.Soldiers.drive(this.soldier, this);
   }
   dispose() {
@@ -290,8 +293,8 @@ function makeChute() {
   return g;
 }
 
-// 엎드려 쏴 자세 (몸이 -1.45 rad 누운 상태에서 척추·가슴을 들어 총을 앞으로)
-CharacterModel.prototype.proneSpine = 0.5; CharacterModel.prototype.proneChest = 1.0; CharacterModel.prototype.proneHead = 0.1;
+// 엎드려 쏴 자세: 몸은 바닥을 따라 눕히고 가슴·총은 전방을 향한다.
+CharacterModel.prototype.proneSpine = 0; CharacterModel.prototype.proneChest = 1.5; CharacterModel.prototype.proneHead = 0;
 G.CharacterModel = CharacterModel;
 G.OUTFITS = OUTFITS;
 })();

@@ -168,17 +168,9 @@ const P = G.Player = {
       G.Audio.click('land');
       if (a.landV < -15) G.Game.damage(a, (-a.landV - 15) * 7, null, 'fall', false, a.pos, null);
     }
-    // 발소리
-    if (a.onGround && a.hspeed > 1.2) {
-      this.stepDist += a.hspeed * dt;
-      const stride = sprint ? 2.5 : a.prone ? 1.1 : a.crouch ? 1.4 : 1.9;
-      if (this.stepDist > stride) {
-        this.stepDist = 0;
-        const surf = a.inWater ? 'water' : a.groundMat === 'terrain' ? 'grass' : a.groundMat;
-        G.Audio.footstep(null, surf, a.prone ? 0.1 : a.crouch ? 0.18 : sprint ? 0.5 : 0.32);
-      }
-    }
-    this.stepPhase += a.onGround ? a.hspeed * dt * 1.75 : 0;
+    // Contacts follow actual travel, not intended velocity against a wall.
+    const gait = G.Locomotion?.tick(a, dt, sprint);
+    if (gait) this.stepPhase = gait.phase;
     // 실내 판정 (뷰모델 조명용)
     this.indoorT -= dt;
     if (this.indoorT <= 0) { this.indoorT = 0.25; this.indoorTarget = W.covered(a.pos.x, a.pos.y + 2, a.pos.z) ? 1 : 0; }
@@ -303,6 +295,8 @@ const P = G.Player = {
     else if (slot !== 'fists' && !a.weapons[slot]) return;
     if ((this.sw ? this.sw.to : a.cur) === slot) return;
     this.reload = null; this.autoReload = null; this.cycleT = -1; this.pumpT = -1;
+    const next = a.weapons[slot];
+    if (next) { G.VM.ensure(next.id); G.AssetVM?.request(next.id); }
     this.sw = { t: this.sw && this.sw.t < 0.2 ? this.sw.t : 0, to: slot };
     G.Audio.click('switch');
   },
@@ -717,7 +711,7 @@ const P = G.Player = {
     cam.rotation.set(a.pitch + this.camKick + VMc.camRX + (Math.random() - 0.5) * sh * 0.02, a.yaw + VMc.camRY + (Math.random() - 0.5) * sh * 0.02, VMc.camRZ + leanRoll + (Math.random() - 0.5) * sh * 0.015, 'YXZ');
     const inst = a.weapons[a.cur], def = inst ? G.WEAPONS[inst.id] : G.WEAPONS[a.cur];
     const scope = inst ? (G.Attachments ? G.Attachments.optic(inst,def) : (inst.scope || def.baseSight || null)) : null;
-    if(inst&&G.Attachments)G.Attachments.update(G.VM.models[inst.id],inst);
+    if(inst&&G.Attachments)G.Attachments.update(G.VM.ensure(inst.id),inst);
     const zoom = scope ? G.SCOPES[scope].zoom : 1;
     // 배율 조준 중에는 먼 건물도 상세 모델로 (창문 너머가 보이게)
     G.lodZoom = zoom > 1 && this.ads > 0.6 ? Math.pow(zoom, 0.85) : 1;
@@ -764,7 +758,9 @@ const P = G.Player = {
     G.VM.dir.position.copy(_q);
     G.VM.dir.intensity = U.lerp(G.World.sun.intensity * 0.85, 0.35, this.indoor);
     G.VM.dir.color.copy(G.World.sun.color);
-    G.VM.hemi.intensity = U.lerp(G.World.hemi.intensity, G.World.hemi.intensity * 0.55, this.indoor);
+    const night = G.World.weather === 'night';
+    G.VM.hemi.intensity = Math.max(night ? .28 : .55, U.lerp(G.World.hemi.intensity, G.World.hemi.intensity * .72, this.indoor));
+    if (G.VM.fill) G.VM.fill.intensity = night ? .06 : U.lerp(.12, .18, this.indoor);
   },
 
   /* ---------------- 관전 ---------------- */

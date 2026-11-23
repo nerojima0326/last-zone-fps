@@ -1,0 +1,91 @@
+{
+  "gpu": "WebKit WebGL",
+  "weapons": [
+    {
+      "use": "held",
+      "level": 0,
+      "calls": 60,
+      "triangles": 340223,
+      "medianMs": 49.30000000074506
+    },
+    {
+      "use": "held",
+      "level": 1,
+      "calls": 30,
+      "triangles": 78527,
+      "medianMs": 7.2000000001862645
+    },
+    {
+      "use": "held",
+      "level": 2,
+      "calls": 30,
+      "triangles": 22240,
+      "medianMs": 2.7000000001862645
+    },
+    {
+      "use": "loot",
+      "level": 0,
+      "calls": 127,
+      "triangles": 340223,
+      "medianMs": 57.799999999813735
+    },
+    {
+      "use": "loot",
+      "level": 1,
+      "calls": 30,
+      "triangles": 78527,
+      "medianMs": 7
+    },
+    {
+      "use": "loot",
+      "level": 2,
+      "calls": 30,
+      "triangles": 22240,
+      "medianMs": 2.8999999994412065
+    }
+  ],
+  "training": [
+    {
+      "native": false,
+      "medianMs": 424.90000000037253,
+      "info": {
+        "calls": 257,
+        "tris": 237204,
+        "tex": 238,
+        "geo": 399,
+        "prog": 172
+      },
+      "internal": [
+        396.00000000000006,
+        222.75000000000003
+      ],
+      "nativeSize": [
+        1,
+        1
+      ]
+    },
+    {
+      "native": true,
+      "medianMs": 426.90000000037253,
+      "info": {
+        "calls": 258,
+        "tris": 237205,
+        "tex": 239,
+        "geo": 399,
+        "prog": 173
+      },
+      "internal": [
+        396.00000000000006,
+        222.75000000000003
+      ],
+      "nativeSize": [
+        960,
+        540
+      ]
+    }
+  ],
+  "errors": [],
+  "environment": "ANGLE SwiftShader forced by browser flags; not hardware FPS",
+  "framesPerCase": 5,
+  "scope": "Same-page isolated 30-weapon scene, then frozen training scene at the same world resolution."
+}

@@ -59,6 +59,14 @@ const A = G.Armory = {
     const d = G.WEAPONS[this.selected], damage = d.pellets > 1 ? d.dmg + ' × ' + d.pellets : d.dmg;
     $('armoryDetail').innerHTML = `<small>${G.FAMILY_NAMES[d.family]} / ${G.AMMO_NAMES[d.ammo]}</small><h3>${d.name}</h3><p>${d.role || { assault: '다양한 거리에서 활용하는 균형 잡힌 주무기', dmr: '정확한 단발 사격에 적합한 정밀 소총', sniper: '강한 한 발과 수동 노리쇠 작동', shotgun: '근접전에서 강력한 산탄 화력', pistol: '빠르게 꺼내 쓰는 보조무기' }[d.family]}</p><dl><div><dt>기본 피해</dt><dd>${damage}</dd></div><div><dt>분당 발사</dt><dd>${d.rpm}</dd></div><div><dt>탄창</dt><dd>${d.mag}발</dd></div><div><dt>조준 시간</dt><dd>${Math.round(d.adsTime * 1000)}ms</dd></div><div><dt>${d.reloadType === 'shell' ? '한 발 장전' : '탄창 교체'}</dt><dd>${d.reload.toFixed(2)}초</dd></div><div><dt>무기 슬롯</dt><dd>${G.CLASS_NAMES[d.cls]}</dd></div></dl>`;
     $('armoryEquip').hidden = !this.training;
+    const imported = G.Guns.gunData(this.selected);
+    if (imported.extra?.importedExpansion) {
+      const credit = document.createElement('small'); credit.className = 'armory-credit';
+      credit.textContent = imported.sourceAsset + ' · ' + imported.credit + ' ';
+      const link = document.createElement('a'); link.href = 'assets/models/guns/EXPANSION-CREDITS.md';
+      link.target = '_blank'; link.rel = 'noopener'; link.textContent = '모델·모션 출처'; credit.append(link);
+      $('armoryDetail').append(credit);
+    }
     this.preview(this.selected);
   },
   equip(id) {

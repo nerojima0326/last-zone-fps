@@ -1,0 +1,556 @@
+{
+  "version": 1,
+  "encoder": "basisu npm 1.16.3",
+  "textures": {
+    "asphalt_02/asphalt_02_arm_1k.jpg": {
+      "file": "gpu/asphalt_02/asphalt_02_arm_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.48028189919001807,
+        0.5567352970975121,
+        0.00028337089479754787
+      ],
+      "bytes": 220061,
+      "mode": "ETC1S",
+      "colorSpace": "linear"
+    },
+    "asphalt_02/asphalt_02_diff_1k.jpg": {
+      "file": "gpu/asphalt_02/asphalt_02_diff_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.10467365156516015,
+        0.10228178477027566,
+        0.0914554620747839
+      ],
+      "bytes": 228578,
+      "mode": "ETC1S",
+      "colorSpace": "sRGB"
+    },
+    "asphalt_02/asphalt_02_nor_gl_1k.jpg": {
+      "file": "gpu/asphalt_02/asphalt_02_nor_gl_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.2128199327152241,
+        0.21269977441617677,
+        0.94607720966158
+      ],
+      "bytes": 1327407,
+      "mode": "UASTC",
+      "colorSpace": "linear"
+    },
+    "coast_sand_01/coast_sand_01_arm_1k.jpg": {
+      "file": "gpu/coast_sand_01/coast_sand_01_arm_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.8798404841495518,
+        0.9205302235899686,
+        0.0000675821799307959
+      ],
+      "bytes": 177812,
+      "mode": "ETC1S",
+      "colorSpace": "linear"
+    },
+    "coast_sand_01/coast_sand_01_diff_1k.jpg": {
+      "file": "gpu/coast_sand_01/coast_sand_01_diff_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.22423846336310313,
+        0.17089160913327703,
+        0.1067990565181459
+      ],
+      "bytes": 226921,
+      "mode": "ETC1S",
+      "colorSpace": "sRGB"
+    },
+    "coast_sand_01/coast_sand_01_nor_gl_1k.jpg": {
+      "file": "gpu/coast_sand_01/coast_sand_01_nor_gl_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.2170503689376144,
+        0.2157680658287324,
+        0.9421340036928061
+      ],
+      "bytes": 1330086,
+      "mode": "UASTC",
+      "colorSpace": "linear"
+    },
+    "concrete_floor_worn_001/concrete_floor_worn_001_arm_1k.jpg": {
+      "file": "gpu/concrete_floor_worn_001/concrete_floor_worn_001_arm_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.9078214166172857,
+        0.25537184285080916,
+        0.00022527393310265312
+      ],
+      "bytes": 180480,
+      "mode": "ETC1S",
+      "colorSpace": "linear"
+    },
+    "concrete_floor_worn_001/concrete_floor_worn_001_diff_1k.jpg": {
+      "file": "gpu/concrete_floor_worn_001/concrete_floor_worn_001_diff_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.09357729478181742,
+        0.09498310039508481,
+        0.0893219134080865
+      ],
+      "bytes": 163091,
+      "mode": "ETC1S",
+      "colorSpace": "sRGB"
+    },
+    "concrete_floor_worn_001/concrete_floor_worn_001_nor_gl_1k.jpg": {
+      "file": "gpu/concrete_floor_worn_001/concrete_floor_worn_001_nor_gl_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.21543822968868856,
+        0.2150002327823771,
+        0.9712221349081326
+      ],
+      "bytes": 1052617,
+      "mode": "UASTC",
+      "colorSpace": "linear"
+    },
+    "corrugated_iron/corrugated_iron_arm_1k.jpg": {
+      "file": "gpu/corrugated_iron/corrugated_iron_arm_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        1,
+        0.4545681915864627,
+        0.9775017199214716
+      ],
+      "bytes": 164688,
+      "mode": "ETC1S",
+      "colorSpace": "linear"
+    },
+    "corrugated_iron/corrugated_iron_diff_1k.jpg": {
+      "file": "gpu/corrugated_iron/corrugated_iron_diff_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.4028191778303556,
+        0.4507088887305804,
+        0.42751802653390003
+      ],
+      "bytes": 202893,
+      "mode": "ETC1S",
+      "colorSpace": "sRGB"
+    },
+    "corrugated_iron/corrugated_iron_nor_gl_1k.jpg": {
+      "file": "gpu/corrugated_iron/corrugated_iron_nor_gl_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.21143064225726077,
+        0.21438703960642594,
+        0.8978235757863559
+      ],
+      "bytes": 1242785,
+      "mode": "UASTC",
+      "colorSpace": "linear"
+    },
+    "dirt/dirt_arm_1k.jpg": {
+      "file": "gpu/dirt/dirt_arm_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.7835020395305237,
+        0.880126520209054,
+        0.00005691130941540706
+      ],
+      "bytes": 164810,
+      "mode": "ETC1S",
+      "colorSpace": "linear"
+    },
+    "dirt/dirt_diff_1k.jpg": {
+      "file": "gpu/dirt/dirt_diff_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.12589929504441708,
+        0.08541170905506257,
+        0.049066354236490764
+      ],
+      "bytes": 198105,
+      "mode": "ETC1S",
+      "colorSpace": "sRGB"
+    },
+    "dirt/dirt_nor_gl_1k.jpg": {
+      "file": "gpu/dirt/dirt_nor_gl_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.21413311957105335,
+        0.2150177405776519,
+        0.9205435366616659
+      ],
+      "bytes": 1328171,
+      "mode": "UASTC",
+      "colorSpace": "linear"
+    },
+    "grey_roof_tiles_02/grey_roof_tiles_02_arm_1k.jpg": {
+      "file": "gpu/grey_roof_tiles_02/grey_roof_tiles_02_arm_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.32815622706318004,
+        0.2876228339995389,
+        0.00022883088994111607
+      ],
+      "bytes": 196692,
+      "mode": "ETC1S",
+      "colorSpace": "linear"
+    },
+    "grey_roof_tiles_02/grey_roof_tiles_02_diff_1k.jpg": {
+      "file": "gpu/grey_roof_tiles_02/grey_roof_tiles_02_diff_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.1898018760527762,
+        0.19510216687534937,
+        0.1905485506524248
+      ],
+      "bytes": 201524,
+      "mode": "ETC1S",
+      "colorSpace": "sRGB"
+    },
+    "grey_roof_tiles_02/grey_roof_tiles_02_nor_gl_1k.jpg": {
+      "file": "gpu/grey_roof_tiles_02/grey_roof_tiles_02_nor_gl_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.1649873669933033,
+        0.17449874195514728,
+        0.949355736647893
+      ],
+      "bytes": 1292958,
+      "mode": "UASTC",
+      "colorSpace": "linear"
+    },
+    "plywood/plywood_arm_1k.jpg": {
+      "file": "gpu/plywood/plywood_arm_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.7683617055350496,
+        0.5226983687402948,
+        0.00004149782978206763
+      ],
+      "bytes": 200741,
+      "mode": "ETC1S",
+      "colorSpace": "linear"
+    },
+    "plywood/plywood_diff_1k.jpg": {
+      "file": "gpu/plywood/plywood_diff_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.21081038710369043,
+        0.12033906921369057,
+        0.05259157570067488
+      ],
+      "bytes": 215340,
+      "mode": "ETC1S",
+      "colorSpace": "sRGB"
+    },
+    "plywood/plywood_nor_gl_1k.jpg": {
+      "file": "gpu/plywood/plywood_nor_gl_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.18323947402098467,
+        0.21715217262040612,
+        0.9997914554011055
+      ],
+      "bytes": 1127246,
+      "mode": "UASTC",
+      "colorSpace": "linear"
+    },
+    "red_brick_03/red_brick_03_arm_1k.jpg": {
+      "file": "gpu/red_brick_03/red_brick_03_arm_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.5741270268150904,
+        0.2458848064811629,
+        0.0001956326261154619
+      ],
+      "bytes": 185295,
+      "mode": "ETC1S",
+      "colorSpace": "linear"
+    },
+    "red_brick_03/red_brick_03_diff_1k.jpg": {
+      "file": "gpu/red_brick_03/red_brick_03_diff_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.14717072674903459,
+        0.08859169944986912,
+        0.072495143678303
+      ],
+      "bytes": 245765,
+      "mode": "ETC1S",
+      "colorSpace": "sRGB"
+    },
+    "red_brick_03/red_brick_03_nor_gl_1k.jpg": {
+      "file": "gpu/red_brick_03/red_brick_03_nor_gl_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.187429001969902,
+        0.18703154192493032,
+        0.9109880237945429
+      ],
+      "bytes": 1339751,
+      "mode": "UASTC",
+      "colorSpace": "linear"
+    },
+    "rock_face_03/rock_face_03_arm_1k.jpg": {
+      "file": "gpu/rock_face_03/rock_face_03_arm_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.8211604393436971,
+        0.6385242416277073,
+        0.00004979739573848117
+      ],
+      "bytes": 195577,
+      "mode": "ETC1S",
+      "colorSpace": "linear"
+    },
+    "rock_face_03/rock_face_03_diff_1k.jpg": {
+      "file": "gpu/rock_face_03/rock_face_03_diff_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.22906352000761873,
+        0.14317145115069463,
+        0.08226795850873798
+      ],
+      "bytes": 228702,
+      "mode": "ETC1S",
+      "colorSpace": "sRGB"
+    },
+    "rock_face_03/rock_face_03_nor_gl_1k.jpg": {
+      "file": "gpu/rock_face_03/rock_face_03_nor_gl_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.22577837922206143,
+        0.2156409294251829,
+        0.9164469329209641
+      ],
+      "bytes": 1348858,
+      "mode": "UASTC",
+      "colorSpace": "linear"
+    },
+    "rocky_terrain_02/rocky_terrain_02_arm_1k.jpg": {
+      "file": "gpu/rocky_terrain_02/rocky_terrain_02_arm_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.9112916281879846,
+        0.9119776421193746,
+        0.00006995348448977119
+      ],
+      "bytes": 160546,
+      "mode": "ETC1S",
+      "colorSpace": "linear"
+    },
+    "rocky_terrain_02/rocky_terrain_02_diff_1k.jpg": {
+      "file": "gpu/rocky_terrain_02/rocky_terrain_02_diff_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.08092837369205706,
+        0.07766217694384349,
+        0.012072645687458623
+      ],
+      "bytes": 216955,
+      "mode": "ETC1S",
+      "colorSpace": "sRGB"
+    },
+    "rocky_terrain_02/rocky_terrain_02_nor_gl_1k.jpg": {
+      "file": "gpu/rocky_terrain_02/rocky_terrain_02_nor_gl_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.2174955098979659,
+        0.21134582880837194,
+        0.9484843374941139
+      ],
+      "bytes": 1320441,
+      "mode": "UASTC",
+      "colorSpace": "linear"
+    },
+    "sparse_grass/sparse_grass_arm_1k.jpg": {
+      "file": "gpu/sparse_grass/sparse_grass_arm_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.7052528607854487,
+        0.8784443365347344,
+        0.00005335435257694411
+      ],
+      "bytes": 208806,
+      "mode": "ETC1S",
+      "colorSpace": "linear"
+    },
+    "sparse_grass/sparse_grass_diff_1k.jpg": {
+      "file": "gpu/sparse_grass/sparse_grass_diff_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.07980197477709207,
+        0.0478063088164205,
+        0.007793664973942219
+      ],
+      "bytes": 227065,
+      "mode": "ETC1S",
+      "colorSpace": "sRGB"
+    },
+    "sparse_grass/sparse_grass_nor_gl_1k.jpg": {
+      "file": "gpu/sparse_grass/sparse_grass_nor_gl_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.20980683673206027,
+        0.23254789377281265,
+        0.7957242347223147
+      ],
+      "bytes": 1342946,
+      "mode": "UASTC",
+      "colorSpace": "linear"
+    },
+    "weathered_brown_planks/weathered_brown_planks_arm_1k.jpg": {
+      "file": "gpu/weathered_brown_planks/weathered_brown_planks_arm_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.8915970549309866,
+        0.3885506767050705,
+        0.0002667717628847208
+      ],
+      "bytes": 197648,
+      "mode": "ETC1S",
+      "colorSpace": "linear"
+    },
+    "weathered_brown_planks/weathered_brown_planks_diff_1k.jpg": {
+      "file": "gpu/weathered_brown_planks/weathered_brown_planks_diff_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.11829830746405195,
+        0.07198438060894832,
+        0.04245078598960438
+      ],
+      "bytes": 215770,
+      "mode": "ETC1S",
+      "colorSpace": "sRGB"
+    },
+    "weathered_brown_planks/weathered_brown_planks_nor_gl_1k.jpg": {
+      "file": "gpu/weathered_brown_planks/weathered_brown_planks_nor_gl_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.2154219441557482,
+        0.21709377608149816,
+        0.9572331664323515
+      ],
+      "bytes": 1190386,
+      "mode": "UASTC",
+      "colorSpace": "linear"
+    },
+    "white_plaster_02/white_plaster_02_arm_1k.jpg": {
+      "file": "gpu/white_plaster_02/white_plaster_02_arm_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.41448975890687584,
+        0.8045532076002642,
+        0.0002146030625872643
+      ],
+      "bytes": 192974,
+      "mode": "ETC1S",
+      "colorSpace": "linear"
+    },
+    "white_plaster_02/white_plaster_02_diff_1k.jpg": {
+      "file": "gpu/white_plaster_02/white_plaster_02_diff_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.27236976814723074,
+        0.24524538860840203,
+        0.19872149095102143
+      ],
+      "bytes": 211152,
+      "mode": "ETC1S",
+      "colorSpace": "sRGB"
+    },
+    "white_plaster_02/white_plaster_02_nor_gl_1k.jpg": {
+      "file": "gpu/white_plaster_02/white_plaster_02_nor_gl_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.22286970460473585,
+        0.22169957021418374,
+        0.9867557827521014
+      ],
+      "bytes": 1229864,
+      "mode": "UASTC",
+      "colorSpace": "linear"
+    },
+    "wood_floor/wood_floor_arm_1k.jpg": {
+      "file": "gpu/wood_floor/wood_floor_arm_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.8148176453533987,
+        0.18969306287427046,
+        0.00007588174588720943
+      ],
+      "bytes": 137599,
+      "mode": "ETC1S",
+      "colorSpace": "linear"
+    },
+    "wood_floor/wood_floor_diff_1k.jpg": {
+      "file": "gpu/wood_floor/wood_floor_diff_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.21704928877814614,
+        0.11714708319555536,
+        0.05529097809104931
+      ],
+      "bytes": 197224,
+      "mode": "ETC1S",
+      "colorSpace": "sRGB"
+    },
+    "wood_floor/wood_floor_nor_gl_1k.jpg": {
+      "file": "gpu/wood_floor/wood_floor_nor_gl_1k.ktx2",
+      "width": 1024,
+      "height": 1024,
+      "mean": [
+        0.2158891383921435,
+        0.2127979047109055,
+        1
+      ],
+      "bytes": 1016015,
+      "mode": "UASTC",
+      "colorSpace": "linear"
+    }
+  },
+  "downloadBytes": {
+    "jpeg": 27620422,
+    "ktx2": 23052345
+  }
+}

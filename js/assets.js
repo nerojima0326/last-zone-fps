@@ -31,6 +31,7 @@ G.Assets = {
 
   // 이미지 평균 색 (선형)
   meanColor(img) {
+    if (img?._lzMean) return new THREE.Color(...img._lzMean);
     const c = document.createElement('canvas'); c.width = c.height = 16;
     const x = c.getContext('2d', { willReadFrequently: true });
     x.drawImage(img, 0, 0, 16, 16);
@@ -41,7 +42,19 @@ G.Assets = {
     return new THREE.Color(r / n, g / n, b / n);
   },
 
-  loadTex(loader, url, srgb, aniso) {
+  async loadTex(loader, url, srgb, aniso) {
+    const entry = this.gpuManifest?.textures?.[url.replace(/^assets\/tex\//, '')];
+    if (entry && this.ktx) {
+      try {
+        const t = await this.ktx.loadAsync(BASE + 'tex/' + entry.file + '?v=' + (window.LZ_BUILD || ''));
+        t.wrapS = t.wrapT = THREE.RepeatWrapping;
+        t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+        t.anisotropy = aniso;
+        t.image._lzMean = entry.mean;
+        this.gpuLoaded++;
+        return t;
+      } catch (e) { console.info('[assets] KTX2 fallback:', url); }
+    }
     return new Promise(res => {
       loader.load(url, t => {
         t.wrapS = t.wrapT = THREE.RepeatWrapping;
@@ -56,6 +69,18 @@ G.Assets = {
     if (location.protocol === 'file:') { console.info('[assets] file:// 실행 — 실사 에셋은 start.bat(로컬 서버)으로 실행할 때만 쓰입니다.'); return; }
     const aniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
     const loader = new THREE.TextureLoader();
+    this.gpuLoaded = 0;
+    const gl = renderer.getContext();
+    const compressed = ['WEBGL_compressed_texture_astc', 'EXT_texture_compression_bptc', 'WEBGL_compressed_texture_s3tc', 'WEBGL_compressed_texture_etc', 'WEBGL_compressed_texture_pvrtc'].some(e => gl.getExtension(e));
+    if (THREE.KTX2Loader && compressed && new URLSearchParams(location.search).get('textures') !== 'jpeg') {
+      try {
+        const response = await fetch(BASE + 'tex/gpu/manifest.json?v=' + (window.LZ_BUILD || ''));
+        if (response.ok) {
+          this.gpuManifest = await response.json();
+          this.ktx = new THREE.KTX2Loader().setTranscoderPath('vendor/basis/').setWorkerLimit(2).detectSupport(renderer);
+        }
+      } catch (e) { console.info('[assets] JPEG textures:', e.message); }
+    }
     const jobs = [];
     let done = 0, total = 0;
     const step = () => { done++; if (progress) progress(0.30 + 0.02 * done / total, '실사 에셋 불러오는 중... (' + done + '/' + total + ')'); };
@@ -74,6 +99,7 @@ G.Assets = {
     }
     for (const tod in HDRI) { total += 2; jobs.push(this.loadSky(tod, HDRI[tod], loader, step)); }
     await Promise.all(jobs);
+    if (this.ktx) { this.ktx.dispose(); this.ktx = null; }
     this.enabled = Object.keys(this.tex).length > 0;
     for (const k in this.tex) for (const t of [this.tex[k].map, this.tex[k].normal, this.tex[k].arm]) if (t) renderer.initTexture(t);
     for (const k in this.sky) for (const t of [this.sky[k].hdr, this.sky[k].bg]) if (t) renderer.initTexture(t);

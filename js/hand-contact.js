@@ -33,6 +33,24 @@ for (const [id, entry] of Object.entries(G.WeaponCatalog || {})) {
     L: { at: pistol ? [-.003, -.003, 0] : [0, shotgun ? -.020 : -.007, 0], freeAt, freeGap: pistol ? 0 : freeGap, curl: shotgun ? [] : [[.12, 0], [0, .12], [.12, .12], [.12, .12], [.16, .12]] }
   };
 }
+// Imported receivers/grips have different widths from the procedural fallback.
+// These offsets are measured in the same trigger frame, before finger fitting.
+const importedContacts = {
+  mp9: { R: [.019, -.005, .004] },
+  v45: { L: [0, -.007, 0] },
+  cx9: { R: [.018, -.005, .004] },
+  sm45: { R: [.019, -.005, .004], L: [0, -.007, 0] },
+  ms56: { R: [.022, -.006, .004] },
+  lm86: { R: [.019, -.005, .004] },
+  dm56: { R: [.019, -.005, .004] },
+  m24: { R: [.018, -.012, .008] },
+  sp12: { R: [.017, -.004, .003] },
+  p226: { L: [-.010, -.010, 0] }
+};
+for (const [id, sides] of Object.entries(importedContacts)) for (const [side, at] of Object.entries(sides))
+  fallbackProfiles[id][side].importedAt = at;
+for (const [id, gap] of Object.entries({ ar416: .032, ms56: .024, sr25: .056, mg60: .040 }))
+  fallbackProfiles[id].L.importedFreeGap = gap;
 const rigs = new WeakMap();
 function sideOf(name) { return /left|_L(?:_|$)|^L_|L(?:_\d+)?$/i.test(name) ? 'L' : 'R'; }
 function remember(rig, bone) {
@@ -193,7 +211,9 @@ G.HandContact = {
     const profile = model === G.RealArms?.copy ? fallbackProfiles[id] : profiles[id]; if (!profile) return;
     const rig = bind(model, frame), inv = frame.clone().invert();
     for (const h of rig.hands) {
-      const C = profile[h.side]; if (!C) continue;
+      const base = profile[h.side]; if (!base) continue;
+      const imported = context?.proceduralArms && G.Guns.gunData(id).extra?.importedExpansion;
+      const C = imported ? { ...base, at: base.importedAt || base.at, freeGap: base.importedFreeGap ?? base.freeGap } : base;
       const W = h.hand.getWorldPosition(new V()), local = W.clone().applyMatrix4(inv);
       // Free hands retain the authored bolt/magazine/slide paths. Blend near
       // the holding pose so reload start/end and pump strokes cannot snap.
@@ -261,7 +281,8 @@ G.HandContact = {
         delta.add(extra);
       }
       const arm = context?.proceduralArms?.[h.side];
-      if (C.freeGap && freeWeight && arm?.palmRef) delta.add(arm.palmRef.clone().transformDirection(frame).multiplyScalar(-C.freeGap * freeWeight));
+      const gap = imported && arm?.contactMode === 'cover' ? .012 : C.freeGap;
+      if (gap && freeWeight && arm?.palmRef) delta.add(arm.palmRef.clone().transformDirection(frame).multiplyScalar(-gap * freeWeight));
       if (!moving) {
         // A held grip stays on the furniture through idle breathing and fire
         // clips. Only the free hand follows the authored manipulation path.

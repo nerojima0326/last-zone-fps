@@ -4,7 +4,7 @@
 'use strict';
 const G = window.G, U = G.U;
 const KEY = 'lastzone_settings';
-const DEF = { adsSens: 1, scopeSens: 1, fov: 80, invertY: false, vol: { master: 1, weapons: 1, ambient: 1 }, binds: {} };
+const DEF = { adsSens: 1, scopeSens: 1, fov: 80, invertY: false, visual: { grain: .15, aberration: 0, vignette: .45, shadows: .22 }, vol: { master: 1, weapons: 1, ambient: 1 }, binds: {} };
 // 바꿀 수 있는 동작: 게임 코드가 쓰는 원래 키(논리 키) → 이름
 const ACTIONS = [
   ['KeyW', '앞으로'], ['KeyS', '뒤로'], ['KeyA', '왼쪽'], ['KeyD', '오른쪽'],
@@ -49,8 +49,9 @@ const S = G.Settings = {
       adsSens: settingNumber(s?.adsSens, DEF.adsSens, 0.3, 1.5),
       scopeSens: settingNumber(s?.scopeSens, DEF.scopeSens, 0.3, 1.5),
       fov: settingNumber(s?.fov, DEF.fov, 70, 100),
-      invertY: s?.invertY === true, vol: {}, binds: {}
+      invertY: s?.invertY === true, visual: {}, vol: {}, binds: {}
     };
+    for (const k of Object.keys(DEF.visual)) this.data.visual[k] = settingNumber(s?.visual?.[k], DEF.visual[k], 0, 1);
     for (const k of Object.keys(DEF.vol)) this.data.vol[k] = settingNumber(s?.vol?.[k], DEF.vol[k], 0, 1.5);
     for (const [act] of ACTIONS) {
       const code = s?.binds?.[act];
@@ -64,6 +65,7 @@ const S = G.Settings = {
   label(action) { return keyName(this.bound(action)); },
   apply() {
     const d = this.data, P = G.Player, A = G.Audio, I = G.Input;
+    G.refreshVisuals?.();
     if (P) { P.adsSens = d.adsSens; P.scopeSens = d.scopeSens; P.fov = d.fov; P.invertY = d.invertY; }
     if (A) { A.vol = d.vol; if (A.master) A.master.gain.setTargetAtTime(0.75 * d.vol.master, A.ctx.currentTime, 0.05); }
     // 키 바꾸기: 누른 키 → 게임이 아는 키
@@ -111,6 +113,10 @@ const S = G.Settings = {
       ['setAds', () => this.data.adsSens, v => this.data.adsSens = v, v => v.toFixed(2)],
       ['setScope', () => this.data.scopeSens, v => this.data.scopeSens = v, v => v.toFixed(2)],
       ['setFov', () => this.data.fov, v => this.data.fov = v, v => v + '°'],
+      ['setGrain', () => this.data.visual.grain, v => this.data.visual.grain = v, pct],
+      ['setAberration', () => this.data.visual.aberration, v => this.data.visual.aberration = v, pct],
+      ['setVignette', () => this.data.visual.vignette, v => this.data.visual.vignette = v, pct],
+      ['setShadows', () => this.data.visual.shadows, v => this.data.visual.shadows = v, pct],
       ['setVolMaster', () => this.data.vol.master, v => this.data.vol.master = v, pct],
       ['setVolWeapons', () => this.data.vol.weapons, v => this.data.vol.weapons = v, pct],
       ['setVolAmbient', () => this.data.vol.ambient, v => this.data.vol.ambient = v, pct]

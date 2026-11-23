@@ -1,0 +1,81 @@
+{
+  "build": "77",
+  "base": "36afcf6bade2516e40694f966b86fc7608761e43",
+  "checks": {
+    "check-aim.cjs": "passed",
+    "check-hand-poses.cjs": "passed",
+    "check-glock-import.mjs": "passed",
+    "check-m4-model.mjs": "passed",
+    "check-weapon-catalog.cjs": "passed",
+    "check-training-range.cjs": "passed",
+    "RANGE_FALLBACK=1 check-training-range.cjs": "passed",
+    "check-bundled-viewmodels.cjs": "passed",
+    "check-combat.cjs": "passed",
+    "check-original-weapon-audio.cjs": "passed",
+    "check-reloads.cjs": "passed",
+    "check-clearance.cjs": "passed",
+    "check-weapon-audio.cjs": "passed"
+  },
+  "models": {
+    "count": 15,
+    "bytes": 8428692,
+    "sha256": {
+      "mp9": "1f528bf4040071646400bd878890bed7e20564065dac12b73a5e14c081204c7e",
+      "v45": "f15ff9136cc28126a529e9637dbdee601824dc5490fd8b09d18af21bc8a6abb0",
+      "cx9": "0385f9614833025075d4d15b5f981d73e14b43457f75e09904269c7fd7626a93",
+      "sm45": "018d4c683bba5ee329913bdd97d55515de86d4c2b64bc5c904cee3e8e3ef1df5",
+      "ar416": "5b54e0c18f3d75af110a7c25928a9f73b9feec39d49c4614d82677260bcfb2c9",
+      "sg56": "26a22c8ccca559be884c49bd0b5076c66ce7e8b400806c56679369107696c13d",
+      "ms56": "eaa27aa801b3152c6fb64ea637a8561c2f833582a5c20fd258c918885c6b7502",
+      "lm86": "8182a9c5f4ec385e612f1afb01ae369a252b10ed6835b37dc00dee1a1194a896",
+      "rk762": "870147739a86d45d306751f9dd7d392dd2fe912d5b123b1ee2e28670ae2ef2fd",
+      "mg60": "e981b55612aa938896ea9373e918ea8eea5279caf3884ee02698ff31a6fd1321",
+      "sr25": "8351eb32584aec454c66512bcf0963e240f47c4fd546c74d28cb8f7144055d55",
+      "dm56": "177ffe17b6d10c91e378b7908c5bfbfafe0bcd05ab106d7fdbf0ca214a0ade17",
+      "m24": "6a449071a2c841de110a9e23e075f364dea7a8c55eb1788bcd74e3d274836046",
+      "sp12": "a0d5915976d12ae523055528fbc6e928904163f0c025f866b9fb052447d8c3b7",
+      "p226": "30b7843858b7ae3841132be51e0a029d8b78deb4934651ba7d0be9ef97a15fb9"
+    }
+  },
+  "motion": {
+    "clips": 18,
+    "bindings": 30,
+    "bytes": 234165
+  },
+  "hands": {
+    "cases": 810,
+    "repeatChecks": 60,
+    "failures": 0
+  },
+  "reloadRig": {
+    "frames": 20857,
+    "vertices": 624708,
+    "maxContactErrorMm": 12.710572481696085,
+    "maxWristDegrees": 86.3752761064156,
+    "maxForearmTurnDegrees": 36.43069354895565,
+    "maxElbowSpeed": 9.243238170542261
+  },
+  "clearance": {
+    "cases": 180,
+    "frames": 32334,
+    "maxActiveMm": 0,
+    "maxReturnMm": 9.973774594964985
+  },
+  "aim": {
+    "viewports": 2,
+    "cases": 166,
+    "samples": 7992,
+    "maxPixels": 7.226360804695209e-06
+  },
+  "audio": {
+    "weapons": 30,
+    "uniqueGeneratedReports": 180,
+    "variants": 4,
+    "sourceShotInputs": 0,
+    "sampleRates": [
+      44100,
+      48000
+    ],
+    "failures": []
+  }
+}

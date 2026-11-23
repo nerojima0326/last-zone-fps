@@ -46,3 +46,7 @@ CHROME_BIN=/usr/bin/chromium THREE_DIR=/path/to/node_modules/three \
    - 미리보기 그림: `node tools/guns/run.cjs view r45 persp,side` · 압축된 결과 확인: `... view r45 side final`
    - 인터넷 없이: `THREE_DIR=<node_modules/three 경로>` 를 주면 three.js CDN 대신 로컬 파일을 씁니다.
 4. 브라우저로 보려면 저장소 루트에서 정적 서버(`serve.ps1` 등)를 띄우고 `tools/guns/build.html` 을 엽니다.
+
+## v77 확장 총기 가져오기
+
+새 15종의 원본·고정 리비전·체크섬·가공 설정·장전 클립 매핑은 `expansion-sources.json`에 있습니다. `fetch-expansion-assets.py` → Blender `prepare-expansion-vector.py` → `import-expansion.cjs` → `extract-expansion-reloads.cjs` 순서로 재생성합니다. [전체 출처와 실행 예](../../assets/models/guns/EXPANSION-CREDITS.md)를 참고하세요.

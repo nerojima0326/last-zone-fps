@@ -98,7 +98,10 @@ try {
     seeking=true;let n=0;while(P.reload&&n++<6000)P.reloadLogic(1/240);duration=n/240;
     reset();seeking=false;playing=true;$('play').textContent='일시정지';
     $('weaponName').textContent=G.WEAPONS[id].name;$('styleName').textContent=G.Guns.reloadFeel(id).name;
-    if(G.ReloadAssets.has(id))$('styleName').textContent=id==='db2'?'샷건 모션 조정 · 중절식 개폐':id==='m1014'?'샷건 원본 모션 · 한 발씩 장전':'AK 원본 모션 · 총기별 접촉점 보정';
+    if(G.ReloadAssets.expansion?.weapons[id]){
+      const data=G.ReloadAssets.expansion,mode=$('mode').value==='empty'?'empty':'tactical';
+      $('styleName').textContent='임포트 모션 · '+data.clips[data.weapons[id][mode]].sourceClip;
+    }else if(G.ReloadAssets.has(id))$('styleName').textContent=id==='db2'?'샷건 모션 조정 · 중절식 개폐':id==='m1014'?'샷건 원본 모션 · 한 발씩 장전':'AK 원본 모션 · 총기별 접촉점 보정';
     const m=VM.models[id];$('status').textContent=`${m.real?'에셋 모델':'절차적 모델'} · ${$('mode').selectedOptions[0].textContent} · 장전 ${duration.toFixed(2)}초`;
   }
   function seek(t){

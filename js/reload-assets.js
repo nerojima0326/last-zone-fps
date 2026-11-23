@@ -13,8 +13,27 @@ function sample(clip, t, out) {
   return out;
 }
 const R = G.ReloadAssets = {
-  ready: false, data: null,
+  ready: false, data: null, expansion: null,
   async load() {
+    await Promise.all([this.loadBase(), this.loadExpansion()]);
+  },
+  async loadExpansion() {
+    this.expansion = null;
+    try {
+      const response = await fetch('assets/animations/reloads/expansion.json?v=' + encodeURIComponent(window.LZ_BUILD || ''),
+        { signal: AbortSignal.timeout(15000) });
+      if (!response.ok) throw Error('HTTP ' + response.status);
+      const data = await response.json();
+      if (data.version !== 1) throw Error('Unsupported expansion motion version');
+      for (const id of Object.keys(G.WeaponCatalog || {})) for (const mode of ['empty', 'tactical']) {
+        const clip = data.clips[data.weapons[id]?.[mode]];
+        if (!(clip?.duration > 0) || clip.samples.length < 2 || clip.samples.length > 1200 ||
+          !clip.samples.every(row => row.length === 12 && row.every(Number.isFinite))) throw Error('Invalid expansion motion: ' + id);
+      }
+      this.expansion = data;
+    } catch (error) { console.info('[reloads] 추가 총기 기본 장전 모션 사용:', error.message); }
+  },
+  async loadBase() {
     try {
       const response = await fetch('assets/animations/reloads/motion.json?v=' + encodeURIComponent(window.LZ_BUILD || ''),
         { signal: AbortSignal.timeout(15000) });
@@ -32,14 +51,18 @@ const R = G.ReloadAssets = {
       console.info('[reloads] 기본 장전 모션 사용:', error.message);
     }
   },
-  has(id) { return this.ready && IDS.has(id); },
+  has(id) { return !!this.expansion?.weapons[id] || (this.ready && IDS.has(id)); },
   apply(m, reload, pose) {
     m.reloadMotion = null;
     if (!this.has(m.id)) return;
     const magazine = reload.type === 'mag';
-    const clip = this.data.clips[magazine ? (reload.empty ? 'magazineEmpty' : 'magazine') : 'shell'];
+    const expanded = this.expansion?.weapons[m.id];
+    const clip = expanded ? this.expansion.clips[expanded[reload.empty ? 'empty' : 'tactical']]
+      : this.data.clips[magazine ? (reload.empty ? 'magazineEmpty' : 'magazine') : 'shell'];
     const progress = clamp(magazine ? reload.p : reload.phase === 'load' ? reload.shellP : reload.pp, 0, 1);
-    const events = magazine ? (reload.empty ? m.keys.E : m.keys.Tac).T : null;
+    const sequence = magazine ? (reload.empty ? m.keys.E : m.keys.Tac) : null;
+    if (magazine && !sequence) return;
+    const events = sequence?.T || null;
     const timeline = magazine ? [[0, 0], [events.grab ?? events.drop ?? events.knock, .1],
       [events.release, .2], [events.newMag, .3], [events.hook, .42],
       [events.seat, reload.empty ? .52 : .68], [events.chA, .72], [events.chRel, .82],
@@ -70,7 +93,7 @@ const R = G.ReloadAssets = {
       : reload.phase === 'end' ? smooth((1 - progress) / .25) : 1;
     // Most of the weapon's broad movement now comes from the authored clip.
     // Keep the procedural part/contact system for magwell, handle and shell locks.
-    const blend = weight * .7;
+    const blend = weight * (clip.gunMotion === false ? 0 : .7);
     pose.rx = pose.rx * (1 - blend) + clamp(A[9], -.5, .5) * blend;
     pose.ry = pose.ry * (1 - blend) + clamp(A[10], -.4, .4) * blend;
     pose.rz = pose.rz * (1 - blend) + clamp(A[11], -.85, .85) * blend;
@@ -91,14 +114,14 @@ const R = G.ReloadAssets = {
       (m.holdObj && m.armL.contactMode === 'magazine');
     let movement = 0;
     if (free) {
-      const gain = Math.sin(Math.PI * u) ** 2 * .45 * m.s / 1.54;
+      const gain = Math.sin(Math.PI * u) ** 2 * (expanded ? .7 : .45) * m.s / 1.54;
       const delta = [0, 1, 2].map(i => clamp((A[i] - B[i] - (C[i] - B[i]) * u) * gain, -.035, .035));
       // Preserve the safe outside approach around the gun's receiver.
       delta[0] = -Math.abs(delta[0]); delta[1] = -Math.abs(delta[1]);
       m.armL.tgt.x += delta[0]; m.armL.tgt.y += delta[1]; m.armL.tgt.z += delta[2];
       movement = Math.hypot(...delta);
     }
-    m.reloadMotion = { sourceClip: clip.sourceClip, time: t, weight: blend, handDisplacement: movement };
+    m.reloadMotion = { sourceClip: clip.sourceClip, source: clip.source || 'Cransh', time: t, weight, handDisplacement: movement };
   }
 };
 })();

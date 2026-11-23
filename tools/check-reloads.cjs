@@ -17,7 +17,7 @@ const results=await page.evaluate(()=>{
  const out=[];const assert=(ok,msg)=>{if(!ok)throw Error(msg)};
  for(const id of G.GUN_IDS)for(const mode of ['empty','tactical']){
   const studio=ReloadStudio;studio.select(id,mode);studio.pause();
-  const m=studio.model;assert(m.real===!G.WeaponCatalog[id],id+' correct imported/original model loaded');
+  const m=studio.model;assert(m.real,id+' bundled model loaded');
   for(const keys of [m.keys.E,m.keys.Tac])if(keys){for(let i=1;i<keys.k.length;i++)assert(keys.k[i][0]>keys.k[i-1][0],id+' increasing hand keys');}
   let max=0;
   for(const fraction of [0,.1,.27,.48,.6,.76,.9,1]){
@@ -51,11 +51,11 @@ const hands=await page.evaluate(()=>{
    for(let t=0;t<st.duration+dt;t+=dt){
     st.advance(dt);
     for(const [j,arm]of [m.armL,m.armR].entries()){
-     fail(arm.contactError<0.025,id+' '+mode+' contact gap '+arm.contactError);
+     fail(arm.contactError<0.025,id+' '+mode+' '+(j?'R':'L')+' contact gap '+arm.contactError+' at '+t.toFixed(3)+'s, '+Math.round(1/dt)+' FPS');
      fail(arm.wristAngle<Math.PI/2+0.09,id+' '+mode+' wrist angle '+arm.wristAngle*180/Math.PI);
      fail(arm.handQ.angleTo(previous[j])<dt*10+0.001,id+' continuous wrist rotation');previous[j].copy(arm.handQ);
      const turn=arm.bE.quaternion.angleTo(forearms[j].q),speed=arm.bE.position.distanceTo(forearms[j].elbow)/dt;
-     fail(turn<24*dt+0.025,id+' forearm rotation pops');fail(speed<12,id+' elbow position pops');
+     fail(turn<24*dt+0.025,id+' '+mode+' forearm rotation pops at '+t.toFixed(3)+'s, '+Math.round(1/dt)+' FPS, '+turn.toFixed(3)+'rad');fail(speed<12,id+' '+mode+' elbow position pops at '+t.toFixed(3)+'s, '+Math.round(1/dt)+' FPS, '+speed.toFixed(2)+'m/s');
      forearms[j].q.copy(arm.bE.quaternion);forearms[j].elbow.copy(arm.bE.position);
      fail(arm.bT&&arm.bD,id+' distributed forearm rig');
      maxForearmTurn=Math.max(maxForearmTurn,turn);maxElbowSpeed=Math.max(maxElbowSpeed,speed);
@@ -116,6 +116,7 @@ const logic=await page.evaluate(()=>{
    const expected=G.Guns.reloadEvents(id,initial===0).map(e=>e[1]);
    if(events.join()!==expected.join())throw Error(id+' sound events lost/duplicated');
    if(initial>0&&events.some(e=>e==='open'||e==='close'))throw Error(id+' tactical reload racked bolt');
+   if(id==='mg60'&&['coveropen','coverclose'].some(type=>events.filter(e=>e===type).length!==1))throw Error('MG-60 feed cover sounds must occur once');
   }
   cases++;
  }
@@ -147,6 +148,27 @@ const imported=await page.evaluate(()=>{
  return out;
 });
 console.log('Imported reload clips:',JSON.stringify(imported));
+const expansion=await page.evaluate(()=>{
+ const R=G.ReloadAssets,st=ReloadStudio,out=[];
+ if(!R.expansion)throw Error('Expansion curves did not load');
+ for(const id of Object.keys(G.WeaponCatalog))for(const mode of ['empty','tactical']){
+  st.select(id,mode);st.pause();const expected=R.expansion.clips[R.expansion.weapons[id][mode]].sourceClip;
+  let peak=0,used=0;
+  for(let t=0;t<st.duration;t+=1/60){
+   st.advance(1/60);const motion=st.model.reloadMotion;
+   if(!motion)continue;
+   if(motion.sourceClip!==expected||!Number.isFinite(motion.time))throw Error('Wrong expansion clip: '+id);
+   peak=Math.max(peak,motion.handDisplacement);used++;
+  }
+  if(!used||peak<.0001)throw Error('Expansion wrist curve has no effect: '+id+' '+mode+' '+peak);
+  const saved=R.expansion;
+  try{R.expansion=null;st.select(id,mode);st.pause();st.seek(st.duration*.43);if(st.model.reloadMotion)throw Error('Expansion missing-asset fallback still uses a clip');}
+  finally{R.expansion=saved;}
+  out.push({id,mode,source:expected,handTravelMm:peak*1000});
+ }
+ return out;
+});
+console.log('Expansion reload clips:',JSON.stringify(expansion));
 if(process.env.SHOTS){
  fs.mkdirSync(process.env.SHOTS,{recursive:true});
  for(const id of ['ka47','de7']){

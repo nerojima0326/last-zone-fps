@@ -1,0 +1,1328 @@
+{
+  "version": 1,
+  "license": "CC-BY-4.0",
+  "sources": {
+    "mp5": {
+      "file": "mp5.glb",
+      "url": "https://raw.githubusercontent.com/neelsatyavolu/ironvale/05df9fdab21559199f983ac5a0bc367ba89ed1f8/public/assets/local/guns/mp5.glb",
+      "repository": "https://github.com/neelsatyavolu/ironvale",
+      "revision": "05df9fdab21559199f983ac5a0bc367ba89ed1f8",
+      "sha256": "8196663a6268c195375db3b89b34375a9648d318731e94a95cb192b8b685b4ef",
+      "title": "MP5 submachinegun",
+      "author": "Michael Karel (https://sketchfab.com/michaelkarel)",
+      "original": "https://sketchfab.com/3d-models/mp5-submachinegun-2a9ce66fe96643fc8f20927401e5054c",
+      "license": "CC-BY-4.0"
+    },
+    "mcx": {
+      "file": "mcx.glb",
+      "url": "https://raw.githubusercontent.com/neelsatyavolu/ironvale/05df9fdab21559199f983ac5a0bc367ba89ed1f8/public/assets/local/guns/m7.glb",
+      "repository": "https://github.com/neelsatyavolu/ironvale",
+      "revision": "05df9fdab21559199f983ac5a0bc367ba89ed1f8",
+      "sha256": "e3b437ff92589890fbd001b9514f25a4bea64d98427b370b9ea1e4785a7d8c5a",
+      "title": "Low-Poly Sig MCX",
+      "author": "TastyTony (https://sketchfab.com/TastyTony)",
+      "original": "https://sketchfab.com/3d-models/low-poly-sig-mcx-9a6f000c43644afe900669b6e7202378",
+      "license": "CC-BY-4.0"
+    },
+    "m4": {
+      "file": "m4.glb",
+      "url": "https://raw.githubusercontent.com/neelsatyavolu/ironvale/05df9fdab21559199f983ac5a0bc367ba89ed1f8/public/assets/local/guns/m4a1.glb",
+      "repository": "https://github.com/neelsatyavolu/ironvale",
+      "revision": "05df9fdab21559199f983ac5a0bc367ba89ed1f8",
+      "sha256": "af1a570476bbe62c5be2c65988054f29e51c226ba168f54e1621bdddc7d582a2",
+      "title": "M4A1 Carbine",
+      "author": "MrM0lten (https://sketchfab.com/MrM0lten)",
+      "original": "https://sketchfab.com/3d-models/m4a1-carbine-9bb8f18ad94d4b468e447a2d43bd08b9",
+      "license": "CC-BY-4.0"
+    },
+    "r700": {
+      "file": "r700.glb",
+      "url": "https://raw.githubusercontent.com/neelsatyavolu/ironvale/05df9fdab21559199f983ac5a0bc367ba89ed1f8/public/assets/local/guns/m24.glb",
+      "repository": "https://github.com/neelsatyavolu/ironvale",
+      "revision": "05df9fdab21559199f983ac5a0bc367ba89ed1f8",
+      "sha256": "566f99c72686156c3c54c79f186d0820de6e66f5c32b996976313196d6ad37b1",
+      "title": "R700V2",
+      "author": "Domevans (https://sketchfab.com/domevans)",
+      "original": "https://sketchfab.com/3d-models/r700v2-d748f463852144c7a982b3e170e7d000",
+      "license": "CC-BY-4.0"
+    },
+    "mp5k": {
+      "file": "mp5k.glb",
+      "url": "https://raw.githubusercontent.com/cktang88/3d-fps/130ac2a5c856401ec36e7d35afcfefe40c5801f4/public/assets/models/fp/mp5a5.glb",
+      "repository": "https://github.com/cktang88/3d-fps",
+      "revision": "130ac2a5c856401ec36e7d35afcfefe40c5801f4",
+      "sha256": "90f223cbd44a75463a09b5cefaa594cbc8a61276ce31ba0b0734c8735701e1da",
+      "title": "MP5 Submachine Gun",
+      "author": "Rotuma",
+      "original": "https://sketchfab.com/3d-models/mp5-submachine-gun-a73b61932a0e4eecb5db5c63c158aa24",
+      "license": "CC-BY-4.0"
+    },
+    "m4fp": {
+      "file": "m4fp.glb",
+      "url": "https://raw.githubusercontent.com/cktang88/3d-fps/130ac2a5c856401ec36e7d35afcfefe40c5801f4/public/assets/models/fp/m4a1.glb",
+      "repository": "https://github.com/cktang88/3d-fps",
+      "revision": "130ac2a5c856401ec36e7d35afcfefe40c5801f4",
+      "sha256": "f66a03a316e8ac6a1505b21c3c7cf8ad4672fccaf1ce947a9ea5ed33600364fc",
+      "title": "M4A1",
+      "author": "Firewarden",
+      "original": "https://sketchfab.com/3d-models/m4a1-40d8ef818c7549a896371cbb1f64fec6",
+      "license": "CC-BY-4.0"
+    },
+    "scarl": {
+      "file": "scarl.glb",
+      "url": "https://raw.githubusercontent.com/cktang88/3d-fps/130ac2a5c856401ec36e7d35afcfefe40c5801f4/public/assets/models/fp/scarl.glb",
+      "repository": "https://github.com/cktang88/3d-fps",
+      "revision": "130ac2a5c856401ec36e7d35afcfefe40c5801f4",
+      "sha256": "f57c2c8a5fce09b3a3454a14cd63d36b5c9eb7249d631981fd4a367f03a532df",
+      "title": "FN Scar-L",
+      "author": "Hitansh_3DArtist",
+      "original": "https://sketchfab.com/3d-models/fn-scar-l-ea1823de59684fd596d9f6726382f948",
+      "license": "CC-BY-4.0"
+    },
+    "p226": {
+      "file": "p226.glb",
+      "url": "https://raw.githubusercontent.com/cktang88/3d-fps/130ac2a5c856401ec36e7d35afcfefe40c5801f4/public/assets/models/fp/p226.glb",
+      "repository": "https://github.com/cktang88/3d-fps",
+      "revision": "130ac2a5c856401ec36e7d35afcfefe40c5801f4",
+      "sha256": "816f5aabef75c58d659728d3b8cac80ea4257475fc2dd325b00349b4fe3ab966",
+      "title": "Sig Sauer P226",
+      "author": "Alexcanot",
+      "original": "https://sketchfab.com/3d-models/sig-sauer-p226-e3d4f1ab22f342f4a0891743353c114c",
+      "license": "CC-BY-4.0"
+    },
+    "platform-reloads": {
+      "file": "platform-reloads.glb",
+      "url": "https://raw.githubusercontent.com/cktang88/3d-fps/130ac2a5c856401ec36e7d35afcfefe40c5801f4/public/assets/models/weapons/animated_reload_arms.glb",
+      "repository": "https://github.com/cktang88/3d-fps",
+      "revision": "130ac2a5c856401ec36e7d35afcfefe40c5801f4",
+      "sha256": "062c8288a79ec91d033fafd4be23f6545b337e2cf642dda0cbcc6854b270cd1b",
+      "title": "Platform reload-arm derivatives of fps animated smg",
+      "author": "DJMaesen; AetherRadar; cktang88",
+      "original": "https://sketchfab.com/3d-models/fps-animated-smg-ea3dad7478624495a5a46f40127b0579",
+      "license": "CC-BY-4.0"
+    },
+    "lmg": {
+      "file": "lmg.glb",
+      "url": "https://raw.githubusercontent.com/ossama450298-commits/BLACKSITEVECTOR/518826b0c6999f6ef60bb529f63fbd2877362483/assets/real/fp_lmg.15c9733e90.glb",
+      "repository": "https://github.com/ossama450298-commits/BLACKSITEVECTOR",
+      "revision": "518826b0c6999f6ef60bb529f63fbd2877362483",
+      "sha256": "44cb5bf2850a2aaaf2015436730c3a36daff00962e46d3d45f7bc0dd8893f7ea",
+      "title": "lmg animated",
+      "author": "DJMaesen (https://sketchfab.com/bumstrum)",
+      "original": "https://sketchfab.com/3d-models/lmg-animated-c02dc6663f344008a502148e751c9974",
+      "license": "CC-BY-4.0"
+    },
+    "ump": {
+      "file": "ump.glb",
+      "url": "https://raw.githubusercontent.com/ossama450298-commits/BLACKSITEVECTOR/518826b0c6999f6ef60bb529f63fbd2877362483/assets/real/fp_smg.1a6ef88ad9.glb",
+      "repository": "https://github.com/ossama450298-commits/BLACKSITEVECTOR",
+      "revision": "518826b0c6999f6ef60bb529f63fbd2877362483",
+      "sha256": "4dd168a6cc19fdde0fd2506ae5bea966eff761fe92394ad4448648a637b06a72",
+      "title": "fps animated smg",
+      "author": "DJMaesen (https://sketchfab.com/bumstrum)",
+      "original": "https://sketchfab.com/3d-models/fps-animated-smg-ea3dad7478624495a5a46f40127b0579",
+      "license": "CC-BY-4.0"
+    },
+    "akm": {
+      "file": "akm.glb",
+      "url": "https://raw.githubusercontent.com/ossama450298-commits/BLACKSITEVECTOR/518826b0c6999f6ef60bb529f63fbd2877362483/assets/real/fp_akm.9923a11df2.glb",
+      "repository": "https://github.com/ossama450298-commits/BLACKSITEVECTOR",
+      "revision": "518826b0c6999f6ef60bb529f63fbd2877362483",
+      "sha256": "144bed747e560303dff9d393bab5f77292d0fbd13c5c01373a9b938fb97ec1f1",
+      "title": "AKM Assault Rifle - Animated",
+      "author": "user77 (assembly); Armored Wave (weapon); DJMaesen (arms/animation)",
+      "original": "https://sketchfab.com/3d-models/akm-assault-rifle-animated-6348dc53e3e249c6b297cb8f3f1e3e9b",
+      "license": "CC-BY-4.0"
+    },
+    "spas": {
+      "file": "spas.glb",
+      "url": "https://raw.githubusercontent.com/segmentt61/undead-ops/fd68af8883dedfb03af7775db8151992d9a3a868/public/assets/guns/sf_spas.glb",
+      "repository": "https://github.com/segmentt61/undead-ops",
+      "revision": "fd68af8883dedfb03af7775db8151992d9a3a868",
+      "sha256": "e68fcfb979df2a80995b0da646a847c308bcc4f9ba611b0cb2d9722419c5b117",
+      "title": "The Franchi SPAS-12",
+      "author": "Ecler (https://sketchfab.com/ecler)",
+      "original": "https://sketchfab.com/3d-models/the-franchi-spas-12-dfb4e1671b5b49e7b8a54cd120fc4d9f",
+      "license": "CC-BY-4.0"
+    },
+    "vector-fbx": {
+      "file": "vector.fbx",
+      "url": "https://raw.githubusercontent.com/joaoCasella/FPS/835c34b357e00f37e54fce2af0a85b3ff5e25369/FPS/Assets/Imported%20Assets/Weapon/source/WeaponAndHands.fbx",
+      "repository": "https://github.com/joaoCasella/FPS",
+      "revision": "835c34b357e00f37e54fce2af0a85b3ff5e25369",
+      "sha256": "0f4030a8c987709b6db319a69fee3180527c6d98f8fc8cead5d1af2e604297da",
+      "title": "Kriss Vector Animated( Free)",
+      "author": "BarcodeGames",
+      "original": "https://skfb.ly/6RKL7",
+      "license": "CC-BY-4.0"
+    },
+    "Vector_D": {
+      "file": "Vector_D.png",
+      "url": "https://raw.githubusercontent.com/joaoCasella/FPS/835c34b357e00f37e54fce2af0a85b3ff5e25369/FPS/Assets/Imported%20Assets/Weapon/textures/Vector_D.png",
+      "repository": "https://github.com/joaoCasella/FPS",
+      "revision": "835c34b357e00f37e54fce2af0a85b3ff5e25369",
+      "sha256": "efcdbc89b68b7a74e3b5699f089cdf0db62da38fb293ed6fd6f291d01b8b64fb",
+      "title": "Kriss Vector Animated( Free)",
+      "author": "BarcodeGames",
+      "original": "https://skfb.ly/6RKL7",
+      "license": "CC-BY-4.0"
+    },
+    "Glove_D": {
+      "file": "Glove_D.png",
+      "url": "https://raw.githubusercontent.com/joaoCasella/FPS/835c34b357e00f37e54fce2af0a85b3ff5e25369/FPS/Assets/Imported%20Assets/Weapon/textures/Glove_D.png",
+      "repository": "https://github.com/joaoCasella/FPS",
+      "revision": "835c34b357e00f37e54fce2af0a85b3ff5e25369",
+      "sha256": "befbe7366c75f7a470ed4ba92b623ae9034026bad5b3499eb36e58ee46225e60",
+      "title": "Kriss Vector Animated( Free)",
+      "author": "BarcodeGames",
+      "original": "https://skfb.ly/6RKL7",
+      "license": "CC-BY-4.0"
+    },
+    "Hand_D": {
+      "file": "Hand_D.png",
+      "url": "https://raw.githubusercontent.com/joaoCasella/FPS/835c34b357e00f37e54fce2af0a85b3ff5e25369/FPS/Assets/Imported%20Assets/Weapon/textures/Hand_D.png",
+      "repository": "https://github.com/joaoCasella/FPS",
+      "revision": "835c34b357e00f37e54fce2af0a85b3ff5e25369",
+      "sha256": "a1612a57361b6c660974b27e97033d76415d1cbce9ecb7abe4735ce23c0d9c53",
+      "title": "Kriss Vector Animated( Free)",
+      "author": "BarcodeGames",
+      "original": "https://skfb.ly/6RKL7",
+      "license": "CC-BY-4.0"
+    },
+    "vector": {
+      "file": "vector.glb",
+      "repository": "https://github.com/joaoCasella/FPS",
+      "revision": "835c34b357e00f37e54fce2af0a85b3ff5e25369",
+      "title": "Kriss Vector Animated( Free)",
+      "author": "BarcodeGames",
+      "original": "https://skfb.ly/6RKL7",
+      "license": "CC-BY-4.0",
+      "generatedBy": "prepare-expansion-vector.py"
+    },
+    "arms_normal.webp": {
+      "file": "arms_normal.webp",
+      "url": "https://raw.githubusercontent.com/cktang88/3d-fps/130ac2a5c856401ec36e7d35afcfefe40c5801f4/public/assets/models/fp/arms_normal.webp",
+      "sha256": "0500bdd5e6045621d980105cc281312dd6d7fc66a6649ddbe632fea802dba881",
+      "license": "CC-BY-4.0",
+      "author": "DJMaesen",
+      "title": "FPS arms; excluded from normalized gun output",
+      "original": "https://sketchfab.com/3d-models/fps-arms-9452ce4cddde4110a4fd73e555a8e412"
+    },
+    "arms_basecolor.webp": {
+      "file": "arms_basecolor.webp",
+      "url": "https://raw.githubusercontent.com/cktang88/3d-fps/130ac2a5c856401ec36e7d35afcfefe40c5801f4/public/assets/models/fp/arms_basecolor.webp",
+      "sha256": "4657bc61099b7cf92084c5481c0c6d19a1d8219c8ee8c08e546f9f823fec6946",
+      "license": "CC-BY-4.0",
+      "author": "DJMaesen",
+      "title": "FPS arms; excluded from normalized gun output",
+      "original": "https://sketchfab.com/3d-models/fps-arms-9452ce4cddde4110a4fd73e555a8e412"
+    },
+    "shell-curves": {
+      "file": "assets/animations/reloads/motion.json",
+      "title": "FPS Arms Remington Shotgun",
+      "author": "Cransh",
+      "license": "CC-BY-4.0",
+      "original": "https://sketchfab.com/3d-models/fps-arms-remington-shotgun-e68ef617fe8a48cca8610d016ffd5881",
+      "provenance": "../reload-motion-sources.json"
+    }
+  },
+  "models": {
+    "mp9": {
+      "source": "mp5",
+      "length": 0.68,
+      "cls": "rifle",
+      "keep": "^(?!FPArms|Hand_Mesh|Object_7|Object_67)",
+      "parts": {
+        "mag": "magazine",
+        "charge": "charging",
+        "boltCarrier": "part_bolt"
+      },
+      "sight": [
+        0.15,
+        0.03,
+        -0.29
+      ],
+      "bore": 0.105,
+      "fore": [
+        0,
+        0.012,
+        -0.22
+      ],
+      "charge": [
+        -0.03,
+        0.105,
+        -0.205
+      ],
+      "extra": {
+        "chargeMode": "left"
+      },
+      "modifications": "MP5-based compact 9mm variant; physical part extraction; added open iron sights"
+    },
+    "v45": {
+      "source": "vector",
+      "length": 0.62,
+      "cls": "rifle",
+      "keep": "^(main|mag)$",
+      "rotation": [
+        0,
+        3.141592653589793,
+        0
+      ],
+      "parts": {
+        "mag": "^mag$"
+      },
+      "trigger": [
+        0,
+        0,
+        0
+      ],
+      "sight": [
+        0.14,
+        0.045,
+        -0.29
+      ],
+      "bore": 0.09,
+      "fore": [
+        -0.021,
+        -0.025,
+        -0.29
+      ],
+      "charge": [
+        -0.04,
+        0.085,
+        -0.125
+      ],
+      "extra": {
+        "chargeMode": "left",
+        "supportN": [
+          1,
+          0.1,
+          0
+        ],
+        "supportF": [
+          0,
+          0.88,
+          -0.48
+        ]
+      },
+      "modifications": "FBX rig baked to the reload endpoint; new contact frame and iron sights",
+      "frameNode": "main_j",
+      "sample": [
+        "Animation",
+        3.36666
+      ],
+      "add": [
+        [
+          "charge",
+          "box",
+          [
+            -0.035,
+            0.085,
+            -0.125
+          ],
+          [
+            0.018,
+            0.009,
+            0.018
+          ]
+        ]
+      ]
+    },
+    "cx9": {
+      "source": "mp5k",
+      "length": 0.58,
+      "cls": "rifle",
+      "keep": "^(?!FPArms|Hand_Mesh|Object_7|Object_67)",
+      "trigger": [
+        0,
+        0.05,
+        -0.01
+      ],
+      "parts": {
+        "mag": "Magazine",
+        "charge": "Charging"
+      },
+      "partScale": {
+        "mag": [
+          1,
+          1.25,
+          1
+        ]
+      },
+      "sight": [
+        0.115,
+        0.055,
+        -0.23
+      ],
+      "bore": 0.08,
+      "fore": [
+        0,
+        -0.015,
+        -0.2
+      ],
+      "charge": [
+        -0.035,
+        0.07,
+        -0.21
+      ],
+      "extra": {
+        "chargeMode": "left"
+      },
+      "modifications": "MP5-based compact/long-magazine variant; source arms removed; magazine extended"
+    },
+    "sm45": {
+      "source": "ump",
+      "length": 0.7,
+      "cls": "rifle",
+      "keep": "^(?!FPArms|Hand_Mesh|Object_7|Object_67)",
+      "rotation": [
+        0,
+        3.141592653589793,
+        0
+      ],
+      "parts": {
+        "mag": "clip|bullet",
+        "charge": "bolt",
+        "boltCarrier": "carrier"
+      },
+      "sight": [
+        0.14,
+        0.025,
+        -0.32
+      ],
+      "bore": 0.1,
+      "fore": [
+        -0.023,
+        -0.018,
+        -0.27
+      ],
+      "charge": [
+        -0.04,
+        0.09,
+        -0.25
+      ],
+      "extra": {
+        "chargeMode": "left",
+        "supportN": [
+          1,
+          0.1,
+          0
+        ],
+        "supportF": [
+          0,
+          0.88,
+          -0.48
+        ]
+      },
+      "modifications": "UMP-family SMG; authored rig baked; source arms removed; part separation"
+    },
+    "ar416": {
+      "source": "m4fp",
+      "length": 0.84,
+      "cls": "rifle",
+      "keep": "^(?!FPArms|Hand_Mesh|Object_7|Object_67)",
+      "trigger": [
+        0,
+        -0.015,
+        0.1
+      ],
+      "parts": {
+        "mag": "Magazine",
+        "charge": "Charging",
+        "rearsight": "RearIron"
+      },
+      "sight": [
+        0.14,
+        0.05,
+        -0.39
+      ],
+      "bore": 0.095,
+      "fore": [
+        0,
+        0.008,
+        -0.27
+      ],
+      "charge": [
+        -0.03,
+        0.07,
+        0.025
+      ],
+      "extra": {
+        "chargeMode": "left"
+      },
+      "modifications": "M4-family 5.56 quad-rail carbine adaptation; source arms removed",
+      "drop": "^RearIron",
+      "trim": [
+        [
+          [
+            -0.05,
+            0.075,
+            -0.11
+          ],
+          [
+            0.05,
+            0.3,
+            0.15
+          ]
+        ]
+      ]
+    },
+    "sg56": {
+      "source": "mcx",
+      "length": 0.9,
+      "cls": "rifle",
+      "keep": "^(?!FPArms|Hand_Mesh|Object_7|Object_67)",
+      "dropMaterials": "m7_suppressor",
+      "parts": {
+        "mag": "magazine",
+        "charge": "chargingHandle",
+        "boltCarrier": "^bolt$"
+      },
+      "extend": [
+        -0.3,
+        -0.1
+      ],
+      "sight": [
+        0.14,
+        0.035,
+        -0.42
+      ],
+      "bore": 0.085,
+      "fore": [
+        0,
+        0.008,
+        -0.3
+      ],
+      "charge": [
+        -0.035,
+        0.09,
+        -0.05
+      ],
+      "extra": {
+        "chargeMode": "left"
+      },
+      "modifications": "SIG MCX-family long-barrel 5.56 variant; suppressor removed; barrel extended; authored projected surface-grain texture on original solid PBR colours",
+      "surfaceFinish": true
+    },
+    "ms56": {
+      "source": "mcx",
+      "length": 0.76,
+      "cls": "rifle",
+      "keep": "^(?!FPArms|Hand_Mesh|Object_7|Object_67)",
+      "dropMaterials": "m7_suppressor",
+      "parts": {
+        "mag": "magazine",
+        "charge": "chargingHandle",
+        "boltCarrier": "^bolt$"
+      },
+      "sight": [
+        0.13,
+        0.035,
+        -0.32
+      ],
+      "bore": 0.08,
+      "fore": [
+        0,
+        0.002,
+        -0.25
+      ],
+      "charge": [
+        -0.035,
+        0.085,
+        -0.04
+      ],
+      "extra": {
+        "chargeMode": "left"
+      },
+      "modifications": "SIG MCX-family short 5.56 carbine; suppressor removed; physical part separation; authored projected surface-grain texture on original solid PBR colours",
+      "surfaceFinish": true
+    },
+    "lm86": {
+      "source": "m4",
+      "length": 0.9,
+      "cls": "rifle",
+      "keep": "^(?!FPArms|Hand_Mesh|Object_7|Object_67)",
+      "drop": "^magazine$",
+      "parts": {
+        "charge": "chargingHandle",
+        "boltCarrier": "^bolt$"
+      },
+      "extend": [
+        -0.24,
+        -0.12
+      ],
+      "sight": [
+        0.14,
+        0.035,
+        -0.44
+      ],
+      "bore": 0.09,
+      "fore": [
+        0,
+        0.006,
+        -0.33
+      ],
+      "charge": [
+        -0.035,
+        0.08,
+        0.035
+      ],
+      "add": [
+        [
+          "mag",
+          "box",
+          [
+            0,
+            -0.04,
+            -0.095
+          ],
+          [
+            0.028,
+            0.065,
+            0.055
+          ]
+        ],
+        [
+          "mag",
+          "cylinder",
+          [
+            0,
+            -0.115,
+            -0.095
+          ],
+          [
+            0.068,
+            0.068,
+            0.08
+          ]
+        ],
+        [
+          "body",
+          "box",
+          [
+            -0.035,
+            0.015,
+            -0.53
+          ],
+          [
+            0.009,
+            0.012,
+            0.2
+          ]
+        ],
+        [
+          "body",
+          "box",
+          [
+            0.035,
+            0.015,
+            -0.53
+          ],
+          [
+            0.009,
+            0.012,
+            0.2
+          ]
+        ],
+        [
+          "body",
+          "box",
+          [
+            -0.033,
+            0.04,
+            -0.43
+          ],
+          [
+            0.013,
+            0.06,
+            0.025
+          ]
+        ],
+        [
+          "body",
+          "box",
+          [
+            0.033,
+            0.04,
+            -0.43
+          ],
+          [
+            0.013,
+            0.06,
+            0.025
+          ]
+        ]
+      ],
+      "extra": {
+        "chargeMode": "left"
+      },
+      "modifications": "Heavy-barrel M4-family support variant; authored 60-round drum and folded bipod",
+      "chargeSide": "right"
+    },
+    "rk762": {
+      "source": "akm",
+      "length": 1.09,
+      "cls": "rifle",
+      "keep": "^(?!FPArms|Hand_Mesh|Object_7|Object_67)",
+      "parts": {
+        "mag": "magazine|bullet",
+        "charge": "ejectionport"
+      },
+      "partScale": {
+        "mag": [
+          1,
+          1.18,
+          1
+        ]
+      },
+      "extend": [
+        -0.33,
+        -0.1
+      ],
+      "sight": [
+        0.13,
+        0.015,
+        -0.64
+      ],
+      "bore": 0.09,
+      "fore": [
+        0,
+        -0.006,
+        -0.34
+      ],
+      "charge": [
+        0.05,
+        0.075,
+        -0.13
+      ],
+      "add": [
+        [
+          "body",
+          "box",
+          [
+            -0.032,
+            -0.018,
+            -0.48
+          ],
+          [
+            0.009,
+            0.012,
+            0.29
+          ]
+        ],
+        [
+          "body",
+          "box",
+          [
+            0.032,
+            -0.018,
+            -0.48
+          ],
+          [
+            0.009,
+            0.012,
+            0.29
+          ]
+        ]
+      ],
+      "extra": {
+        "chargeMode": "under",
+        "shoulderR": [
+          0,
+          0,
+          -0.13
+        ]
+      },
+      "modifications": "AKM-based support variant; long barrel, extended 45-round magazine and folded bipod; fitted first-person shoulder anchor for right-hand charging",
+      "chargeSide": "right"
+    },
+    "mg60": {
+      "source": "lmg",
+      "length": 1.1,
+      "cls": "rifle",
+      "keep": "^(?!FPArms|Hand_Mesh|Object_7|Object_67)",
+      "rotation": [
+        0,
+        3.141592653589793,
+        0
+      ],
+      "parts": {
+        "mag": "mag_LMG",
+        "charge": "bolt_LMG",
+        "cover": "lid_LMG",
+        "belt": "bullet[0-9]"
+      },
+      "sight": [
+        0.175,
+        0.02,
+        -0.47
+      ],
+      "bore": 0.12,
+      "fore": [
+        0,
+        0.015,
+        -0.4
+      ],
+      "charge": [
+        0.045,
+        0.085,
+        -0.11
+      ],
+      "pivots": {
+        "cover": [
+          0,
+          0.105,
+          -0.2
+        ]
+      },
+      "extra": {
+        "chargeMode": "under",
+        "beltFed": true
+      },
+      "modifications": "Licensed belt-fed LMG; feed cover, belt, box and handle remain independent",
+      "pivotNodes": {
+        "cover": "lid"
+      },
+      "chargeSide": "right"
+    },
+    "sr25": {
+      "source": "m4",
+      "length": 0.84,
+      "cls": "rifle",
+      "keep": "^(?!FPArms|Hand_Mesh|Object_7|Object_67)",
+      "parts": {
+        "mag": "magazine",
+        "charge": "chargingHandle",
+        "boltCarrier": "^bolt$"
+      },
+      "partScale": {
+        "mag": [
+          1.1,
+          0.58,
+          1.12
+        ]
+      },
+      "extend": [
+        -0.24,
+        -0.17
+      ],
+      "sight": [
+        0.14,
+        0.035,
+        -0.55
+      ],
+      "bore": 0.09,
+      "fore": [
+        0,
+        0.008,
+        -0.34
+      ],
+      "charge": [
+        -0.035,
+        0.08,
+        0.035
+      ],
+      "add": [
+        [
+          "body",
+          "box",
+          [
+            -0.033,
+            0.015,
+            -0.53
+          ],
+          [
+            0.008,
+            0.012,
+            0.2
+          ]
+        ],
+        [
+          "body",
+          "box",
+          [
+            0.033,
+            0.015,
+            -0.53
+          ],
+          [
+            0.008,
+            0.012,
+            0.2
+          ]
+        ],
+        [
+          "body",
+          "box",
+          [
+            0,
+            0.06,
+            0.24
+          ],
+          [
+            0.045,
+            0.025,
+            0.12
+          ]
+        ],
+        [
+          "body",
+          "box",
+          [
+            -0.033,
+            0.04,
+            -0.43
+          ],
+          [
+            0.013,
+            0.06,
+            0.025
+          ]
+        ],
+        [
+          "body",
+          "box",
+          [
+            0.033,
+            0.04,
+            -0.43
+          ],
+          [
+            0.013,
+            0.06,
+            0.025
+          ]
+        ]
+      ],
+      "extra": {
+        "chargeMode": "left"
+      },
+      "modifications": "AR-platform marksman conversion; long barrel, 20-round box magazine, cheek rest and folded bipod"
+    },
+    "dm56": {
+      "source": "scarl",
+      "length": 0.89,
+      "cls": "rifle",
+      "keep": "^(?!FPArms|Hand_Mesh|Object_7|Object_67)",
+      "trigger": [
+        0,
+        -0.02,
+        0.17
+      ],
+      "parts": {
+        "mag": "Magazine",
+        "charge": "Charging"
+      },
+      "partScale": {
+        "mag": [
+          1,
+          0.65,
+          1
+        ]
+      },
+      "extend": [
+        -0.28,
+        -0.08
+      ],
+      "sight": [
+        0.16,
+        0.04,
+        -0.43
+      ],
+      "bore": 0.105,
+      "fore": [
+        0,
+        0.006,
+        -0.32
+      ],
+      "charge": [
+        -0.035,
+        0.075,
+        -0.16
+      ],
+      "extra": {
+        "chargeMode": "left"
+      },
+      "modifications": "SCAR-L-based 5.56 marksman variant; long barrel and shortened 20-round magazine"
+    },
+    "m24": {
+      "source": "r700",
+      "length": 1.092,
+      "cls": "rifle",
+      "keep": "^(?!FPArms|Hand_Mesh|Object_7|Object_67)",
+      "drop": "lens_",
+      "parts": {
+        "bolt": "bolt_"
+      },
+      "sight": [
+        0.105,
+        0.03,
+        -0.64
+      ],
+      "bore": 0.06,
+      "fore": [
+        0,
+        -0.012,
+        -0.34
+      ],
+      "grip": [
+        0.018,
+        -0.032,
+        0.065
+      ],
+      "port": [
+        0,
+        0.073,
+        -0.07
+      ],
+      "charge": [
+        0.038,
+        0.035,
+        0.01
+      ],
+      "pivots": {
+        "bolt": [
+          0,
+          0.057,
+          0.014
+        ]
+      },
+      "add": [
+        [
+          "mag",
+          "box",
+          [
+            0,
+            -0.065,
+            -0.095
+          ],
+          [
+            0.026,
+            0.048,
+            0.06
+          ]
+        ],
+        [
+          "body",
+          "box",
+          [
+            0,
+            -0.022,
+            -0.095
+          ],
+          [
+            0.036,
+            0.04,
+            0.078
+          ]
+        ]
+      ],
+      "modifications": "R700 chassis adaptation with detachable 5-round box magazine; source display lenses removed; bolt split retained; authored projected surface-grain texture on original solid PBR colours",
+      "surfaceFinish": true
+    },
+    "sp12": {
+      "source": "spas",
+      "length": 1.04,
+      "cls": "shotgun",
+      "keep": "^(?!FPArms|Hand_Mesh|Object_7|Object_67)",
+      "trigger": [
+        0,
+        0.078,
+        0.181
+      ],
+      "split": [
+        [
+          "pump",
+          [
+            -0.028,
+            -0.016,
+            -0.515
+          ],
+          [
+            0.028,
+            0.055,
+            -0.244
+          ],
+          "^Object_5$"
+        ]
+      ],
+      "sight": [
+        0.09,
+        0.035,
+        -0.61
+      ],
+      "bore": 0.075,
+      "fore": [
+        0,
+        -0.017,
+        -0.38
+      ],
+      "port": [
+        0,
+        0.012,
+        -0.12
+      ],
+      "pivots": {
+        "pump": [
+          0,
+          0.01,
+          -0.38
+        ]
+      },
+      "modifications": "SPAS-12 model; pump separated from original triangles; shell port and contact anchors fitted; loose display shell removed",
+      "trim": [
+        [
+          [
+            0.05,
+            -0.2,
+            -0.2
+          ],
+          [
+            0.1,
+            0.02,
+            0.1
+          ]
+        ]
+      ],
+      "rail": [
+        0.079,
+        -0.07,
+        "body"
+      ]
+    },
+    "p226": {
+      "source": "p226",
+      "length": 0.196,
+      "cls": "pistol",
+      "keep": "^(?!FPArms|Hand_Mesh|Object_7|Object_67)",
+      "trigger": [
+        0,
+        0,
+        0.08
+      ],
+      "parts": {
+        "mag": "Magazine",
+        "slide": "Charging"
+      },
+      "sight": [
+        0.072,
+        0.033,
+        -0.13
+      ],
+      "bore": 0.048,
+      "fore": [
+        -0.023,
+        -0.055,
+        0.03
+      ],
+      "slideTop": [
+        0,
+        0.064,
+        0.028
+      ],
+      "magDir": [
+        0,
+        -0.98,
+        0.2
+      ],
+      "add": [
+        [
+          "mag",
+          "box",
+          [
+            0,
+            -0.038,
+            0.028
+          ],
+          [
+            0.018,
+            0.06,
+            0.025
+          ],
+          -0.2
+        ]
+      ],
+      "modifications": "P226 model; full magazine body added behind original baseplate; slide and magazine separated"
+    }
+  },
+  "reloads": {
+    "mp9": {
+      "empty": {
+        "source": "platform-reloads",
+        "clip": "reload_mp5a5_empty"
+      },
+      "tactical": {
+        "source": "platform-reloads",
+        "clip": "reload_mp5a5_tactical"
+      }
+    },
+    "v45": {
+      "empty": {
+        "source": "vector",
+        "clip": "Animation",
+        "gun": "^main_j$",
+        "originalClip": "Armature|Reload|BaseLayer"
+      },
+      "tactical": {
+        "source": "vector",
+        "clip": "Animation",
+        "gun": "^main_j$",
+        "originalClip": "Armature|Reload|BaseLayer"
+      }
+    },
+    "cx9": {
+      "empty": {
+        "source": "platform-reloads",
+        "clip": "reload_mp5a5_empty"
+      },
+      "tactical": {
+        "source": "platform-reloads",
+        "clip": "reload_mp5a5_tactical"
+      }
+    },
+    "sm45": {
+      "empty": {
+        "source": "ump",
+        "clip": "allanims",
+        "range": [
+          0.13333333333333333,
+          2.6666666666666665
+        ],
+        "gun": "^smg45$",
+        "scale": 0.01
+      },
+      "tactical": {
+        "source": "ump",
+        "clip": "allanims",
+        "range": [
+          2.8,
+          4.3
+        ],
+        "gun": "^smg45$",
+        "scale": 0.01
+      }
+    },
+    "ar416": {
+      "empty": {
+        "source": "platform-reloads",
+        "clip": "reload_m4a1_empty"
+      },
+      "tactical": {
+        "source": "platform-reloads",
+        "clip": "reload_m4a1_tactical"
+      }
+    },
+    "sg56": {
+      "empty": {
+        "source": "platform-reloads",
+        "clip": "reload_scarl_empty"
+      },
+      "tactical": {
+        "source": "platform-reloads",
+        "clip": "reload_scarl_tactical"
+      }
+    },
+    "ms56": {
+      "empty": {
+        "source": "platform-reloads",
+        "clip": "reload_m4a1_empty"
+      },
+      "tactical": {
+        "source": "platform-reloads",
+        "clip": "reload_m4a1_tactical"
+      }
+    },
+    "lm86": {
+      "empty": {
+        "source": "platform-reloads",
+        "clip": "reload_m4a1_empty"
+      },
+      "tactical": {
+        "source": "platform-reloads",
+        "clip": "reload_m4a1_tactical"
+      }
+    },
+    "rk762": {
+      "empty": {
+        "source": "platform-reloads",
+        "clip": "reload_ak74_empty"
+      },
+      "tactical": {
+        "source": "platform-reloads",
+        "clip": "reload_ak74_tactical"
+      }
+    },
+    "mg60": {
+      "empty": {
+        "source": "lmg",
+        "clip": "allanims",
+        "range": [
+          9.8,
+          14.4
+        ],
+        "gun": "^base$",
+        "scale": 0.01
+      },
+      "tactical": {
+        "source": "lmg",
+        "clip": "allanims",
+        "range": [
+          0.9,
+          5.6
+        ],
+        "gun": "^base$",
+        "scale": 0.01
+      }
+    },
+    "sr25": {
+      "empty": {
+        "source": "platform-reloads",
+        "clip": "reload_m4a1_empty"
+      },
+      "tactical": {
+        "source": "platform-reloads",
+        "clip": "reload_m4a1_tactical"
+      }
+    },
+    "dm56": {
+      "empty": {
+        "source": "platform-reloads",
+        "clip": "reload_scarl_empty"
+      },
+      "tactical": {
+        "source": "platform-reloads",
+        "clip": "reload_scarl_tactical"
+      }
+    },
+    "m24": {
+      "empty": {
+        "source": "platform-reloads",
+        "clip": "reload_m24_empty"
+      },
+      "tactical": {
+        "source": "platform-reloads",
+        "clip": "reload_m24_tactical"
+      }
+    },
+    "sp12": {
+      "empty": {
+        "source": "shell-curves",
+        "clip": "Armature|SG_FPS_Reload"
+      },
+      "tactical": {
+        "source": "shell-curves",
+        "clip": "Armature|SG_FPS_Reload"
+      }
+    },
+    "p226": {
+      "empty": {
+        "source": "platform-reloads",
+        "clip": "reload_p226_empty"
+      },
+      "tactical": {
+        "source": "platform-reloads",
+        "clip": "reload_p226_tactical"
+      }
+    }
+  }
+}

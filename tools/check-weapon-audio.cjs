@@ -25,6 +25,7 @@ if(process.env.BASELINE_PLAYER){
  await page.goto(`http://127.0.0.1:${server.address().port}/`);
  await page.waitForFunction(()=>window.G?.UI&&document.querySelector('#loading.hidden'),null,{timeout:180000});
  await page.click('#trainBtn');
+ await page.evaluate(async()=>{for(const id of G.GUN_IDS)G.VM.ensure(id);await G.AssetVM.loadAll()});
  await page.waitForFunction(()=>G.Training.active&&G.M4Viewmodel.ready&&G.G17Pilot.ready&&Object.keys(G.AssetVM.PACKS).every(k=>G.AssetVM.packs[k]?.ready),null,{timeout:240000});
  await page.evaluate(()=>{G.onLockChange=()=>{};G.Input.unlock();G.paused=true;G.UI.showPause(false);window.requestAnimationFrame=()=>0;});
 }
@@ -74,7 +75,7 @@ const audio=await page.evaluate(async timing=>{
   const master=c.createGain();master.gain.value=.75;master.connect(comp);const verb=c.createGain();verb.gain.value=0;verb.connect(master);
   const clock={currentTime:0,sampleRate:44100};for(const key of ['createBuffer','createBufferSource','createBiquadFilter','createGain','createStereoPanner'])clock[key]=c[key].bind(c);
   const bus={ctx:clock,master,verb,spatial:()=>({g:1,pan:0,lp:20000,rev:0}),_budget:()=>true};
-  if(kind==='reload')for(const event of row.events){clock.currentTime=event.at;W.event(bus,event.type,id)}
+  if(kind==='reload')for(const event of row.events){clock.currentTime=event.at;if(!W.event(bus,event.type,id))throw Error(id+' unplayable reload cue: '+event.type)}
   else if(kind==='burst')for(let t=0;t<1.8;t+=60/G.WEAPONS[id].rpm){clock.currentTime=t;W.fire(bus,id,null,true)}
   else if(kind==='far'){bus.spatial=pos=>G.Audio.spatial.call({listener:{x:0,y:0,z:0,yaw:0}},pos,30);W.fire(bus,id,{x:120,y:0,z:0},false)}
   else W.fire(bus,id,null,true);

@@ -27,14 +27,14 @@ class ViewmodelPass extends THREE.Pass {
 // v68 OutputPass(톤매핑·sRGB)를 여기에 합쳤다 → 전체 화면 패스 하나와 HDR 버퍼 왕복 하나를 아낀다
 const GradeShader = {
   uniforms: { tDiffuse: { value: null }, toneMappingExposure: { value: 0.6 }, uTexel: { value: new THREE.Vector2(1 / 1280, 1 / 720) }, uTime: { value: 0 },
-    uVig: { value: 1.2 }, uSat: { value: 0.83 }, uKnock: { value: 0 }, uCon: { value: 1.17 }, uGreen: { value: 0.45 },
-    uGrain: { value: 0.07 }, uCA: { value: 0.006 }, uSharp: { value: 0.2 },
+    uVig: { value: 1.2 }, uSat: { value: 0.9 }, uKnock: { value: 0 }, uCon: { value: 1.10 }, uGreen: { value: 0.28 },
+    uShadowLift: { value: .22 }, uGrain: { value: 0.07 }, uCA: { value: 0.006 }, uSharp: { value: 0.2 },
     uShadow: { value: new THREE.Vector3(0.9, 0.99, 1.1) }, uHigh: { value: new THREE.Vector3(1.08, 1.0, 0.88) } },
   vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
   fragmentShader: `#include <common>
     #include <tonemapping_pars_fragment>
     uniform sampler2D tDiffuse; uniform vec2 uTexel; uniform float uTime; uniform float uVig; uniform float uSat; uniform float uKnock; uniform float uCon;
-    uniform float uGreen; uniform float uGrain; uniform float uCA; uniform float uSharp; uniform vec3 uShadow; uniform vec3 uHigh; varying vec2 vUv;
+    uniform float uGreen; uniform float uShadowLift; uniform float uGrain; uniform float uCA; uniform float uSharp; uniform vec3 uShadow; uniform vec3 uHigh; varying vec2 vUv;
     float hash(vec2 p){ p = fract(p * vec2(443.897, 441.423)); p += dot(p, p.yx + 19.19); return fract((p.x + p.y) * p.x); }
     float luma(vec3 c){ return dot(c, vec3(0.2126, 0.7152, 0.0722)); }
     void main(){
@@ -58,6 +58,8 @@ const GradeShader = {
       c = mix(c, c * vec3(1.15, 0.7, 0.7), uKnock * 0.5);
       c *= clamp(1.0 - r2 * uVig, 0.0, 1.0);
       if (uGrain > 0.0) c *= 1.0 + (hash(vUv / uTexel + fract(uTime) * vec2(61.3, 17.9)) - 0.5) * uGrain;
+      // Mild bounded shadow fill; preserves highlights and night contrast.
+      c += vec3(.012 * uShadowLift * (1.0 - smoothstep(.01, .22, luma(c))));
       // (예전 OutputPass) ACES 톤매핑 → sRGB
       c = ACESFilmicToneMapping(c);
       gl_FragColor = sRGBTransferOETF(vec4(c, 1.0));
@@ -158,6 +160,47 @@ const UpscaleShader = {
       gl_FragColor = vec4(clamp(aC / aW, mn, mx), 1.0);   // 링잉 없이 이웃 4점 범위로
     }`
 };
+// v78: draw a downscaled world first, then grade/composite the hands at
+// output resolution. Transparent background preserves the world framebuffer.
+// Reuse the same lighting, camera and grade; ADS geometry never changes.
+function QualitySamples(samples) { return Math.min(samples, 2, renderer.capabilities.maxSamples || 0); }
+class NativeViewmodel {
+  constructor(samples) {
+    this.target = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples });
+    this.target.texture.name = 'Native viewmodel HDR';
+    this.pass = new THREE.ShaderPass({ ...GradeShader, fragmentShader: GradeShader.fragmentShader
+      .replace('vec3 c = texture2D(tDiffuse, vUv).rgb;', 'vec4 layer = texture2D(tDiffuse, vUv); if (layer.a < 0.001) discard; vec3 c = layer.rgb / max(layer.a, 0.001);')
+      .replace('sRGBTransferOETF(vec4(c, 1.0))', 'vec4(sRGBTransferOETF(vec4(c, 1.0)).rgb, layer.a)') });
+    this.pass.material.transparent = true;
+    this.pass.material.depthTest = this.pass.material.depthWrite = false;
+    this.pass.material.toneMapped = false;
+    this.pass.renderToScreen = true;
+    this.clearColor = new THREE.Color();
+  }
+  render(r, w, h) {
+    if (this.target.width !== w || this.target.height !== h) this.target.setSize(w, h);
+    const ac = r.autoClear, alpha = r.getClearAlpha(), target = r.getRenderTarget();
+    r.getClearColor(this.clearColor);
+    try {
+      r.autoClear = false;
+      r.setRenderTarget(this.target); r.setClearColor(0, 0); r.clear();
+      r.render(G.vmScene, G.vmCamera);
+      for (const k in grade.uniforms) this.pass.uniforms[k].value = grade.uniforms[k].value;
+      this.pass.uniforms.uTexel.value = this.texel || (this.texel = new THREE.Vector2());
+      this.texel.set(1 / w, 1 / h);
+      // Native geometry needs no enlargement sharpening or chromatic fringe.
+      this.pass.uniforms.uSharp.value = 0; this.pass.uniforms.uCA.value = 0;
+      this.pass.render(r, null, this.target);
+    } finally {
+      r.setClearColor(this.clearColor, alpha); r.autoClear = ac; r.setRenderTarget(target);
+    }
+  }
+  dispose() { this.target.dispose(); this.pass.dispose(); }
+}
+G.viewmodelRT = () => nativeVM && nativeVM.target;
+// Diagnostic switch used by the paired, same-scene quality benchmark.
+G.renderFeatures = { nativeViewmodel: true };
+
 // 품질 프리셋
 // dpr 해상도 배율 상한 · msaa · shadow 그림자 맵(0 = 끔) · range 그림자 범위 · bloom · post 후처리(끄면 화면에 바로 그림)
 // far 시야 거리 · fog 안개 배율 · lod 건물 상세 거리 배율 · terr 지형 상세 거리 배율 · shEvery 그림자 갱신 주기(프레임)
@@ -279,7 +322,7 @@ function outputPixelRatio() {
   return pr;
 }
 
-let renderer, scene, camera, composer, bloom, grade, fxaa, upAA, last = 0, menuAng = 0, frameNo = 0;
+let renderer, scene, camera, composer, bloom, grade, fxaa, upAA, vmPass, nativeVM, last = 0, menuAng = 0, frameNo = 0;
 G.paused = false;
 
 /* ------------------------------------------------------------------ */
@@ -351,6 +394,7 @@ G.boot = async function () {
   const loadFill = document.getElementById('loadFill'), loadText = document.getElementById('loadText');
   const progress = (p, t) => { loadFill.style.width = Math.round(p * 100) + '%'; if (t) loadText.textContent = t; };
   progress(0.3, '렌더러 초기화 중...');
+  G.Footsteps?.prefetch();
   renderer = G.renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance', stencil: false });
   renderer.setPixelRatio(1);
   renderer.setSize(innerWidth, innerHeight);
@@ -385,6 +429,7 @@ G.boot = async function () {
   G.AssetVM?.init();
   // M4 팩의 실사 팔을 나머지 총기에도 (M4·Glock 이 준비된 뒤)
   G.RealArms?.init();
+  G.WeaponFinish?.root(G.vmScene);
   if(G.Attachments)G.Attachments.initUI();
   G.World.setTimeOfDay(G.UI.opts.tod || 'day');
   G.Player.sens = G.UI.opts.sens;
@@ -432,6 +477,7 @@ function showError(msg) {
 }
 
 function setupComposer(samples) {
+  if (nativeVM) { nativeVM.dispose(); nativeVM = null; }
   if (composer) {
     composer.renderTarget1.dispose(); composer.renderTarget2.dispose();
     for (const p of composer.passes) if (p.dispose) p.dispose();
@@ -440,7 +486,8 @@ function setupComposer(samples) {
   const rt = new THREE.WebGLRenderTarget(innerWidth * pr, innerHeight * pr, { type: THREE.HalfFloatType, samples });
   composer = new THREE.EffectComposer(renderer, rt);
   composer.addPass(new THREE.RenderPass(scene, camera));
-  composer.addPass(new ViewmodelPass(G.vmScene, G.vmCamera));
+  vmPass = new ViewmodelPass(G.vmScene, G.vmCamera);
+  composer.addPass(vmPass);
   bloom = new THREE.UnrealBloomPass(new THREE.Vector2(innerWidth / 2, innerHeight / 2), 0.28, 0.4, 3.5);
   // 블룸은 절반 해상도에서 처리
   const bloomSetSize = bloom.setSize.bind(bloom);
@@ -449,6 +496,7 @@ function setupComposer(samples) {
   grade = new THREE.ShaderPass(GradeShader);
   grade.material.toneMapped = false;   // 톤매핑은 셰이더 안에서 (화면에 바로 그려도 두 번 걸리지 않게)
   composer.addPass(grade);
+  nativeVM = new NativeViewmodel(QualitySamples(samples));
   // v67 FXAA (장면 해상도) → 업스케일 (화면 해상도, 마지막)
   fxaa = G.fxaaPass = new THREE.ShaderPass(FXAAShader);
   composer.addPass(fxaa);
@@ -466,16 +514,21 @@ function syncUpAA() {
   upAA.uniforms.uInSize.value.set(Math.max(1, rt.width), Math.max(1, rt.height));
   fxaa.uniforms.uIn.value.copy(upAA.uniforms.uIn.value);
   const ratio = DRS.applied / Math.max(1e-3, renderer.getPixelRatio());
+  if (ratio >= 0.97 && nativeVM?.target.width > 1) nativeVM.target.setSize(1, 1);
   fxaa.enabled = !!Q.fxaa;
   upAA.uniforms.uEasu.value = ratio >= 0.97 ? 0 : Q.lite ? 1 : 2;   // 최저는 싼 선형+선명화, 그 위는 EASU
   upAA.uniforms.uSharp.value = U.clamp((1 - ratio) * 0.5, 0.06, 0.25);
   upAA.enabled = !!Q.fxaa || ratio < 0.97;   // FXAA 를 쓰면 늘 마지막에 (FXAA 가 화면 해상도에서 돌지 않게)
   // 장면 해상도가 낮을 때는 필름 그레인·색수차·선명화를 줄인다 (늘리면 큰 점으로 번져 '점점이' 보였다)
   const k = U.clamp((ratio - 0.55) / 0.4, 0, 1);
-  grade.uniforms.uGrain.value = 0.07 * k * (Q.lite ? 0 : 1);
+  const visual = G.Settings?.data?.visual || { grain: .15, aberration: 0, vignette: .45, shadows: .22 };
+  grade.uniforms.uGrain.value = 0.07 * k * (Q.lite ? 0 : visual.grain);
+  grade.uniforms.uVig.value = 1.2 * visual.vignette;
+  grade.uniforms.uShadowLift.value = visual.shadows;
   grade.uniforms.uSharp.value = 0.2 * k;
-  grade.uniforms.uCA.value = 0.006 * (Q.lite ? 0 : 1);
+  grade.uniforms.uCA.value = 0.006 * (Q.lite ? 0 : visual.aberration);
 }
+G.refreshVisuals = () => { if (grade && G.quality) syncUpAA(); };
 function basePixelRatio(q) {
   let pr = Math.min(devicePixelRatio || 1, QUALITY[q].dpr);
   const px = innerWidth * innerHeight * pr * pr;
@@ -524,7 +577,17 @@ function renderFrame(dt) {
     const rt = composer.renderTarget1;   // 색보정은 장면 해상도에서 돈다
     grade.uniforms.toneMappingExposure.value = renderer.toneMappingExposure;
     grade.uniforms.uTexel.value.set(1 / rt.width, 1 / rt.height); grade.uniforms.uTime.value = (grade.uniforms.uTime.value + 0.618) % 64;
-    composer.render(dt); return;
+    // Keep the inexpensive single-composer path when the world already has
+    // enough pixels. Only a downscaled world needs the native overlay.
+    const output = renderer.getDrawingBufferSize(_db);
+    const splitVM = G.renderFeatures.nativeViewmodel && (rt.width < output.x * 0.97 || rt.height < output.y * 0.97);
+    vmPass.enabled = !splitVM;
+    composer.render(dt);
+    if (splitVM && G.VM.cur && G.VM.root.visible) {
+      if (PF) PF.seg('viewmodel');
+      nativeVM.render(renderer, output.x, output.y);
+    }
+    return;
   }
   renderer.setRenderTarget(null);
   renderer.autoClear = true;
@@ -560,10 +623,11 @@ function warmup() {
   const m0 = G.Game.actors[0].model;
   m0.showChute(true); m0.showChute(false); show(m0.chute);
   for (const k of G.THROW_ORDER) { const t = G.Guns.throwModel(k, false); t.position.copy(camera.position); scene.add(t); temp.push(t); }
-  for (const k of G.GUN_IDS) { const g = G.Guns.tpModel(k); g.position.copy(camera.position); scene.add(g); temp.push(g); }
+  for (const w of Object.values(G.Game.player.weapons)) if (w) { const g = G.Guns.tpModel(w.id); g.position.copy(camera.position); scene.add(g); temp.push(g); G.VM.ensure(w.id); G.AssetVM?.request(w.id); }
   if (G.Game.zone) show(G.Game.zone.mesh);
   for (const k in G.VM.models) show(G.VM.models[k].root);
-  G.VM.root.traverse(o => { if (o !== G.VM.root) show(o); });
+  // Visibility inside a model encodes optics, magazines and alternate hands.
+  // Compiling its root must not reveal those hidden alternatives.
   renderer.compile(scene, camera);
   renderer.compile(G.vmScene, G.vmCamera);
   // v67 처음 보는 텍스처를 GPU 로 올리느라 게임 중에 멈칫하던 것 (숲에 처음 들어갈 때 등) → 판이 시작되면
@@ -605,6 +669,7 @@ G.resume = function () {
   G.Input.lock();
 };
 G.toMenu = function () {
+  if (nativeVM) nativeVM.target.setSize(1, 1);
   G.Game.cleanup();
   G.paused = false;
   G.Input.unlock();
