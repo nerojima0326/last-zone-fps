@@ -1,0 +1,347 @@
+{
+  "atlas": {
+    "version": 85,
+    "file": "pool-fire-v85.webp",
+    "frames": 16,
+    "columns": 4,
+    "rows": 4,
+    "tile": 256,
+    "fps": 12,
+    "bytes": 189214,
+    "sha256": "081a9dcfe6fadbf95839801341f769abaa9c9ae1c8c9d72925b12b8da612e42b",
+    "source": "original-generated-flame-atlas-v1",
+    "sourceFile": "assets/sources/vfx/pool-fire-v85.png",
+    "sourceSha256": "63ea07e85cd8a8c05c2d6e6aaad2a3aafcb8a99ff78b284268292c323ade17cb",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "framesChecked": [
+      {
+        "frame": 0,
+        "coverage": 0.183349609375,
+        "edge": 0,
+        "hash": "d79c8bc048821e00551a5b07ddf5ff84f1249665fd75fa50594152c3e82f735e"
+      },
+      {
+        "frame": 1,
+        "coverage": 0.2007598876953125,
+        "edge": 0,
+        "hash": "958bb4cfb793d6b826f26573c7f3e23dfd05665cadc1ed629165cdf7b2f7d748"
+      },
+      {
+        "frame": 2,
+        "coverage": 0.231475830078125,
+        "edge": 0,
+        "hash": "5bba2702a6d485854b4b56b3a2e636e9d75be670ddc16ebb3c39f0645f5c9699"
+      },
+      {
+        "frame": 3,
+        "coverage": 0.2392425537109375,
+        "edge": 0,
+        "hash": "1f12227f19a67a1ca405722acbcf8ebfae651d0b170fd2a82e82494ceb9fb1fa"
+      },
+      {
+        "frame": 4,
+        "coverage": 0.257568359375,
+        "edge": 0,
+        "hash": "d02ba7b0c322d0ea29cbed5b2556b32f3bf07659f2abbb23662970de9a06579a"
+      },
+      {
+        "frame": 5,
+        "coverage": 0.28021240234375,
+        "edge": 0,
+        "hash": "3a4433a51e0d94964287d2294e5f8cf911382efb232ed77f907850d2aeecc0f0"
+      },
+      {
+        "frame": 6,
+        "coverage": 0.2870025634765625,
+        "edge": 0,
+        "hash": "1818dcfbfd733aba6183555d5efd0265b6a60586b620b76e0f24538f92170cb5"
+      },
+      {
+        "frame": 7,
+        "coverage": 0.313873291015625,
+        "edge": 0,
+        "hash": "1ac91c7ac9a1fa2090a74f11cde11a397088fa80af8a36f56c640e6c3a37b756"
+      },
+      {
+        "frame": 8,
+        "coverage": 0.323760986328125,
+        "edge": 0,
+        "hash": "ba5efa2cb0964f976278d8c2a1286778b17cd517643a75aaa6602cd10c2af7c1"
+      },
+      {
+        "frame": 9,
+        "coverage": 0.2988433837890625,
+        "edge": 0,
+        "hash": "22ffee628c66b1339fa15769667dff9d8d5a36f4c6cbf6acc4c266c1dfa4d631"
+      },
+      {
+        "frame": 10,
+        "coverage": 0.2969512939453125,
+        "edge": 0,
+        "hash": "502ebb8ee507f151b8eb32b8ece0943f242a42e71661b6afa99a08716c2191fc"
+      },
+      {
+        "frame": 11,
+        "coverage": 0.265380859375,
+        "edge": 0,
+        "hash": "084a1bbdd35832e3891eda8501696253864665b8147813817a779da43ca4bc28"
+      },
+      {
+        "frame": 12,
+        "coverage": 0.258758544921875,
+        "edge": 0,
+        "hash": "2eaef97dac80e274b70bc6252e452b7a043029d9446f4ee8198dc53859c8384e"
+      },
+      {
+        "frame": 13,
+        "coverage": 0.245208740234375,
+        "edge": 0,
+        "hash": "ec7228e1b7b2f9eeb286d303a301b9c54a1af3cbec572c3224c664f97f48b237"
+      },
+      {
+        "frame": 14,
+        "coverage": 0.199951171875,
+        "edge": 0,
+        "hash": "9720ada82c4d3f1b246ee003b9976e9b289f3da6205efac64e4b2795650ed05d"
+      },
+      {
+        "frame": 15,
+        "coverage": 0.194061279296875,
+        "edge": 0,
+        "hash": "5516ebae8e18acb4a8435d9024233cee65bff867c5b9872bcb0208424564fabc"
+      }
+    ]
+  },
+  "delayed": {
+    "menu": true,
+    "state": "loading",
+    "ready": 0
+  },
+  "rendered": [
+    {
+      "frame": 0,
+      "visible": 2795,
+      "hash": 3641934469,
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 1,
+      "visible": 2997,
+      "hash": 523858682,
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 2,
+      "visible": 3431,
+      "hash": 2876461902,
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 3,
+      "visible": 3563,
+      "hash": 728515186,
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 4,
+      "visible": 3816,
+      "hash": 4002590810,
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 5,
+      "visible": 4158,
+      "hash": 3218372526,
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 6,
+      "visible": 4287,
+      "hash": 449331264,
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 7,
+      "visible": 4682,
+      "hash": 2080757425,
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 8,
+      "visible": 4823,
+      "hash": 2577196347,
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 9,
+      "visible": 4252,
+      "hash": 1335379410,
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 10,
+      "visible": 4316,
+      "hash": 2136975479,
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 11,
+      "visible": 3844,
+      "hash": 1908566609,
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 12,
+      "visible": 3807,
+      "hash": 2362640546,
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 13,
+      "visible": 3606,
+      "hash": 175797006,
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 14,
+      "visible": 3050,
+      "hash": 894447778,
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 15,
+      "visible": 2938,
+      "hash": 3744856146,
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "fire": {
+    "started": {
+      "radius": 3.4,
+      "remaining": 7.799999999999952,
+      "flames": 15,
+      "sites": 15,
+      "footprint": 2.7404596107127817,
+      "phase": [
+        14.428804397583008,
+        22.95781707763672,
+        15.716919898986816,
+        14.319540977478027,
+        25.62481689453125,
+        18.715816497802734,
+        23.827951431274414,
+        24.89056968688965,
+        23.16703224182129,
+        14.084795951843262,
+        11.810269355773926,
+        18.999317169189453,
+        24.44138526916504,
+        14.29683780670166,
+        11.799635887145996
+      ],
+      "texture": [
+        1024,
+        1024
+      ]
+    },
+    "anchored": true,
+    "distance": {
+      "hidden": true,
+      "gameplay": true,
+      "returned": 15
+    },
+    "ended": true,
+    "liveFlames": 0,
+    "free": 247,
+    "pool": 256
+  },
+  "missing": {
+    "state": "fallback",
+    "ready": 0,
+    "fires": 1,
+    "flames": 15
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "version": 85,
+  "file": "pool-fire-v85.webp",
+  "frames": 16,
+  "columns": 4,
+  "rows": 4,
+  "tile": 256,
+  "fps": 12,
+  "bytes": 189214,
+  "sha256": "081a9dcfe6fadbf95839801341f769abaa9c9ae1c8c9d72925b12b8da612e42b",
+  "source": "original-generated-flame-atlas-v1",
+  "sourceFile": "assets/sources/vfx/pool-fire-v85.png",
+  "sourceSha256": "63ea07e85cd8a8c05c2d6e6aaad2a3aafcb8a99ff78b284268292c323ade17cb",
+  "sourceSize": [
+    1254,
+    1254
+  ]
+}

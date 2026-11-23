@@ -1,0 +1,136 @@
+{
+  "version": 85,
+  "base": "9dc90c0d4eb27782ba931b4da0073ad4c24f202c",
+  "checks": [
+    {
+      "command": "node tools/check-fire-flipbook.cjs",
+      "result": "통과",
+      "frames": 16,
+      "transparentCorners": true,
+      "distance": {
+        "hidden": true,
+        "gameplay": true,
+        "returned": 15
+      },
+      "delayedMenu": {
+        "menu": true,
+        "state": "loading",
+        "ready": 0
+      },
+      "missing": {
+        "state": "fallback",
+        "ready": 0,
+        "fires": 1,
+        "flames": 15
+      }
+    },
+    {
+      "command": "node tools/check-vehicle-throwable-vfx.cjs",
+      "result": "통과",
+      "qualities": [
+        {
+          "quality": "potato",
+          "sprites": 40,
+          "chunks": 24,
+          "marks": 11,
+          "caps": [
+            80,
+            24
+          ],
+          "pool": 256,
+          "lights": 2
+        },
+        {
+          "quality": "low",
+          "sprites": 53,
+          "chunks": 40,
+          "marks": 11,
+          "caps": [
+            128,
+            48
+          ],
+          "pool": 256,
+          "lights": 2
+        },
+        {
+          "quality": "medium",
+          "sprites": 60,
+          "chunks": 52,
+          "marks": 11,
+          "caps": [
+            192,
+            72
+          ],
+          "pool": 256,
+          "lights": 2
+        },
+        {
+          "quality": "high",
+          "sprites": 72,
+          "chunks": 60,
+          "marks": 11,
+          "caps": [
+            256,
+            96
+          ],
+          "pool": 256,
+          "lights": 2
+        }
+      ],
+      "stress": {
+        "max": {
+          "sprites": 80,
+          "chunks": 24,
+          "marks": 48,
+          "objects": 0,
+          "geometries": 0,
+          "textures": 0
+        },
+        "cleared": {
+          "sprites": 0,
+          "chunks": 0,
+          "marks": 0,
+          "free": 256
+        },
+        "cadence": [
+          {
+            "fps": 30,
+            "sprites": 19,
+            "flames": 15
+          },
+          {
+            "fps": 60,
+            "sprites": 19,
+            "flames": 15
+          },
+          {
+            "fps": 144,
+            "sprites": 19,
+            "flames": 15
+          }
+        ],
+        "fallback": true
+      }
+    },
+    {
+      "command": "node tools/prepare-fire-flipbook.cjs /tmp/lz-v85-rebuild",
+      "result": "통과",
+      "identicalTexture": true,
+      "identicalManifest": true
+    },
+    {
+      "command": "VFX_BASE=9dc90c0d4eb27782ba931b4da0073ad4c24f202c VFX_VIEWS=standard,near,far node tools/capture-throwable-vfx.cjs before /tmp/lz-v85-final",
+      "result": "통과",
+      "screenshots": 10,
+      "errors": []
+    },
+    {
+      "command": "VFX_BASE=9dc90c0d4eb27782ba931b4da0073ad4c24f202c VFX_VIEWS=standard,near,far VFX_ANIMATE=1 node tools/capture-throwable-vfx.cjs after /tmp/lz-v85-release",
+      "result": "통과",
+      "screenshots": 10,
+      "motionFrames": 24,
+      "errors": []
+    }
+  ],
+  "syntax": "변경한 JS/CJS 5개 node --check 및 git diff --check 통과"
+}
