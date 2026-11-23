@@ -120,6 +120,7 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   const ironQ=new T.Quaternion().setFromRotationMatrix(new T.Matrix4().makeBasis(new V().crossVectors(up,back).normalize(),up,back).transpose());
   point.copy(rear).applyQuaternion(ironQ);ironOffset.set(-point.x,-point.y,-.22-point.z);
   const previewTemplate=frame.clone(true),remove=[];previewTemplate.traverse(o=>{if(o.isSkinnedMesh||o.isCamera||o.name==='Mag2')remove.push(o)});for(const o of remove)o.removeFromParent();
+  G.WeaponFinish?.root(model);
   const flash=G.VM.models.ar7.flash.clone();flash.name='M4Flash';flash.visible=false;pivot.add(flash);
   this.unload();G.VM.root.add(pivot);
   Object.assign(this,{ready:true,active:false,model,pivot,frame,main,mainRestMatrix,body,rearSight,mixer,actions,spare,flash,muzzleLocal,ironLocal,ironQ,ironOffset,aimOffset:ironOffset.clone(),previewTemplate,scope:null,mount:null,mountKey:null,name:'Idle',shotT:99,equipT:99,aim:0});

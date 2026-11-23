@@ -1,0 +1,109 @@
+{
+  "author": "Kenney",
+  "license": "CC0-1.0",
+  "original": "https://kenney.nl/assets/impact-sounds",
+  "mirror": "https://github.com/Boyquotes/kenney-impact-sounds-for-godot",
+  "commit": "999dd1684873f8b020a3aa5b26e713da21688924",
+  "files": [
+    {
+      "file": "footstep_concrete_000.ogg",
+      "sha256": "d7267e183067757c92c169de2a379abea592cfca6b39bb2e8feea15221ad79fe"
+    },
+    {
+      "file": "footstep_concrete_001.ogg",
+      "sha256": "507a75eb19b897087855a3be3cf11a12d7fa37d143ad535eeebe0b8031c7325d"
+    },
+    {
+      "file": "footstep_concrete_002.ogg",
+      "sha256": "b21fa546d74941196b25da8a20b7010abd8c05c4fcf93545d1f344e66a664e13"
+    },
+    {
+      "file": "footstep_concrete_003.ogg",
+      "sha256": "8b513c2f0316324060b9174b8f28df6c2147418c506e6a53b77f18e149a5547b"
+    },
+    {
+      "file": "footstep_concrete_004.ogg",
+      "sha256": "24dd8db2413e5b81ad181e1205c12a1c7801da5f85715d471b92a4b2f632e45e"
+    },
+    {
+      "file": "footstep_grass_000.ogg",
+      "sha256": "9d49497777405d78d7cf7f2888e28277f3a23192300cfd1d79d54876b20f479f"
+    },
+    {
+      "file": "footstep_grass_001.ogg",
+      "sha256": "fb28781bd22b2eefdc14077f1adf5c94d7fe9c3a130194633b55f3e0d39d9f04"
+    },
+    {
+      "file": "footstep_grass_002.ogg",
+      "sha256": "73a520139f5be716a403bfe9c80e0e94d1e61d8e9de04a354b336392164b53dc"
+    },
+    {
+      "file": "footstep_grass_003.ogg",
+      "sha256": "0546e1d8ab2def714425701a18bd34c5ee2794b12e858e5b595aabcf38a34137"
+    },
+    {
+      "file": "footstep_grass_004.ogg",
+      "sha256": "086fd4ab3546a507ea5f5c759a9a10e535c95ade13705c238bc0eeffd7d4e8ba"
+    },
+    {
+      "file": "footstep_snow_000.ogg",
+      "sha256": "c05fa4a9dc9a7aabc04996466fb589537e49af76de9998d8f9e6270ec92dcef7"
+    },
+    {
+      "file": "footstep_snow_001.ogg",
+      "sha256": "980fb9a1c9227aed7995067b0357f373053337f2416316db8ea0438418542fb4"
+    },
+    {
+      "file": "footstep_snow_002.ogg",
+      "sha256": "db52bafdc66304f3b999f2c29227826c65993916e630ac2ffbca17d07b263178"
+    },
+    {
+      "file": "footstep_snow_003.ogg",
+      "sha256": "68272e3f1cabcabd02d328fd344454d7c04cb58b5a86972fcdd858f845e3d007"
+    },
+    {
+      "file": "footstep_snow_004.ogg",
+      "sha256": "7fe9ce5f5732aaa0a50ef02bb1ac162c27f6bd85214e86aaea6e13e7a41dbc00"
+    },
+    {
+      "file": "footstep_wood_000.ogg",
+      "sha256": "5f1c252942a220d658121bd9417448cd19649ded9fff2ff15f6e50899373ce8e"
+    },
+    {
+      "file": "footstep_wood_001.ogg",
+      "sha256": "e4f68e1c9fd55b4dc8ca89ed2bbab6f200171bc54bdc18aa96b80d8e7336f462"
+    },
+    {
+      "file": "footstep_wood_002.ogg",
+      "sha256": "9ff095b05cee5eec40b081defe3f0eef7232bb16d4865ce03b9f6dbab875cfdd"
+    },
+    {
+      "file": "footstep_wood_003.ogg",
+      "sha256": "2a68a083daa9eda08fed0ea5da5280dfbe0de226196c576be02f95259dd139d9"
+    },
+    {
+      "file": "footstep_wood_004.ogg",
+      "sha256": "b33e0854e2b3f6b6492e25c25ef8f90447a332f7c6bb25dd02edced9581d3441"
+    },
+    {
+      "file": "impact_metal_light_000.ogg",
+      "sha256": "33b5e6e37c6e9d54e07bf5a89b12c76e879f40c1ea83cdd82714df1d6f9fec6d"
+    },
+    {
+      "file": "impact_metal_light_001.ogg",
+      "sha256": "fba69c467ddd85da7b1d82e259f936b876d9ba6a3d6f1b24bdd10468e46bfe08"
+    },
+    {
+      "file": "impact_metal_light_002.ogg",
+      "sha256": "25a96f90a9a1f88a531e824e126f0519504625e5635e65a72e4f31611428db29"
+    },
+    {
+      "file": "impact_metal_light_003.ogg",
+      "sha256": "92d5db6bfc672d9dc1b4f390b2900504f013187fa36335472554fafefa9050b1"
+    },
+    {
+      "file": "impact_metal_light_004.ogg",
+      "sha256": "9b1c35820fba507081261f19ab5f461f69a5e2627a7d91acdb73ca3cfc997979"
+    }
+  ]
+}

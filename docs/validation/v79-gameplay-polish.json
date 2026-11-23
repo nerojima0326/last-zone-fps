@@ -1,0 +1,1257 @@
+{
+  "version": 79,
+  "base": "b5b7241311216446f4f162d36c46c8234cfdb9af",
+  "branch": "feat/gameplay-polish-v79",
+  "checks": [
+    {
+      "check": "check-aim",
+      "exit": 0,
+      "seconds": 57.1
+    },
+    {
+      "check": "check-hand-poses",
+      "exit": 0,
+      "seconds": 112.5
+    },
+    {
+      "check": "check-reloads",
+      "exit": 0,
+      "seconds": 50.9
+    },
+    {
+      "check": "check-clearance",
+      "exit": 0,
+      "seconds": 7.5
+    },
+    {
+      "check": "check-bundled-viewmodels",
+      "exit": 0,
+      "seconds": 79.9
+    },
+    {
+      "check": "check-training-range",
+      "exit": 0,
+      "seconds": 52.0
+    },
+    {
+      "check": "check-weapon-catalog",
+      "exit": 0,
+      "seconds": 55.8
+    },
+    {
+      "check": "check-weapon-audio",
+      "exit": 0,
+      "seconds": 89.5
+    },
+    {
+      "check": "check-combat",
+      "exit": 0,
+      "fixture": "Explicitly ensure all viewmodels before inspecting optics; full-game rerun passed."
+    },
+    {
+      "check": "check-quality-performance",
+      "exit": 0
+    },
+    {
+      "check": "check-gameplay-polish",
+      "exit": 0
+    }
+  ],
+  "polish": {
+    "samples": [
+      {
+        "id": "grass1",
+        "duration": 0.670702947845805,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "grass2",
+        "duration": 0.689546485260771,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "grass0",
+        "duration": 0.7746712018140589,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "grass3",
+        "duration": 0.6664172335600907,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "concrete1",
+        "duration": 0.10473922902494331,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "concrete0",
+        "duration": 0.10301587301587302,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "concrete2",
+        "duration": 0.10988662131519275,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "grass4",
+        "duration": 0.5873242630385488,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "concrete3",
+        "duration": 0.10759637188208616,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "snow0",
+        "duration": 0.3713151927437642,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "concrete4",
+        "duration": 0.11145124716553288,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "snow1",
+        "duration": 0.3713151927437642,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "snow2",
+        "duration": 0.3713151927437642,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "snow4",
+        "duration": 0.3713151927437642,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "wood1",
+        "duration": 0.24866213151927438,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "wood3",
+        "duration": 0.24861678004535148,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "wood0",
+        "duration": 0.24816326530612245,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "snow3",
+        "duration": 0.3713151927437642,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "wood2",
+        "duration": 0.24848072562358275,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "wood4",
+        "duration": 0.24501133786848073,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "metal0",
+        "duration": 0.34975056689342404,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "metal1",
+        "duration": 0.24893424036281178,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "metal4",
+        "duration": 0.21049886621315192,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "metal2",
+        "duration": 0.2328798185941043,
+        "peak": 0.7200000286102295
+      },
+      {
+        "id": "metal3",
+        "duration": 0.4820408163265306,
+        "peak": 0.7200000286102295
+      }
+    ],
+    "surfaces": {
+      "sand": {
+        "actual": "sand",
+        "point": {
+          "x": -794.2708333333334,
+          "z": -794.2708333333334
+        }
+      },
+      "gravel": {
+        "actual": "gravel",
+        "point": {
+          "x": -279.6875,
+          "z": -655.7291666666667
+        }
+      },
+      "grass": {
+        "actual": "grass",
+        "point": {
+          "x": -259.89583333333326,
+          "z": -655.7291666666667
+        }
+      },
+      "dirt": {
+        "actual": "dirt",
+        "point": {
+          "x": 76.5625,
+          "z": -655.7291666666667
+        }
+      },
+      "concrete": {
+        "actual": "concrete",
+        "point": {
+          "x": -121.35416666666674,
+          "z": -596.3541666666666
+        }
+      },
+      "asphalt": {
+        "actual": "asphalt",
+        "point": {
+          "x": -121.35416666666674,
+          "z": -556.7708333333334
+        }
+      }
+    },
+    "gait": [
+      {
+        "fps": 30,
+        "mode": "walk",
+        "expected": 25,
+        "contacts": 25,
+        "stopped": true
+      },
+      {
+        "fps": 30,
+        "mode": "sprint",
+        "expected": 28,
+        "contacts": 28,
+        "stopped": true
+      },
+      {
+        "fps": 30,
+        "mode": "crouch",
+        "expected": 23,
+        "contacts": 23,
+        "stopped": true
+      },
+      {
+        "fps": 30,
+        "mode": "prone",
+        "expected": 14,
+        "contacts": 14,
+        "stopped": true
+      },
+      {
+        "fps": 60,
+        "mode": "walk",
+        "expected": 25,
+        "contacts": 25,
+        "stopped": true
+      },
+      {
+        "fps": 60,
+        "mode": "sprint",
+        "expected": 28,
+        "contacts": 28,
+        "stopped": true
+      },
+      {
+        "fps": 60,
+        "mode": "crouch",
+        "expected": 23,
+        "contacts": 23,
+        "stopped": true
+      },
+      {
+        "fps": 60,
+        "mode": "prone",
+        "expected": 14,
+        "contacts": 14,
+        "stopped": true
+      },
+      {
+        "fps": 144,
+        "mode": "walk",
+        "expected": 25,
+        "contacts": 25,
+        "stopped": true
+      },
+      {
+        "fps": 144,
+        "mode": "sprint",
+        "expected": 28,
+        "contacts": 28,
+        "stopped": true
+      },
+      {
+        "fps": 144,
+        "mode": "crouch",
+        "expected": 23,
+        "contacts": 23,
+        "stopped": true
+      },
+      {
+        "fps": 144,
+        "mode": "prone",
+        "expected": 14,
+        "contacts": 14,
+        "stopped": true
+      }
+    ],
+    "feet": [
+      {
+        "fps": 30,
+        "slopeError": 5.551115123125783e-17,
+        "maxHipDelta": 0.11604636746950181,
+        "crouchHeight": 0.6200007459087044,
+        "pronePitch": -1.4998148852938702,
+        "finite": true
+      },
+      {
+        "fps": 60,
+        "slopeError": 5.551115123125783e-17,
+        "maxHipDelta": 0.06428455307403669,
+        "crouchHeight": 0.6200007459087042,
+        "pronePitch": -1.49981488529387,
+        "finite": true
+      },
+      {
+        "fps": 144,
+        "slopeError": 1.3877787807814457e-16,
+        "maxHipDelta": 0.028486474251190552,
+        "crouchHeight": 0.6200007459087042,
+        "pronePitch": -1.49981488529387,
+        "finite": true
+      }
+    ],
+    "soldierFeet": [
+      {
+        "template": "swat_black",
+        "maxError": 0.038218911524882104,
+        "plantedError": 0.013071089862112936,
+        "slip": 0.007264137415384873,
+        "worst": {
+          "frame": 166,
+          "side": 0,
+          "actual": [
+            -0.09989924113587755,
+            0.02496221096800466,
+            -5.05498957803429
+          ],
+          "target": [
+            -0.1,
+            -0.003599681910144009,
+            -5.0295948281632
+          ],
+          "upper": [
+            -0.09777945489318228,
+            0.7929130605422001,
+            -0.022632743848286264
+          ],
+          "lengths": [
+            0.44886902842941534,
+            0.3562659611918735
+          ],
+          "hip": 0.8406713834624064,
+          "sole": 0.10857003738476477,
+          "swing": true
+        },
+        "feet": 2
+      },
+      {
+        "template": "swat_ranger",
+        "maxError": 0.038218911524882104,
+        "plantedError": 0.013071089862112936,
+        "slip": 0.007264137415384873,
+        "worst": {
+          "frame": 166,
+          "side": 0,
+          "actual": [
+            -0.09989924113587755,
+            0.02496221096800466,
+            -5.05498957803429
+          ],
+          "target": [
+            -0.1,
+            -0.003599681910144009,
+            -5.0295948281632
+          ],
+          "upper": [
+            -0.09777945489318228,
+            0.7929130605422001,
+            -0.022632743848286264
+          ],
+          "lengths": [
+            0.44886902842941534,
+            0.3562659611918735
+          ],
+          "hip": 0.8406713834624064,
+          "sole": 0.10857003738476477,
+          "swing": true
+        },
+        "feet": 2
+      },
+      {
+        "template": "swat_coyote",
+        "maxError": 0.038218911524882104,
+        "plantedError": 0.013071089862112936,
+        "slip": 0.007264137415384873,
+        "worst": {
+          "frame": 166,
+          "side": 0,
+          "actual": [
+            -0.09989924113587755,
+            0.02496221096800466,
+            -5.05498957803429
+          ],
+          "target": [
+            -0.1,
+            -0.003599681910144009,
+            -5.0295948281632
+          ],
+          "upper": [
+            -0.09777945489318228,
+            0.7929130605422001,
+            -0.022632743848286264
+          ],
+          "lengths": [
+            0.44886902842941534,
+            0.3562659611918735
+          ],
+          "hip": 0.8406713834624064,
+          "sole": 0.10857003738476477,
+          "swing": true
+        },
+        "feet": 2
+      },
+      {
+        "template": "swat_grey",
+        "maxError": 0.038218911524882104,
+        "plantedError": 0.013071089862112936,
+        "slip": 0.007264137415384873,
+        "worst": {
+          "frame": 166,
+          "side": 0,
+          "actual": [
+            -0.09989924113587755,
+            0.02496221096800466,
+            -5.05498957803429
+          ],
+          "target": [
+            -0.1,
+            -0.003599681910144009,
+            -5.0295948281632
+          ],
+          "upper": [
+            -0.09777945489318228,
+            0.7929130605422001,
+            -0.022632743848286264
+          ],
+          "lengths": [
+            0.44886902842941534,
+            0.3562659611918735
+          ],
+          "hip": 0.8406713834624064,
+          "sole": 0.10857003738476477,
+          "swing": true
+        },
+        "feet": 2
+      }
+    ],
+    "finishes": {
+      "rows": [
+        {
+          "id": "ar7",
+          "checked": 1,
+          "valid": true
+        },
+        {
+          "id": "ka47",
+          "checked": 1,
+          "valid": true
+        },
+        {
+          "id": "sc17",
+          "checked": 7,
+          "valid": true
+        },
+        {
+          "id": "mk14",
+          "checked": 7,
+          "valid": true
+        },
+        {
+          "id": "kr98",
+          "checked": 4,
+          "valid": true
+        },
+        {
+          "id": "s12",
+          "checked": 1,
+          "valid": true
+        },
+        {
+          "id": "m1014",
+          "checked": 5,
+          "valid": true
+        },
+        {
+          "id": "db2",
+          "checked": 1,
+          "valid": true
+        },
+        {
+          "id": "sa12",
+          "checked": 7,
+          "valid": true
+        },
+        {
+          "id": "aa12",
+          "checked": 6,
+          "valid": true
+        },
+        {
+          "id": "p92",
+          "checked": 1,
+          "valid": true
+        },
+        {
+          "id": "g18",
+          "checked": 7,
+          "valid": true
+        },
+        {
+          "id": "m1911",
+          "checked": 8,
+          "valid": true
+        },
+        {
+          "id": "de7",
+          "checked": 7,
+          "valid": true
+        },
+        {
+          "id": "r45",
+          "checked": 5,
+          "valid": true
+        },
+        {
+          "id": "mp9",
+          "checked": 2,
+          "valid": true
+        },
+        {
+          "id": "v45",
+          "checked": 3,
+          "valid": true
+        },
+        {
+          "id": "cx9",
+          "checked": 3,
+          "valid": true
+        },
+        {
+          "id": "sm45",
+          "checked": 2,
+          "valid": true
+        },
+        {
+          "id": "ar416",
+          "checked": 2,
+          "valid": true
+        },
+        {
+          "id": "sg56",
+          "checked": 9,
+          "valid": true
+        },
+        {
+          "id": "ms56",
+          "checked": 9,
+          "valid": true
+        },
+        {
+          "id": "lm86",
+          "checked": 4,
+          "valid": true
+        },
+        {
+          "id": "rk762",
+          "checked": 5,
+          "valid": true
+        },
+        {
+          "id": "mg60",
+          "checked": 2,
+          "valid": true
+        },
+        {
+          "id": "sr25",
+          "checked": 5,
+          "valid": true
+        },
+        {
+          "id": "dm56",
+          "checked": 5,
+          "valid": true
+        },
+        {
+          "id": "m24",
+          "checked": 7,
+          "valid": true
+        },
+        {
+          "id": "sp12",
+          "checked": 3,
+          "valid": true
+        },
+        {
+          "id": "p226",
+          "checked": 3,
+          "valid": true
+        }
+      ],
+      "lens": {
+        "roughness": 0.06,
+        "metalness": 0.1
+      }
+    },
+    "lod": {
+      "partitionError": 0,
+      "clones": [
+        0,
+        4,
+        4
+      ],
+      "states": [
+        {
+          "d": 10,
+          "visible": [
+            true,
+            false,
+            false
+          ],
+          "casters": 1
+        },
+        {
+          "d": 12,
+          "visible": [
+            true,
+            true,
+            false
+          ],
+          "casters": 1
+        },
+        {
+          "d": 18,
+          "visible": [
+            false,
+            true,
+            false
+          ],
+          "casters": 1
+        },
+        {
+          "d": 28,
+          "visible": [
+            false,
+            true,
+            true
+          ],
+          "casters": 1
+        },
+        {
+          "d": 40,
+          "visible": [
+            false,
+            false,
+            true
+          ],
+          "casters": 1
+        }
+      ]
+    },
+    "bots": {
+      "flips": 0,
+      "narrowSpeed": 0,
+      "arrived": true,
+      "held": true,
+      "resumed": true
+    },
+    "settings": {
+      "grain": 0.4,
+      "aberration": 0,
+      "vignette": 0.45,
+      "shadows": 0.65
+    },
+    "audio": {
+      "muted": true,
+      "unchanged": true,
+      "voices": 20,
+      "fallback": true
+    },
+    "reloadedSettings": {
+      "grain": 0.4,
+      "aberration": 0,
+      "vignette": 0.45,
+      "shadows": 0.65
+    },
+    "errors": []
+  },
+  "v78Contracts": {
+    "boot": {
+      "models": [
+        "ar7",
+        "fists",
+        "g18",
+        "throw"
+      ],
+      "packs": [],
+      "gpu": 39,
+      "textureCount": 39,
+      "ao": {
+        "applied": 394,
+        "rejected": 0
+      },
+      "lods": 30,
+      "gpuBytes": 54526992,
+      "rgbaBytes": 218103808.0000001
+    },
+    "lods": [
+      {
+        "id": "ar7",
+        "counts": [
+          9258,
+          2119,
+          588
+        ],
+        "sizeError": 0.018659314104232418,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "ka47",
+        "counts": [
+          4801,
+          1103,
+          311
+        ],
+        "sizeError": 0.01622820131295384,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "sc17",
+        "counts": [
+          26630,
+          6123,
+          1730
+        ],
+        "sizeError": 0.0018750130946218828,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "mk14",
+        "counts": [
+          3676,
+          837,
+          230
+        ],
+        "sizeError": 0.06891314229929249,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "kr98",
+        "counts": [
+          6689,
+          1538,
+          429
+        ],
+        "sizeError": 0.0034654883359119372,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "s12",
+        "counts": [
+          1740,
+          399,
+          112
+        ],
+        "sizeError": 0.016669189723685682,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "m1014",
+        "counts": [
+          5525,
+          1265,
+          357
+        ],
+        "sizeError": 0.01796687839690053,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "db2",
+        "counts": [
+          2995,
+          688,
+          190
+        ],
+        "sizeError": 0.0010289895458814018,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "sa12",
+        "counts": [
+          1930,
+          441,
+          125
+        ],
+        "sizeError": 0.028275985324565118,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "aa12",
+        "counts": [
+          21534,
+          4950,
+          1394
+        ],
+        "sizeError": 0.0013403518982495189,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "p92",
+        "counts": [
+          16650,
+          3829,
+          1065
+        ],
+        "sizeError": 0.0014494147053705087,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "g18",
+        "counts": [
+          4796,
+          1102,
+          310
+        ],
+        "sizeError": 0.0033010673783126923,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "m1911",
+        "counts": [
+          16681,
+          3835,
+          1084
+        ],
+        "sizeError": 0.00044189919649512534,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "de7",
+        "counts": [
+          12801,
+          2942,
+          808
+        ],
+        "sizeError": 0.002497773613082374,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "r45",
+        "counts": [
+          2692,
+          1087,
+          718
+        ],
+        "sizeError": 0.00907960688049545,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "mp9",
+        "counts": [
+          3854,
+          884,
+          243
+        ],
+        "sizeError": 0.006869446051397616,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "v45",
+        "counts": [
+          8498,
+          1943,
+          544
+        ],
+        "sizeError": 0.007950758242722315,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "cx9",
+        "counts": [
+          14808,
+          3402,
+          960
+        ],
+        "sizeError": 0.0035509024353023795,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "sm45",
+        "counts": [
+          8282,
+          1894,
+          527
+        ],
+        "sizeError": 0.0013684272872541846,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "ar416",
+        "counts": [
+          24113,
+          5543,
+          1511
+        ],
+        "sizeError": 0.018512041962009524,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "sg56",
+        "counts": [
+          11559,
+          2601,
+          724
+        ],
+        "sizeError": 0.008615408415164425,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "ms56",
+        "counts": [
+          11559,
+          2614,
+          720
+        ],
+        "sizeError": 0.004578111434647777,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "lm86",
+        "counts": [
+          19005,
+          4370,
+          1188
+        ],
+        "sizeError": 0.000528352318019117,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "rk762",
+        "counts": [
+          20188,
+          4642,
+          1294
+        ],
+        "sizeError": 0.002645511815938607,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "mg60",
+        "counts": [
+          13490,
+          3100,
+          861
+        ],
+        "sizeError": 0.0007429415587756944,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "sr25",
+        "counts": [
+          19573,
+          4500,
+          1221
+        ],
+        "sizeError": 0.0008110916867112376,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "dm56",
+        "counts": [
+          21941,
+          5044,
+          1425
+        ],
+        "sizeError": 0.001240221884007055,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "m24",
+        "counts": [
+          5360,
+          1232,
+          346
+        ],
+        "sizeError": 0.03327198175033287,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "sp12",
+        "counts": [
+          15088,
+          3466,
+          934
+        ],
+        "sizeError": 0.006441342450870635,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      },
+      {
+        "id": "p226",
+        "counts": [
+          4507,
+          1034,
+          291
+        ],
+        "sizeError": 0.0027336920510106833,
+        "levels": [
+          0,
+          1,
+          2,
+          0
+        ]
+      }
+    ],
+    "inventory": {
+      "models": [
+        "ar7",
+        "g18",
+        "fists",
+        "throw",
+        "s12",
+        "p92"
+      ],
+      "packs": [
+        "remington",
+        "p9mm"
+      ],
+      "equipped": [
+        "ar7",
+        "s12",
+        "p92"
+      ]
+    },
+    "native": {
+      "world": [
+        396.00000000000006,
+        222.75000000000003
+      ],
+      "viewmodel": [
+        960,
+        540
+      ],
+      "output": [
+        960,
+        540
+      ],
+      "gun": "ar7"
+    },
+    "composite": {
+      "changed": 69329,
+      "corners": 0
+    },
+    "resize": [
+      800,
+      600
+    ],
+    "nativeRelease": [
+      1,
+      1
+    ],
+    "activation": {
+      "duringADS": true,
+      "duringReload": true,
+      "after": true
+    },
+    "fallback": {
+      "gpu": 0,
+      "model": true,
+      "real": true,
+      "pack": true,
+      "ao": 391,
+      "rejected": 3,
+      "render": true
+    }
+  },
+  "sampleSources": "../../assets/audio/footsteps/sources.json",
+  "notes": [
+    "FPS timings use ANGLE SwiftShader and are not device performance predictions.",
+    "The 13.1mm bound concerns planted feet in the specified animation fixture.",
+    "Swing trajectories are clamped by source limb lengths; maximum observed swing error is 38.3mm.",
+    "Water keeps the synthetic splash; loose-ground types use documented filtered sample adaptations."
+  ]
+}

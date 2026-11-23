@@ -185,6 +185,7 @@ const AV = G.AssetVM = {
   async loadAll() { for (const id in GUNS) await this.request(id); },
   install(P, g) {
     const C = PACKS[P.key], model = g.scene, clips = {};
+    G.WeaponFinish?.root(model);
     for (const c of g.animations) clips[c.name] = c;
     if (C.cut) {
       // 한 클립을 구간마다 잘라 쓴다 (시간 기준, 앞을 0 으로)
@@ -413,6 +414,7 @@ const AV = G.AssetVM = {
   // 휴식 자세의 총 정점(피벗 공간, 앞 = −Z)으로 총구·가늠쇠·가늠자·손잡이 자리를 잰다
   // 팩의 총 대신 다른 총 메시를 같은 손·같은 동작에 끼운다: 두 총의 가늠선·위 방향을 맞추고 가늠자 위치를 맞춘다
   installSwap(P, id, g) {
+    G.WeaponFinish?.root(g.scene);
     const C = SWAP[id], root = g.scene;
     root.updateMatrixWorld(true);
     const pts = [];

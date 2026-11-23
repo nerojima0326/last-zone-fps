@@ -27,14 +27,14 @@ class ViewmodelPass extends THREE.Pass {
 // v68 OutputPass(톤매핑·sRGB)를 여기에 합쳤다 → 전체 화면 패스 하나와 HDR 버퍼 왕복 하나를 아낀다
 const GradeShader = {
   uniforms: { tDiffuse: { value: null }, toneMappingExposure: { value: 0.6 }, uTexel: { value: new THREE.Vector2(1 / 1280, 1 / 720) }, uTime: { value: 0 },
-    uVig: { value: 1.2 }, uSat: { value: 0.83 }, uKnock: { value: 0 }, uCon: { value: 1.17 }, uGreen: { value: 0.45 },
-    uGrain: { value: 0.07 }, uCA: { value: 0.006 }, uSharp: { value: 0.2 },
+    uVig: { value: 1.2 }, uSat: { value: 0.9 }, uKnock: { value: 0 }, uCon: { value: 1.10 }, uGreen: { value: 0.28 },
+    uShadowLift: { value: .22 }, uGrain: { value: 0.07 }, uCA: { value: 0.006 }, uSharp: { value: 0.2 },
     uShadow: { value: new THREE.Vector3(0.9, 0.99, 1.1) }, uHigh: { value: new THREE.Vector3(1.08, 1.0, 0.88) } },
   vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
   fragmentShader: `#include <common>
     #include <tonemapping_pars_fragment>
     uniform sampler2D tDiffuse; uniform vec2 uTexel; uniform float uTime; uniform float uVig; uniform float uSat; uniform float uKnock; uniform float uCon;
-    uniform float uGreen; uniform float uGrain; uniform float uCA; uniform float uSharp; uniform vec3 uShadow; uniform vec3 uHigh; varying vec2 vUv;
+    uniform float uGreen; uniform float uShadowLift; uniform float uGrain; uniform float uCA; uniform float uSharp; uniform vec3 uShadow; uniform vec3 uHigh; varying vec2 vUv;
     float hash(vec2 p){ p = fract(p * vec2(443.897, 441.423)); p += dot(p, p.yx + 19.19); return fract((p.x + p.y) * p.x); }
     float luma(vec3 c){ return dot(c, vec3(0.2126, 0.7152, 0.0722)); }
     void main(){
@@ -58,6 +58,8 @@ const GradeShader = {
       c = mix(c, c * vec3(1.15, 0.7, 0.7), uKnock * 0.5);
       c *= clamp(1.0 - r2 * uVig, 0.0, 1.0);
       if (uGrain > 0.0) c *= 1.0 + (hash(vUv / uTexel + fract(uTime) * vec2(61.3, 17.9)) - 0.5) * uGrain;
+      // Mild bounded shadow fill; preserves highlights and night contrast.
+      c += vec3(.012 * uShadowLift * (1.0 - smoothstep(.01, .22, luma(c))));
       // (예전 OutputPass) ACES 톤매핑 → sRGB
       c = ACESFilmicToneMapping(c);
       gl_FragColor = sRGBTransferOETF(vec4(c, 1.0));
@@ -392,6 +394,7 @@ G.boot = async function () {
   const loadFill = document.getElementById('loadFill'), loadText = document.getElementById('loadText');
   const progress = (p, t) => { loadFill.style.width = Math.round(p * 100) + '%'; if (t) loadText.textContent = t; };
   progress(0.3, '렌더러 초기화 중...');
+  G.Footsteps?.prefetch();
   renderer = G.renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance', stencil: false });
   renderer.setPixelRatio(1);
   renderer.setSize(innerWidth, innerHeight);
@@ -426,6 +429,7 @@ G.boot = async function () {
   G.AssetVM?.init();
   // M4 팩의 실사 팔을 나머지 총기에도 (M4·Glock 이 준비된 뒤)
   G.RealArms?.init();
+  G.WeaponFinish?.root(G.vmScene);
   if(G.Attachments)G.Attachments.initUI();
   G.World.setTimeOfDay(G.UI.opts.tod || 'day');
   G.Player.sens = G.UI.opts.sens;
@@ -517,10 +521,14 @@ function syncUpAA() {
   upAA.enabled = !!Q.fxaa || ratio < 0.97;   // FXAA 를 쓰면 늘 마지막에 (FXAA 가 화면 해상도에서 돌지 않게)
   // 장면 해상도가 낮을 때는 필름 그레인·색수차·선명화를 줄인다 (늘리면 큰 점으로 번져 '점점이' 보였다)
   const k = U.clamp((ratio - 0.55) / 0.4, 0, 1);
-  grade.uniforms.uGrain.value = 0.07 * k * (Q.lite ? 0 : 1);
+  const visual = G.Settings?.data?.visual || { grain: .15, aberration: 0, vignette: .45, shadows: .22 };
+  grade.uniforms.uGrain.value = 0.07 * k * (Q.lite ? 0 : visual.grain);
+  grade.uniforms.uVig.value = 1.2 * visual.vignette;
+  grade.uniforms.uShadowLift.value = visual.shadows;
   grade.uniforms.uSharp.value = 0.2 * k;
-  grade.uniforms.uCA.value = 0.006 * (Q.lite ? 0 : 1);
+  grade.uniforms.uCA.value = 0.006 * (Q.lite ? 0 : visual.aberration);
 }
+G.refreshVisuals = () => { if (grade && G.quality) syncUpAA(); };
 function basePixelRatio(q) {
   let pr = Math.min(devicePixelRatio || 1, QUALITY[q].dpr);
   const px = innerWidth * innerHeight * pr * pr;

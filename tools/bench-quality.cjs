@@ -5,7 +5,7 @@ const fs=require('fs'),path=require('path'),fixture=require('./optimize/browser-
  try{
   const result={gpu:await f.page.evaluate(()=>G.gpuName||G.renderer.getContext().getParameter(G.renderer.getContext().RENDERER)),weapons:[]};
   result.weapons=await f.page.evaluate(()=>{
-   window.requestAnimationFrame=()=>0;const R=G.renderer,P=G.Perf;
+   window.requestAnimationFrame=()=>0;if(G.LODFade)G.LODFade.enabled.value=0;const R=G.renderer,P=G.Perf;
    const scene=new THREE.Scene();scene.add(new THREE.HemisphereLight(0xdfeaff,0x555555,3));
    const sun=new THREE.DirectionalLight(0xffffff,3);sun.position.set(1,2,1);scene.add(sun);
    const cam=new THREE.PerspectiveCamera(55,1,.05,100);cam.position.set(0,0,6);cam.lookAt(0,0,0);cam.updateMatrixWorld(true);
@@ -25,7 +25,7 @@ const fs=require('fs'),path=require('path'),fixture=require('./optimize/browser-
    }
    rt.dispose();R.setRenderTarget(null);return rows;
   });
-  await f.page.evaluate(()=>{document.getElementById('trainBtn').click();G.onLockChange=()=>{};G.Input.unlock();G.paused=true;G.UI.showPause(false)});
+  await f.page.evaluate(()=>{if(G.LODFade)G.LODFade.enabled.value=1;document.getElementById('trainBtn').click();G.onLockChange=()=>{};G.Input.unlock();G.paused=true;G.UI.showPause(false)});
   await f.page.waitForFunction(()=>G.Training.active);
   await f.page.evaluate(()=>{G.__apply('low');G.DRS.scale=.55;G.DRS.apply(true);G.Player.raise=1;for(let i=0;i<120;i++)G.Player.updateCamera(1/60)});
   result.training=[];

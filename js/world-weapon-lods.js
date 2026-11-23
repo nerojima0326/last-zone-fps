@@ -34,28 +34,36 @@ const W = G.WorldWeapons = {
   wrap(id, high) {
     const data = this.models[id];
     if (!data?.mid || !data?.far) return high;
-    const lod = new T.LOD(); lod.name = 'World weapon ' + id;
+    const lod = new T.LOD(); lod._weaponShadow = high.castShadow;
+    if (G.LODFade) high.material = G.LODFade.level(high.material, 0);
+    lod.name = 'World weapon ' + id;
     lod.addLevel(high, 0);
     for (const [key, distance] of [['mid', 12], ['far', 28]]) {
-      const m = new T.Mesh(data[key].geo, data[key].mat); m.castShadow = high.castShadow;
+      const level = key === 'mid' ? 1 : 2;
+      const m = new T.Mesh(data[key].geo, G.LODFade?.level(data[key].mat, level) || data[key].mat); m.castShadow = high.castShadow;
       m.name = id + ' ' + key; lod.addLevel(m, distance, .12);
     }
     // Existing actor code sets castShadow on the weapon root.
     Object.defineProperty(lod, 'castShadow', { configurable: true,
-      get() { return this.levels[0].object.castShadow; },
-      set(on) { for (const level of this.levels) level.object.castShadow = on; }
+      get() { return this._weaponShadow; },
+      set(on) { this._weaponShadow = on; for (const level of this.levels) level.object.castShadow = on; }
     });
     lod.update = function (camera) {
       eye.setFromMatrixPosition(camera.matrixWorld); at.setFromMatrixPosition(this.matrixWorld);
       const d = eye.distanceTo(at) / Math.max(1, G.lodZoom || 1);
       let level = 0;
       for (let i = 1; i < this.levels.length; i++) {
-        const entry = this.levels[i], threshold = entry.distance * (entry.object.visible ? 1 - entry.hysteresis : 1);
+        const entry = this.levels[i], threshold = entry.distance * (i <= this._currentLevel ? 1 - entry.hysteresis : 1);
         if (d >= threshold) level = i;
       }
       this._currentLevel = level;
-      for (let i = 0; i < this.levels.length; i++) this.levels[i].object.visible = i === level;
+      for (let i = 0; i < this.levels.length; i++) {
+        const mesh = this.levels[i].object;
+        mesh.visible = !G.LODFade?.enabled.value ? i === level : i === 0 ? d < 13 : i === 1 ? d > 11 && d < 30 : d > 26;
+        mesh.castShadow = this._weaponShadow && i === level;
+      }
     };
+    for (let i = 0; i < lod.levels.length; i++) lod.levels[i].object.visible = i === 0;
     return lod;
   }
 };

@@ -19,6 +19,7 @@ module.exports = async function fixture(opts = {}) {
     const page = await browser.newPage({ viewport: opts.viewport || { width: 960, height: 540 } });
     const errors = [], requests = [];
     page.on('pageerror', e => errors.push(e.message));
+    page.on('console', m => { if (m.type() === 'error' && /THREE\.WebGLProgram|Shader Error|VALIDATE_STATUS|INVALID_OPERATION|INVALID_FRAMEBUFFER_OPERATION/.test(m.text())) errors.push(m.text()); });
     page.on('request', r => requests.push(new URL(r.url()).pathname));
     if (opts.console) page.on('console', m => { if (m.type() === 'error') console.log(m.text()); });
     if (process.env.THREE_DIR) await page.route('https://cdn.jsdelivr.net/npm/three@0.160.0/**', r => r.fulfill({

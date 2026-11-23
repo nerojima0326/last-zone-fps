@@ -30,6 +30,18 @@ const DIRCHILD = { Bip01_L_UpperArm: 'Bip01_L_Forearm', Bip01_L_Forearm: 'Bip01_
   Bip01_L_Thigh: 'Bip01_L_Calf', Bip01_L_Calf: 'Bip01_L_Foot', Bip01_R_Thigh: 'Bip01_R_Calf', Bip01_R_Calf: 'Bip01_R_Foot' };
 const BLANK = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 
+// Source skeleton lengths and ankle-to-sole offset are independent of the
+// procedural rig. Keep real boots on the same planted targets.
+function footData(root, byName, order, names, rootSpace) {
+  const minY = new THREE.Box3().setFromObject(root).min.y;
+  return names.map(([upper, lower, foot]) => {
+    if (!byName[foot] || !byName[lower] || byName[foot].parent !== byName[lower]) return null;
+    const bind = rootSpace(byName[foot]);
+    return { name: foot, pair: [order.indexOf(upper), order.indexOf(lower)],
+      worldQ: bind.q, localQ: byName[foot].quaternion.clone(),
+      sole: THREE.MathUtils.clamp(bind.p.y - minY, .03, .18) };
+  });
+}
 const _q = new THREE.Quaternion(), _q2 = new THREE.Quaternion(), _e = new THREE.Euler(), _v = new THREE.Vector3(), _w = new THREE.Vector3();
 const _S = new THREE.Vector3(), _T = new THREE.Vector3(), _D = new THREE.Vector3(), _E = new THREE.Vector3(), _P = new THREE.Vector3(), _u = new THREE.Vector3(), _f = new THREE.Vector3();
 // 총을 쥔 손목 목표점 (절차적 총 거치대 gunMount 기준, m) — 오른손: 손잡이, 왼손: 총열 덮개
@@ -38,7 +50,6 @@ const GRIP = {
   shotgun: { r: [0.02, -0.07, 0.12], l: [-0.035, -0.065, -0.27] },
   pistol: { r: [0.02, -0.06, 0.06], l: [-0.045, -0.075, 0.05] }
 };
-const MOUNT = new THREE.Vector3(0.05, -0.1, -0.3);
 
 function partOf(name) { name = (name || '').toLowerCase(); return PARTS.find(p => name.includes(p)) || null; }
 
@@ -169,7 +180,7 @@ const Soldiers = G.Soldiers = {
     const idx = (n) => order.indexOf(n);
     const hp = rs(hips.parent);
     const tris = Math.round((body.geometry.index ? body.geometry.index.count : 0) / 3 + (helmet && helmet.geometry.index ? helmet.geometry.index.count / 3 : 0));
-    return { name, root, mat, entries, ik: { L: [idx('LeftArm'), idx('LeftForeArm')], R: [idx('RightArm'), idx('RightForeArm')] },
+    return { name, root, mat, entries, feet: footData(root, byName, order, [['LeftUpLeg','LeftLeg','LeftFoot'],['RightUpLeg','RightLeg','RightFoot']], rs), ik: { L: [idx('LeftArm'), idx('LeftForeArm')], R: [idx('RightArm'), idx('RightForeArm')] },
       fbxQ: base.q, baseP: base.p, unit: hp.s, hipName: 'Hips', hipIdx: idx('Hips'), hipBind: hips.position.clone(),
       up: new THREE.Vector3(0, 1, 0).applyQuaternion(hp.q.clone().invert()), tris, hasHelmet: !!helmet };
   },
@@ -226,7 +237,7 @@ const Soldiers = G.Soldiers = {
     let tris = 0;
     for (const m of [body, helmet]) if (m) tris += m.geometry.attributes.position.count / 3;
     if (sp.wrapped) console.info('[soldiers] ' + name + ': 범위 밖 UV ' + sp.wrapped + '개 보정');
-    return { name, root, mat, entries, ik, fbxQ, unit: fbx.scale.x, hipName: hips ? hips.name : null, hipBindY: hips ? hips.position.y : 0, tris: Math.round(tris), hasHelmet: !!helmet };
+    return { name, root, mat, entries, ik, feet: footData(root, byName, order, [['Bip01_L_Thigh','Bip01_L_Calf','Bip01_L_Foot'],['Bip01_R_Thigh','Bip01_R_Calf','Bip01_R_Foot']], rootQ), fbxQ, unit: fbx.scale.x, hipName: hips ? hips.name : null, hipBindY: hips ? hips.position.y : 0, tris: Math.round(tris), hasHelmet: !!helmet };
   },
 
   // 캐릭터 하나 만들기: { root, body, helmet, bones[], drive(model) }
@@ -247,7 +258,7 @@ const Soldiers = G.Soldiers = {
     });
     const bones = T.entries.map(e => byName[e.name]);
     const hip = T.hipName ? byName[T.hipName] : null;
-    return { T, root, body, helmet, bones, hip, O: T.entries.map(() => new THREE.Quaternion()), X: T.entries.map(() => new THREE.Vector3()) };
+    return { T, root, body, helmet, bones, hip, footBones: (T.feet || []).map(f => f && byName[f.name]), O: T.entries.map(() => new THREE.Quaternion()), X: T.entries.map(() => new THREE.Vector3()) };
   },
 
   // 절차적 관절 각도 → 군인 뼈 회전
@@ -282,15 +293,32 @@ const Soldiers = G.Soldiers = {
     const gp = m.ikGun && GRIP[m.ikGun];
     if (gp) {
       // 절차적 총 거치대 위치 = hip + spine + P_spine*(0,.42,0) + P_chest*MOUNT
-      _P.set(0, m.hip.position.y + 0.06, 0).add(_v.set(0, 0.42, 0).applyQuaternion(P.spine)).add(_w.copy(MOUNT).applyQuaternion(P.chest));
+      _P.set(0, m.hip.position.y + 0.06, 0).add(_v.set(0, 0.42, 0).applyQuaternion(P.spine)).add(_w.copy(m.gunMount.position).applyQuaternion(P.chest));
       this.ikArm(s, T.ik.R, _T.fromArray(gp.r).applyQuaternion(P.chest).add(_P), _w.set(0.7, -1, 0.35).applyQuaternion(P.chest));
-      _P.set(0, m.hip.position.y + 0.06, 0).add(_v.set(0, 0.42, 0).applyQuaternion(P.spine)).add(_w.copy(MOUNT).applyQuaternion(P.chest));
+      _P.set(0, m.hip.position.y + 0.06, 0).add(_v.set(0, 0.42, 0).applyQuaternion(P.spine)).add(_w.copy(m.gunMount.position).applyQuaternion(P.chest));
       this.ikArm(s, T.ik.L, _T.fromArray(gp.l).applyQuaternion(P.chest).add(_P), _w.set(-0.8, -1, 0.1).applyQuaternion(P.chest));
+    }
+    // Retarget planted feet with this source's own segment lengths. Arm and
+    // aiming targets stay independent of the foot solve.
+    const planted = m.motion?.ik > .8 && !m.lod;
+    if (planted) for (let i = 0; i < (T.feet || []).length; i++) {
+      const foot = T.feet[i], target = m.motion.feet[i]?.actualTarget;
+      if (!foot || !target) continue;
+      _T.set(target.x, target.y - m.root.position.y - .05 + foot.sole, target.z);
+      this.ikArm(s, foot.pair, _T, _w.set(0, 0, -1));
     }
     // 3) 로컬 회전으로
     for (let i = 0; i < E.length; i++) {
       const parentO = E[i].parent >= 0 ? O[E[i].parent] : T.fbxQ;
       s.bones[i].quaternion.copy(_q.copy(parentO).invert().multiply(O[i]));
+    }
+    for (let i = 0; i < (T.feet || []).length; i++) {
+      const foot = T.feet[i], bone = s.footBones[i]; if (!foot || !bone) continue;
+      if (planted) {
+        _q2.setFromUnitVectors(_u.set(0, 1, 0), m.motion.feet[i].normal);
+        bone.quaternion.copy(_q.copy(O[foot.pair[1]]).invert().multiply(_q2).multiply(foot.worldQ));
+      }
+      else bone.quaternion.copy(foot.localQ);
     }
   },
 

@@ -27,7 +27,7 @@ class Bot {
     this.goal = null; this.goalType = ''; this.goalT = 0; this.lootItem = null;
     this.thinkT = Math.random() * 0.4; this.percT = Math.random() * 0.2;
     this.burstLeft = 0; this.burstPause = 0; this.nextFire = 0; this.reloadT = 0;
-    this.strafe = 1; this.strafeT = 0; this.coverPos = new V3(); this.coverT = 0; this.coverSearchT = 0;
+    this.strafe = 1; this.strafeT = 0; this.strafeActual = 0; this.sideProbeT = 0; this.wallSide = 0; this.coverArrived = false; this.coverStall = 0; this.coverPos = new V3(); this.coverT = 0; this.coverSearchT = 0;
     this.progT = 0; this.lastProg = new V3(); this.stuck = 0; this.detourT = 0; this.detourYaw = 0; this.avoidSide = Math.random() < 0.5 ? 1 : -1;
     this.nadeCD = U.rand(8, 20); this.healing = null; this.reviving = null; this.reviveT = 0;
     this.alertPos = new V3(); this.alertT = 0;
@@ -105,11 +105,7 @@ class Bot {
     a.vel.x = approach(a.vel.x, _w.x, acc * dt); a.vel.z = approach(a.vel.z, _w.z, acc * dt);
     G.Physics.move(a, dt);
     if (a.landV < -15) G.Game.damage(a, (-a.landV - 15) * 7, null, 'fall', false, a.pos, null);
-    // 발소리
-    if (a.onGround && a.hspeed > 2.5) {
-      this.step = (this.step || 0) + a.hspeed * dt;
-      if (this.step > 2.1) { this.step = 0; G.Audio.footstep(a.pos, a.inWater ? 'water' : a.groundMat === 'terrain' ? 'grass' : a.groundMat, a.crouch ? 0.15 : 0.4); }
-    }
+    G.Locomotion?.tick(a, dt, this.run && !a.crouch);
   }
 
   /* ------------ 인지 ------------ */
@@ -431,7 +427,7 @@ class Bot {
       if(W.rayBoxes(x,y+0.8,z,tx/td,0,tz/td,td-0.3,null)===Infinity)continue;
       best=dist;point={x,y,z};
     }
-    if(!point)return false;this.coverPos.set(point.x,point.y,point.z);this.coverT=2.2;return true;
+    if(!point)return false;this.coverPos.set(point.x,point.y,point.z);this.coverT=3.5;this.coverArrived=false;this.coverStall=0;this.coverTargetId=target.id;return true;
   }
   combat(dt, out) {
     const a = this.a, t = this.target, d = this.d, now = this.now;
@@ -477,7 +473,7 @@ class Bot {
     // 이동
     this.strafeT -= dt;
     if (this.strafeT <= 0) {
-      this.strafeT = U.rand(0.5, 1.6);
+      this.strafeT = U.rand(1.2, 2.6);
       const r = Math.random();
       this.strafe = r < 0.4 ? 1 : r < 0.8 ? -1 : 0;
       if (a.prone) {
@@ -497,16 +493,43 @@ class Bot {
     if (!this.visible) fwd = 0.6;
     if (this.leanWant || a.prone) { fwd = dist < range[0] && !a.prone ? -0.6 : 0; this.strafe = a.prone ? 0 : this.strafe; }
     const spd = a.prone ? 0.9 : a.crouch ? 2.2 : 4.0;
-    out.copy(_r).multiplyScalar(this.strafe).addScaledVector(_f, fwd);
-    if (out.lengthSq() > 0) out.normalize().multiplyScalar(spd);
-    if (this.strafe !== 0 && this.blocked(a.yaw - this.strafe * Math.PI / 2, 1.5)) { this.strafe = -this.strafe; }
-    if (fwd !== 0 && this.blocked(a.yaw + (fwd > 0 ? 0 : Math.PI), 1.5)) out.addScaledVector(_f, -fwd * spd * 0.9);
-    if ((this.reloadT > 0 || (inst && inst.mag === 0)) && !a.prone) {
-      if(this.coverSearchT<=0){this.coverSearchT=1.2;this.findCover(t)}
-      if(this.coverT>0){const dx=this.coverPos.x-a.pos.x,dz=this.coverPos.z-a.pos.z,cd=Math.hypot(dx,dz);
-        if(cd>0.9){out.set(dx/cd*4,0,dz/cd*4);a.crouch=false}else{out.set(0,0,0);a.crouch=true}
-      }else out.addScaledVector(_f,-2);
+    // Probe both sides on a budget and hold the decision. A narrow passage
+    // must not reverse left/right every frame when both sides are blocked.
+    this.sideProbeT -= dt;
+    if (Math.abs(U.angleDiff(this.sideProbeYaw ?? a.yaw, a.yaw)) > .35) this.sideProbeT = 0;
+    if (this.sideProbeT <= 0) {
+      this.sideProbeT = .2; this.sideProbeYaw = a.yaw;
+      const left = this.blocked(a.yaw + Math.PI / 2, 1.15);
+      const right = this.blocked(a.yaw - Math.PI / 2, 1.15);
+      this.wallSide = left && right ? 2 : left ? 1 : right ? -1 : 0;
+      this.frontBlocked = fwd !== 0 && this.blocked(a.yaw + (fwd > 0 ? 0 : Math.PI), 1.15);
     }
+    let side = this.strafe;
+    if (this.wallSide === 2) side = 0;
+    else if (side && this.wallSide === -Math.sign(side)) side = this.wallSide;
+    if (this.frontBlocked) fwd = 0;
+    this.strafeActual = U.damp(this.strafeActual, side, 7, dt);
+    out.copy(_r).multiplyScalar(this.strafeActual).addScaledVector(_f, fwd);
+    if (out.lengthSq() > 1) out.normalize();
+    if (out.lengthSq() < .0001) out.set(0, 0, 0);
+    out.multiplyScalar(spd);
+    if (this.coverTargetId != null && this.coverTargetId !== t.id) { this.coverT = 0; this.coverSearchT = 0; this.coverArrived = false; this.coverTargetId = t.id; }
+    if ((this.reloadT > 0 || (inst && inst.mag === 0)) && !a.prone) {
+      // Keep a reachable cover goal through the reload instead of replacing
+      // it mid-approach. Different arrival/exit radii prevent crouch flicker.
+      if (this.coverSearchT <= 0 && this.coverT <= 0) { this.coverSearchT = 1.2; this.findCover(t); }
+      if (this.coverT > 0) {
+        const dx = this.coverPos.x - a.pos.x, dz = this.coverPos.z - a.pos.z, cd = Math.hypot(dx, dz);
+        if (cd < .8) this.coverArrived = true;
+        else if (cd > 1.2) this.coverArrived = false;
+        if (!this.coverArrived) {
+          const speed = Math.min(4, cd * 2.2);
+          out.set(dx / Math.max(.01, cd) * speed, 0, dz / Math.max(.01, cd) * speed); a.crouch = false;
+          this.coverStall = (a.gait?.speed ?? a.hspeed) < .18 ? this.coverStall + dt : 0;
+          if (this.coverStall > .9) { this.coverT = 0; this.coverSearchT = .8; this.coverStall = 0; out.set(0, 0, 0); }
+        } else { out.set(0, 0, 0); a.crouch = true; this.coverT = Math.max(this.coverT, .4); }
+      } else if (!this.frontBlocked) out.addScaledVector(_f, -1.5);
+    } else this.coverArrived = false;
     if (G.Throwables.fireAt(a.pos, 0.5)) out.addScaledVector(_f, -5);
     return out.length();
   }

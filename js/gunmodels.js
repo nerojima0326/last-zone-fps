@@ -87,6 +87,7 @@ const GM = G.GunModels = {
     await Promise.all(tasks);
     for (const k in this.guns) {
       const D = this.guns[k], list = D.mats ? Object.values(D.mats) : [D.mat];
+      for (const m of list) G.WeaponFinish?.material(m);
       for (const m of list) for (const t of [m.map, m.normalMap, m.roughnessMap]) if (t) renderer.initTexture(t);
     }
     console.info('[guns] 실사 총기: ' + (Object.keys(this.guns).join(', ') || '없음'));

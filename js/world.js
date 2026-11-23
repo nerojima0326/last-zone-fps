@@ -2507,6 +2507,19 @@ const W = G.World = {
     this._gmat = mat;
     return g;
   },
+  // Footstep classification uses the same painted weights as the terrain.
+  surfaceAt(x, z) {
+    const tex = this.terrainW, data = tex?.image?.data;
+    if (!data) return 'grass';
+    const size = tex.image.width;
+    const px = U.clamp(Math.floor((x + HALF) / SIZE * size), 0, size - 1);
+    const pz = U.clamp(Math.floor((z + HALF) / SIZE * size), 0, size - 1), i = (pz * size + px) * 4;
+    if (data[i + 3] > 128) return this.roadDist(x, z) < 3.4 ? 'asphalt' : 'concrete';
+    if (data[i + 1] > 112) return 'sand';
+    if (data[i + 2] > 145) return 'gravel';
+    if (data[i] > 125) return 'dirt';
+    return 'grass';
+  },
   // 위쪽이 막혀 있는가 (실내 판정)
   covered(x, y, z) {
     return this.rayBoxes(x, y, z, 0, 1, 0, 25, null) < Infinity;
@@ -2546,6 +2559,7 @@ const W = G.World = {
   },
 
   update(dt, camPos, cam) {
+    G.LODFade?.update(cam);
     this.time += dt;
     this.lodT = (this.lodT || 0) - dt;
     const lz = G.lodZoom || 1;

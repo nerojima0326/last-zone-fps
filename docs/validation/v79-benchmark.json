@@ -1,0 +1,50 @@
+{
+  "base": "b5b7241",
+  "viewport": [
+    960,
+    540
+  ],
+  "frames": 5,
+  "renderer": "Chromium, forced ANGLE SwiftShader; not hardware FPS",
+  "runs": [
+    {
+      "mode": "v78",
+      "medianMs": 785.5999999996275,
+      "calls": 234,
+      "triangles": 190661,
+      "internal": [
+        720,
+        405
+      ],
+      "output": [
+        960,
+        540
+      ],
+      "programs": 149,
+      "models": 6,
+      "errors": []
+    },
+    {
+      "mode": "v79",
+      "medianMs": 793.2000000011176,
+      "calls": 234,
+      "triangles": 190661,
+      "internal": [
+        720,
+        405
+      ],
+      "output": [
+        960,
+        540
+      ],
+      "programs": 152,
+      "models": 6,
+      "locomotion": {
+        "nearbyCharacterCpuMs": 0.022416666673185925,
+        "samples": 1200,
+        "footGroundQueriesPerSecond": 24
+      },
+      "errors": []
+    }
+  ]
+}

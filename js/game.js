@@ -119,6 +119,7 @@ const Game = G.Game = {
     G.UI.center('훈련 기지', '테이블의 총·조준경은 <b>' + G.Settings.label('KeyF') + '</b> 로 바꿔 들 수 있어요 · 탄약 무한 · 사격대 뒤(남쪽) 킬하우스·투척 훈련장 · 동쪽 운전 코스', '', 6);
   },
   cleanup() {
+    G.Footsteps?.stop();
     if (G.Training) G.Training.stop();
     this.training = false;
     const hud = document.getElementById('hud'); if (hud) hud.classList.remove('training');
@@ -672,7 +673,7 @@ const Game = G.Game = {
       m.root.position.copy(a.pos);
       m.root.rotation.y = a.yaw;
       m.setLOD(d2 > 45 * 45, a.crouch && a.alive && !a.knocked);
-      m.update(dt, { speed: a.hspeed, pitch: a.pitch, crouch: a.crouch, knocked: a.knocked, prone: a.prone && !a.knocked, lean: a.leanX, eyeH: a.eyeH(), dead: !a.alive, state: a.state, cur: a.cur, gun: a.gunId(a.cur), onGround: a.onGround });
+      m.update(dt, { speed: a.gait?.speed ?? a.hspeed, gait: a.gait, groundMat: a.groundMat, groundY: a.pos.y, distance2: d2, pitch: a.pitch, crouch: a.crouch, knocked: a.knocked, prone: a.prone && !a.knocked, lean: a.leanX, eyeH: a.eyeH(), dead: !a.alive, state: a.state, cur: a.cur, gun: a.gunId(a.cur), onGround: a.onGround });
       m.showChute(a.state === 'chute' && a.alive);
       m.setHelmet(!!a.helmet);
       // 45m 밖은 병합된 LOD 메시 1개로, 그림자는 40m 안쪽만

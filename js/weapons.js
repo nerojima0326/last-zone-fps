@@ -1526,13 +1526,14 @@ const VM = G.VM = {
     // models (including their hand-contact grids) are built on demand.
     for (const k of ['ar7', 'g18', 'fists', 'throw']) this.ensure(k);
     this.hemi = new THREE.HemisphereLight(0xdfeaff, 0x5d5140, 1.1); scene.add(this.hemi);
+    this.fill = new THREE.DirectionalLight(0xc4d5ef, .16); this.fill.position.set(-.4, .25, 1); scene.add(this.fill);
     this.dir = new THREE.DirectionalLight(0xffffff, 2.4); this.dir.position.set(1, 2, 1); scene.add(this.dir);
     this.flashLight = new THREE.PointLight(0xffa850, 0, 3, 2); this.flashLight.position.set(0.1, -0.05, -0.6); scene.add(this.flashLight);
   },
   ensure(type) {
     if (!type || this.models[type]) return this.models[type];
     if (!G.WEAPONS[type] && type !== 'fists' && type !== 'throw') return null;
-    const m = Guns.buildVM(type); m.root.visible = false;
+    const m = Guns.buildVM(type); G.WeaponFinish?.root(m.root); m.root.visible = false;
     this.root.add(m.root); this.models[type] = m;
     return m;
   },

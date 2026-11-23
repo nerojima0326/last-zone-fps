@@ -259,6 +259,7 @@ const A = G.Audio = {
     let last = 0;
     for (let i = 0; i < len; i++) { last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02; b[i] = last * 3.5; }
     if(G.WeaponAudio)G.WeaponAudio.load(c);
+    G.Footsteps?.load(c);
   },
   _impulse(dur, decay) {
     const c = this.ctx, len = Math.floor(c.sampleRate * dur), buf = c.createBuffer(2, len, c.sampleRate);
@@ -429,11 +430,13 @@ const A = G.Audio = {
     const t = this.ctx.currentTime, o = this.out(sp, 0.45);
     this.noise(o, t, { dur: 0.09, a: 0.6, bp: 4200, bp1: 1800, q: 2.5 });
   },
-  footstep(pos, surface, vol) {
-    if (!this.ok()) return;
+  footstep(pos, surface, vol, side = 0) {
+    if (!this.ok() || this.vol?.ambient === 0) return;
+    if (G.Footsteps?.play(this, pos, surface, vol, side)) return;
     const sp = this.spatial(pos, 4);
     if (sp.g < 0.06) return;
-    const t = this.ctx.currentTime, o = this.out(sp, vol);
+    const t = this.ctx.currentTime, o = this.out(sp, (vol ?? .32) * (this.vol?.ambient ?? 1));
+    surface = ({ concrete: 'hard', asphalt: 'hard', gravel: 'hard' })[surface] || surface;
     if (surface === 'wood') { this.noise(o, t, { dur: 0.06, a: 0.5, bp: 500, q: 1.5 }); this.tone(o, t, { type: 'sine', f0: 140, f1: 90, a: 0.2, dur: 0.05 }); }
     else if (surface === 'metal') { this.noise(o, t, { dur: 0.05, a: 0.45, bp: 1800, q: 2 }); this.tone(o, t, { type: 'triangle', f0: 600, a: 0.08, dur: 0.06 }); }
     else if (surface === 'hard') { this.noise(o, t, { dur: 0.05, a: 0.45, bp: 1500, q: 1 }); }

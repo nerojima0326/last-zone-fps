@@ -168,17 +168,9 @@ const P = G.Player = {
       G.Audio.click('land');
       if (a.landV < -15) G.Game.damage(a, (-a.landV - 15) * 7, null, 'fall', false, a.pos, null);
     }
-    // 발소리
-    if (a.onGround && a.hspeed > 1.2) {
-      this.stepDist += a.hspeed * dt;
-      const stride = sprint ? 2.5 : a.prone ? 1.1 : a.crouch ? 1.4 : 1.9;
-      if (this.stepDist > stride) {
-        this.stepDist = 0;
-        const surf = a.inWater ? 'water' : a.groundMat === 'terrain' ? 'grass' : a.groundMat;
-        G.Audio.footstep(null, surf, a.prone ? 0.1 : a.crouch ? 0.18 : sprint ? 0.5 : 0.32);
-      }
-    }
-    this.stepPhase += a.onGround ? a.hspeed * dt * 1.75 : 0;
+    // Contacts follow actual travel, not intended velocity against a wall.
+    const gait = G.Locomotion?.tick(a, dt, sprint);
+    if (gait) this.stepPhase = gait.phase;
     // 실내 판정 (뷰모델 조명용)
     this.indoorT -= dt;
     if (this.indoorT <= 0) { this.indoorT = 0.25; this.indoorTarget = W.covered(a.pos.x, a.pos.y + 2, a.pos.z) ? 1 : 0; }
@@ -766,7 +758,9 @@ const P = G.Player = {
     G.VM.dir.position.copy(_q);
     G.VM.dir.intensity = U.lerp(G.World.sun.intensity * 0.85, 0.35, this.indoor);
     G.VM.dir.color.copy(G.World.sun.color);
-    G.VM.hemi.intensity = U.lerp(G.World.hemi.intensity, G.World.hemi.intensity * 0.55, this.indoor);
+    const night = G.World.weather === 'night';
+    G.VM.hemi.intensity = Math.max(night ? .28 : .55, U.lerp(G.World.hemi.intensity, G.World.hemi.intensity * .72, this.indoor));
+    if (G.VM.fill) G.VM.fill.intensity = night ? .06 : U.lerp(.12, .18, this.indoor);
   },
 
   /* ---------------- 관전 ---------------- */
