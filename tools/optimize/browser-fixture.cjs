@@ -31,8 +31,11 @@ module.exports = async function fixture(opts = {}) {
     }, !!opts.preserveOptions);
     if (opts.route) await opts.route(page);
     await page.goto('http://127.0.0.1:' + server.address().port + '/?' + (opts.query || ''));
-    await page.waitForFunction(() => window.G?.VM && document.querySelector('#menu:not(.hidden)'), null, { timeout: 240000 });
-    await page.evaluate(liveDRS => { G.paused = true; if (!liveDRS) G.DRS.frame = () => {}; }, !!opts.liveDRS);
+    if (opts.expectBootError) await page.waitForFunction(() => document.getElementById('loadText')?.textContent.startsWith('오류:'), null, { timeout: 60000 });
+    else {
+      await page.waitForFunction(() => window.G?.VM && document.querySelector('#menu:not(.hidden)'), null, { timeout: 240000 });
+      await page.evaluate(liveDRS => { G.paused = true; if (!liveDRS) G.DRS.frame = () => {}; }, !!opts.liveDRS);
+    }
     return { page, errors, requests, close: async () => { await browser.close(); await new Promise(r => server.close(r)); } };
   } catch (e) { if (browser) await browser.close(); server.close(); throw e; }
 };

@@ -107,13 +107,12 @@ G.Assets = {
   },
 
   async loadSky(tod, id, loader, step) {
-    const hdr = await new Promise(res => {
+    const hdrJob = new Promise(res => {
       if (!THREE.RGBELoader) return res(null);
       new THREE.RGBELoader().setDataType(THREE.HalfFloatType).load(BASE + 'hdri/' + id + '_1k.hdr', t => res(t), undefined, () => res(null));
-    });
-    step();
-    const bg = await new Promise(res => loader.load(BASE + 'hdri/' + id + '_bg.jpg', t => res(t), undefined, () => res(null)));
-    step();
+    }).then(t => { step(); return t; });
+    const bgJob = new Promise(res => loader.load(BASE + 'hdri/' + id + '_bg.jpg', t => res(t), undefined, () => res(null))).then(t => { step(); return t; });
+    const [hdr, bg] = await Promise.all([hdrJob, bgJob]);
     if (!hdr) return;
     hdr.mapping = THREE.EquirectangularReflectionMapping;
     const info = this.analyzeSky(hdr);

@@ -26,6 +26,8 @@ jobs:
           echo "THREE_DIR=$RUNNER_TEMP/lz-tests/node_modules/three" >> "$GITHUB_ENV"
       - name: Check ADS, distance zero and all-weapon recoil motion
         run: node tools/check-aim.cjs
+      - name: Check startup ordering and delayed or missing assets
+        run: node tools/check-startup.cjs
       - name: Check all weapon grips and hand animation
         run: node tools/check-hand-poses.cjs
       - name: Import bundled models

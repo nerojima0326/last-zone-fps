@@ -431,7 +431,8 @@ G.DRS = DRS;
 
 G.boot = async function () {
   const loadFill = document.getElementById('loadFill'), loadText = document.getElementById('loadText');
-  const progress = (p, t) => { loadFill.style.width = Math.round(p * 100) + '%'; if (t) loadText.textContent = t; };
+  let displayed = 0;
+  const progress = (p, t) => { if (p < displayed) return; displayed = p; loadFill.style.width = Math.round(p * 100) + '%'; if (t) loadText.textContent = t; };
   progress(0.3, '렌더러 초기화 중...');
   G.Footsteps?.prefetch();
   renderer = G.renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance', stencil: false });
@@ -454,11 +455,13 @@ G.boot = async function () {
   G.vmCamera = new THREE.PerspectiveCamera(54, innerWidth / innerHeight, 0.01, 10);
 
   G.Input.init(renderer.domElement);
-  await G.World.init(scene, renderer, progress);
+  // VM 설치 순서는 유지하고, 모델 파일을 읽고 해석하는 시간은 맵 생성과 겹친다.
+  const viewmodels = Promise.allSettled([G.G17Pilot?.preload(), G.M4Viewmodel?.preload()]);
+  await Promise.all([G.World.init(scene, renderer, progress), G.ReloadAssets?.load(), G.ThrowModels?.load(renderer), G.Vehicles?.load()]);
+  await viewmodels;
   progress(0.92, '효과 준비 중...');
   G.FX.init(scene);
   G.Extras.init(scene);
-  await Promise.all([G.ReloadAssets?.load(), G.ThrowModels?.load(renderer), G.Vehicles?.load()]);
   G.VM.init(G.vmScene);
 
   G.UI.init();
