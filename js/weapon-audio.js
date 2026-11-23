@@ -66,7 +66,7 @@ const W=G.WeaponAudio={
   const nodes=[source,filter,gain];let last=gain;
   if(c.createStereoPanner&&sp.pan){const pan=c.createStereoPanner();pan.pan.value=U.clamp(sp.pan,-1,1);last.connect(pan);last=pan;nodes.push(pan)}
   last.connect(a.master);
-  const wet=c.createGain();wet.gain.value=sp.rev*(o.wet??.3);last.connect(wet);wet.connect(a.verb);nodes.push(wet);
+  const wet=c.createGain();wet.gain.value=sp.rev*(o.wet??.3);last.connect(wet);wet.connect(G.Acoustics?.bus(a,sp)||a.verb);nodes.push(wet);
   const voice={source,gain,ctx:c,own:!!o.own,role:o.role||'handling',level,t};this.voices.push(voice);
   source.onended=()=>{for(const n of nodes)n.disconnect();const i=this.voices.indexOf(voice);if(i>=0)this.voices.splice(i,1);const j=this.own.indexOf(voice);if(j>=0)this.own.splice(j,1)};
   source.start(t,offset,duration);source.stop(t+seconds+.01);
@@ -102,7 +102,7 @@ const W=G.WeaponAudio={
    const seq=this.sequence[id]||0;this.sequence[id]=seq+1;
    const C=w?.shot.cues,names=C?Object.keys(C).filter(n=>/^own\d+$/.test(n)):Array.from({length:D.variants},(_,i)=>'own'+i),name=names[seq%names.length];
    const mean=C?names.reduce((v,n)=>v+(C[n].loud||0),0)/names.length:0,even=mean&&C[name].loud?U.clamp(mean/C[name].loud,.85,1.18):1;
-   const v=this.report(a,id,w,name,{g:1,pan:0,lp:20000,rev:.03},{gain:(w?.mix?.shot??.86)*even*sg,cut,rate:w?.rate||1,vary:.008,wet:.18,own:true,role:'shot'});
+   const v=this.report(a,id,w,name,a.spatial(null),{gain:(w?.mix?.shot??.86)*even*sg,cut,rate:w?.rate||1,vary:.008,wet:.8,own:true,role:'shot'});
    if(v)this.own.push(v);
    // A small, real bolt/slide contact makes self-loaders tactile, especially
    // with a suppressor. Manual bolts and pumps keep their animation events.
@@ -114,7 +114,7 @@ const W=G.WeaponAudio={
   // 거리에 따라 가까운 녹음 → 먼 녹음으로 넘어간다. 소리는 음속으로 늦게 도착한다.
   const d=sp.d,far=U.clamp((d-45)/90,0,1),delay=Math.min(3,d/343);
   const o={rate:w?.rate||1,cut,delay,wet:.5,role:'shot'};
-  if(far<1)this.report(a,id,w,'near',{...sp,lp:Math.max(sp.lp,1800)},{...o,gain:1.0*sg*(1-far)});
+  if(far<1)this.report(a,id,w,'near',sp,{...o,gain:1.0*sg*(1-far)});
   if(far>0)this.report(a,id,w,'far',{...sp,g:sp.g,lp:Math.min(sp.lp,5400)},{...o,gain:.8*sg*far});
   return true;
  },

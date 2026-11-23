@@ -134,6 +134,7 @@ const Game = G.Game = {
     }
     this.zone = null;
     G.Ballistics.reset(); G.Throwables.reset(); G.FX.reset(); G.Extras.reset();
+    G.Acoustics?.reset(); G.WeaponObstruction?.reset(G.VM);
     this.spectating = false; this.pendingResult = null;
     this.player = null; G.Player.a = null; G.Player.vehicle = null; G.Player.autoReload = null;
     if (G.Audio.ctx) G.Audio.stopLoops();
@@ -520,7 +521,9 @@ const Game = G.Game = {
       else G.UI.hurt(dmg * 0.3, null);
       if (weapon !== 'zone') G.Player.cancelHeal();
     }
-    if (t.model && weapon !== 'zone') t.model.flinch = 1;
+    if (t.model && weapon !== 'zone' && weapon !== 'bleed') {
+      if (!G.HitResponse?.receive(t, point, dir, dmg, head)) t.model.flinch = 1;
+    }
     if (t.brain && attacker) t.brain.onHurt(attacker);
   },
   knock(t, attacker, weapon, head) {

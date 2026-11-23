@@ -11,6 +11,7 @@ const P = G.Player = {
   a: null, sens: 1, adsSens: 1, scopeSens: 1, fov: 80, invertY: false,
   init(actor) {
     this.a = actor;
+    G.WeaponObstruction?.reset(G.VM);
     this.ads = 0; this.nextFire = 0; this.lastShot = -9; this.recoilAcc = 0;
     this.reload = null; this.autoReload = null; this.sw = null; this.raise = 1; this.pumpT = -1; this.punchT = -1; this.cycleT = -1;
     this.scopeView = 0; this.breath = 1; this.breathLock = false; this.swayT = 0; this._rl = {};
@@ -223,7 +224,7 @@ const P = G.Player = {
       this.autoReload = null;
     }
     // 정조준. v46: 볼트를 당기는 동안에도 조준 버튼을 누르고 있으면 조준(배율)을 유지한다
-    const wantAds = I.rmb && isGun && !this.sw && !this.reload && !this.sprinting && a.cur !== 'throw';
+    const wantAds = I.rmb && isGun && !this.sw && !this.reload && !this.sprinting && a.cur !== 'throw' && !G.WeaponObstruction?.blocked;
     const zoom = isGun ? this.zoomOf(inst, def) : 1;
     this.ads = approach(this.ads, wantAds ? 1 : 0, dt / ((isGun ? def.adsTime * (G.Attachments?.modifiers(inst).ads || 1) : 0.17) + (zoom > 1 ? 0.06 : 0)));
     this.scopeView = zoom > 1 ? U.smoothstep(0.8, 1, this.ads) : 0;
@@ -323,6 +324,7 @@ const P = G.Player = {
   },
   fire(def, inst, now) {
     const a = this.a, cam = G.camera;
+    if (G.WeaponObstruction && !G.WeaponObstruction.canFire(inst.id)) { this.nextFire = now + .07; return false; }
     inst.mag--;
     const parts = inst.attachments || {}, suppressed = parts.muzzle === 'suppressor';
     G.Audio.shot(inst.id, a.pos, true, suppressed);
@@ -741,6 +743,7 @@ const P = G.Player = {
       else { rl.phase = R.phase; rl.pp = R.phase === 'load' ? 0 : U.clamp(R.t / this.phaseDur(R, def), 0, 1); rl.shellP = R.phase === 'load' ? R.shellT / (R.cyc || def.reload) : -1; }
       rl.port = !!R.port; rl.per = R.per || 1;
     }
+    G.WeaponObstruction?.restore(G.VM);
     G.VM.update(dt, {
       ads: this.ads, sprint: this.sprinting && a.hspeed > 3, crouch: a.crouch,
       moving: a.onGround ? U.clamp(a.hspeed / 4.6, 0, 1.5) : 0, phase: this.stepPhase,
@@ -753,6 +756,7 @@ const P = G.Player = {
       punchP: this.punchT >= 0 ? this.punchT / 0.4 : -1,
       empty: inst && inst.mag === 0 && !R, scope, hideVM: this.scopeView > 0.6
     });
+    G.WeaponObstruction?.update(G.VM, dt);
     // 뷰모델 조명 (월드 태양 방향을 카메라 공간으로)
     _q.copy(G.World.sunDir).applyQuaternion(_qi.copy(cam.quaternion).invert());
     G.VM.dir.position.copy(_q);

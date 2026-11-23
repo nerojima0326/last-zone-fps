@@ -1,0 +1,48 @@
+{
+  "base": "a427bd89bcc80c9938bd0ab0850e2519b7721168",
+  "viewport": [
+    960,
+    540
+  ],
+  "renderer": "Chromium ANGLE SwiftShader; software-renderer diagnostics",
+  "runs": [
+    {
+      "mode": "v80",
+      "medianMs": 1120.800000000745,
+      "calls": 128,
+      "triangles": 483355,
+      "geometries": 210,
+      "textures": 193,
+      "programs": 152,
+      "exposure": 0.643950401866873,
+      "patches": 5,
+      "staticAO": 394,
+      "errors": []
+    },
+    {
+      "mode": "v79",
+      "medianMs": 1192.300000000745,
+      "calls": 127,
+      "triangles": 483343,
+      "geometries": 208,
+      "textures": 191,
+      "programs": 142,
+      "exposure": 0.6,
+      "patches": 0,
+      "staticAO": 394,
+      "errors": []
+    }
+  ],
+  "camera": {
+    "position": [
+      81.91148405338733,
+      26.607224197387698,
+      50.01733064442385
+    ],
+    "look": [
+      83.81148405338733,
+      26.057224197387697,
+      50.71733064442385
+    ]
+  }
+}
