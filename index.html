@@ -11,7 +11,7 @@
 <script>
 // 새 버전이 올라왔는데 휴대폰이 예전 페이지를 기억하고 있으면 새로 불러온다
 (function () {
-  var BUILD = '81';
+  var BUILD = '82';
   window.LZ_BUILD = BUILD;
   try {
     fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (v) {
@@ -368,28 +368,28 @@
 const loadText = document.getElementById('loadText');
 const loadFill = document.getElementById('loadFill');
 try {
-  const T = await import('three');
-  const { Sky } = await import('three/addons/objects/Sky.js');
-  const { EffectComposer } = await import('three/addons/postprocessing/EffectComposer.js');
-  const { RenderPass } = await import('three/addons/postprocessing/RenderPass.js');
-  const { UnrealBloomPass } = await import('three/addons/postprocessing/UnrealBloomPass.js');
-  const { OutputPass } = await import('three/addons/postprocessing/OutputPass.js');
-  const { ShaderPass } = await import('three/addons/postprocessing/ShaderPass.js');
-  const { Pass } = await import('three/addons/postprocessing/Pass.js');
-  const { mergeGeometries } = await import('three/addons/utils/BufferGeometryUtils.js');
-  const { RGBELoader } = await import('three/addons/loaders/RGBELoader.js');
-  const { FBXLoader } = await import('three/addons/loaders/FBXLoader.js');
-  const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
-  const { KTX2Loader } = await import('three/addons/loaders/KTX2Loader.js');
-  const { MeshoptDecoder } = await import('three/addons/libs/meshopt_decoder.module.js');
-  const SkeletonUtils = await import('three/addons/utils/SkeletonUtils.js');
+  // 모듈끼리 공유하는 의존성은 브라우저가 한 번만 읽고, 독립적인 다운로드는 겹친다.
+  const [T, { Sky }, { EffectComposer }, { RenderPass }, { UnrealBloomPass }, { OutputPass }, { ShaderPass }, { Pass },
+    { mergeGeometries }, { RGBELoader }, { FBXLoader }, { GLTFLoader }, { KTX2Loader }, { MeshoptDecoder }, SkeletonUtils] = await Promise.all([
+    import('three'), import('three/addons/objects/Sky.js'), import('three/addons/postprocessing/EffectComposer.js'),
+    import('three/addons/postprocessing/RenderPass.js'), import('three/addons/postprocessing/UnrealBloomPass.js'),
+    import('three/addons/postprocessing/OutputPass.js'), import('three/addons/postprocessing/ShaderPass.js'),
+    import('three/addons/postprocessing/Pass.js'), import('three/addons/utils/BufferGeometryUtils.js'),
+    import('three/addons/loaders/RGBELoader.js'), import('three/addons/loaders/FBXLoader.js'), import('three/addons/loaders/GLTFLoader.js'),
+    import('three/addons/loaders/KTX2Loader.js'), import('three/addons/libs/meshopt_decoder.module.js'), import('three/addons/utils/SkeletonUtils.js')
+  ]);
   window.THREE = Object.assign({}, T, { Sky, EffectComposer, RenderPass, UnrealBloomPass, OutputPass, ShaderPass, Pass, mergeGeometries, RGBELoader, FBXLoader, GLTFLoader, KTX2Loader, MeshoptDecoder, SkeletonUtils });
   // 실사 나무 생성기 (download-assets.bat 으로 받음). 없으면 기존 나무를 쓴다
-  if (location.protocol !== 'file:') {
-    try { window.EZTree = await import('./vendor/ez-tree.es.js'); } catch (e) { console.info('[veg] vendor/ez-tree.es.js 없음 — 기존 나무 사용'); }
-  }
+  const vegetation = location.protocol === 'file:' ? Promise.resolve() : import('./vendor/ez-tree.es.js')
+    .then(module => { window.EZTree = module; }).catch(() => console.info('[veg] vendor/ez-tree.es.js 없음 — 기존 나무 사용'));
   loadFill.style.width = '15%';
   const files = ['core', 'texture-quality', 'thin-details', 'acoustics', 'surface-wear', 'room-lighting', 'hit-response', 'impact-detail', 'weapon-obstruction', 'footsteps', 'locomotion', 'weapon-finish', 'lod-fade', 'assets', 'range-props', 'vegetation', 'static-ao', 'world', 'effects', 'ambient', 'plane', 'character', 'soldiers', 'weapon-catalog', 'gunlib', 'weapon-expansion-models', 'gunmodels', 'world-weapon-lods', 'reload-assets', 'weapons','weapon-motion','hand-contact','weapon-sound-design','weapon-audio','attachments','g17-pilot','m4-viewmodel','asset-viewmodels','real-arms', 'throwable-models', 'throwables', 'actor', 'player', 'bots', 'extras', 'vehicles', 'game', 'training', 'ui', 'settings', 'armory', 'raytrace', 'perf', 'main', 'touch'];
+  // 미리 받기만 병렬로 하고, 실행은 기존 순서를 지켜 파일 누락 시에도 첫 오류에서 멈춘다.
+  for (const file of files) {
+    const preload = document.createElement('link'); preload.rel = 'preload'; preload.as = 'script';
+    preload.href = 'js/' + file + '.js?v=' + encodeURIComponent(window.LZ_BUILD);
+    document.head.appendChild(preload);
+  }
   for (let i = 0; i < files.length; i++) {
     loadText.textContent = '스크립트 불러오는 중... (' + files[i] + ')';
     await new Promise((res, rej) => {
@@ -401,6 +401,7 @@ try {
     });
     loadFill.style.width = (15 + (i + 1) / files.length * 15) + '%';
   }
+  await vegetation;
   await window.G.boot();
 
 } catch (e) {

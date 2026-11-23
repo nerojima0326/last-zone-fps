@@ -1,0 +1,43 @@
+{
+  "node": "v24.22.3",
+  "chromium": "Chromium 156.0.8078.79 built on Debian GNU/Linux 13 (trixie)",
+  "renderer": "ANGLE SwiftShader",
+  "checks": [
+    {
+      "name": "로딩 순서·지연·누락",
+      "command": "node tools/check-startup.cjs",
+      "status": "통과",
+      "log": "PASS 지연 모델: 맵과 병렬 준비·준비 전 메뉴 차단·단일 다운로드·즉시 훈련 진입\nPASS 누락 에셋: 번들 총기·나무 생성기 없이 기본 모델로 시작\nPASS 필수 스크립트 누락: 후속 실행을 멈추고 한국어 오류 표시\n"
+    },
+    {
+      "name": "화질·압축 텍스처·AO·복구",
+      "command": "node tools/check-quality-performance.cjs",
+      "status": "통과",
+      "log": "Composite { changed: 69745, corners: 0 }\nPASS v78 quality/performance contracts {\"boot\":{\"models\":[\"ar7\",\"fists\",\"g18\",\"throw\"],\"packs\":[],\"gpu\":39,\"textureCount\":39,\"ao\":{\"applied\":394,\"rejected\":0},\"lods\":30,\"gpuBytes\":54526992,\"rgbaBytes\":218103808.0000001},\"inventory\":{\"models\":[\"ar7\",\"g18\",\"fists\",\"throw\",\"s12\",\"p92\"],\"packs\":[\"remington\",\"p9mm\"],\"equipped\":[\"ar7\",\"s12\",\"p92\"]},\"native\":{\"world\":[528,297],\"viewmodel\":[960,540],\"output\":[960,540],\"gun\":\"ar7\"},\"composite\":{\"changed\":69745,\"corners\":0},\"fallback\":{\"gpu\":0,\"model\":true,\"real\":true,\"pack\":true,\"ao\":391,\"rejected\":3,\"render\":true}}\n"
+    },
+    {
+      "name": "훈련장",
+      "command": "node tools/check-training-range.cjs",
+      "status": "통과",
+      "log": "Full game menu ready\nTraining assets: {\"version\":\"82\",\"booths\":4,\"bags\":20,\"crates\":4,\"cases\":6,\"targets\":14,\"killhouse\":11,\"grenadeTargets\":3,\"base\":true,\"guns\":30,\"attachments\":14,\"attachmentCatalog\":14,\"importedSandbags\":true,\"floorTexture\":true,\"instances\":[{\"name\":\"range-sandbag\",\"count\":20},{\"name\":\"range-crate\",\"count\":4}]}\nGameplay: {\"clearTargets\":14,\"bulletBlocked\":true,\"walkingBlocked\":true,\"aisleClear\":true,\"attachmentPickup\":true,\"shotHits\":1}\nSlope driving and chase camera: 24\nPASS: {\"version\":\"82\",\"booths\":4,\"bags\":20,\"crates\":4,\"cases\":6,\"targets\":14,\"killhouse\":11,\"grenadeTargets\":3,\"base\":true,\"guns\":30,\"attachments\":14,\"attachmentCatalog\":14,\"importedSandbags\":true,\"floorTexture\":true,\"instances\":[{\"name\":\"range-sandbag\",\"count\":20},{\"name\":\"range-crate\",\"count\":4}],\"checks\":{\"clearTargets\":14,\"bulletBlocked\":true,\"walkingBlocked\":true,\"aisleClear\":true,\"attachmentPickup\":true,\"shotHits\":1},\"repeated\":{\"targets\":14,\"groups\":1,\"crates\":4,\"version\":\"82\"},\"errors\":[],\"assets\":[{\"url\":\"sandbag-wall-section-7075ee.glb\",\"status\":200},{\"url\":\"plastic_crate_01.glb\",\"status\":200},{\"url\":\"concreteFloorPainted/concrete_floor_painted_baseColor.jpg\",\"status\":200},{\"url\":\"concreteFloorPainted/concrete_floor_painted_normal.jpg\",\"status\":200},{\"url\":\"concreteFloorPainted/concrete_floor_painted_arm.jpg\",\"status\":200}]}\n"
+    },
+    {
+      "name": "훈련장 에셋 누락",
+      "command": "RANGE_FALLBACK=1 node tools/check-training-range.cjs",
+      "status": "통과",
+      "log": "Full game menu ready\nTraining assets: {\"version\":\"82\",\"booths\":4,\"bags\":20,\"crates\":4,\"cases\":6,\"targets\":14,\"killhouse\":11,\"grenadeTargets\":3,\"base\":true,\"guns\":30,\"attachments\":14,\"attachmentCatalog\":14,\"importedSandbags\":false,\"floorTexture\":false,\"instances\":[{\"name\":\"range-sandbag\",\"count\":20},{\"name\":\"range-crate\",\"count\":4}]}\nGameplay: {\"clearTargets\":14,\"bulletBlocked\":true,\"walkingBlocked\":true,\"aisleClear\":true,\"attachmentPickup\":true,\"shotHits\":1}\nSlope driving and chase camera: 24\nPASS: {\"version\":\"82\",\"booths\":4,\"bags\":20,\"crates\":4,\"cases\":6,\"targets\":14,\"killhouse\":11,\"grenadeTargets\":3,\"base\":true,\"guns\":30,\"attachments\":14,\"attachmentCatalog\":14,\"importedSandbags\":false,\"floorTexture\":false,\"instances\":[{\"name\":\"range-sandbag\",\"count\":20},{\"name\":\"range-crate\",\"count\":4}],\"checks\":{\"clearTargets\":14,\"bulletBlocked\":true,\"walkingBlocked\":true,\"aisleClear\":true,\"attachmentPickup\":true,\"shotHits\":1},\"repeated\":{\"targets\":14,\"groups\":1,\"crates\":4,\"version\":\"82\"},\"errors\":[],\"assets\":[]}\n"
+    },
+    {
+      "name": "번들 총기·장전·부착물",
+      "command": "node tools/check-bundled-viewmodels.cjs",
+      "status": "통과",
+      "log": "PASS {\n  visits: 2,\n  requests: [ 200, 200, 200, 200, 404, 404 ],\n  gameplay: {\n    m4: true,\n    glock: true,\n    longGuns: [ 'sc17', 'm1014', 'sa12', 'aa12', 'db2' ],\n    packs: [\n      'kr98',  'r45',\n      'ka47',  'sc17',\n      'mk14',  'sa12',\n      'aa12',  's12',\n      'm1014', 'p92',\n      'm1911', 'de7'\n    ]\n  },\n  fallback: true,\n  errors: []\n}\n"
+    },
+    {
+      "name": "네이티브 HUD·레티클",
+      "command": "node tools/check-native-reticle.cjs",
+      "status": "통과",
+      "log": "PASS 네이티브 HUD·레티클 {\"rows\":[{\"dpr\":1,\"type\":\"x2\",\"size\":[960,540],\"css\":[960,540],\"transform\":1},{\"dpr\":1,\"type\":\"x4\",\"size\":[960,540],\"css\":[960,540],\"transform\":1},{\"dpr\":1,\"type\":\"x8\",\"size\":[960,540],\"css\":[960,540],\"transform\":1},{\"dpr\":1.25,\"type\":\"x2\",\"size\":[1200,675],\"css\":[960,540],\"transform\":1.25},{\"dpr\":1.25,\"type\":\"x4\",\"size\":[1200,675],\"css\":[960,540],\"transform\":1.25},{\"dpr\":1.25,\"type\":\"x8\",\"size\":[1200,675],\"css\":[960,540],\"transform\":1.25},{\"dpr\":1.5,\"type\":\"x2\",\"size\":[1440,810],\"css\":[960,540],\"transform\":1.5},{\"dpr\":1.5,\"type\":\"x4\",\"size\":[1440,810],\"css\":[960,540],\"transform\":1.5},{\"dpr\":1.5,\"type\":\"x8\",\"size\":[1440,810],\"css\":[960,540],\"transform\":1.5},{\"dpr\":2,\"type\":\"x2\",\"size\":[1920,1080],\"css\":[960,540],\"transform\":2},{\"dpr\":2,\"type\":\"x4\",\"size\":[1920,1080],\"css\":[960,540],\"transform\":2},{\"dpr\":2,\"type\":\"x8\",\"size\":[1920,1080],\"css\":[960,540],\"transform\":2}],\"output\":[1440,810],\"world\":[964,542],\"viewmodel\":[1440,810],\"crosshair\":\"DIV\",\"fps\":\"60 FPS · 해상도 67% (고정) · 그래픽 낮음\"}\n"
+    }
+  ]
+}

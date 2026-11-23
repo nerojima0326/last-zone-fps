@@ -114,12 +114,12 @@ const W = G.World = {
     for (let i = 0; i < this.grid.length; i++) this.grid[i] = [];
     this.hit = { t: 0, point: new THREE.Vector3(), normal: new THREE.Vector3(), mat: 'hard', box: null };
 
-    await Promise.all([G.StaticAO?.load(), G.Assets?.load(renderer, progress)]);
-    if (G.RangeProps) { progress(0.31, '훈련장 시설 불러오는 중...'); await G.RangeProps.load(renderer); }
-    if (G.Soldiers) { progress(0.31, '군인 모델 불러오는 중...'); await G.Soldiers.load(renderer); }
+    // 맵 생성 전에 필요한 에셋을 함께 준비한다. 서로의 모델이나 텍스처를 참조하지 않는다.
+    await Promise.all([
+      G.StaticAO?.load(), G.Assets?.load(renderer, progress), G.RangeProps?.load(renderer),
+      G.Soldiers?.load(renderer), G.GunModels?.load(renderer), G.WorldWeapons?.load(), G.Attachments?.load()
+    ]);
     for (const template of G.Soldiers?.templates || []) G.HitResponse?.prepare(template.root);
-    if (G.GunModels) { progress(0.315, '총기 모델 불러오는 중...'); await Promise.all([G.GunModels.load(renderer), G.WorldWeapons?.load()]); }
-    if (G.Attachments) await G.Attachments.load();
     progress(0.32, '지형 생성 중...');
     await tick();
     this.genHeights();

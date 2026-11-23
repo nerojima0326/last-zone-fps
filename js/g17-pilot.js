@@ -5,6 +5,11 @@ const HIP_OFF=new window.THREE.Vector3();
 const G=window.G,T=window.THREE;
 const v=new T.Vector3();
 const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
+ preload(){
+  // 맵 생성 중 미리 해석한 결과를 init에서도 재사용해 중복 요청을 막는다.
+  if(!this.pending){const L=new T.GLTFLoader();if(T.MeshoptDecoder)L.setMeshoptDecoder(T.MeshoptDecoder);this.pending=L.loadAsync('assets/models/viewmodels/glock17.glb?v='+(window.LZ_BUILD||''))}
+  return this.pending;
+ },
  async init(){
   const input=document.getElementById('g17File'),status=document.getElementById('g17Status'),reset=document.getElementById('g17Reset');
   const update=G.VM.update,fire=G.VM.fireKick,muzzleWorld=G.VM.muzzleWorld;
@@ -25,8 +30,7 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
   input.disabled=true;status.textContent='Glock 모델 자동 적용 중…';
   try{
    // v61 기본 모델은 미리 변환한 GLB (22 MB FBX → 1 MB). 직접 고른 FBX 는 위 load() 로 그대로
-   const L=new T.GLTFLoader();if(T.MeshoptDecoder)L.setMeshoptDecoder(T.MeshoptDecoder);
-   const g=await L.loadAsync('assets/models/viewmodels/glock17.glb?v='+(window.LZ_BUILD||''));
+   const g=await this.preload();
    g.scene.animations=g.animations;
    // FBX 의 Phong 재질을 glTF 로 옮기면 금속도가 기본값 1 이 된다 → 원래처럼 무광에 가깝게
    g.scene.traverse(o=>{if(o.isMesh){o.frustumCulled=false;for(const m of [].concat(o.material))if(m.metalness>=.99){m.metalness=/hand|glove/i.test(m.name)?0:.35;m.roughness=/hand|glove/i.test(m.name)?.85:.55}}});
