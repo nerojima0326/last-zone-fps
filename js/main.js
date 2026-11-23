@@ -703,6 +703,7 @@ function frame(now) {
       G.FX.update(dt);
     }
     G.World.update(dt, camera.position, camera);
+    G.RoomLighting?.update(dt, camera.position);
     G.Weather.update(dt);
     G.UI.update(dt);
     const a = Game.player;

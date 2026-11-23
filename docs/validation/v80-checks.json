@@ -1,0 +1,82 @@
+{
+  "version": 80,
+  "base": "a427bd89bcc80c9938bd0ab0850e2519b7721168",
+  "checks": [
+    {
+      "check": "check-combat",
+      "exit": 0,
+      "seconds": 148.0
+    },
+    {
+      "check": "check-training-range",
+      "exit": 0,
+      "seconds": 120.5
+    },
+    {
+      "check": "check-training-range-fallback",
+      "exit": 0,
+      "seconds": 69.0
+    },
+    {
+      "check": "check-weapon-catalog",
+      "exit": 0,
+      "seconds": 69.9
+    },
+    {
+      "check": "check-quality-performance",
+      "exit": 0,
+      "seconds": 94.2
+    },
+    {
+      "check": "check-bundled-viewmodels",
+      "exit": 0,
+      "seconds": 191.5
+    },
+    {
+      "check": "check-clearance",
+      "exit": 0,
+      "seconds": 10.7
+    },
+    {
+      "check": "check-glock-import",
+      "exit": 0,
+      "seconds": 0.5
+    },
+    {
+      "check": "check-m4-model",
+      "exit": 0,
+      "seconds": 1.0
+    },
+    {
+      "check": "check-original-weapon-audio",
+      "exit": 0,
+      "seconds": 4.0
+    },
+    {
+      "check": "check-aim",
+      "exit": 0
+    },
+    {
+      "check": "check-hand-poses",
+      "exit": 0
+    },
+    {
+      "check": "check-reloads",
+      "exit": 0
+    },
+    {
+      "check": "check-weapon-audio",
+      "exit": 0
+    },
+    {
+      "check": "check-gameplay-polish",
+      "exit": 0
+    },
+    {
+      "check": "check-combat-environment",
+      "exit": 0
+    }
+  ],
+  "environment": "Node 24.22.3; Chromium 156 / ANGLE SwiftShader; Three.js r160",
+  "note": "Software-renderer timing is not hardware FPS. No external packages or asset downloads added to the game."
+}

@@ -45,3 +45,5 @@ jobs:
           node tools/check-reloads.cjs
           node tools/check-clearance.cjs
           node tools/check-weapon-audio.cjs
+      - name: Check acoustics, hit reactions, weapon obstruction and environment detail
+        run: node tools/check-combat-environment.cjs

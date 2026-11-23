@@ -106,7 +106,7 @@ const W = G.World = {
   pick(values) { return values[Math.floor(this.decorRnd() * values.length)]; },
 
   async init(scene, renderer, progress) {
-    this.scene = scene; this.renderer = renderer;
+    this.scene = scene; this.renderer = renderer; this.windows = [];
     this.rnd = U.mulberry32(20261028);
     this.decorRnd = U.mulberry32(781245);
     this.noise = G.Noise.make(1337);
@@ -117,6 +117,7 @@ const W = G.World = {
     await Promise.all([G.StaticAO?.load(), G.Assets?.load(renderer, progress)]);
     if (G.RangeProps) { progress(0.31, '훈련장 시설 불러오는 중...'); await G.RangeProps.load(renderer); }
     if (G.Soldiers) { progress(0.31, '군인 모델 불러오는 중...'); await G.Soldiers.load(renderer); }
+    for (const template of G.Soldiers?.templates || []) G.HitResponse?.prepare(template.root);
     if (G.GunModels) { progress(0.315, '총기 모델 불러오는 중...'); await Promise.all([G.GunModels.load(renderer), G.WorldWeapons?.load()]); }
     if (G.Attachments) await G.Attachments.load();
     progress(0.32, '지형 생성 중...');
@@ -142,6 +143,7 @@ const W = G.World = {
     progress(0.86, '메시 최적화 중...');
     await tick();
     this.finalizeParts();
+    G.RoomLighting?.init(scene);
     // 풀 셰이더용 높이 텍스처: half-float + 하드웨어 선형 보간 (정점당 1회 샘플)
     const hf = new Uint16Array(N * N);
     for (let i = 0; i < hf.length; i++) hf[i] = THREE.DataUtils.toHalfFloat(this.heights[i]);
@@ -615,6 +617,7 @@ const W = G.World = {
       const m = M[k];
       m.onBeforeCompile = (sh) => {
         G.StaticAO?.shader(sh);
+        G.SurfaceWear?.shader(sh, k);
         sh.uniforms.uLodTex = lodU;
         sh.vertexShader = sh.vertexShader
           .replace('#include <common>', '#include <common>\nattribute vec3 lodk;\nuniform highp usampler2D uLodTex;')
@@ -625,7 +628,7 @@ const W = G.World = {
               if (!vis) gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
             }`);
       };
-      m.customProgramCacheKey = () => 'lod-static-ao-v78';
+      m.customProgramCacheKey = () => 'lod-static-ao-wear-v80-' + (G.SurfaceWear?.supports(k) ? 'surface' : 'plain');
     }
     // 실사 텍스처 (있으면): 원래 절차적 텍스처의 평균색 쪽으로 일부 보정해 기존 색 배합(정점 색)을 살린다
     const A = G.Assets;
@@ -647,6 +650,7 @@ const W = G.World = {
     if (geo.attributes.uv1) geo.deleteAttribute('uv1');
     // 거리별 표시 단계(LOD): 정점마다 [건물 청크 x, z, 종류] — 셰이더가 청크 상태를 보고 숨긴다
     const B = this.cur, lk = new Float32Array(n * 3);
+    G.SurfaceWear?.geometry(geo, mat, B);
     if (B) {
       const tag = this.inFurn ? 'i' : B.tag, cx = Math.floor((B.x + HALF) / LOD_CH), cz = Math.floor((B.z + HALF) / LOD_CH), kd = LOD_CODE[tag];
       for (let i = 0; i < n; i++) { lk[i * 3] = cx; lk[i * 3 + 1] = cz; lk[i * 3 + 2] = kd; }
@@ -775,6 +779,7 @@ const W = G.World = {
     const g = new THREE.BoxGeometry(w, h, d).toNonIndexed();
     const uv = g.attributes.uv;
     const dims = [[d, h], [d, h], [w, d], [w, d], [w, h], [w, h]];
+    G.SurfaceWear?.edges(g, dims);
     for (let f = 0; f < 6; f++) for (let v = 0; v < 6; v++) {
       const i = f * 6 + v;
       uv.setXY(i, uv.getX(i) * dims[f][0] / tile, uv.getY(i) * dims[f][1] / tile);
@@ -824,6 +829,7 @@ const W = G.World = {
       if (o.y0 > y0) this.boxMM(b, o.a, y0, z - t / 2, o.b, o.y0, z + t / 2, mat, col);
       if (o.y1 < y1) this.boxMM(b, o.a, o.y1, z - t / 2, o.b, y1, z + t / 2, mat, col);
       if (o.win) {
+        G.RoomLighting?.register(this, b, 'x', z, o);
         this.boxMM(b, o.a - 0.06, o.y0 - 0.02, z - t / 2 - 0.07, o.b + 0.06, o.y0 + 0.05, z + t / 2 + 0.07, 'concrete', C(0xdedad2), NC);
         this.boxMM(b, o.a - 0.06, o.y1 - 0.04, z - t / 2 - 0.04, o.b + 0.06, o.y1 + 0.08, z + t / 2 + 0.04, 'concrete', C(0xdedad2), NC);
       }
@@ -839,6 +845,7 @@ const W = G.World = {
       if (o.y0 > y0) this.boxMM(b, x - t / 2, y0, o.a, x + t / 2, o.y0, o.b, mat, col);
       if (o.y1 < y1) this.boxMM(b, x - t / 2, o.y1, o.a, x + t / 2, y1, o.b, mat, col);
       if (o.win) {
+        G.RoomLighting?.register(this, b, 'z', x, o);
         this.boxMM(b, x - t / 2 - 0.07, o.y0 - 0.02, o.a - 0.06, x + t / 2 + 0.07, o.y0 + 0.05, o.b + 0.06, 'concrete', C(0xdedad2), NC);
         this.boxMM(b, x - t / 2 - 0.04, o.y1 - 0.04, o.a - 0.06, x + t / 2 + 0.04, o.y1 + 0.08, o.b + 0.06, 'concrete', C(0xdedad2), NC);
       }
@@ -1287,7 +1294,7 @@ const W = G.World = {
     if (this.bridges && this.bridges.some(br => Math.hypot(cx - br.x, cz - br.z) < br.half + Math.max(hw, hd) + 4)) return false;
     if (opts && opts.maxSlope !== undefined && mx - mn > opts.maxSlope) return false;
     this.footprints.push({ minX: cx - hw, maxX: cx + hw, minZ: cz - hd, maxZ: cz + hd, kind });
-    this.cur = LOD_KIND[kind] ? { x: cx, z: cz, tag: LOD_KIND[kind], geos: [] } : null;
+    this.cur = LOD_KIND[kind] ? { x: cx, y: mx + .12, z: cz, tag: LOD_KIND[kind], geos: [] } : null;
     let fy = mx + 0.12;
     const noFound = ['car', 'sandbags', 'hay', 'ruins', 'containers', 'tower'];
     if (!noFound.includes(kind)) {
@@ -1296,6 +1303,7 @@ const W = G.World = {
     }
     if (kind === 'containers' || kind === 'tower') fy = mn + 0.02;
     if (kind === 'sandbags' || kind === 'hay' || kind === 'ruins') fy = (mn + mx) / 2;
+    if (this.cur) this.cur.y = fy;
     const b = this.ctx(x, fy, z, rot);
     switch (kind) {
       case 'house1': this.house1(b, 10, 8); break;
@@ -2058,6 +2066,7 @@ const W = G.World = {
     this.scene.fog = new THREE.FogExp2(P.fog, P.fogD);
     this.fogColor = new THREE.Color(P.fog); this.fogD = P.fogD;
     this.renderer.toneMappingExposure = P.exp;
+    G.RoomLighting?.setTime(P.exp);
     for (const c of this.clouds) { c.material.color.setHex(P.cloud); c.visible = !S && !P.noCloud; }
     this.sky.visible = !S;
     this.scene.background = S ? (S.bg || S.hdr) : null;

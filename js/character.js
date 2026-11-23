@@ -166,6 +166,7 @@ class CharacterModel {
     if (on) this.lodMesh.scale.y = crouch ? 0.72 : 1;
   }
   update(dt, a) {
+    G.HitResponse?.restore(this);
     const r = this.root;
     let hipY = 0.95, spineRX = 0, chestRX = U.clamp(a.pitch, -1.1, 1.1) * 0.85, headRX = U.clamp(a.pitch, -1, 1) * 0.15;
     let lT = 0, lK = 0, rT = 0, rK = 0;
@@ -186,6 +187,14 @@ class CharacterModel {
       lK = -0.3 * e; rK = -0.5 * e; aL = [0.5 + e, 0, 0.4]; aR = [0.3 + e * 0.8, 0, -0.4]; eL = 0.3; eR = 0.5;
       chestRX = 0; headRX = 0.2 * e;
       this.setGun(null);
+      const fall = G.HitResponse?.fall(this, a, e);
+      if (fall) {
+        yOff = fall.offset; hipY -= fall.fold * .22;
+        lT = -fall.front * .04 * e + fall.fold * .3; rT = -fall.front * .03 * e + fall.fold * .25;
+        lK = -fall.front * .22 * e - fall.fold * .6; rK = -fall.front * .18 * e - fall.fold * .5;
+        aL = [-fall.front * .15 * e, 0, .08 * e]; aR = [-fall.front * .12 * e, 0, -.08 * e];
+        eL = .12 + fall.fold * .3; eR = .16 + fall.fold * .3;
+      }
     } else if (a.knocked || a.prone) {
       r.rotation.x = -1.4; yOff = 0.2;
       this.phase += a.speed * dt * 3;
@@ -248,7 +257,9 @@ class CharacterModel {
       this.chute.rotation.z = Math.sin(this.phase * 0.7) * 0.05;
     }
     G.Locomotion?.pose(this, a, dt);
+    G.HitResponse?.apply(this, a, dt);
     if (this.soldier && !this.lod) G.Soldiers.drive(this.soldier, this);
+    G.HitResponse?.support(this, a, dt);
   }
   dispose() {
     if (!this.soldier) for (const m of this.meshes) m.geometry.dispose();

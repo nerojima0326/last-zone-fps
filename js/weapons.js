@@ -1413,11 +1413,11 @@ const Ballistics = G.Ballistics = {
         const v = vh ? vh.v : Wd.hit.box.vehicle, def = p.def;
         G.Vehicles.damage(v, G.dmgAt(def, p.start.distanceTo(_p)) * 0.8, p.owner, 'bullet');
         _h.copy(_d).negate();
-        G.FX.impact(_p, kind === 'world' ? Wd.hit.normal : _h, 'metal');
+        G.FX.impact(_p, kind === 'world' ? Wd.hit.normal : _h, 'metal', { direction: _d, weapon: def, dynamic: true });
         G.Audio.impact(_p, 'metal');
         dead = true;
       } else if (kind === 'world') {
-        G.FX.impact(_p, Wd.hit.normal, Wd.hit.mat);
+        G.FX.impact(_p, Wd.hit.normal, Wd.hit.mat, { direction: _d, weapon: p.def, box: Wd.hit.box });
         G.Audio.impact(_p, Wd.hit.mat);
         dead = true;
       } else if (kind === 'water') {

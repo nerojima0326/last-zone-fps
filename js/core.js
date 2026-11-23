@@ -250,6 +250,7 @@ const A = G.Audio = {
     this.verb = c.createConvolver(); this.verb.buffer = this._impulse(2.6, 3.2);
     this.verbOut = c.createGain(); this.verbOut.gain.value = 0.55;
     this.verb.connect(this.verbOut); this.verbOut.connect(this.master);
+    G.Acoustics?.init(this);
     const len = c.sampleRate * 2;
     this.noiseBuf = c.createBuffer(1, len, c.sampleRate);
     const d = this.noiseBuf.getChannelData(0);
@@ -269,7 +270,7 @@ const A = G.Audio = {
     }
     return buf;
   },
-  setListener(p, yaw) { const L = this.listener; L.x = p.x; L.y = p.y; L.z = p.z; L.yaw = yaw; },
+  setListener(p, yaw) { const L = this.listener; L.x = p.x; L.y = p.y; L.z = p.z; L.yaw = yaw; G.Acoustics?.update(p); },
   _budget() {
     const t = this.ctx.currentTime;
     while (this._recent.length && this._recent[0] < t - 0.1) this._recent.shift();
@@ -278,14 +279,15 @@ const A = G.Audio = {
     return true;
   },
   spatial(pos, ref = 15) {
-    if (!pos) return { g: 1, pan: 0, lp: 20000, rev: 0.1, d: 0 };
+    if (!pos) { const sp = { g: 1, pan: 0, lp: 20000, rev: 0.1, d: 0 }; return G.Acoustics?.filter(sp, pos, this.listener) || sp; }
     const L = this.listener;
     const dx = pos.x - L.x, dy = pos.y - L.y, dz = pos.z - L.z;
     const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
     const g = ref / (ref + d);
     let pan = 0;
     if (d > 0.5) { pan = (dx * Math.cos(L.yaw) - dz * Math.sin(L.yaw)) / d * 0.8; }
-    return { g, pan, lp: Math.max(450, 20000 * Math.exp(-d / 110)), rev: Math.min(1, 0.1 + d / 150), d };
+    const sp = { g, pan, lp: Math.max(450, 20000 * Math.exp(-d / 110)), rev: Math.min(1, 0.1 + d / 150), d };
+    return G.Acoustics?.filter(sp, pos, this.listener) || sp;
   },
   out(sp, vol) {
     const c = this.ctx;
@@ -295,7 +297,7 @@ const A = G.Audio = {
     let last = f;
     if (c.createStereoPanner) { const p = c.createStereoPanner(); p.pan.value = U.clamp(sp.pan, -1, 1); f.connect(p); last = p; }
     last.connect(this.master);
-    const s = c.createGain(); s.gain.value = sp.rev; last.connect(s); s.connect(this.verb);
+    const s = c.createGain(); s.gain.value = sp.rev; last.connect(s); s.connect(G.Acoustics?.bus(this, sp) || this.verb);
     return g;
   },
   noise(dest, t, o) {

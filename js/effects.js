@@ -144,11 +144,13 @@ const FX = G.FX = {
     }
     this.shellColors = { brass, red: new THREE.Color(0xa02020) };
     this.shellIdx = 0;
+    G.ImpactDetail?.init(this);
   },
   setFog(color, d) {
     for (const s of [this.add, this.norm]) { s.mat.uniforms.fogColor.value.copy(color); s.mat.uniforms.fogD.value = d; }
   },
   reset() {
+    G.ImpactDetail?.reset();
     this.add.clear(); this.norm.clear();
     for (const t of this.tracers) { t.visible = false; t.userData.busy = false; }
     for (const im of [this.decalIM, this.scorchIM]) { for (let i = 0; i < im.count; i++) im.setMatrixAt(i, ZERO); im.instanceMatrix.needsUpdate = true; }
@@ -169,7 +171,8 @@ const FX = G.FX = {
     return best;
   },
 
-  decal(point, normal) {
+  decal(point, normal, mat, context) {
+    if (G.ImpactDetail?.decal(point, normal, mat, context)) return;
     const im = this.decalIM, o = _o;
     o.position.copy(point).addScaledVector(normal, 0.012);
     _v.copy(point).add(normal);
@@ -208,7 +211,8 @@ const FX = G.FX = {
         life: 0.5 + Math.random() * 0.5, s0: 0.05, s1: 0.04, r, g, b, a: 1, grav: 12, drag: 0.5, fo: 0.3, floor: p.y - 2 });
     }
   },
-  impact(p, nrm, mat) {
+  impact(p, nrm, mat, context) {
+    if (G.ImpactDetail?.impact(this, p, nrm, mat, context)) return;
     const nx = nrm.x, ny = nrm.y, nz = nrm.z;
     if (mat === 'terrain') { this.dust(p, 4, nx, ny, nz, 0.46, 0.4, 0.3); this.debris(p, 4, nx, ny, nz, 0.25, 0.2, 0.15); }
     else if (mat === 'metal') { this.spark(p, 9, nx, ny, nz, 7); this.dust(p, 1, nx, ny, nz, 0.6, 0.6, 0.6, 0.6); this.decal(p, nrm); }
@@ -273,7 +277,7 @@ const FX = G.FX = {
   },
 
   update(dt) {
-    this.add.update(dt); this.norm.update(dt);
+    this.add.update(dt); this.norm.update(dt); G.ImpactDetail?.update(dt);
     for (const l of this.lights) {
       const u = l.userData;
       if (u.t > 0) { u.t -= dt; l.intensity = u.t > 0 ? u.i0 * (u.t / u.dur) * (u.flicker ? 0.7 + Math.random() * 0.6 : 1) : 0; }
