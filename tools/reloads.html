@@ -69,6 +69,20 @@ try {
   G.vmCamera=camera;
   await G.ReloadAssets.load();
   if (new URLSearchParams(location.search).get('models')!=='procedural') await G.GunModels.load(renderer);
+  // Explicit preview for the separately merged v34 CC0 arms; default/game rigs stay current.
+  if (new URLSearchParams(location.search).get('arms')==='patch') {
+    await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='js/patch-characters.js?v='+encodeURIComponent(window.LZ_BUILD);s.onload=resolve;s.onerror=reject;document.body.appendChild(s)});
+    await G.PatchCharacters.loadArms(renderer);
+    const ensure=G.VM.ensure;
+    G.VM.ensure=function(type){
+      const m=ensure.call(this,type);
+      for(const rig of [m?.armL,m?.armR])if(rig&&!rig.skinSource&&G.PatchCharacters.armsReady){
+        const meshes=rig.grp.children.filter(o=>o.isSkinnedMesh),sk=meshes[0]?.skeleton;
+        if(sk){sk.pose();G.PatchCharacters.replaceArm(rig,meshes,sk)}
+      }
+      return m;
+    };
+  }
   G.VM.init(scene);
   const P=G.Player, VM=G.VM, click=G.Audio.click.bind(G.Audio);
   let id='ar7', elapsed=0, duration=1, playing=true, wait=0, sound=false, seeking=false;

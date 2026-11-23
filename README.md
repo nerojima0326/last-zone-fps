@@ -361,6 +361,16 @@ GitHub Pages 사이트는 `gh-pages` 브랜치에서 배포됩니다. `main`에 
 - **훈련장 운전 코스**: 사격장 동쪽에 사격장과 같은 높이로 고른 평지를 만들고, 폭 8m 아스팔트 순환 코스(약 100×84m, 모서리를 깎은 사각형)와 사격대 뒤에서 이어지는 진입로를 깔았습니다. 훈련장을 시작하면 진입로에 지프 두 대가 서 있고, 출발선과 모서리 고깔이 놓입니다. 코스 도로는 배틀로얄 지도에도 남아 있어 차량이 놓일 수 있습니다.
 - **에셋 출처 정리**: 번들된 M4·Glock 1인칭 모델의 출처를 [`assets/models/viewmodels/CREDITS.md`](assets/models/viewmodels/CREDITS.md)와 메뉴의 "에셋 출처"에 적었습니다. Glock 모델은 받은 곳이 기록되어 있지 않아 "확인 필요"로 두었습니다.
 
+## Patch 사람 · 1인칭 팔 (버전 34)
+
+기존 미병합 분기의 CC0 MakeHuman/MPFB 캐릭터 2종, 별도 팔 모델과 가공 도구를 통합했습니다. [캐릭터 미리보기](tools/people.html)와 [Patch 팔·장전 미리보기](tools/reloads.html?arms=patch)에서 시험할 수 있습니다. 팔은 현재 30종의 절차적 IK·장전 드라이버를 사용합니다.
+
+웹 게임의 기본 캐릭터·팔은 v79에서 검증한 SWAT/Rocketbox·M4 리그를 유지합니다. Patch 에셋은 위 전용 미리보기에서 불러오며, 로딩 실패 시 절차적 모델을 씁니다. [원본·라이선스·가공 내용](assets/patch/people/CREDITS.md) · `node tools/check-patch-people.cjs`.
+
+## Unity 이식 분기
+
+미병합되어 있던 Unity 사격장 시제품과 섬·봇·배틀로얄 이식을 [`unity/`](unity/README.md)에 통합했습니다. Unity 6에서 사용하는 별도 에셋·소스 묶음이며, 웹 배포와는 분리되어 있습니다. 실행 방법과 맵 데이터 생성 절차는 해당 README를 따릅니다.
+
 ## 실사 그래픽 (무료 에셋)
 
 ### AR-7 M4 1인칭 모델·애니메이션 (버전 30)
