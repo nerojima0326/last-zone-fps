@@ -303,6 +303,8 @@ const P = G.Player = {
     else if (slot !== 'fists' && !a.weapons[slot]) return;
     if ((this.sw ? this.sw.to : a.cur) === slot) return;
     this.reload = null; this.autoReload = null; this.cycleT = -1; this.pumpT = -1;
+    const next = a.weapons[slot];
+    if (next) { G.VM.ensure(next.id); G.AssetVM?.request(next.id); }
     this.sw = { t: this.sw && this.sw.t < 0.2 ? this.sw.t : 0, to: slot };
     G.Audio.click('switch');
   },
@@ -717,7 +719,7 @@ const P = G.Player = {
     cam.rotation.set(a.pitch + this.camKick + VMc.camRX + (Math.random() - 0.5) * sh * 0.02, a.yaw + VMc.camRY + (Math.random() - 0.5) * sh * 0.02, VMc.camRZ + leanRoll + (Math.random() - 0.5) * sh * 0.015, 'YXZ');
     const inst = a.weapons[a.cur], def = inst ? G.WEAPONS[inst.id] : G.WEAPONS[a.cur];
     const scope = inst ? (G.Attachments ? G.Attachments.optic(inst,def) : (inst.scope || def.baseSight || null)) : null;
-    if(inst&&G.Attachments)G.Attachments.update(G.VM.models[inst.id],inst);
+    if(inst&&G.Attachments)G.Attachments.update(G.VM.ensure(inst.id),inst);
     const zoom = scope ? G.SCOPES[scope].zoom : 1;
     // 배율 조준 중에는 먼 건물도 상세 모델로 (창문 너머가 보이게)
     G.lodZoom = zoom > 1 && this.ads > 0.6 ? Math.pow(zoom, 0.85) : 1;

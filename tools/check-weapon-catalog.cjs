@@ -70,6 +70,7 @@ assert.equal(Object.keys(catalog).length, 15, 'Expansion must add 15 weapons');
     });
     assert.equal(new Set(layout.ids).size, 30); assert.equal(layout.tables, 6); assert(layout.models && layout.profiles && layout.loot); assert.equal(layout.uniqueNewModels, 15);
     if (process.env.SHOTS) {
+      await page.evaluate(async () => { for (const id of G.GUN_IDS) G.VM.ensure(id); await G.AssetVM.loadAll(); });
       await page.waitForFunction(() => G.RealArms.ready && Object.keys(G.AssetVM.PACKS).every(k => G.AssetVM.packs[k]?.ready), null, { timeout: 240000 });
       await page.evaluate(() => { window.requestAnimationFrame = () => 0; G.Input.unlock(); G.paused = true; });
       await page.waitForTimeout(100);

@@ -1279,7 +1279,7 @@ const Guns = G.Guns = {
     const def = G.WEAPONS[type];
     if (def && def.cls) {
       const k = modelKey(type);
-      if (G.GunModels && G.GunModels.has(k)) return tpSize(G.GunModels.tpMesh(k, full), def);
+      if (G.GunModels && G.GunModels.has(k)) return G.WorldWeapons?.wrap(type, tpSize(G.GunModels.tpMesh(k, full), def)) || tpSize(G.GunModels.tpMesh(k, full), def);
       const m = new THREE.Mesh(G.GunLib.tpGeo(type, G.GunModels.TPREF[def.cls]), G.GunLib.tpMat());
       m.castShadow = true;
       return m;
@@ -1522,17 +1522,22 @@ const VM = G.VM = {
   init(scene) {
     this.scene = scene;
     this.root = new THREE.Group(); scene.add(this.root);
-    for (const k of G.GUN_IDS.concat(['fists', 'throw'])) {
-      const m = Guns.buildVM(k);
-      m.root.visible = false;
-      this.root.add(m.root);
-      this.models[k] = m;
-    }
+    // The native M4/Glock importers clone these flashes at boot. Other
+    // models (including their hand-contact grids) are built on demand.
+    for (const k of ['ar7', 'g18', 'fists', 'throw']) this.ensure(k);
     this.hemi = new THREE.HemisphereLight(0xdfeaff, 0x5d5140, 1.1); scene.add(this.hemi);
     this.dir = new THREE.DirectionalLight(0xffffff, 2.4); this.dir.position.set(1, 2, 1); scene.add(this.dir);
     this.flashLight = new THREE.PointLight(0xffa850, 0, 3, 2); this.flashLight.position.set(0.1, -0.05, -0.6); scene.add(this.flashLight);
   },
+  ensure(type) {
+    if (!type || this.models[type]) return this.models[type];
+    if (!G.WEAPONS[type] && type !== 'fists' && type !== 'throw') return null;
+    const m = Guns.buildVM(type); m.root.visible = false;
+    this.root.add(m.root); this.models[type] = m;
+    return m;
+  },
   set(type) {
+    this.ensure(type);
     if (this.cur === type) return;
     for (const k in this.models) this.models[k].root.visible = false;
     this.cur = type;

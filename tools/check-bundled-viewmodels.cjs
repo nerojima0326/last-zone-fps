@@ -35,7 +35,7 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
       Object.defineProperty(window, 'indexedDB', { get() { throw Error('Device storage unavailable'); } });
     });
     const url = `http://127.0.0.1:${server.address().port}/`;
-    const ready = () => page.waitForFunction(() => window.G?.UI && document.querySelector('#menu:not(.hidden)') && document.querySelector('#loading.hidden'), null, { timeout: 180000 });
+    const ready = async () => { await page.waitForFunction(() => window.G?.UI && document.querySelector('#menu:not(.hidden)') && document.querySelector('#loading.hidden'), null, { timeout: 180000 }); await page.evaluate(async () => { for (const id of G.GUN_IDS) G.VM.ensure(id); await G.AssetVM.loadAll(); }); };
     await page.goto(url, { waitUntil: 'domcontentloaded' });
     await ready();
     const build = await page.evaluate(() => window.LZ_BUILD);

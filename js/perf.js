@@ -159,13 +159,15 @@
     const s = P.stats(300), r = P.renderer, D = G.DRS || {};
     const sz = r.getDrawingBufferSize(new THREE.Vector2());
     const cr = G.composerRT && G.composerRT();
+    const vm = G.viewmodelRT && G.viewmodelRT();
     const lines = [
       `FPS ${s.fps.toFixed(0)}  ${s.avg.toFixed(1)}ms  1%low ${s.low1.toFixed(0)}`,
       `품질 ${G.qualityLabel ? G.qualityLabel() : ''}  DRS ${((D.scale || 1) * 100).toFixed(0)}%`,
-      `장면 ${cr ? cr.width + 'x' + cr.height : '-'}  화면 ${sz.x}x${sz.y}`,
+      `장면 ${cr ? Math.round(cr.width) + 'x' + Math.round(cr.height) : '-'}  화면 ${sz.x}x${sz.y}`,
       `CPU 갱신 ${s.cpu.update.toFixed(2)}ms  제출 ${s.cpu.submit.toFixed(2)}ms`,
       `GPU ${P.ext && !P.sync ? '' : P.sync ? '(sync) ' : '(타이머 없음: ?perf=sync) '}${s.gpuTotal.toFixed(2)}ms`
     ];
+    if (vm && vm.width > 1) lines.splice(3, 0, `총·손 ${Math.round(vm.width)}x${Math.round(vm.height)}`);
     const ks = Object.keys(P.gpu).sort((a, b) => (ORDER.indexOf(a) + 99 * (ORDER.indexOf(a) < 0)) - (ORDER.indexOf(b) + 99 * (ORDER.indexOf(b) < 0)));
     for (const k of ks) lines.push(`  ${k.padEnd(10)} ${P.gpu[k].toFixed(2)}`);
     lines.push(`draw ${s.info.calls}  tris ${(s.info.tris / 1000).toFixed(0)}k`);

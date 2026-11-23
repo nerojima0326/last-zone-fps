@@ -20,7 +20,7 @@ const SCENES = (process.env.SCENES || 'forest,vista,combat').split(',');
     fs.createReadStream(file).pipe(res);
   }).listen(0, '127.0.0.1');
   await new Promise(r => server.once('listening', r));
-  const browser = await chromium.launch({ headless: true, args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+  const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROME_BIN, args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
   const page = await browser.newPage({ viewport: { width: +(process.env.VW || 1280), height: +(process.env.VH || 720) } });
   const errors = [];
   page.on('pageerror', e => { errors.push(e.message); console.log('ERR', e.message); });

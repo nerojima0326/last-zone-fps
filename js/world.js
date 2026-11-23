@@ -103,18 +103,21 @@ const W = G.World = {
   splatCanvas: null, maskCanvas: null, mapCanvas: null,
   grass: null, time: 0,
 
+  pick(values) { return values[Math.floor(this.decorRnd() * values.length)]; },
+
   async init(scene, renderer, progress) {
     this.scene = scene; this.renderer = renderer;
     this.rnd = U.mulberry32(20261028);
+    this.decorRnd = U.mulberry32(781245);
     this.noise = G.Noise.make(1337);
     this.grid = new Array(GN * GN);
     for (let i = 0; i < this.grid.length; i++) this.grid[i] = [];
     this.hit = { t: 0, point: new THREE.Vector3(), normal: new THREE.Vector3(), mat: 'hard', box: null };
 
-    if (G.Assets) await G.Assets.load(renderer, progress);
+    await Promise.all([G.StaticAO?.load(), G.Assets?.load(renderer, progress)]);
     if (G.RangeProps) { progress(0.31, '훈련장 시설 불러오는 중...'); await G.RangeProps.load(renderer); }
     if (G.Soldiers) { progress(0.31, '군인 모델 불러오는 중...'); await G.Soldiers.load(renderer); }
-    if (G.GunModels) { progress(0.315, '총기 모델 불러오는 중...'); await G.GunModels.load(renderer); }
+    if (G.GunModels) { progress(0.315, '총기 모델 불러오는 중...'); await Promise.all([G.GunModels.load(renderer), G.WorldWeapons?.load()]); }
     if (G.Attachments) await G.Attachments.load();
     progress(0.32, '지형 생성 중...');
     await tick();
@@ -611,6 +614,7 @@ const W = G.World = {
     for (const k in M) {
       const m = M[k];
       m.onBeforeCompile = (sh) => {
+        G.StaticAO?.shader(sh);
         sh.uniforms.uLodTex = lodU;
         sh.vertexShader = sh.vertexShader
           .replace('#include <common>', '#include <common>\nattribute vec3 lodk;\nuniform highp usampler2D uLodTex;')
@@ -621,7 +625,7 @@ const W = G.World = {
               if (!vis) gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
             }`);
       };
-      m.customProgramCacheKey = () => 'lod';
+      m.customProgramCacheKey = () => 'lod-static-ao-v78';
     }
     // 실사 텍스처 (있으면): 원래 절차적 텍스처의 평균색 쪽으로 일부 보정해 기존 색 배합(정점 색)을 살린다
     const A = G.Assets;
@@ -680,7 +684,9 @@ const W = G.World = {
       const ks = key.split('|'), mat = ks[1];
       const geo = THREE.mergeGeometries(this.parts[key], false);
       if (!geo) continue;
+      G.StaticAO?.apply(geo, key);
       const mesh = new THREE.Mesh(geo, this.mats[mat]);
+      mesh.name = 'World ' + key; mesh.userData.staticChunk = key;
       mesh.castShadow = true; mesh.receiveShadow = true;
       mesh.matrixAutoUpdate = false;
       this.scene.add(mesh);
@@ -715,6 +721,7 @@ const W = G.World = {
     this.proxyParts = [];
     const pg = geos.length && THREE.mergeGeometries(geos, false);
     if (pg) {
+      G.StaticAO?.apply(pg, 'proxy');
       const mesh = new THREE.Mesh(pg, this.mats.proxy);
       mesh.matrixAutoUpdate = false; mesh.receiveShadow = true;
       this.scene.add(mesh);
@@ -878,7 +885,7 @@ const W = G.World = {
     this.inFurn = false;
   },
   furnitureBody(b, x0, z0, x1, z1, y) {
-    const r = this.rnd, wood = C(U.pick([0x8a6a4a, 0x6b4f35, 0xa08060, 0x5a4636]));
+    const r = this.rnd, wood = C(this.pick([0x8a6a4a, 0x6b4f35, 0xa08060, 0x5a4636]));
     const k = Math.floor(r() * 4);
     if (k === 0) { // 테이블
       const cx = (x0 + x1) / 2 + (r() - 0.5), cz = (z0 + z1) / 2 + (r() - 0.5);
@@ -887,7 +894,7 @@ const W = G.World = {
     } else if (k === 1) { // 책장
       this.boxMM(b, x0 + 0.05, y, z0 + 0.05, x0 + 1.4, y + 1.9, z0 + 0.45, 'wood', wood);
     } else if (k === 2) { // 소파
-      const sc = C(U.pick([0x6a3a3a, 0x3a4a6a, 0x4a5a3a, 0x777066]));
+      const sc = C(this.pick([0x6a3a3a, 0x3a4a6a, 0x4a5a3a, 0x777066]));
       this.boxMM(b, x1 - 2.0, y, z0 + 0.05, x1 - 0.05, y + 0.45, z0 + 0.9, 'plaster', sc);
       this.boxMM(b, x1 - 2.0, y + 0.45, z0 + 0.05, x1 - 0.05, y + 0.9, z0 + 0.3, 'plaster', sc, NC);
     } else { // 침대
@@ -897,7 +904,7 @@ const W = G.World = {
   },
   house1(b, Wd, D, small) {
     const H = 3.0, T = 0.25;
-    const wc = C(U.pick(PLASTER)), ic = C(0xeae6dc), rc = C(U.pick(ROOFC));
+    const wc = C(this.pick(PLASTER)), ic = C(0xeae6dc), rc = C(this.pick(ROOFC));
     const brick = this.rnd() < 0.3;
     const wm = brick ? 'brick' : 'plaster', wcol = brick ? C(0xffffff) : wc;
     this.boxMM(b, -Wd / 2 + T, 0, -D / 2 + T, Wd / 2 - T, 0.03, D / 2 - T, 'floor', C(0xffffff), NC);
@@ -935,7 +942,7 @@ const W = G.World = {
     const sw = 1.15, sx0 = -Wd / 2 + T + 0.02;
     const strips = [[sx0, sx0 + sw], [sx0 + sw + 0.05, sx0 + 2 * sw + 0.05]];
     const brick = this.rnd() < 0.45;
-    const wm = brick ? 'brick' : 'plaster', wcol = brick ? C(0xffffff) : C(U.pick(PLASTER));
+    const wm = brick ? 'brick' : 'plaster', wcol = brick ? C(0xffffff) : C(this.pick(PLASTER));
     const stairC = C(0xb5b0a8), slabC = C(0xd8d0c0), railC = C(0x333333), trim = C(0xd2cdc4);
     this.boxMM(b, -Wd / 2 + T, 0, -D / 2 + T, Wd / 2 - T, 0.03, D / 2 - T, 'floor', C(0xffffff), NC);
     for (let f = 0; f < floors; f++) {
@@ -991,7 +998,7 @@ const W = G.World = {
   },
   shop(b, Wd, D) {
     const H = 3.6, T = 0.25;
-    const wc = C(U.pick(PLASTER)), signs = [0xc0392b, 0x2471a3, 0x1e8449, 0xd68910, 0x7d3c98];
+    const wc = C(this.pick(PLASTER)), signs = [0xc0392b, 0x2471a3, 0x1e8449, 0xd68910, 0x7d3c98];
     this.boxMM(b, -Wd / 2 + T, 0, -D / 2 + T, Wd / 2 - T, 0.03, D / 2 - T, 'concrete', C(0xe0dcd6), NC);
     this.wallX(b, -Wd / 2, Wd / 2, D / 2 - T / 2, T, 0, H, [{ a: -Wd / 2 + 0.6, b: -1.0, y0: 0.6, y1: 2.9, win: true }, { a: -0.8, b: 0.8, y0: 0, y1: 2.5 }, { a: 1.0, b: Wd / 2 - 0.6, y0: 0.6, y1: 2.9, win: true }], 'plaster', wc);
     this.wallX(b, -Wd / 2, Wd / 2, -D / 2 + T / 2, T, 0, H, [{ a: Wd / 2 - 2.2, b: Wd / 2 - 1.0, y0: 0, y1: 2.3 }], 'plaster', wc);
@@ -999,10 +1006,10 @@ const W = G.World = {
     this.wallZ(b, -D / 2 + T, D / 2 - T, Wd / 2 - T / 2, T, 0, H, [], 'plaster', wc);
     this.boxMM(b, -Wd / 2, H, -D / 2, Wd / 2, H + 0.25, D / 2, 'concrete', C(0xb5b0a8));
     this.boxMM(b, -Wd / 2, H + 0.25, D / 2 - 0.2, Wd / 2, H + 0.75, D / 2, 'concrete', C(0xb5b0a8), NC);
-    this.boxMM(b, -Wd / 2 + 0.6, H - 0.3, D / 2, Wd / 2 - 0.6, H + 0.6, D / 2 + 0.15, 'paint', C(U.pick(signs)), NC);
+    this.boxMM(b, -Wd / 2 + 0.6, H - 0.3, D / 2, Wd / 2 - 0.6, H + 0.6, D / 2 + 0.15, 'paint', C(this.pick(signs)), NC);
     // 간판 앞면: 한글 간판 한 줄 (묶음 텍스처의 i 번째 줄)
     {
-      const i = Math.floor(Math.random() * SIGNS.length), sw = Wd - 1.3, sh = 0.84, g = new THREE.PlaneGeometry(sw, sh);
+      const i = Math.floor(this.decorRnd() * SIGNS.length), sw = Wd - 1.3, sh = 0.84, g = new THREE.PlaneGeometry(sw, sh);
       const uv = g.attributes.uv, v0 = 1 - (i + 1) / SIGNS.length, v1 = 1 - i / SIGNS.length, u1 = Math.min(1, sw / (sh * 12));
       for (let k = 0; k < uv.count; k++) uv.setXY(k, uv.getX(k) * u1, uv.getY(k) ? v1 - 0.004 : v0 + 0.004);
       g.translate(0, H + 0.15, D / 2 + 0.152);
@@ -1014,7 +1021,7 @@ const W = G.World = {
   },
   warehouse(b, Wd, D) {
     const H = 7, T = 0.3;
-    const mc = C(U.pick([0x8f9aa3, 0xa3a08f, 0x7f8f86, 0x9c8a7a, 0x6f7f95, 0xa08070]));
+    const mc = C(this.pick([0x8f9aa3, 0xa3a08f, 0x7f8f86, 0x9c8a7a, 0x6f7f95, 0xa08070]));
     this.boxMM(b, -Wd / 2 + T, 0, -D / 2 + T, Wd / 2 - T, 0.03, D / 2 - T, 'concrete', C(0xa0a0a0), NC);
     const hw = c => ({ a: c - 1.0, b: c + 1.0, y0: 4.6, y1: 5.8 });
     this.wallX(b, -Wd / 2, Wd / 2, D / 2 - T / 2, T, 0, H, [{ a: -Wd / 4 - 0.8, b: -Wd / 4 + 0.8, y0: 0, y1: 2.5 }, hw(1), hw(Wd / 4 + 2)], 'metal', mc);
@@ -1039,7 +1046,7 @@ const W = G.World = {
     this.loot(b, 0, 0.05, 0); this.loot(b, -Wd / 4, 0.05, 0.6); this.loot(b, Wd / 4, 0.05, -0.6);
   },
   barracks(b, Wd, D) {
-    const H = 3.0, T = 0.25, wc = C(U.pick([0x8a9078, 0x9a9a88, 0x7d8670]));
+    const H = 3.0, T = 0.25, wc = C(this.pick([0x8a9078, 0x9a9a88, 0x7d8670]));
     this.boxMM(b, -Wd / 2 + T, 0, -D / 2 + T, Wd / 2 - T, 0.03, D / 2 - T, 'floor', C(0xc8c8c8), NC);
     this.wallX(b, -Wd / 2, Wd / 2, D / 2 - T / 2, T, 0, H, [this.door(-Wd / 4), this.door(Wd / 4), this.win(0, 1.6), this.win(-Wd / 2 + 1.5, 1.2), this.win(Wd / 2 - 1.5, 1.2)], 'plaster', wc);
     this.wallX(b, -Wd / 2, Wd / 2, -D / 2 + T / 2, T, 0, H, [this.win(-Wd / 4, 1.4), this.win(0, 1.4), this.win(Wd / 4, 1.4)], 'plaster', wc);
@@ -1054,7 +1061,7 @@ const W = G.World = {
     this.loot(b, -Wd / 4, 0.05, 0.5); this.loot(b, Wd / 4, 0.05, 0.5); this.loot(b, 0, 0.05, -0.3);
   },
   barn(b, Wd, D) {
-    const H = 5.5, T = 0.25, wc = C(U.pick([0xa8442e, 0x8a3a28, 0x8a6a4a]));
+    const H = 5.5, T = 0.25, wc = C(this.pick([0xa8442e, 0x8a3a28, 0x8a6a4a]));
     this.boxMM(b, -Wd / 2 + T, 0, -D / 2 + T, Wd / 2 - T, 0.03, D / 2 - T, 'wood', C(0x7a6040), NC);
     this.wallX(b, -Wd / 2, Wd / 2, D / 2 - T / 2, T, 0, H, [{ a: -2.1, b: 2.1, y0: 0, y1: 4.4 }, this.win(Wd / 2 - 2, 1.2, 2.8, 3.8)], 'wood', wc);
     this.wallX(b, -Wd / 2, Wd / 2, -D / 2 + T / 2, T, 0, H, [this.door(Wd / 4, 1.4)], 'wood', wc);
@@ -1105,7 +1112,7 @@ const W = G.World = {
   },
   containers(b) {
     const r = this.rnd;
-    const col = () => C(U.pick(CONT));
+    const col = () => C(this.pick(CONT));
     this.container(b, -1.5, 0, -2.2, 0, col(), r() < 0.5);
     this.container(b, -1.5, 0, 0.6, 0, col(), r() < 0.5);
     if (r() < 0.6) this.container(b, -1.5, 2.6, -2.2, 0, col(), false);
@@ -1148,7 +1155,7 @@ const W = G.World = {
     this.cyl(b, 0, 26, 0, 1.88, 1.95, 2.2, 20, 'paint', C(0xb0302a), false);
   },
   shed(b) {
-    const wc = C(U.pick([0x8a6a48, 0x7a5a40, 0x9a8060]));
+    const wc = C(this.pick([0x8a6a48, 0x7a5a40, 0x9a8060]));
     const Wd = 5, D = 4, H = 2.6, T = 0.15;
     this.wallX(b, -Wd / 2, Wd / 2, D / 2 - T / 2, T, 0, H, [this.door(0, 1.2)], 'wood', wc);
     this.wallX(b, -Wd / 2, Wd / 2, -D / 2 + T / 2, T, 0, H, [], 'wood', wc);
@@ -1159,7 +1166,7 @@ const W = G.World = {
   },
   car(b, lx, lz, r) {
     const c = this.sub(b, lx, 0, lz, r);
-    const col = C(U.pick(CARC)), dark = C(0x1c1c1c);
+    const col = C(this.pick(CARC)), dark = C(0x1c1c1c);
     this.boxMM(c, -2.15, 0.34, -0.88, 2.15, 1.02, 0.88, 'paint', col);
     this.boxMM(c, -1.15, 1.02, -0.8, 0.95, 1.55, 0.8, 'glass', C(0x2a3a48));
     this.boxMM(c, -1.1, 1.55, -0.78, 0.9, 1.62, 0.78, 'paint', col, NC);
@@ -1172,7 +1179,7 @@ const W = G.World = {
     }
   },
   ruins(b) {
-    const r = this.rnd, col = C(U.pick([0xb8b0a0, 0xa09888, 0xc0b8a8]));
+    const r = this.rnd, col = C(this.pick([0xb8b0a0, 0xa09888, 0xc0b8a8]));
     const m = r() < 0.5 ? 'brick' : 'concrete';
     const L = 6 + r() * 4;
     this.boxMM(b, -L / 2, -0.5, -0.15, L / 2, 0.8 + r() * 2.2, 0.15, m, m === 'brick' ? C(0xffffff) : col);
@@ -1183,7 +1190,7 @@ const W = G.World = {
   // 통나무 산장 (숲·산)
   cabin(b) {
     const Wd = 8, D = 7, H = 2.8, T = 0.22;
-    const wc = C(U.pick([0x7a5434, 0x6a4a30, 0x8a6240])), rc = C(U.pick([0x3a3f36, 0x4a3a2c, 0x2f3b3a]));
+    const wc = C(this.pick([0x7a5434, 0x6a4a30, 0x8a6240])), rc = C(this.pick([0x3a3f36, 0x4a3a2c, 0x2f3b3a]));
     this.boxMM(b, -Wd / 2 + T, 0, -D / 2 + T, Wd / 2 - T, 0.03, D / 2 - T, 'floor', C(0xd8c8b0), NC);
     this.wallX(b, -Wd / 2, Wd / 2, D / 2 - T / 2, T, 0, H, [this.door(-1.4, 1.1), this.win(1.6, 1.2, 1.0, 2.0)], 'wood', wc);
     this.wallX(b, -Wd / 2, Wd / 2, -D / 2 + T / 2, T, 0, H, [this.win(0, 1.2, 1.0, 2.0)], 'wood', wc);
@@ -1358,7 +1365,7 @@ const W = G.World = {
           let rot;
           if (kind === 'car') {
             // 도로 옆에 주차
-            const road = U.pick(this.roads);
+            const road = this.pick(this.roads);
             const tt = r();
             x = U.lerp(road.ax, road.bx, tt); z = U.lerp(road.az, road.bz, tt);
             if (Math.hypot(x - t.x, z - t.z) > t.r + 10) continue;
@@ -1366,7 +1373,7 @@ const W = G.World = {
             const side = r() < 0.5 ? 1 : -1;
             x += Math.cos(ang2 + Math.PI / 2) * side * 4.6; z += Math.sin(ang2 + Math.PI / 2) * side * 4.6;
             rot = Math.abs(Math.cos(ang2)) > Math.abs(Math.sin(ang2)) ? 0 : 1;
-            if (r() < 0.3) rot = U.randInt(0, 3);
+            if (r() < 0.3) rot = Math.floor(r() * 4);
           } else {
             const dx = t.x - x, dz = t.z - z;
             rot = Math.abs(dx) > Math.abs(dz) ? (dx > 0 ? 1 : 3) : (dz > 0 ? 0 : 2);
@@ -1592,7 +1599,7 @@ const W = G.World = {
     tryWild('containers', 12, 0.8, 20);
     // 버려진 자동차
     for (let i = 0; i < 36; i++) {
-      const road = U.pick(this.roads), tt = 0.15 + r() * 0.7;
+      const road = this.pick(this.roads), tt = 0.15 + r() * 0.7;
       const ang = Math.atan2(road.bz - road.az, road.bx - road.ax);
       const x = U.lerp(road.ax, road.bx, tt) + Math.cos(ang + Math.PI / 2) * (r() - 0.5) * 6;
       const z = U.lerp(road.az, road.bz, tt) + Math.sin(ang + Math.PI / 2) * (r() - 0.5) * 6;

@@ -24,6 +24,7 @@ const root = path.resolve(__dirname, '..'), bvhDir = path.dirname(path.dirname(r
     await page.goto(`http://127.0.0.1:${server.address().port}/`, { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => window.G?.UI && document.querySelector('#loading.hidden'), null, { timeout: 180000 });
     await page.click('#trainBtn');
+    await page.evaluate(async () => { for (const id of G.GUN_IDS) G.VM.ensure(id); await G.AssetVM.loadAll(); });
     await page.waitForFunction(() => G.Training.active && Object.keys(G.AssetVM.PACKS).every(k => G.AssetVM.packs[k]?.ready), null, { timeout: 240000 });
     await page.evaluate(() => { G.onLockChange = () => {}; G.Input.unlock(); G.paused = true; G.UI.showPause(false); window.requestAnimationFrame = () => 0; });
     if (process.env.BASELINE_HANDS) await page.evaluate(() => { G.HandContact.apply = () => {}; });
