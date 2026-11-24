@@ -343,7 +343,7 @@ function applyAniso() { G.TextureQuality?.scan(scene, true); G.TextureQuality?.s
 const MAX_PIXELS = 2560 * 1440;
 // v67 화면(캔버스) 해상도: 후처리를 쓰면 장면 해상도와 따로 — 마지막 패스만 이 해상도로 그린다
 function outputPixelRatio() {
-  return window.devicePixelRatio || 1;
+  return G.screenPixelRatio();
 }
 
 let renderer, scene, camera, composer, bloom, grade, fxaa, upAA, presentation, vmPass, nativeVM, rtCapture, last = 0, menuAng = 0, frameNo = 0;
@@ -438,6 +438,7 @@ G.boot = async function () {
   renderer = G.renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance', stencil: false });
   renderer.setPixelRatio(outputPixelRatio());
   renderer.setSize(innerWidth, innerHeight);
+  G.GraphicsRecovery.init(renderer);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.shadowMap.autoUpdate = false;
@@ -495,8 +496,7 @@ G.boot = async function () {
     if (G.Settings) G.Settings.render();
   }
   progress(1, '완료');
-  document.getElementById('loading').classList.add('hidden');
-  G.UI.showMenu();
+  G.GraphicsRecovery.bootComplete();
   startAutoBench();
 
   addEventListener('resize', onResize);
@@ -533,6 +533,10 @@ function setupComposer(samples) {
   const pr = renderer.getPixelRatio();
   const rt = new THREE.WebGLRenderTarget(Math.floor(innerWidth * pr + 1e-6), Math.floor(innerHeight * pr + 1e-6), { type: THREE.HalfFloatType, samples });
   composer = new THREE.EffectComposer(renderer, rt);
+  // 모바일에서는 장면만 MSAA·깊이를 보유하고 색보정 출력은 가벼운 버퍼로 쓴다.
+  if (document.documentElement.classList.contains('mobile')) {
+    composer.renderTarget2.samples = 0; composer.renderTarget2.depthBuffer = false;
+  }
   // GPU의 실제 크기와 텍셀 중심을 일치시킨다.
   for (const target of [composer.renderTarget1, composer.renderTarget2]) {
     const setSize = target.setSize.bind(target);
@@ -650,6 +654,7 @@ function applyQuality(q) {
 const _db = new THREE.Vector2();
 function usePost() { const Q = QUALITY[G.quality]; return !Q || Q.post; }
 function renderFrame(dt) {
+  if (G.GraphicsRecovery.lost) return;
   // The catalogue draws its own preview on demand over the last game frame.
   if (G.Armory?.open) return;
   // 레이트레이싱 (설정에서 켰고 지원되는 기기일 때)
@@ -666,6 +671,9 @@ function renderFrame(dt) {
     const output = renderer.getDrawingBufferSize(_db);
     const splitVM = G.renderFeatures.nativeViewmodel && (rt.width < output.x || rt.height < output.y);
     vmPass.enabled = !splitVM;
+    if (document.documentElement.classList.contains('mobile')) {
+      composer.readBuffer = composer.renderTarget1; composer.writeBuffer = composer.renderTarget2;
+    }
     composer.render(dt);
     if (splitVM && G.VM.cur && G.VM.root.visible) {
       if (PF) PF.seg('viewmodel');
@@ -689,6 +697,9 @@ G.composerRT = () => (composer && usePost() && !(G.RT && G.RT.drawing())) ? comp
 G.qualityLabel = () => (G.qualityMode === 'auto' ? '자동·' : '') + (TIER_NAME[G.quality] || '');
 
 function onResize() {
+  if (G.GraphicsRecovery.lost) return;
+  const out = outputPixelRatio();
+  if (Math.abs(renderer.getPixelRatio() - out) > .001) renderer.setPixelRatio(out);
   renderer.setSize(innerWidth, innerHeight);
   camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
   G.vmCamera.aspect = innerWidth / innerHeight; G.vmCamera.updateProjectionMatrix();
@@ -732,11 +743,13 @@ function warmup() {
 }
 
 G.prepareViewmodel = root => {
+  if (G.GraphicsRecovery.lost) return Promise.resolve();
   const previous = renderer.getRenderTarget();
   try { renderer.setRenderTarget(G.RT?.drawing() ? null : nativeVM.target); return renderer.compileAsync(root, G.vmCamera, G.vmScene); }
   finally { renderer.setRenderTarget(previous); }
 };
 G.startGame = function (opts) {
+  if (G.GraphicsRecovery.lost) return;
   G.Audio.init();
   G.UI.hideMenu();
   document.getElementById('results').classList.add('hidden');
@@ -756,6 +769,7 @@ G.startGame = function (opts) {
   if (G.RT) { G.RT.invalidate(); G.RT.prepare(); }
 };
 G.resume = function () {
+  if (G.GraphicsRecovery.lost) return;
   G.Audio.init();
   G.UI.showPause(false);
   G.paused = false;
@@ -778,6 +792,7 @@ function frame(now) {
   const ms = now - last;
   let dt = ms / 1000;
   last = now;
+  if (G.GraphicsRecovery.lost) return;
   if (dt > 0.05) dt = 0.05;
   if (dt <= 0) dt = 0.001;
   frameNo++;

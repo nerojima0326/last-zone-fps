@@ -14,6 +14,7 @@ const P=G.RenderPrep={
   schedule(){if(this.scheduled||!this.jobs.length)return;this.scheduled=true;setTimeout(()=>this.step(),24)},
   step(){
     this.scheduled=false;const job=this.jobs[0];if(!job)return;
+    if(G.GraphicsRecovery?.lost){this.schedule();return}
     const busy=!G.paused&&G.Game?.state==='playing'&&(G.Input.lmb||G.Player.ads>.1||G.Player.reload||G.Player.time-G.Player.lastShot<.3);
     if(busy){this.schedule();return}
     try{

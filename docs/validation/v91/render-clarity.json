@@ -1,0 +1,919 @@
+{
+  "devices": [
+    {
+      "dpr": 1,
+      "rows": [
+        {
+          "tier": "potato",
+          "scale": 0.35,
+          "floor": 0.35,
+          "canvas": [
+            960,
+            540
+          ],
+          "css": [
+            960,
+            540
+          ],
+          "scene": [
+            336,
+            189
+          ],
+          "pixelRatio": 1,
+          "samples": 0,
+          "fxaa": true
+        },
+        {
+          "tier": "low",
+          "scale": 0.55,
+          "floor": 0.55,
+          "canvas": [
+            960,
+            540
+          ],
+          "css": [
+            960,
+            540
+          ],
+          "scene": [
+            528,
+            297
+          ],
+          "pixelRatio": 1,
+          "samples": 2,
+          "fxaa": false
+        },
+        {
+          "tier": "medium",
+          "scale": 0.85,
+          "floor": 0.85,
+          "canvas": [
+            960,
+            540
+          ],
+          "css": [
+            960,
+            540
+          ],
+          "scene": [
+            816,
+            459
+          ],
+          "pixelRatio": 1,
+          "samples": 2,
+          "fxaa": false
+        },
+        {
+          "tier": "high",
+          "scale": 0.85,
+          "floor": 0.85,
+          "canvas": [
+            960,
+            540
+          ],
+          "css": [
+            960,
+            540
+          ],
+          "scene": [
+            816,
+            459
+          ],
+          "pixelRatio": 1,
+          "samples": 4,
+          "fxaa": false
+        }
+      ],
+      "fixed": [
+        {
+          "mode": "67",
+          "tier": "potato",
+          "scale": 0.67,
+          "size": [
+            643,
+            361
+          ],
+          "info": {
+            "scale": 0.67,
+            "percent": 67,
+            "mode": "고정",
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.67
+          }
+        },
+        {
+          "mode": "67",
+          "tier": "high",
+          "scale": 0.67,
+          "size": [
+            643,
+            361
+          ],
+          "info": {
+            "scale": 0.67,
+            "percent": 67,
+            "mode": "고정",
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.67
+          }
+        },
+        {
+          "mode": "75",
+          "tier": "potato",
+          "scale": 0.75,
+          "size": [
+            720,
+            405
+          ],
+          "info": {
+            "scale": 0.75,
+            "percent": 75,
+            "mode": "고정",
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.75
+          }
+        },
+        {
+          "mode": "75",
+          "tier": "high",
+          "scale": 0.75,
+          "size": [
+            720,
+            405
+          ],
+          "info": {
+            "scale": 0.75,
+            "percent": 75,
+            "mode": "고정",
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.75
+          }
+        },
+        {
+          "mode": "85",
+          "tier": "potato",
+          "scale": 0.85,
+          "size": [
+            816,
+            459
+          ],
+          "info": {
+            "scale": 0.85,
+            "percent": 85,
+            "mode": "고정",
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.85
+          }
+        },
+        {
+          "mode": "85",
+          "tier": "high",
+          "scale": 0.85,
+          "size": [
+            816,
+            459
+          ],
+          "info": {
+            "scale": 0.85,
+            "percent": 85,
+            "mode": "고정",
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.85
+          }
+        },
+        {
+          "mode": "100",
+          "tier": "potato",
+          "scale": 1,
+          "size": [
+            960,
+            540
+          ],
+          "info": {
+            "scale": 1,
+            "percent": 100,
+            "mode": "고정",
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 1
+          }
+        },
+        {
+          "mode": "100",
+          "tier": "high",
+          "scale": 1,
+          "size": [
+            960,
+            540
+          ],
+          "info": {
+            "scale": 1,
+            "percent": 100,
+            "mode": "고정",
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 1
+          }
+        }
+      ],
+      "governed": {
+        "down": "potato",
+        "up": "low",
+        "scale": 0.75
+      },
+      "ui": {
+        "stored": "67",
+        "button": "67",
+        "fps": "60 FPS · 해상도 67% (고정) · 그래픽 낮음"
+      },
+      "resized": {
+        "canvas": [
+          801,
+          451
+        ],
+        "scale": 0.67,
+        "scene": [
+          536,
+          302
+        ]
+      },
+      "post": {
+        "native": [
+          801,
+          451
+        ],
+        "size": [
+          801,
+          451
+        ],
+        "off": {
+          "size": [
+            1,
+            1
+          ],
+          "strength": 0,
+          "legacy": 0
+        },
+        "requestedSamples": 2,
+        "actualSamples": 4,
+        "fallback": {
+          "samples": 0,
+          "fxaa": true
+        }
+      },
+      "textures": {
+        "max": 16,
+        "uploaded": {
+          "aniso": 16,
+          "min": 1008,
+          "mips": true
+        },
+        "corrected": {
+          "aniso": 16,
+          "min": 1008,
+          "coverage": true
+        },
+        "excluded": {
+          "min": 1003,
+          "mips": false,
+          "aniso": 1
+        },
+        "stable": true,
+        "noMSAA": false
+      },
+      "rt": {
+        "calls": [
+          [
+            600,
+            338
+          ]
+        ],
+        "sceneScale": 0.75,
+        "snapshot": {
+          "scale": 0.375,
+          "adaptive": true
+        },
+        "after": {
+          "scale": 0.375,
+          "adaptive": true
+        },
+        "native": [
+          801,
+          451
+        ]
+      },
+      "restored": {
+        "mode": "75",
+        "strength": 0.35
+      }
+    },
+    {
+      "dpr": 1.25,
+      "rows": [
+        {
+          "tier": "potato",
+          "scale": 0.35,
+          "floor": 0.35,
+          "canvas": [
+            1200,
+            675
+          ],
+          "css": [
+            960,
+            540
+          ],
+          "scene": [
+            420,
+            236
+          ],
+          "pixelRatio": 1.25,
+          "samples": 0,
+          "fxaa": true
+        },
+        {
+          "tier": "low",
+          "scale": 0.55,
+          "floor": 0.55,
+          "canvas": [
+            1200,
+            675
+          ],
+          "css": [
+            960,
+            540
+          ],
+          "scene": [
+            660,
+            371
+          ],
+          "pixelRatio": 1.25,
+          "samples": 2,
+          "fxaa": false
+        },
+        {
+          "tier": "medium",
+          "scale": 0.85,
+          "floor": 0.85,
+          "canvas": [
+            1200,
+            675
+          ],
+          "css": [
+            960,
+            540
+          ],
+          "scene": [
+            1020,
+            573
+          ],
+          "pixelRatio": 1.25,
+          "samples": 2,
+          "fxaa": false
+        },
+        {
+          "tier": "high",
+          "scale": 0.85,
+          "floor": 0.85,
+          "canvas": [
+            1200,
+            675
+          ],
+          "css": [
+            960,
+            540
+          ],
+          "scene": [
+            1020,
+            573
+          ],
+          "pixelRatio": 1.25,
+          "samples": 4,
+          "fxaa": false
+        }
+      ],
+      "fixed": [
+        {
+          "mode": "67",
+          "tier": "potato",
+          "scale": 0.67,
+          "size": [
+            804,
+            452
+          ],
+          "info": {
+            "scale": 0.67,
+            "percent": 67,
+            "mode": "고정",
+            "rendererPixelRatio": 1.25,
+            "composerPixelRatio": 0.8375
+          }
+        },
+        {
+          "mode": "67",
+          "tier": "high",
+          "scale": 0.67,
+          "size": [
+            804,
+            452
+          ],
+          "info": {
+            "scale": 0.67,
+            "percent": 67,
+            "mode": "고정",
+            "rendererPixelRatio": 1.25,
+            "composerPixelRatio": 0.8375
+          }
+        },
+        {
+          "mode": "75",
+          "tier": "potato",
+          "scale": 0.75,
+          "size": [
+            900,
+            506
+          ],
+          "info": {
+            "scale": 0.75,
+            "percent": 75,
+            "mode": "고정",
+            "rendererPixelRatio": 1.25,
+            "composerPixelRatio": 0.9375
+          }
+        },
+        {
+          "mode": "75",
+          "tier": "high",
+          "scale": 0.75,
+          "size": [
+            900,
+            506
+          ],
+          "info": {
+            "scale": 0.75,
+            "percent": 75,
+            "mode": "고정",
+            "rendererPixelRatio": 1.25,
+            "composerPixelRatio": 0.9375
+          }
+        },
+        {
+          "mode": "85",
+          "tier": "potato",
+          "scale": 0.85,
+          "size": [
+            1020,
+            573
+          ],
+          "info": {
+            "scale": 0.85,
+            "percent": 85,
+            "mode": "고정",
+            "rendererPixelRatio": 1.25,
+            "composerPixelRatio": 1.0625
+          }
+        },
+        {
+          "mode": "85",
+          "tier": "high",
+          "scale": 0.85,
+          "size": [
+            1020,
+            573
+          ],
+          "info": {
+            "scale": 0.85,
+            "percent": 85,
+            "mode": "고정",
+            "rendererPixelRatio": 1.25,
+            "composerPixelRatio": 1.0625
+          }
+        },
+        {
+          "mode": "100",
+          "tier": "potato",
+          "scale": 1,
+          "size": [
+            1200,
+            675
+          ],
+          "info": {
+            "scale": 1,
+            "percent": 100,
+            "mode": "고정",
+            "rendererPixelRatio": 1.25,
+            "composerPixelRatio": 1.25
+          }
+        },
+        {
+          "mode": "100",
+          "tier": "high",
+          "scale": 1,
+          "size": [
+            1200,
+            675
+          ],
+          "info": {
+            "scale": 1,
+            "percent": 100,
+            "mode": "고정",
+            "rendererPixelRatio": 1.25,
+            "composerPixelRatio": 1.25
+          }
+        }
+      ],
+      "governed": {
+        "down": "potato",
+        "up": "low",
+        "scale": 0.75
+      },
+      "ui": {
+        "stored": "67",
+        "button": "67",
+        "fps": "60 FPS · 해상도 67% (고정) · 그래픽 낮음"
+      },
+      "resized": {
+        "canvas": [
+          1001,
+          563
+        ],
+        "scale": 0.67,
+        "scene": [
+          670,
+          377
+        ]
+      },
+      "post": {
+        "native": [
+          1001,
+          563
+        ],
+        "size": [
+          1001,
+          563
+        ],
+        "off": {
+          "size": [
+            1,
+            1
+          ],
+          "strength": 0,
+          "legacy": 0
+        },
+        "requestedSamples": 2,
+        "actualSamples": 4,
+        "fallback": {
+          "samples": 0,
+          "fxaa": true
+        }
+      },
+      "textures": {
+        "max": 16,
+        "uploaded": {
+          "aniso": 16,
+          "min": 1008,
+          "mips": true
+        },
+        "corrected": {
+          "aniso": 16,
+          "min": 1008,
+          "coverage": true
+        },
+        "excluded": {
+          "min": 1003,
+          "mips": false,
+          "aniso": 1
+        },
+        "stable": true,
+        "noMSAA": false
+      },
+      "rt": {
+        "calls": [
+          [
+            750,
+            422
+          ]
+        ],
+        "sceneScale": 0.75,
+        "snapshot": {
+          "scale": 0.375,
+          "adaptive": true
+        },
+        "after": {
+          "scale": 0.375,
+          "adaptive": true
+        },
+        "native": [
+          1001,
+          563
+        ]
+      },
+      "restored": {
+        "mode": "75",
+        "strength": 0.35
+      }
+    },
+    {
+      "dpr": 1.5,
+      "rows": [
+        {
+          "tier": "potato",
+          "scale": 0.35,
+          "floor": 0.35,
+          "canvas": [
+            1440,
+            810
+          ],
+          "css": [
+            960,
+            540
+          ],
+          "scene": [
+            504,
+            283
+          ],
+          "pixelRatio": 1.5,
+          "samples": 0,
+          "fxaa": true
+        },
+        {
+          "tier": "low",
+          "scale": 0.55,
+          "floor": 0.55,
+          "canvas": [
+            1440,
+            810
+          ],
+          "css": [
+            960,
+            540
+          ],
+          "scene": [
+            792,
+            445
+          ],
+          "pixelRatio": 1.5,
+          "samples": 2,
+          "fxaa": false
+        },
+        {
+          "tier": "medium",
+          "scale": 0.85,
+          "floor": 0.85,
+          "canvas": [
+            1440,
+            810
+          ],
+          "css": [
+            960,
+            540
+          ],
+          "scene": [
+            1224,
+            688
+          ],
+          "pixelRatio": 1.5,
+          "samples": 2,
+          "fxaa": false
+        },
+        {
+          "tier": "high",
+          "scale": 0.85,
+          "floor": 0.85,
+          "canvas": [
+            1440,
+            810
+          ],
+          "css": [
+            960,
+            540
+          ],
+          "scene": [
+            1224,
+            688
+          ],
+          "pixelRatio": 1.5,
+          "samples": 4,
+          "fxaa": false
+        }
+      ],
+      "fixed": [
+        {
+          "mode": "67",
+          "tier": "potato",
+          "scale": 0.67,
+          "size": [
+            964,
+            542
+          ],
+          "info": {
+            "scale": 0.67,
+            "percent": 67,
+            "mode": "고정",
+            "rendererPixelRatio": 1.5,
+            "composerPixelRatio": 1.0050000000000001
+          }
+        },
+        {
+          "mode": "67",
+          "tier": "high",
+          "scale": 0.67,
+          "size": [
+            964,
+            542
+          ],
+          "info": {
+            "scale": 0.67,
+            "percent": 67,
+            "mode": "고정",
+            "rendererPixelRatio": 1.5,
+            "composerPixelRatio": 1.0050000000000001
+          }
+        },
+        {
+          "mode": "75",
+          "tier": "potato",
+          "scale": 0.75,
+          "size": [
+            1080,
+            607
+          ],
+          "info": {
+            "scale": 0.75,
+            "percent": 75,
+            "mode": "고정",
+            "rendererPixelRatio": 1.5,
+            "composerPixelRatio": 1.125
+          }
+        },
+        {
+          "mode": "75",
+          "tier": "high",
+          "scale": 0.75,
+          "size": [
+            1080,
+            607
+          ],
+          "info": {
+            "scale": 0.75,
+            "percent": 75,
+            "mode": "고정",
+            "rendererPixelRatio": 1.5,
+            "composerPixelRatio": 1.125
+          }
+        },
+        {
+          "mode": "85",
+          "tier": "potato",
+          "scale": 0.85,
+          "size": [
+            1224,
+            688
+          ],
+          "info": {
+            "scale": 0.85,
+            "percent": 85,
+            "mode": "고정",
+            "rendererPixelRatio": 1.5,
+            "composerPixelRatio": 1.275
+          }
+        },
+        {
+          "mode": "85",
+          "tier": "high",
+          "scale": 0.85,
+          "size": [
+            1224,
+            688
+          ],
+          "info": {
+            "scale": 0.85,
+            "percent": 85,
+            "mode": "고정",
+            "rendererPixelRatio": 1.5,
+            "composerPixelRatio": 1.275
+          }
+        },
+        {
+          "mode": "100",
+          "tier": "potato",
+          "scale": 1,
+          "size": [
+            1440,
+            810
+          ],
+          "info": {
+            "scale": 1,
+            "percent": 100,
+            "mode": "고정",
+            "rendererPixelRatio": 1.5,
+            "composerPixelRatio": 1.5
+          }
+        },
+        {
+          "mode": "100",
+          "tier": "high",
+          "scale": 1,
+          "size": [
+            1440,
+            810
+          ],
+          "info": {
+            "scale": 1,
+            "percent": 100,
+            "mode": "고정",
+            "rendererPixelRatio": 1.5,
+            "composerPixelRatio": 1.5
+          }
+        }
+      ],
+      "governed": {
+        "down": "potato",
+        "up": "low",
+        "scale": 0.75
+      },
+      "ui": {
+        "stored": "67",
+        "button": "67",
+        "fps": "60 FPS · 해상도 67% (고정) · 그래픽 낮음"
+      },
+      "resized": {
+        "canvas": [
+          1201,
+          676
+        ],
+        "scale": 0.67,
+        "scene": [
+          805,
+          453
+        ]
+      },
+      "post": {
+        "native": [
+          1201,
+          676
+        ],
+        "size": [
+          1201,
+          676
+        ],
+        "off": {
+          "size": [
+            1,
+            1
+          ],
+          "strength": 0,
+          "legacy": 0
+        },
+        "requestedSamples": 2,
+        "actualSamples": 4,
+        "fallback": {
+          "samples": 0,
+          "fxaa": true
+        }
+      },
+      "textures": {
+        "max": 16,
+        "uploaded": {
+          "aniso": 16,
+          "min": 1008,
+          "mips": true
+        },
+        "corrected": {
+          "aniso": 16,
+          "min": 1008,
+          "coverage": true
+        },
+        "excluded": {
+          "min": 1003,
+          "mips": false,
+          "aniso": 1
+        },
+        "stable": true,
+        "noMSAA": false
+      },
+      "rt": {
+        "calls": [
+          [
+            900,
+            507
+          ]
+        ],
+        "sceneScale": 0.75,
+        "snapshot": {
+          "scale": 0.375,
+          "adaptive": true
+        },
+        "after": {
+          "scale": 0.375,
+          "adaptive": true
+        },
+        "native": [
+          1201,
+          676
+        ]
+      },
+      "restored": {
+        "mode": "75",
+        "strength": 0.35
+      }
+    }
+  ]
+}
