@@ -1,0 +1,59 @@
+{
+  "physics": {
+    "rates": [
+      {
+        "hz": 30,
+        "freefallNormal": 48,
+        "freefallFast": 81.96724546716368,
+        "chuteNormal": 5.2,
+        "chuteFast": 13.999999999976422
+      },
+      {
+        "hz": 60,
+        "freefallNormal": 48,
+        "freefallFast": 81.96692840157773,
+        "chuteNormal": 5.2,
+        "chuteFast": 13.999999999975474
+      },
+      {
+        "hz": 144,
+        "freefallNormal": 48,
+        "freefallFast": 81.96673827949422,
+        "chuteNormal": 5.2,
+        "chuteFast": 13.999999999974897
+      }
+    ],
+    "landings": [
+      {
+        "hz": 30,
+        "seconds": 3.5,
+        "lowest": 0,
+        "maxVelocityStep": 3.311266137474263
+      },
+      {
+        "hz": 60,
+        "seconds": 3.5,
+        "lowest": 0,
+        "maxVelocityStep": 1.6574042267773663
+      },
+      {
+        "hz": 144,
+        "seconds": 3.5,
+        "lowest": 0,
+        "maxVelocityStep": 0.6906802391546947
+      }
+    ],
+    "templates": [
+      "절차적 대체 모델",
+      "swat_black",
+      "swat_ranger",
+      "swat_coyote",
+      "swat_grey"
+    ],
+    "outwardGlassVertices": 1584,
+    "rotorMeshes": 8,
+    "botLanding": true
+  },
+  "keyboard": "양쪽 Shift·재지정 P·해제 통과",
+  "errors": []
+}

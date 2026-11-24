@@ -617,17 +617,16 @@ class Bot {
     const dx = this.dropTarget.x - a.pos.x, dz = this.dropTarget.z - a.pos.z, hd = Math.hypot(dx, dz);
     const gh = W.ground(a.pos.x, a.pos.z, a.pos.y, 0.3, 0.5);
     const agl = a.pos.y - Math.max(gh, W.waterAt(a.pos.x, a.pos.z));
+    if (a.state === 'freefall' && agl < this.chuteAt) Game.openChute(a);
+    G.Airborne.tick(a, dt, false, hd > 30 ? 1 : 0, 0);
     let hs, vs;
     if (a.state === 'freefall') {
       const tFall = agl / 48;
       hs = hd > tFall * 15 ? 34 : U.clamp(hd / Math.max(tFall, 0.5), 0, 15);
       vs = hs > 30 ? -60 : -48;
-      if (agl < this.chuteAt) Game.openChute(a);
     } else { hs = U.clamp(hd * 0.5, 0, hd > 30 ? 13 : 8); vs = hs > 12 ? -8.5 : -5.2; }
     a.yaw = hd > 1 ? Math.atan2(-dx, -dz) : a.yaw;
-    const k = a.state === 'freefall' ? 1.6 : 2.5;
-    a.vel.x = U.damp(a.vel.x, hd > 0.5 ? dx / hd * hs : 0, k, dt); a.vel.z = U.damp(a.vel.z, hd > 0.5 ? dz / hd * hs : 0, k, dt);
-    a.vel.y = U.damp(a.vel.y, vs, a.state === 'freefall' ? 1.2 : 3, dt);
+    G.Airborne.velocity(a, dt, hd > 0.5 ? dx / hd * hs : 0, hd > 0.5 ? dz / hd * hs : 0, vs);
     a.pos.addScaledVector(a.vel, dt);
     const lim = W.HALF - 5; a.pos.x = U.clamp(a.pos.x, -lim, lim); a.pos.z = U.clamp(a.pos.z, -lim, lim);
     const g2 = W.ground(a.pos.x, a.pos.z, a.pos.y + 0.5, 0.3, 0.6);

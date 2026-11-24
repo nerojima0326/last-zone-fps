@@ -1,0 +1,25 @@
+{
+  "version": 87,
+  "base": "cc88b96bd30ff88ec424d97e748fecfa2d28b4b5",
+  "method": "수면의 모든 삼각형에서 중심·가장자리 7곳을 검사. 지면 위에 노출된 표본을 호수 합집합·실제 강 폭과 비교. 격자 오차 여유는 3.2m.",
+  "after": {
+    "triangles": 16538,
+    "samples": 115766,
+    "visibleTriangles": 16443,
+    "outsideWaterBodies": 0,
+    "maxSurfaceLogicError": 0.0000037074089220823225,
+    "dryDepressionsChecked": 277,
+    "falseWaterInDryDepressions": 0,
+    "lakeInteriorLandCells": 0
+  },
+  "before": {
+    "triangles": 1030,
+    "samples": 7210,
+    "visibleTriangles": 1027,
+    "outsideWaterBodies": 50,
+    "maxSurfaceLogicError": 69.28194427490234,
+    "dryDepressionsChecked": 0,
+    "falseWaterInDryDepressions": 0,
+    "lakeInteriorLandCells": 265
+  }
+}

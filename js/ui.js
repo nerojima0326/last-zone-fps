@@ -341,8 +341,8 @@ const UI = G.UI = {
     // 강하 안내
     let ph = '';
     if (a.alive && a.state === 'plane') ph = Game.planeCanJump() ? '<kbd>' + G.Settings.label('KeyF') + '</kbd> 뛰어내리기<small>마우스로 둘러보고 원하는 지역 위에서 강하하세요 · ' + G.Settings.label('KeyM') + ' 지도</small>' : '<small>맵 상공에 진입하면 뛰어내릴 수 있습니다</small>';
-    else if (a.alive && a.state === 'freefall') ph = (P.altitude < 260 && P.dropT > 1 ? '<kbd>' + G.Settings.label('KeyF') + '</kbd> 낙하산 펼치기' : '자유 낙하 중') + '<small>고도 ' + Math.round(P.altitude || 0) + 'm · ' + G.Settings.label('KeyW') + ' 급강하 · ' + G.Settings.label('KeyS') + ' 감속</small>';
-    else if (a.alive && a.state === 'chute') ph = '<small>고도 ' + Math.round(P.altitude || 0) + 'm · ' + G.Settings.label('KeyW') + '/' + G.Settings.label('KeyS') + ' 속도 조절 · 마우스 방향 전환</small>';
+    else if (a.alive && a.state === 'freefall') ph = (P.altitude < 260 && P.dropT > 1 ? '<kbd>' + G.Settings.label('KeyF') + '</kbd> 낙하산 펼치기' : '자유 낙하 중') + '<small>고도 ' + Math.round(P.altitude || 0) + 'm · ' + Math.round(-a.vel.y) + 'm/s · ' + G.Settings.label('ShiftLeft') + ' 빠른 하강 · ' + G.Settings.label('KeyW') + '/' + G.Settings.label('KeyS') + ' 전진/감속</small>';
+    else if (a.alive && a.state === 'chute') ph = (a.air && a.air.open < 1 ? '낙하산 펼치는 중' : a.air?.dive > .5 ? '빠른 하강 중' : '낙하산 활강') + '<small>고도 ' + Math.round(P.altitude || 0) + 'm · ' + Math.round(-a.vel.y) + 'm/s · ' + G.Settings.label('ShiftLeft') + ' 빠른 하강 · 마우스 방향 전환</small>';
     this.set('plane', el.plane, ph, 'innerHTML');
     // 관전
     if (!a.alive && P.specTarget && (Game.state === 'playing' || Game.spectating)) {

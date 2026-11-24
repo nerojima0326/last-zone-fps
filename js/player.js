@@ -54,7 +54,7 @@ const P = G.Player = {
     const I = G.Input, cam = G.camera, pl = G.Game.plane;
     this.camMode = 'plane';
     this.orbitYaw -= I.mdx * 0.003 * this.sens; this.orbitPitch = U.clamp(this.orbitPitch - this.lookY() * 0.003 * this.sens, -1.2, 0.5);
-    const dist = 34;
+    const dist = 44;
     _c.set(Math.sin(this.orbitYaw) * Math.cos(this.orbitPitch), -Math.sin(this.orbitPitch), Math.cos(this.orbitYaw) * Math.cos(this.orbitPitch)).multiplyScalar(dist);
     cam.position.copy(pl.pos).add(_c);
     cam.lookAt(pl.pos);
@@ -77,31 +77,41 @@ const P = G.Player = {
     _f.set(-Math.sin(a.yaw), 0, -Math.cos(a.yaw)); _r.set(Math.cos(a.yaw), 0, -Math.sin(a.yaw));
     const gh = W.ground(a.pos.x, a.pos.z, a.pos.y, 0.3, 0.5);
     const agl = a.pos.y - Math.max(gh, W.waterAt(a.pos.x, a.pos.z));
+    _u.copy(a.pos);
+    if (a.state === 'freefall' && ((I.hit('KeyF') && agl < 260 && this.dropT > 1) || agl < 110)) G.Game.openChute(a);
+    const fast = I.down('ShiftLeft') || I.down('ShiftRight');
+    G.Airborne.tick(a, dt, fast, fwd, str);
+    const dive = a.air?.dive || 0;
     let hs, vs;
     if (a.state === 'freefall') {
-      hs = fwd > 0 ? 34 : fwd < 0 ? 5 : 15; vs = fwd > 0 ? -62 : fwd < 0 ? -40 : -48;
-      if ((I.hit('KeyF') && agl < 260 && this.dropT > 1) || agl < 110) G.Game.openChute(a);
-      G.Audio.setLoop('wind', U.clamp(-a.vel.y / 60, 0.2, 0.9));
+      hs = U.lerp(fwd > 0 ? 34 : fwd < 0 ? 5 : 15, fwd > 0 ? 38 : fwd < 0 ? 8 : 22, dive);
+      vs = U.lerp(fwd > 0 ? -62 : fwd < 0 ? -40 : -48, -82, dive);
+      G.Audio.setLoop('wind', U.clamp(-a.vel.y / 85, 0.2, 1));
     } else {
-      hs = fwd > 0 ? 13 : fwd < 0 ? 3 : 8; vs = fwd > 0 ? -8.5 : -5.2;
-      G.Audio.setLoop('wind', 0.15);
+      hs = U.lerp(fwd > 0 ? 13 : fwd < 0 ? 3 : 8, fwd > 0 ? 18 : fwd < 0 ? 4 : 12, dive);
+      vs = U.lerp(fwd > 0 ? -8.5 : -5.2, -14, dive);
+      G.Audio.setLoop('wind', U.lerp(.15, .45, dive));
     }
     _d.copy(_f).multiplyScalar(hs).addScaledVector(_r, str * (a.state === 'freefall' ? 9 : 5));
-    const k = a.state === 'freefall' ? 1.6 : 2.5;
-    a.vel.x = U.damp(a.vel.x, _d.x, k, dt); a.vel.z = U.damp(a.vel.z, _d.z, k, dt);
-    a.vel.y = U.damp(a.vel.y, vs, a.state === 'freefall' ? 1.2 : 3, dt);
+    G.Airborne.velocity(a, dt, _d.x, _d.z, vs);
     a.pos.addScaledVector(a.vel, dt);
     const lim = W.HALF - 5; a.pos.x = U.clamp(a.pos.x, -lim, lim); a.pos.z = U.clamp(a.pos.z, -lim, lim);
     G.Audio.setLoop('plane', G.Game.plane && G.Game.plane.mesh.visible ? 0.4 * 120 / (120 + G.Game.plane.pos.distanceTo(a.pos)) : 0);
     const g2 = W.ground(a.pos.x, a.pos.z, a.pos.y + 0.5, 0.3, 0.6);
     if (a.pos.y <= g2 + 0.02 || (a.pos.y < W.waterAt(a.pos.x, a.pos.z) - 1.2)) { G.Game.land(a); this.onLand(); return; }
     // 3인칭 카메라
-    const dist = a.state === 'freefall' ? 7 : 11;
+    const open = a.state === 'chute' ? (a.air?.open ?? 1) : 0;
+    const framing = a.state === 'chute' ? U.smoothstep(0, .28, a.air?.deployT ?? 2) : 0;
+    const dist = U.lerp(7 + dive * .7, 11, framing);
     _c.set(Math.sin(this.orbitYaw) * Math.cos(this.orbitPitch), -Math.sin(this.orbitPitch) + 0.15, Math.cos(this.orbitYaw) * Math.cos(this.orbitPitch)).multiplyScalar(dist);
-    _e.copy(a.pos); _e.y += a.state === 'chute' ? 2.5 : 1;
-    cam.position.copy(_e).add(_c);
+    _e.copy(a.pos); _e.y += U.lerp(1, 2.6, framing);
+    _c.add(_e);
+    // 이동량은 즉시 따라가고 시점 간격만 보간해 급강하 때 몸이 작아지는 것을 막는다.
+    const follow = 1 - Math.exp(-dt * 12);
+    cam.position.add(a.pos).sub(_u);
+    cam.position.lerp(_c, follow);
     cam.lookAt(_e);
-    cam.fov = U.damp(cam.fov, a.state === 'freefall' ? 85 : 75, 4, dt); cam.updateProjectionMatrix();
+    cam.fov = U.damp(cam.fov, U.lerp(85 + dive * 6, 75 + dive * 3, open), 4, dt); cam.updateProjectionMatrix();
     G.VM.set(null);
     this.altitude = agl;
   },

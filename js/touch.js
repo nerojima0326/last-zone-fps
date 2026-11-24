@@ -285,6 +285,8 @@
     if (!a) return;
     const st = !a.alive ? 'dead' : (a.state === 'plane' || a.state === 'freefall' || a.state === 'chute') ? 'air' : 'ground';
     if (ui.dataset.st !== st) ui.dataset.st = st;
+    const sprintText = st === 'air' ? '빠른 하강' : '달리기';
+    if (sprintTag.textContent !== sprintText) sprintTag.textContent = sprintText;
     let label = '', on = false;
     if (st === 'air') { label = a.state === 'plane' ? '점프' : '낙하산'; on = true; }
     else if (P.vehicle) { label = '내리기'; on = true; }

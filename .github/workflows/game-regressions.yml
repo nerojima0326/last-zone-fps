@@ -38,6 +38,10 @@ jobs:
         run: node tools/check-vehicle-throwable-vfx.cjs
       - name: 바퀴 굴림·조향·타이어 피격·재생성 검사
         run: node tools/check-vehicle-wheels.cjs
+      - name: 맵 배치·수면 일치·고저차 주행 검사
+        run: |
+          node tools/check-map-hydrology.cjs
+          node tools/check-map-drive.cjs
       - name: 화염 텍스처·무대기 로딩·누락 복귀 검사
         run: node tools/check-fire-flipbook.cjs
       - name: Check all weapon grips and hand animation

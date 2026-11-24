@@ -1,6 +1,8 @@
 // 실제 브라우저에서 로딩 순서·모델 준비·지연/누락 복구를 확인한다.
 const assert=require('assert'),fs=require('fs'),fixture=require('./optimize/browser-fixture.cjs');
 const out=process.env.REPORT||'/tmp/lz-v82-startup-checks.json';
+const bakedChunks=Object.keys(JSON.parse(fs.readFileSync(__dirname+'/../assets/lighting/static-ao.json','utf8')).chunks).length;
+assert(bakedChunks>300,'맵 전체의 정적 음영 데이터가 필요함');
 (async()=>{
  const report={};let page,signal,release;
  const configured=new Promise(r=>signal=r),modelGate=new Promise(r=>release=r);
@@ -17,7 +19,7 @@ const out=process.env.REPORT||'/tmp/lz-v82-startup-checks.json';
   assert.deepEqual(report.waiting,{world:true,m4:false,loading:true,menu:false});
   release();f=await pending;
   report.ready=await page.evaluate(()=>({m4:G.M4Viewmodel.ready,glock:G.G17Pilot.ready,guns:Object.keys(G.GunModels.guns).length,lods:Object.keys(G.WorldWeapons.models).length,soldiers:G.Soldiers.templates.length,ao:G.StaticAO.applied,rejected:G.StaticAO.rejected,reloads:G.ReloadAssets.ready,expansion:!!G.ReloadAssets.expansion}));
-  assert.deepEqual(report.ready,{m4:true,glock:true,guns:30,lods:30,soldiers:4,ao:394,rejected:0,reloads:true,expansion:true});
+  assert.deepEqual(report.ready,{m4:true,glock:true,guns:30,lods:30,soldiers:4,ao:bakedChunks,rejected:0,reloads:true,expansion:true});
   const scripts=f.requests.filter(u=>u.startsWith('/js/'));
   assert.equal(new Set(scripts).size,scripts.length,'미리 받은 스크립트를 중복 요청함');
   assert.equal(f.requests.filter(u=>u==='/assets/models/viewmodels/m4.glb').length,1);

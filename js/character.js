@@ -124,6 +124,15 @@ class CharacterModel {
     this.lod = false;
     // 낙하산
     this.chute = null;
+    this.airGear = new THREE.Mesh(merge([
+      bx(.32, .40, .18, 0, .27, .22, 0x424936),
+      bx(.29, .06, .20, 0, .46, .22, 0x252a23),
+      bx(.045, .42, .045, -.15, .26, -.17, 0x2a3026),
+      bx(.045, .42, .045, .15, .26, -.17, 0x2a3026),
+      bx(.35, .045, .05, 0, .16, -.18, 0x292e25),
+      bx(.055, .065, .04, .14, .28, -.2, 0xd5a448)
+    ]), mat());
+    this.airGear.visible = false; spine.add(this.airGear);
     this.phase = Math.random() * 6;
     this.deathT = 0; this.fallDir = Math.random() < 0.5 ? 1 : -1;
     this.kick = 0; this.flinch = 0; this.throwT = 0;
@@ -210,15 +219,7 @@ class CharacterModel {
         this.setGun(a.gun || gun);
         this.ikGun = (gun === 'rifle' || gun === 'shotgun' || gun === 'pistol') ? gun : null;
       } else this.setGun(null);
-    } else if (a.state === 'freefall') {
-      r.rotation.x = -1.25; yOff = 1;
-      aL = [0.4, 0, -1.3]; aR = [0.4, 0, 1.3]; eL = 0.6; eR = 0.6;
-      lT = 0.25; rT = 0.15; lK = -0.6; rK = -0.5; chestRX = 0.4; headRX = 0.6;
-      this.setGun(null);
-    } else if (a.state === 'chute') {
-      aL = [2.7, 0, 0.3]; aR = [2.7, 0, -0.3]; eL = 0.3; eR = 0.3;
-      this.phase += dt * 2;
-      lT = 0.15 + Math.sin(this.phase) * 0.1; rT = 0.1 - Math.sin(this.phase) * 0.1; lK = -0.25; rK = -0.3;
+    } else if (a.state === 'freefall' || a.state === 'chute') {
       chestRX = 0; headRX = 0;
       this.setGun(null);
     } else {
@@ -253,11 +254,12 @@ class CharacterModel {
     this.kneeL.rotation.set(lK, 0, 0); this.kneeR.rotation.set(rK, 0, 0);
     this.armL.rotation.set(aL[0], aL[1], aL[2]); this.elbowL.rotation.x = eL;
     this.armR.rotation.set(aR[0] + this.kick * 0.3, aR[1], aR[2]); this.elbowR.rotation.x = eR;
-    if (this.chute && this.chute.visible) {
-      this.chute.rotation.z = Math.sin(this.phase * 0.7) * 0.05;
-    }
+    const airborne = !a.dead && (a.state === 'freefall' || a.state === 'chute');
+    this.airGear.visible = airborne && !this.lod;
+    if (airborne) G.Airborne.pose(this, a);
     G.Locomotion?.pose(this, a, dt);
     G.HitResponse?.apply(this, a, dt);
+    if (this.chute && this.chute.visible && airborne) updateChute(this, a);
     if (this.soldier && !this.lod) G.Soldiers.drive(this.soldier, this);
     G.HitResponse?.support(this, a, dt);
   }
@@ -270,6 +272,7 @@ class CharacterModel {
       for (const skeleton of skeletons) skeleton.dispose();
     }
     this.lodMesh.geometry.dispose();
+    this.airGear.geometry.dispose();
     if (this.body.skeleton) this.body.skeleton.dispose();
     if (this.chute) this.chute.traverse(o => { if (o.geometry) { o.geometry.dispose(); o.material.dispose(); } });
     if (this.root.parent) this.root.parent.remove(this.root);
@@ -278,30 +281,75 @@ class CharacterModel {
 
 function makeChute() {
   const g = new THREE.Group();
-  const geo = new THREE.SphereGeometry(3.6, 16, 6, 0, Math.PI * 2, 0, 1.05).toNonIndexed();
-  geo.scale(1, 0.42, 0.78);
-  const n = geo.attributes.position.count, col = new Float32Array(n * 3);
-  const c1 = new THREE.Color(0xe8732a), c2 = new THREE.Color(0xf2efe6);
-  const p = geo.attributes.position;
-  for (let i = 0; i < n; i += 3) {
-    const x = (p.getX(i) + p.getX(i + 1) + p.getX(i + 2)) / 3, z = (p.getZ(i) + p.getZ(i + 1) + p.getZ(i + 2)) / 3;
-    const seg = Math.floor((Math.atan2(z, x) + Math.PI) / (Math.PI * 2) * 8);
-    const c = seg % 2 ? c1 : c2;
-    for (let k = 0; k < 3; k++) { col[(i + k) * 3] = c.r; col[(i + k) * 3 + 1] = c.g; col[(i + k) * 3 + 2] = c.b; }
+  // 9셀 램에어 날개: 입구·아랫면·양 끝단까지 두께가 있는 천으로 만든다.
+  const nx = 36, nz = 8, pos = [], color = [], idx = [], c = new THREE.Color();
+  const point = (x, u, bottom, out) => {
+    const cell = (x / 8.8 + .5) * 9;
+    const arch = .5 - .85 * (x / 4.4) ** 2;
+    const bulge = .09 * Math.sin(Math.PI * (cell - Math.floor(cell)));
+    return out.set(x, arch + .18 * Math.sin(Math.PI * u) + bulge - (bottom ? .13 + .28 * Math.sqrt(Math.sin(Math.PI * u)) : 0), (u - .5) * 3.2);
+  };
+  const v = new THREE.Vector3(), row = nx + 1, layer = row * (nz + 1);
+  for (let b = 0; b < 2; b++) for (let z = 0; z <= nz; z++) for (let x = 0; x <= nx; x++) {
+    point((x / nx - .5) * 8.8, z / nz, b, v); pos.push(v.x, v.y, v.z);
+    const cell = Math.min(8, Math.floor(x / 4));
+    c.setHex(cell === 0 || cell === 8 ? 0x283f49 : cell === 3 || cell === 4 || cell === 5 ? 0xf2e9d1 : 0xdb602c);
+    if (b) c.multiplyScalar(.7);
+    color.push(c.r, c.g, c.b);
   }
-  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  geo.translate(0, 6.2, 0);
-  const canopy = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8, side: THREE.DoubleSide }));
-  canopy.castShadow = true;
-  g.add(canopy);
-  const lp = [];
-  for (let i = 0; i < 10; i++) {
-    const a = i / 10 * Math.PI * 2;
-    lp.push(Math.cos(a) * 3.6 * Math.sin(1.05), 6.2 + 3.6 * 0.42 * Math.cos(1.05), Math.sin(a) * 3.6 * 0.78 * Math.sin(1.05), 0, 1.55, 0);
+  for (let b = 0; b < 2; b++) for (let z = 0; z < nz; z++) for (let x = 0; x < nx; x++) {
+    const a = b * layer + z * row + x, d = a + row;
+    if (b) idx.push(a, a + 1, d, a + 1, d + 1, d);
+    else idx.push(a, d, a + 1, a + 1, d, d + 1);
   }
-  const lg = new THREE.BufferGeometry(); lg.setAttribute('position', new THREE.Float32BufferAttribute(lp, 3));
-  g.add(new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ color: 0x2a2a2a })));
+  // 뒷전·끝단을 닫고 앞전의 공기 입구는 어두운 안쪽 면으로 표시한다.
+  const bridge = (a, b) => idx.push(a, b, a + layer, b, b + layer, a + layer);
+  for (let x = 0; x < nx; x++) bridge(nz * row + x, nz * row + x + 1);
+  for (let z = 0; z < nz; z++) { bridge(z * row, (z + 1) * row); bridge((z + 1) * row + nx, z * row + nx); }
+  for (let cell = 0; cell < 9; cell++) {
+    const start = pos.length / 3, x0 = -4.4 + cell * 8.8 / 9 + .045, x1 = x0 + 8.8 / 9 - .09;
+    for (const [x, b] of [[x0, 0], [x1, 0], [x0, 1], [x1, 1]]) {
+      point(x, .025, b, v); pos.push(v.x, v.y - .025, v.z); color.push(.025, .035, .035);
+    }
+    idx.push(start, start + 2, start + 1, start + 1, start + 2, start + 3);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(color, 3)); geo.setIndex(idx); geo.computeVertexNormals();
+  const canopy = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: .88, side: THREE.DoubleSide }));
+  canopy.castShadow = true; g.add(canopy);
+  const anchors = [], lp = [];
+  for (let i = 0; i <= 9; i++) for (const u of [.12, .88]) {
+    const p = point(-4.4 + i / 9 * 8.8, u, true, new THREE.Vector3());
+    anchors.push(p); lp.push(0, 0, 0, 0, 0, 0);
+  }
+  const lg = new THREE.BufferGeometry(); lg.setAttribute('position', new THREE.Float32BufferAttribute(lp, 3).setUsage(THREE.DynamicDrawUsage));
+  const lines = new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ color: 0x77796b }));
+  lines.frustumCulled = false; g.add(lines);
+  g.userData = { canopy, lines, anchors, lower: Array.from({ length: 4 }, () => new THREE.Vector3()) };
   return g;
+}
+
+const _chuteV = new THREE.Vector3(), _chuteInv = new THREE.Matrix4();
+function updateChute(m, a) {
+  const g = m.chute, s = a.air, t = s?.deployT ?? 2;
+  const stretch = U.smoothstep(0, .28, t), inflate = U.smoothstep(.18, G.Airborne.deployDuration, t);
+  const { canopy, lines, anchors, lower } = g.userData;
+  // 몸이 제동으로 세워지는 동안에도 천은 머리 위에서 팽창한다.
+  g.rotation.set(-m.root.rotation.x, 0, -m.root.rotation.z, 'ZXY');
+  canopy.position.set(0, U.lerp(2.3, 5.4, stretch), 0);
+  canopy.scale.set(U.lerp(.065, 1, inflate), U.lerp(1.6, 1, inflate), U.lerp(.09, 1, inflate));
+  canopy.rotation.set((s?.dive || 0) * .10 * inflate, 0, (-(s?.steer || 0) * .09 + Math.sin((s?.elapsed || 0) * 1.8) * .018) * inflate);
+  canopy.updateMatrix(); g.updateWorldMatrix(true, false); m.chest.updateWorldMatrix(true, false);
+  _chuteInv.copy(g.matrixWorld).invert();
+  for (let i = 0; i < 4; i++) lower[i].set(i < 2 ? -.19 : .19, -.03, i % 2 ? .10 : -.10).applyMatrix4(m.chest.matrixWorld).applyMatrix4(_chuteInv);
+  const p = lines.geometry.attributes.position;
+  for (let i = 0; i < anchors.length; i++) {
+    _chuteV.copy(anchors[i]).applyMatrix4(canopy.matrix);
+    const low = lower[(anchors[i].x < 0 ? 0 : 2) + i % 2];
+    p.setXYZ(i * 2, _chuteV.x, _chuteV.y, _chuteV.z); p.setXYZ(i * 2 + 1, low.x, low.y, low.z);
+  }
+  p.needsUpdate = true;
 }
 
 // 엎드려 쏴 자세: 몸은 바닥을 따라 눕히고 가슴·총은 전방을 향한다.
