@@ -47,12 +47,15 @@ function patch(z0, z1, t0, t1, off, nz, nt) {
   }
   for (let i = 0; i < nz; i++) for (let j = 0; j < nt; j++) {
     const a = i * (nt + 1) + j, b = a + nt + 1;
-    idx.push(a, a + 1, b, a + 1, b + 1, b);
+    // 좌우 대칭 조각은 각도 진행 방향이 반대다. 항상 바깥을 향하게 한다.
+    if (t1 > t0) idx.push(a, b, a + 1, a + 1, b, b + 1);
+    else idx.push(a, a + 1, b, a + 1, b + 1, b);
   }
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
   g.setIndex(idx); g.computeVertexNormals();
+  g.userData.surfacePatch = true;
   return g;
 }
 
@@ -196,6 +199,11 @@ let MAT = null;
 function mats() {
   if (MAT) return MAT;
   const std = (o) => new THREE.MeshStandardMaterial(o);
+  const label = document.createElement('canvas'); label.width = 512; label.height = 128;
+  const cx = label.getContext('2d');
+  cx.fillStyle = '#d6d7c8'; cx.font = 'bold 76px sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+  cx.fillText('LZ — 088', 256, 65);
+  const labelMap = new THREE.CanvasTexture(label); labelMap.colorSpace = THREE.SRGBColorSpace;
   MAT = {
     hull: std({ map: bodyTexture(), metalness: 0.35, roughness: 0.55 }),
     body: std({ color: 0x6f776f, metalness: 0.35, roughness: 0.55 }),
@@ -205,6 +213,7 @@ function mats() {
     tip: std({ color: 0xd9b52a, metalness: 0.2, roughness: 0.5 }),
     spin: std({ color: 0x9aa1a7, metalness: 0.7, roughness: 0.35 }),
     glass: std({ color: 0x12202c, metalness: 0.7, roughness: 0.28 }),
+    label: std({ map: labelMap, transparent: true, depthWrite: false, roughness: .9, polygonOffset: true, polygonOffsetFactor: -1 }),
     soot: std({ color: 0x232120, metalness: 0.1, roughness: 0.9 }),
     disc: new THREE.MeshBasicMaterial({ color: 0x1a1c1f, transparent: true, opacity: 0.1, depthWrite: false, side: THREE.DoubleSide }),
     red: new THREE.MeshBasicMaterial({ color: new THREE.Color(4, 0.15, 0.1) }),
@@ -233,6 +242,7 @@ G.buildPlane = function () {
   const deg = Math.PI / 180;
   const wb = [-66, -44, -22, 0, 22, 44, 66];
   for (let i = 0; i < wb.length - 1; i++) add(patch(-16.1, -14.75, (wb[i] + 1.5) * deg, (wb[i + 1] - 1.5) * deg, 0.03), M.glass);
+  const jumpLights = [];
   for (const s of [1, -1]) {
     add(patch(-14.55, -13.4, s > 0 ? 70 * deg : -96 * deg, s > 0 ? 96 * deg : -70 * deg, 0.03), M.glass);
     add(patch(-13.2, -12.4, s > 0 ? 66 * deg : -92 * deg, s > 0 ? 92 * deg : -66 * deg, 0.03), M.glass);
@@ -240,23 +250,26 @@ G.buildPlane = function () {
     // 객실 둥근 창
     for (let z = -9; z <= 5; z += 2.3) add(patch(z, z + 0.55, s * 74 * deg, s * 84 * deg, 0.02, 2, 2), M.glass);
     // 낙하산 강하문 (꼬리 옆) + 앞 승강문
-    add(patch(5.8, 7.3, s * 92 * deg, s * 128 * deg, 0.015, 2, 3), M.dark);
+    add(patch(5.65, 7.45, s * 89 * deg, s * 132 * deg, .025, 2, 3), M.spin);
+    add(patch(5.8, 7.3, s * 92 * deg, s * 128 * deg, .04, 2, 3), M.black);
+    const lamp = add(new THREE.SphereGeometry(.12, 8, 6), M.green, s * 2.56, .15, 6.55);
+    jumpLights.push(lamp);
+    add(new THREE.BoxGeometry(.16, .12, 1.8), M.dark, s * 2.5, -1.92, 6.55);
     add(patch(-11, -9.9, s * 96 * deg, s * 134 * deg, 0.015, 2, 3), M.dark);
     // 착륙장치 덮개 (동체 아래 양옆 볼록한 부분)
     const sp = add(new THREE.SphereGeometry(1, 24, 14), M.body, s * 2.15, -1.7, 0.2);
     sp.scale.set(0.75, 0.9, 5.4);
-    // 바퀴 (덮개 아래로 살짝)
-    for (const z of [-1.4, 1.6]) {
-      const wh = add(new THREE.CylinderGeometry(0.62, 0.62, 0.45, 18).rotateZ(Math.PI / 2), M.black, s * 2.25, -2.35, z);
-      wh.castShadow = true;
-    }
+    // 순항 중에는 바퀴를 수납하고 덮개 이음선만 남긴다.
+    add(new THREE.BoxGeometry(.52, .035, 3.8), M.dark, s * 2.15, -2.59, .1);
+    const id = add(new THREE.PlaneGeometry(4.8, 1.2), M.label, s * 2.53, .34, -.8);
+    id.rotation.y = s * Math.PI / 2; id.castShadow = false;
   }
   // 화물 램프 이음선
   add(patch(9.2, 9.45, 120 * deg, 240 * deg, 0.015, 1, 10), M.dark);
   add(patch(9.2, 17.5, 118 * deg, 121 * deg, 0.015, 8, 1), M.dark);
   add(patch(9.2, 17.5, 239 * deg, 242 * deg, 0.015, 8, 1), M.dark);
-  // 앞바퀴
-  add(new THREE.CylinderGeometry(0.42, 0.42, 0.3, 16).rotateZ(Math.PI / 2), M.black, 0, -2.75, -13.2);
+  // 접힌 앞바퀴의 덮개
+  add(patch(-14.0, -12.2, 171 * deg, 189 * deg, .02, 2, 3), M.dark);
   // 레이돔 끝 (기수 끝 어두운 부분)
   add(patch(-18, -17.2, 0, Math.PI * 2, 0.005, 3, 24), M.dark);
 
@@ -283,7 +296,7 @@ G.buildPlane = function () {
   add(new THREE.BoxGeometry(0.06, 0.7, 0.35), M.dark, 0, R * 1.04 + 0.3, -8);
   add(new THREE.BoxGeometry(0.06, 0.5, 0.3), M.dark, 0.5, R * 1.04 + 0.2, 1.5);
 
-  // 엔진 4개 (나셀 + 스피너 + 4엽 프로펠러)
+  // 엔진 4개 (나셀 + 스피너 + 후퇴각이 있는 6엽 프로펠러)
   const nacProfile = [];
   const L = 7.2;
   for (let i = 0; i <= 16; i++) {
@@ -298,8 +311,18 @@ G.buildPlane = function () {
   const spinGeo = new THREE.LatheGeometry([new THREE.Vector2(0.5, 0), new THREE.Vector2(0.48, -0.25), new THREE.Vector2(0.36, -0.6), new THREE.Vector2(0.16, -0.9), new THREE.Vector2(0.01, -1.02)], 20).rotateX(Math.PI / 2);
   // 프로펠러 날: 뿌리가 넓고 끝이 좁은 판
   const bladeGeo = new THREE.BoxGeometry(0.36, 2.0, 0.06, 1, 6, 1);
-  { const p = bladeGeo.attributes.position; for (let i = 0; i < p.count; i++) { const y = p.getY(i) + 1; p.setX(i, p.getX(i) * (1 - 0.4 * y / 2) * (y < 0.15 ? 0.6 : 1)); p.setY(i, y + 0.3); } bladeGeo.computeVertexNormals(); }
+  { const p = bladeGeo.attributes.position; for (let i = 0; i < p.count; i++) { const y = p.getY(i) + 1; p.setX(i, p.getX(i) * (1 - 0.4 * y / 2) * (y < 0.15 ? 0.6 : 1) + .12 * (y / 2) ** 2); p.setY(i, y + 0.3); } bladeGeo.computeVertexNormals(); }
   const tipGeo = new THREE.BoxGeometry(0.22, 0.22, 0.065).translate(0, 2.2, 0);
+  // 같은 재질의 날 6개를 합쳐 엔진 하나를 메시 4개로 그린다.
+  const rotor = (src, tip) => {
+    const parts = [];
+    for (let k = 0; k < 6; k++) parts.push(src.clone().rotateY(.42).translate(tip ? .1 : 0, 0, -.25).rotateZ(k * Math.PI / 3));
+    const merged = THREE.mergeGeometries(parts, false);
+    for (const part of parts) part.dispose();
+    return merged;
+  };
+  const blades = rotor(bladeGeo, false), tips = rotor(tipGeo, true);
+  bladeGeo.dispose(); tipGeo.dispose();
   const discGeo = new THREE.CircleGeometry(2.35, 40);
   for (const x of [-12.6, -6.6, 6.6, 12.6]) {
     const ax = Math.abs(x), le = leAt(ax), y = yAt(ax) - 0.45, cz = le + 1.6;
@@ -311,11 +334,8 @@ G.buildPlane = function () {
     const front = cz - L / 2;
     const hub = new THREE.Group(); hub.position.set(x, y, front - 0.15); g.add(hub);
     add(spinGeo, M.spin, 0, 0, 0, hub);
-    for (let k = 0; k < 4; k++) {
-      const arm = new THREE.Group(); arm.rotation.z = k * Math.PI / 2; hub.add(arm);
-      const b = add(bladeGeo, M.prop, 0, 0, -0.25, arm); b.rotation.y = 0.42;
-      const t = add(tipGeo, M.tip, 0, 0, -0.25, arm); t.rotation.y = 0.42;
-    }
+    add(blades, M.prop, 0, 0, 0, hub);
+    add(tips, M.tip, 0, 0, 0, hub);
     const d = add(discGeo, M.disc, 0, 0, -0.28, hub); d.castShadow = false;
     props.push(hub);
   }
@@ -341,12 +361,14 @@ G.buildPlane = function () {
 
   // 깜빡이는 회전등
   let bt = 0;
-  g.userData.update = (dt) => {
+  g.userData.update = (dt, canJump) => {
     bt += dt;
     const on = (bt % 1.1) < 0.12;
     beacon.visible = beacon2.visible = on;
+    for (const lamp of jumpLights) lamp.material = canJump ? M.green : M.red;
   };
   g.userData.props = props;
+  g.userData.exits = [new V3(-3.05, -1.9, 6.6), new V3(3.05, -1.9, 6.6)];
   return g;
 };
 })();

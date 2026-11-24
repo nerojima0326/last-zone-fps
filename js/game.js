@@ -219,7 +219,7 @@ const Game = G.Game = {
     p.pos.copy(p.start).addScaledVector(p.dir, p.speed * p.t).setY(p.alt);
     p.mesh.position.copy(p.pos);
     for (const pr of this.props) pr.rotation.z += dt * 40;
-    if (p.mesh.userData.update) p.mesh.userData.update(dt);
+    if (p.mesh.userData.update) p.mesh.userData.update(dt, this.planeCanJump());
     const traveled = p.speed * p.t;
     if (!p.done) {
       const canJump = this.planeCanJump();
@@ -239,8 +239,7 @@ const Game = G.Game = {
     if (a.state !== 'plane') return;
     const p = this.plane;
     a.state = 'freefall';
-    a.pos.copy(p.pos).add(_v.set(U.rand(-2, 2), -4, U.rand(-2, 2)));
-    a.vel.copy(p.dir).multiplyScalar(p.speed * 0.35); a.vel.y = -5;
+    G.Airborne.begin(a, p);
     a.yaw = Math.atan2(-p.dir.x, -p.dir.z);
     a.model.root.visible = true;
     if (a.isPlayer) {
@@ -253,12 +252,15 @@ const Game = G.Game = {
   openChute(a) {
     if (a.state !== 'freefall') return;
     a.state = 'chute';
+    G.Airborne.open(a);
     a.model.showChute(true);
     if (a.isPlayer) G.Audio.click('chute');
   },
   land(a) {
     a.state = 'ground';
+    a.air = null;
     a.model.showChute(false);
+    a.model.airGear.visible = false;
     a.vel.set(0, 0, 0);
     const W = G.World;
     a.pos.y = Math.max(W.ground(a.pos.x, a.pos.z, a.pos.y + 0.5, 0.3, 0.6), a.pos.y);
@@ -675,11 +677,12 @@ const Game = G.Game = {
       if (!vis) continue;
       m.root.position.copy(a.pos);
       m.root.rotation.y = a.yaw;
-      m.setLOD(d2 > 45 * 45, a.crouch && a.alive && !a.knocked);
-      m.update(dt, { speed: a.gait?.speed ?? a.hspeed, gait: a.gait, groundMat: a.groundMat, groundY: a.pos.y, distance2: d2, pitch: a.pitch, crouch: a.crouch, knocked: a.knocked, prone: a.prone && !a.knocked, lean: a.leanX, eyeH: a.eyeH(), dead: !a.alive, state: a.state, cur: a.cur, gun: a.gunId(a.cur), onGround: a.onGround });
+      const airborne = a.state === 'freefall' || a.state === 'chute';
+      m.setLOD(d2 > (airborne ? 150 * 150 : 45 * 45), a.crouch && a.alive && !a.knocked);
+      m.update(dt, { speed: a.gait?.speed ?? a.hspeed, gait: a.gait, groundMat: a.groundMat, groundY: a.pos.y, distance2: d2, pitch: a.pitch, crouch: a.crouch, knocked: a.knocked, prone: a.prone && !a.knocked, lean: a.leanX, eyeH: a.eyeH(), dead: !a.alive, state: a.state, air: a.air, cur: a.cur, gun: a.gunId(a.cur), onGround: a.onGround });
       m.showChute(a.state === 'chute' && a.alive);
       m.setHelmet(!!a.helmet);
-      // 45m 밖은 병합된 LOD 메시 1개로, 그림자는 40m 안쪽만
+      // 지상 45m·강하 150m 밖은 병합 LOD, 그림자는 40m 안쪽만
       const sh = d2 < 40 * 40;
       if (m._sh !== sh) { m._sh = sh; m.setShadows(sh); }
     }

@@ -315,7 +315,7 @@ html.mobile #startBtn { padding: 12px; font-size: 19px; }
 #touchUI[data-st="air"] .tb:not(.tb-f):not([data-act="pause"]):not([data-key="KeyM"]) { display: none; }
 #touchUI[data-st="dead"] .tb:not(.tb-fire):not([data-act="pause"]) { display: none; }
 #touchUI[data-st="air"] .tb-f { transform: scale(1.4); }
-#touchUI[data-st="air"] #tStick { opacity: 0.25; }
+#touchUI[data-st="air"] #tStick { opacity: 0.6; }
 #tStick { position: absolute; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4); background: rgba(10,14,20,0.25); opacity: 0.6; }
 #tStick.on { opacity: 1; }
 /* 버튼 위치 편집 */
