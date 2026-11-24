@@ -42,6 +42,7 @@
     { id: 'reload', name: '장전', html: '<span>장전</span>', act: 'key', key: 'KeyR', ax: 'r', x: 314, y: 484, d: 92 },
     { id: 'f', name: '줍기', html: '<span class="tF">줍기</span>', act: 'key', key: 'KeyF', cls: 'tb-f', ax: 'r', x: 450, y: 420, d: 100 },
     { id: 'wheel', name: '무기 교체', html: '<span>무기<br>교체</span>', act: 'wheel', ax: 'r', x: 411, y: 253, d: 74, fs: 16 },
+    { id: 'knife', name: '칼 장착 · 종류 변경', html: '<span>칼</span>', act: 'key', key: 'Digit5', ax: 'r', x: 497, y: 253, d: 74, fs: 16 },
     { id: 'scope', name: '배율', html: '<span>배율</span>', act: 'key', key: 'KeyV', ax: 'r', x: 325, y: 253, d: 74, fs: 16 },
     { id: 'mode', name: '연사', html: '<span>연사</span>', act: 'key', key: 'KeyB', ax: 'r', x: 239, y: 253, d: 74, fs: 16 },
     { id: 'throw', name: '투척', html: '<span>투척</span>', act: 'key', key: 'KeyG', ax: 'r', x: 153, y: 253, d: 74, fs: 16 },
@@ -213,7 +214,10 @@
         const rec = { role: 'btn', btn, act, key: btn.dataset.key, x, y };
         touches.set(t.identifier, rec);
         if (act === 'fire') { I.lmb = true; I.lmbHit = true; rec.look = true; }
-        else if (act === 'ads') { adsOn = !adsOn; I.rmb = adsOn; I.rmbHit = adsOn; adsBtn.classList.toggle('on', adsOn); }
+        else if (act === 'ads') {
+          if (G.Player.a?.cur === 'melee') { rec.act='key';rec.key='KeyT';press('KeyT'); }
+          else { adsOn = !adsOn; I.rmb = adsOn; I.rmbHit = adsOn; adsBtn.classList.toggle('on', adsOn); }
+        }
         else if (act === 'key') press(rec.key);
         else if (act === 'wheel') I.wheel += 1;
         else if (act === 'pause') { I.unlock(); return; }
@@ -285,6 +289,10 @@
     if (!a) return;
     const st = !a.alive ? 'dead' : (a.state === 'plane' || a.state === 'freefall' || a.state === 'chute') ? 'air' : 'ground';
     if (ui.dataset.st !== st) ui.dataset.st = st;
+    const knife=a.cur==='melee';
+    BY.mode.el.dataset.key=knife?'Digit5':'KeyB';BY.mode.el.querySelector('span').textContent=knife?'다음 칼':'연사';
+    BY.scope.el.dataset.key=knife?'KeyT':'KeyV';BY.scope.el.querySelector('span').textContent=knife?'보기':'배율';
+    adsBtn.querySelector('span').textContent=knife?'보기':'조준';
     const sprintText = st === 'air' ? '빠른 하강' : '달리기';
     if (sprintTag.textContent !== sprintText) sprintTag.textContent = sprintText;
     let label = '', on = false;

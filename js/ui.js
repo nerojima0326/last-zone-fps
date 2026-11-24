@@ -263,6 +263,10 @@ const UI = G.UI = {
       const k = P.throwKind;
       this.set('mag', el.mag, a.throwables[k]); this.set('res', el.res, '');
       this.set('wn', el.wname, G.THROW_NAMES[k]); this.set('fm', el.fmode, '좌클릭 던지기 · 우클릭 굴리기');
+    } else if (a.cur === 'melee') {
+      const knife = G.Knives.catalog[a.knife];
+      this.set('mag',el.mag,''); this.set('res',el.res,''); this.set('wn',el.wname,knife.name);
+      this.set('fm',el.fmode,'좌클릭 공격 · 우클릭 / '+G.Settings.label('KeyT')+' 보기');
     } else if (inst) {
       this.set('mag', el.mag, inst.mag); this.set('res', el.res, '/ ' + a.ammo[def.ammo]);
       const sc = G.Attachments ? G.Attachments.optic(inst,def) : (inst.scope || def.baseSight);
@@ -274,10 +278,10 @@ const UI = G.UI = {
       this.set('mag', el.mag, '-'); this.set('res', el.res, ''); this.set('wn', el.wname, '맨손'); this.set('fm', el.fmode, '');
     }
     this.set('magc', el.mag, inst && inst.mag <= Math.ceil((G.Attachments?.capacity(inst,def) || def.mag) * 0.25) ? 'low' : '', 'className');
-    const status = G.WeaponObstruction?.blocked ? '총구가 막혔습니다' : P.sw ? '무기 교체 중' : P.reload ? '재장전 중' : inst && inst.mag === 0 ? (a.ammo[def.ammo] > 0 ? G.Settings.label('KeyR') + ' · 재장전' : '탄약이 없습니다') : inst && inst.mag <= Math.ceil((G.Attachments?.capacity(inst,def) || def.mag) * .25) ? '탄약 부족 · ' + G.Settings.label('KeyR') + ' 재장전' : '';
+    const status = a.cur === 'melee' ? (P.sw ? '무기 교체 중' : P.melee?.kind === 'inspect' ? '자세히 보는 중' : G.Settings.label('Digit5')+' · 칼 종류 변경') : G.WeaponObstruction?.blocked ? '총구가 막혔습니다' : P.sw ? '무기 교체 중' : P.reload ? '재장전 중' : inst && inst.mag === 0 ? (a.ammo[def.ammo] > 0 ? G.Settings.label('KeyR') + ' · 재장전' : '탄약이 없습니다') : inst && inst.mag <= Math.ceil((G.Attachments?.capacity(inst,def) || def.mag) * .25) ? '탄약 부족 · ' + G.Settings.label('KeyR') + ' 재장전' : '';
     this.set('weaponStatus', el.weaponStatus, status);
     const tk = P.throwKind;
-    const skey = a.cur + a.gunId('rifle') + a.gunId('shotgun') + a.gunId('pistol') + tk + a.throwables[tk] + (a.throwCount() ? 1 : 0);
+    const skey = a.cur + a.gunId('rifle') + a.gunId('shotgun') + a.gunId('pistol') + tk + a.throwables[tk] + (a.throwCount() ? 1 : 0) + a.knife;
     if (this.slotKey !== skey) {
       this.slotKey = skey;
       let slots = '';
@@ -286,6 +290,7 @@ const UI = G.UI = {
         slots += '<div class="slot' + (w ? ' has' : '') + (a.cur === k ? ' cur' : '') + '"><span class="k">' + G.Settings.label('Digit' + (i + 1)) + '</span>' + (w ? G.WEAPONS[w.id].short : G.CLASS_NAMES[k]) + '</div>';
       });
       slots += '<div class="slot' + (a.throwCount() ? ' has' : '') + (a.cur === 'throw' ? ' cur' : '') + '"><span class="k">' + G.Settings.label('Digit4') + '</span>' + G.THROW_NAMES[tk] + ' <span class="cnt">' + a.throwables[tk] + '</span></div>';
+      slots += '<div class="slot has'+(a.cur==='melee'?' cur':'')+'"><span class="k">'+G.Settings.label('Digit5')+'</span>'+G.Knives.catalog[a.knife].short+'</div>';
       el.slots.innerHTML = slots;
     }
     this.drawCook(a, P);

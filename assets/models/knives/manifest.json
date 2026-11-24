@@ -1,0 +1,127 @@
+{
+  "version": 90,
+  "files": [
+    {
+      "id": "butterfly",
+      "file": "butterfly.glb",
+      "bytes": 31364,
+      "sha256": "bb0b221064a368da18e03adfee3abb35bdb97c385f7cd7817f3587bea326025e",
+      "triangles": 960,
+      "source": "butterfly"
+    },
+    {
+      "id": "dagger",
+      "file": "dagger.glb",
+      "bytes": 271160,
+      "sha256": "cbce6d1d0820368ef99302662de5dfc53e99ade3d32278a3104cb225f03f788e",
+      "triangles": 636,
+      "source": "dagger"
+    },
+    {
+      "id": "combat",
+      "file": "combat.glb",
+      "bytes": 281452,
+      "sha256": "5f1b05319d742077925e284040720a150970ebf1dda1412b51be4163e0b431ce",
+      "triangles": 1550,
+      "source": "combat"
+    },
+    {
+      "id": "karambit",
+      "file": "karambit.glb",
+      "bytes": 508256,
+      "sha256": "f134696efb57a8bd7819aef6f3a22d828efe7812e5dfa65d7e06793330dae8eb",
+      "triangles": 4992,
+      "source": "karambit"
+    },
+    {
+      "id": "kunai",
+      "file": "kunai.glb",
+      "bytes": 208756,
+      "sha256": "9f724b401ac38a585165726ac41565f281c807e07b97387a1d0738aa608f0c6a",
+      "triangles": 404,
+      "source": "kunai"
+    },
+    {
+      "id": "machete",
+      "file": "machete.glb",
+      "bytes": 308664,
+      "sha256": "2f218b7c734a318ddff495b0e453d5327fc0ea17949d1f62fbc18ebcf3a74942",
+      "triangles": 2136,
+      "source": "machete"
+    }
+  ],
+  "sources": {
+    "butterfly": {
+      "file": "butterfly.glb",
+      "url": "https://raw.githubusercontent.com/niganmahhh/FPSGame/4d582665057e12f0e5d1c44d1ae1ebd048d9e046/public/models/butterfly-knife.glb",
+      "revision": "4d582665057e12f0e5d1c44d1ae1ebd048d9e046",
+      "sha256": "f935b983b71e02461b99feec034023069b5cf12c0eebbe80596c6770ecfa754a",
+      "author": "Ginsta",
+      "license": "CC Attribution (version unspecified by upstream)",
+      "original": "https://poly.pizza/m/FnD4lI5Wz1"
+    },
+    "dagger": {
+      "file": "dagger.glb",
+      "url": "https://raw.githubusercontent.com/niganmahhh/FPSGame/4d582665057e12f0e5d1c44d1ae1ebd048d9e046/public/models/cc0-dagger.glb",
+      "revision": "4d582665057e12f0e5d1c44d1ae1ebd048d9e046",
+      "sha256": "0db5364b3a2114772cb7e329b4736427134d33018f9e57af90ea0d04751d503d",
+      "author": "3dmodelscc0",
+      "license": "CC0-1.0",
+      "original": "https://3dmodelscc0.itch.io/free-cc0-melee-weapons-pack"
+    },
+    "combat": {
+      "file": "combat.glb",
+      "url": "https://raw.githubusercontent.com/niganmahhh/FPSGame/4d582665057e12f0e5d1c44d1ae1ebd048d9e046/public/models/cc0-combat-knife.glb",
+      "revision": "4d582665057e12f0e5d1c44d1ae1ebd048d9e046",
+      "sha256": "3ed5f43714bfe426b1b1143b3cebf3b451fdf06e6c40b299a6e05f5e0ba41443",
+      "author": "3dmodelscc0",
+      "license": "CC0-1.0",
+      "original": "https://3dmodelscc0.itch.io/free-cc0-melee-weapons-pack"
+    },
+    "kunai": {
+      "file": "kunai.glb",
+      "url": "https://raw.githubusercontent.com/niganmahhh/FPSGame/4d582665057e12f0e5d1c44d1ae1ebd048d9e046/public/models/cc0-kunai.glb",
+      "revision": "4d582665057e12f0e5d1c44d1ae1ebd048d9e046",
+      "sha256": "d27ec5f96f75ab987716d9e954bfd08d58f4bf3b83b9cbd8d4a0edec7434924f",
+      "author": "3dmodelscc0",
+      "license": "CC0-1.0",
+      "original": "https://3dmodelscc0.itch.io/free-cc0-melee-weapons-pack"
+    },
+    "machete": {
+      "file": "machete.glb",
+      "url": "https://raw.githubusercontent.com/niganmahhh/FPSGame/4d582665057e12f0e5d1c44d1ae1ebd048d9e046/public/models/cc0-machete.glb",
+      "revision": "4d582665057e12f0e5d1c44d1ae1ebd048d9e046",
+      "sha256": "0f1f20d04e1d1edb7baf57e6fd5ca408bf1e26d3743ab87a46703c8e20b1153a",
+      "author": "3dmodelscc0",
+      "license": "CC0-1.0",
+      "original": "https://3dmodelscc0.itch.io/free-cc0-melee-weapons-pack"
+    },
+    "karambit": {
+      "file": "karambit.glb",
+      "url": "https://raw.githubusercontent.com/EldarJamiyev/GARAM/90fc4fc41c9bb3fcc07c9d61d835defaa9ce76fa/packages/client/public/models/raw/karambit.glb",
+      "revision": "90fc4fc41c9bb3fcc07c9d61d835defaa9ce76fa",
+      "sha256": "b3a905d5cc9c6541a3c1581354dca29c9d2c569f8977e4e236577381ae5646ea",
+      "author": "Diamonddogkz",
+      "license": "CC-BY-4.0",
+      "original": "https://sketchfab.com/3d-models/karambit-dfd7606f189a413681305a39b8841ce8"
+    },
+    "ual": {
+      "file": "ual.zip",
+      "url": "https://raw.githubusercontent.com/cktang88/3d-fps/130ac2a5c856401ec36e7d35afcfefe40c5801f4/Universal%20Animation%20Library%5BStandard%5D.zip",
+      "sha256": "cc73fc4e495b82958207316596317a3f40b9fa38065bde1027937452da537724",
+      "author": "Quaternius",
+      "license": "CC0-1.0",
+      "original": "https://quaternius.com/packs/universalanimationlibrary.html",
+      "member": "Universal Animation Library[Standard]/Unreal-Godot/UAL1_Standard.glb"
+    },
+    "acr": {
+      "file": "acr.glb",
+      "bundled": "assets/models/viewmodels/acr.glb",
+      "url": "https://raw.githubusercontent.com/nerojima0326/last-zone-fps/7b7000385f463bfc7af946ee7e2d59501d9055cf/assets/models/viewmodels/acr.glb",
+      "sha256": "bef052a23bb8a9d279f6fa4a1b860ae3aa29dbcffe827ae23396623ae41aab44",
+      "author": "Cransh (animation), DJMaesen (arms)",
+      "license": "CC-BY-4.0",
+      "original": "https://sketchfab.com/3d-models/animated-fps-hands-rifle-animation-pack-5f2d0ed780a94724b36ab505f7564057"
+    }
+  }
+}

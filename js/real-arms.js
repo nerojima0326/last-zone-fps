@@ -168,7 +168,7 @@ const R = G.RealArms = {
     const own = (vm.cur === 'ar7' && G.M4Viewmodel?.ready) || (vm.cur === 'g18' && G.G17Pilot?.ready) || G.AssetVM?.owns(vm.cur);
     const A = m && this.armsOf(m);
     // v65 투척물·맨손은 설정과 상관없이 총과 같은 실사 팔 (절차적 팔과 섞이지 않게)
-    const use = this.ready && (this.enabled || vm.cur === 'throw' || vm.cur === 'fists') && A && (A.L || A.R) && !own && !s.hideVM;
+    const use = this.ready && (this.enabled || vm.cur === 'throw' || vm.cur === 'fists' || G.Knives?.is(vm.cur)) && A && (A.L || A.R) && !own && !s.hideVM;
     if (this.lastM && this.lastM !== m) this.procVisible(this.lastM, true);
     if (!use) { this.hide(); return; }
     if (this.copy.parent !== m.root) m.root.add(this.copy);
@@ -238,8 +238,9 @@ const R = G.RealArms = {
     this.place(b.hand, _w, handQ, unit, rootW);
     // 손가락: 편 손 ↔ 쥔 손
     const key = r.side > 0 ? 'R' : 'L', ref = REF[key], grip = pistol ? S.gripPistol : S.gripRifle;
-    // 맨손 주먹은 쥔 자세보다 더 굽힌다 (같은 굽힘 축으로 연장)
-    const fist = m.type === 'fists' ? 1.55 : 1, lim = m.type === 'fists' ? 1.7 : 1.15;
+    // 주먹과 칼을 쥔 오른손은 소총의 방아쇠 자세보다 손가락을 더 감는다.
+    const closed = m.type === 'fists' || (m.type === 'knife' && r.side > 0);
+    const fist = closed ? 1.55 : 1, lim = closed ? 1.7 : 1.15;
     const tCurl = U.clamp(r.curl / ref.curl * fist, 0, lim), tThumb = U.clamp(r.thumb / ref.thumb, 0, 1.1), tTrig = U.clamp(r.trig / ref.trig * fist, 0, lim);
     for (const f of FING) {
       const t = f === 'Thumb' ? tThumb : f === 'Index' ? tTrig : tCurl, bones = b.fingers[f];

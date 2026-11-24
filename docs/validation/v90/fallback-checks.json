@@ -1,0 +1,215 @@
+{
+  "assets": {
+    "version": "90",
+    "loaded": 0,
+    "motion": false,
+    "ready": false,
+    "guns": 30,
+    "ids": [
+      "knife_butterfly",
+      "knife_dagger",
+      "knife_combat",
+      "knife_karambit",
+      "knife_kunai",
+      "knife_machete"
+    ],
+    "sourceClips": []
+  },
+  "gameplay": {
+    "singleHits": [
+      {
+        "hz": 30,
+        "id": "knife_butterfly",
+        "damage": 40
+      },
+      {
+        "hz": 30,
+        "id": "knife_dagger",
+        "damage": 52
+      },
+      {
+        "hz": 30,
+        "id": "knife_combat",
+        "damage": 46
+      },
+      {
+        "hz": 30,
+        "id": "knife_karambit",
+        "damage": 42
+      },
+      {
+        "hz": 30,
+        "id": "knife_kunai",
+        "damage": 38
+      },
+      {
+        "hz": 30,
+        "id": "knife_machete",
+        "damage": 62
+      },
+      {
+        "hz": 60,
+        "id": "knife_butterfly",
+        "damage": 40
+      },
+      {
+        "hz": 60,
+        "id": "knife_dagger",
+        "damage": 52
+      },
+      {
+        "hz": 60,
+        "id": "knife_combat",
+        "damage": 46
+      },
+      {
+        "hz": 60,
+        "id": "knife_karambit",
+        "damage": 42
+      },
+      {
+        "hz": 60,
+        "id": "knife_kunai",
+        "damage": 38
+      },
+      {
+        "hz": 60,
+        "id": "knife_machete",
+        "damage": 62
+      },
+      {
+        "hz": 144,
+        "id": "knife_butterfly",
+        "damage": 40
+      },
+      {
+        "hz": 144,
+        "id": "knife_dagger",
+        "damage": 52
+      },
+      {
+        "hz": 144,
+        "id": "knife_combat",
+        "damage": 46
+      },
+      {
+        "hz": 144,
+        "id": "knife_karambit",
+        "damage": 42
+      },
+      {
+        "hz": 144,
+        "id": "knife_kunai",
+        "damage": 38
+      },
+      {
+        "hz": 144,
+        "id": "knife_machete",
+        "damage": 62
+      }
+    ],
+    "friendProtected": true,
+    "wallBlocked": true,
+    "rangeLimited": true,
+    "switchCancelled": true,
+    "deathCancelled": true,
+    "trainingHit": true
+  },
+  "thirdPerson": {
+    "poses": [
+      {
+        "id": "knife_butterfly",
+        "palmGap": 0,
+        "fingers": 12
+      },
+      {
+        "id": "knife_dagger",
+        "palmGap": 0,
+        "fingers": 12
+      },
+      {
+        "id": "knife_combat",
+        "palmGap": 0,
+        "fingers": 12
+      },
+      {
+        "id": "knife_karambit",
+        "palmGap": 0,
+        "fingers": 12
+      },
+      {
+        "id": "knife_kunai",
+        "palmGap": 0,
+        "fingers": 12
+      },
+      {
+        "id": "knife_machete",
+        "palmGap": 0,
+        "fingers": 12
+      }
+    ],
+    "restored": true
+  },
+  "keyboard": {
+    "equip5": true,
+    "inspectT": true,
+    "remappedY": true
+  },
+  "poses": [
+    {
+      "id": "knife_butterfly",
+      "imported": false,
+      "maxGripError": 1.1527756336890508e-16,
+      "maxWrist": 1.4304238077184912,
+      "maxScreenX": 0.33221271577561157,
+      "maxScreenY": 1.5584582558355553,
+      "source": "대체 모델"
+    },
+    {
+      "id": "knife_dagger",
+      "imported": false,
+      "maxGripError": 1.1464934308770758e-16,
+      "maxWrist": 1.4304238077184912,
+      "maxScreenX": 0.33221271577561157,
+      "maxScreenY": 1.558469823551398,
+      "source": "대체 모델"
+    },
+    {
+      "id": "knife_combat",
+      "imported": false,
+      "maxGripError": 1.193812447098184e-16,
+      "maxWrist": 1.430423807718089,
+      "maxScreenX": 0.3322127157756115,
+      "maxScreenY": 1.5584914757439026,
+      "source": "대체 모델"
+    },
+    {
+      "id": "knife_karambit",
+      "imported": false,
+      "maxGripError": 1.1464934308770758e-16,
+      "maxWrist": 1.4304238077179445,
+      "maxScreenX": 0.3322127157756115,
+      "maxScreenY": 1.5585231856669193,
+      "source": "대체 모델"
+    },
+    {
+      "id": "knife_kunai",
+      "imported": false,
+      "maxGripError": 1.1443916996305594e-16,
+      "maxWrist": 1.4304238077184912,
+      "maxScreenX": 0.33221271577561157,
+      "maxScreenY": 1.558564914150555,
+      "source": "대체 모델"
+    },
+    {
+      "id": "knife_machete",
+      "imported": false,
+      "maxGripError": 1.1443916996305594e-16,
+      "maxWrist": 1.4304238077184912,
+      "maxScreenX": 0.33221271577561157,
+      "maxScreenY": 1.5586166096494272,
+      "source": "대체 모델"
+    }
+  ],
+  "errors": []
+}

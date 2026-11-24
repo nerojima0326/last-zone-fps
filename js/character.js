@@ -155,7 +155,7 @@ class CharacterModel {
     this.curGun = type;
     if (!type || type === 'fists' || type === 'throw') return;
     if (!this.guns[type]) {
-      const m = G.Guns.tpModel(type);
+      const m = G.Knives?.is(type) ? G.Knives.model(type) : G.Guns.tpModel(type);
       m.castShadow = true;
       this.gunMount.add(m); this.guns[type] = m;
     }
@@ -243,7 +243,7 @@ class CharacterModel {
     }
     // 기울이기: 발을 축으로 몸을 옆으로 눕힌다 (머리가 leanX 만큼 나오게)
     if (a.lean && !a.dead && !a.knocked && !a.prone) r.rotation.z = -Math.asin(U.clamp(a.lean / Math.max(0.8, a.eyeH || 1.62), -0.5, 0.5));
-    this.gunMount.position.y = a.prone && !a.knocked ? .03 : -.1;
+    this.gunMount.position.set(.05,a.prone && !a.knocked ? .03 : -.1,-.3);
     this.poseTargetY = yOff;
     if (!G.Locomotion) r.position.y += yOff;
     this.hip.position.y = hipY;
@@ -258,9 +258,11 @@ class CharacterModel {
     this.airGear.visible = airborne && !this.lod;
     if (airborne) G.Airborne.pose(this, a);
     G.Locomotion?.pose(this, a, dt);
+    if (!a.dead && !a.knocked && a.state === 'ground' && a.cur === 'melee') G.Knives.poseTP(this,a);
     G.HitResponse?.apply(this, a, dt);
     if (this.chute && this.chute.visible && airborne) updateChute(this, a);
     if (this.soldier && !this.lod) G.Soldiers.drive(this.soldier, this);
+    G.Knives?.handTP(this,!a.dead&&!a.knocked&&a.state==='ground'&&a.cur==='melee',a.melee);
     G.HitResponse?.support(this, a, dt);
   }
   dispose() {

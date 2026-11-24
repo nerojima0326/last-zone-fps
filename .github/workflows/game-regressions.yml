@@ -42,6 +42,10 @@ jobs:
         run: |
           node tools/check-map-hydrology.cjs
           node tools/check-map-drive.cjs
+      - name: 칼 모델·모션·타격·누락 복귀 검사
+        run: |
+          node tools/check-knives.cjs
+          KNIFE_FALLBACK=1 node tools/check-knives.cjs
       - name: 화염 텍스처·무대기 로딩·누락 복귀 검사
         run: node tools/check-fire-flipbook.cjs
       - name: Check all weapon grips and hand animation

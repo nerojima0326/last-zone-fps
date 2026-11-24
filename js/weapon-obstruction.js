@@ -29,6 +29,7 @@ const O=G.WeaponObstruction={
     const cam=G.camera,a=G.Player?.a;
     if(!vm.root||!cam)return;
     if(this.id!==vm.cur){this.amount=0;this.blocked=false;this.id=vm.cur}
+    if(G.Knives?.is(this.id)){this.target=0;this.amount=0;this.blocked=false;return}
     if(!G.WEAPONS[this.id]||!a){this.target=0;this.blocked=false;return}
     // Called after native importers finish, before applying the tuck itself.
     vm.muzzleWorld(cam,muzzle);

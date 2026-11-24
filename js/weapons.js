@@ -799,6 +799,15 @@ function gunData(id) {
 }
 
 const Guns = G.Guns = {
+  // 칼의 손목도 기존 두 관절 IK와 손목 각도 제한을 사용한다.
+  poseStaticArm(r,target,rotation,dt,curl,thumb) {
+    // 가져온 모션의 손목 변위를 팔 길이 안으로 맞추고 손바닥 접촉 여유를 둔다.
+    r.tgt.copy(target).sub(r.baseS).clampLength(0,Math.max(.1,r.a+r.bw-.08)).add(r.baseS);
+    r.cur.lerp(r.tgt,1-Math.exp(-30*dt));
+    r.palmRef=r.palmTarget.set(0,0,1).applyQuaternion(rotation);
+    r.fingerRef=r.fingerTarget.set(0,1,0).applyQuaternion(rotation);
+    r.curlT=r.trigT=curl; r.thumbT=thumb; solveArm(r,dt);
+  },
   mats, CLS, gunData, rstyle,
   reloadFeel(id) { return RFEEL[id] || RFEEL[G.WeaponCatalog?.[id]?.reloadBase] || RFEEL.ar7; },
   // Freeze the original empty state for the entire reload, including every shell cycle.
@@ -1536,7 +1545,7 @@ const VM = G.VM = {
   ensure(type) {
     if (!type || this.models[type]) return this.models[type];
     if (!G.WEAPONS[type] && type !== 'fists' && type !== 'throw') return null;
-    const m = Guns.buildVM(type); G.WeaponFinish?.root(m.root); m.root.visible = false;
+    const m = G.Knives?.is(type) ? G.Knives.buildVM(type) : Guns.buildVM(type); G.WeaponFinish?.root(m.root); m.root.visible = false;
     this.root.add(m.root); this.models[type] = m;
     return m;
   },
@@ -1607,6 +1616,7 @@ const VM = G.VM = {
     // 스웨이
     this.sway.x = U.damp(this.sway.x, U.clamp(-s.lookDX * 0.0005, -0.05, 0.05), 9, dt);
     this.sway.y = U.damp(this.sway.y, U.clamp(-s.lookDY * 0.0005, -0.05, 0.05), 9, dt);
+    if (G.Knives?.is(this.cur)) { G.Knives.poseVM(this,m,dt,s); return; }
     const a = this.adsT, ia = 1 - a;
     const sight = this.sightOf(m, s.scope);
     const p = this.pos.copy(m.hip).lerp(sight.ads, a);

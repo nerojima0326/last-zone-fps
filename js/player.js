@@ -5,7 +5,7 @@ const THREE = window.THREE, G = window.G, U = G.U;
 const V3 = THREE.Vector3;
 const BASE_FOV = 80;
 const _f = new V3(), _r = new V3(), _d = new V3(), _m = new V3(), _e = new V3(), _u = new V3(), _c = new V3(), _q = new V3();
-const SLOT_ORDER = ['rifle', 'shotgun', 'pistol', 'throw'];
+const SLOT_ORDER = ['rifle', 'shotgun', 'pistol', 'throw', 'melee'];
 
 const P = G.Player = {
   a: null, sens: 1, adsSens: 1, scopeSens: 1, fov: 80, invertY: false,
@@ -23,6 +23,7 @@ const P = G.Player = {
     this.flashAmt = 0; this.flashHold = 0;
     this.orbitYaw = 0; this.orbitPitch = -0.3; this.specIdx = 0; this.specTarget = null;
     this.dropT = 0; this.indoor = 0; this.indoorT = 0;
+    this.melee = null; this.knifeSeen = null;
     this.prompt = ''; this.lootTarget = null; this.reviveTarget = null;
     this.lean = 0; this.vault = null; this.vehicle = null; this.killcam = null;
     this.camMode = 'plane';
@@ -40,6 +41,7 @@ const P = G.Player = {
   update(dt) {
     const a = this.a;
     this.time += dt;
+    if (!a.alive || a.knocked || a.state !== 'ground' || this.vehicle) { this.melee = null; a.melee = null; this.knifeSeen = null; }
     G.lodZoom = 1;
     if (!a.alive) { this.updateSpectate(dt); this.updateFlash(dt); return; }
     if (a.state === 'plane') this.updatePlane(dt);
@@ -201,8 +203,9 @@ const P = G.Player = {
     if (I.hit('Digit2')) this.switchTo('shotgun');
     if (I.hit('Digit3')) this.switchTo('pistol');
     if (I.hit('Digit4') && !this.throwSt) { if (a.cur === 'throw') this.cycleThrow(); else this.switchTo('throw'); }
+    if (I.hit('Digit5')) G.Knives.cycle(this);
     if (I.wheel !== 0 && !this.throwSt) {
-      const avail = SLOT_ORDER.filter(s => s === 'throw' ? a.throwCount() > 0 : !!a.weapons[s]);
+      const avail = SLOT_ORDER.filter(s => s === 'melee' || (s === 'throw' ? a.throwCount() > 0 : !!a.weapons[s]));
       if (avail.length) {
         let i = avail.indexOf(this.sw ? this.sw.to : a.cur);
         i = (i + (I.wheel > 0 ? 1 : -1) + avail.length) % avail.length;
@@ -282,6 +285,7 @@ const P = G.Player = {
         }
       }
     }
+    G.Knives?.tick(this,dt);
     // 맨손
     if (a.cur === 'fists' && !this.sw) {
       if (I.lmbHit && now >= this.nextFire) { this.punchT = 0; this.nextFire = now + 0.55; G.Audio.click('punch'); this.punchHit = false; }
@@ -304,11 +308,13 @@ const P = G.Player = {
     // 핀을 뽑기 전이면 들고 있던 투척물을 내리고 바꾼다 (뽑은 뒤에는 던져야 한다)
     if (this.throwSt) { if (this.throwSt.phase === 'hold' && this.throwSt.pinT < 0 && slot !== 'throw') this.throwSt = null; else return; }
     if (slot === 'throw') { if (a.throwCount() <= 0) return; if (a.throwables[this.throwKind] <= 0) this.cycleThrow(); }
-    else if (slot !== 'fists' && !a.weapons[slot]) return;
+    else if (slot !== 'fists' && slot !== 'melee' && !a.weapons[slot]) return;
     if ((this.sw ? this.sw.to : a.cur) === slot) return;
     this.reload = null; this.autoReload = null; this.cycleT = -1; this.pumpT = -1;
+    this.melee = null; a.melee = null; this.knifeSeen = null; this.punchT = -1;
     const next = a.weapons[slot];
     if (next) { G.VM.ensure(next.id); G.AssetVM?.request(next.id); }
+    else if (slot === 'melee') G.VM.ensure(a.knife);
     this.sw = { t: 0, from: this.raise, to: slot };
     G.SessionPerf?.mark('무기 교체');
     G.Audio.click('switch');
@@ -748,7 +754,7 @@ const P = G.Player = {
     G.vmCamera.fov = U.lerp(54, 46, this.ads); G.vmCamera.updateProjectionMatrix();
     // 뷰모델
     const showVM = !a.knocked && a.cur !== null;
-    G.VM.set(showVM ? (inst ? inst.id : a.cur) : null);
+    G.VM.set(showVM ? a.gunId(a.cur) : null);
     const R = this.reload;
     let rl = null;
     if (R && def) {
@@ -768,6 +774,7 @@ const P = G.Player = {
       throwP: this.throwSt ? (this.throwSt.phase === 'hold' ? 0.37 * Math.min(1, this.throwSt.holdT / 0.18) : this.throwSt.t / 0.68) : -1,
       pinP: this.throwSt ? (this.throwSt.pinT >= 0 ? Math.min(1, this.throwSt.pinT / 0.4) : this.throwSt.released ? 1 : 0) : 0,
       punchP: this.punchT >= 0 ? this.punchT / 0.4 : -1,
+      melee: this.melee,
       empty: inst && inst.mag === 0 && !R, scope, hideVM: this.scopeView > 0.6
     });
     G.WeaponObstruction?.update(G.VM, dt);

@@ -27,7 +27,7 @@ const A = G.Armory = {
   init() {
     if ($('armoryModal')) return;
     const modal = document.createElement('div'); modal.id = 'armoryModal'; modal.className = 'hidden';
-    modal.innerHTML = '<section class="armory-panel" role="dialog" aria-modal="true" aria-labelledby="armoryTitle"><header><div><small>LAST ZONE / ARMORY</small><h2 id="armoryTitle">무기 도감 <em>30</em></h2></div><button id="armoryClose" aria-label="무기 도감 닫기">닫기 ×</button></header><p id="armoryHint"></p><div class="armory-search"><input id="armorySearch" type="search" placeholder="총기 이름 · 탄약 검색" aria-label="총기 검색"><span id="armoryCount" role="status"></span></div><nav id="armoryFilters" aria-label="총기 종류"></nav><div class="armory-content"><div id="armoryList" aria-label="총기 목록"></div><aside><div id="armoryPreview" aria-label="드래그해서 총기 회전"></div><small class="armory-drag">드래그해서 회전</small><div id="armoryDetail"></div><button id="armorySound">발사음 듣기</button><button id="armoryEquip">훈련 무기로 장착</button></aside></div></section>';
+    modal.innerHTML = '<section class="armory-panel" role="dialog" aria-modal="true" aria-labelledby="armoryTitle"><header><div><small>LAST ZONE / ARMORY</small><h2 id="armoryTitle">무기 도감 <em>36</em></h2></div><button id="armoryClose" aria-label="무기 도감 닫기">닫기 ×</button></header><p id="armoryHint"></p><div class="armory-search"><input id="armorySearch" type="search" placeholder="무기 이름 · 탄약 검색" aria-label="총기 검색"><span id="armoryCount" role="status"></span></div><nav id="armoryFilters" aria-label="총기 종류"></nav><div class="armory-content"><div id="armoryList" aria-label="총기 목록"></div><aside><div id="armoryPreview" aria-label="드래그해서 총기 회전"></div><small class="armory-drag">드래그해서 회전</small><div id="armoryDetail"></div><button id="armorySound">발사음 듣기</button><button id="armoryEquip">훈련 무기로 장착</button></aside></div></section>';
     document.body.append(modal);
     $('armoryClose').onclick = () => this.close();
     modal.onclick = e => { if (e.target === modal) this.close(); };
@@ -44,18 +44,28 @@ const A = G.Armory = {
     addEventListener('resize', () => { if (this.open) this.renderPreview(); });
   },
   list() {
-    const groups = { all: '전체', new: '신규 15종', ...G.FAMILY_NAMES };
+    const groups = { all: '총기 전체', new: '신규 총기 15종', melee: '칼 6종', ...G.FAMILY_NAMES };
     $('armoryFilters').innerHTML = Object.entries(groups).map(([k, name]) => `<button data-family="${k}" aria-pressed="${this.family === k}">${name}</button>`).join('');
     const q = this.query.trim().toLocaleLowerCase();
-    const ids = G.GUN_IDS.filter(id => {
+    const ids = (this.family==='melee'?G.Knives.ids:G.GUN_IDS).filter(id => {
+      if(G.Knives.is(id))return [G.Knives.catalog[id].name,G.Knives.catalog[id].role].join(' ').includes(q);
       const d = G.WEAPONS[id];
       return (this.family === 'all' || (this.family === 'new' ? !!G.WeaponCatalog[id] : d.family === this.family)) &&
         [d.name, d.short, G.AMMO_NAMES[d.ammo], G.FAMILY_NAMES[d.family], d.role || ''].join(' ').toLocaleLowerCase().includes(q);
     });
-    $('armoryCount').textContent = ids.length + ' / ' + G.GUN_IDS.length + '종';
+    $('armoryCount').textContent = ids.length + ' / ' + (this.family==='melee'?G.Knives.ids.length:G.GUN_IDS.length) + '종';
+    if(this.family==='melee'){
+      $('armoryList').innerHTML=ids.map(id=>{const d=G.Knives.catalog[id];return '<button data-gun="'+id+'" aria-pressed="'+(this.selected===id)+'"><span>근접무기</span><strong>'+d.name+'</strong><small>피해 '+d.dmg+' · 사거리 '+d.reach+'m</small></button>'}).join('');return;
+    }
     $('armoryList').innerHTML = ids.length ? ids.map(id => { const d = G.WEAPONS[id], action = d.reloadType === 'revolver' ? '리볼버' : { auto: '자동', semi: '반자동', bolt: '볼트액션', pump: '펌프', break: '중절식' }[d.action]; return `<button data-gun="${id}" aria-pressed="${this.selected === id}"><span>${G.FAMILY_NAMES[d.family]}${G.WeaponCatalog[id] ? '<b>NEW</b>' : ''}</span><strong>${d.short}</strong><small>${G.AMMO_NAMES[d.ammo]} · ${d.mag}발 · ${action}</small></button>`; }).join('') : '<p class="armory-empty">검색 결과가 없습니다.</p>';
   },
   detail() {
+    $('armorySound').hidden=G.Knives.is(this.selected);
+    if(G.Knives.is(this.selected)){
+      const d=G.Knives.catalog[this.selected];
+      $('armoryDetail').innerHTML='<small>근접무기</small><h3>'+d.name+'</h3><p>'+d.role+'</p><dl><div><dt>피해</dt><dd>'+d.dmg+'</dd></div><div><dt>사거리</dt><dd>'+d.reach+'m</dd></div><div><dt>공격 간격</dt><dd>'+d.duration+'초</dd></div></dl><p>좌클릭 휘두르기 · 우클릭 / '+G.Settings.label('KeyT')+' 자세히 보기 · '+G.Settings.label('Digit5')+' 칼 종류 변경</p><a target="_blank" rel="noopener" href="assets/models/knives/CREDITS.md">모델·모션 출처</a>';
+      $('armoryEquip').hidden=!this.training;this.preview(this.selected);return;
+    }
     const d = G.WEAPONS[this.selected], damage = d.pellets > 1 ? d.dmg + ' × ' + d.pellets : d.dmg;
     $('armoryDetail').innerHTML = `<small>${G.FAMILY_NAMES[d.family]} / ${G.AMMO_NAMES[d.ammo]}</small><h3>${d.name}</h3><p>${d.role || { assault: '다양한 거리에서 활용하는 균형 잡힌 주무기', dmr: '정확한 단발 사격에 적합한 정밀 소총', sniper: '강한 한 발과 수동 노리쇠 작동', shotgun: '근접전에서 강력한 산탄 화력', pistol: '빠르게 꺼내 쓰는 보조무기' }[d.family]}</p><dl><div><dt>기본 피해</dt><dd>${damage}</dd></div><div><dt>분당 발사</dt><dd>${d.rpm}</dd></div><div><dt>탄창</dt><dd>${d.mag}발</dd></div><div><dt>조준 시간</dt><dd>${Math.round(d.adsTime * 1000)}ms</dd></div><div><dt>${d.reloadType === 'shell' ? '한 발 장전' : '탄창 교체'}</dt><dd>${d.reload.toFixed(2)}초</dd></div><div><dt>무기 슬롯</dt><dd>${G.CLASS_NAMES[d.cls]}</dd></div></dl>`;
     $('armoryEquip').hidden = !this.training;
@@ -70,6 +80,10 @@ const A = G.Armory = {
     this.preview(this.selected);
   },
   equip(id) {
+    if(G.Knives.is(id)){
+      if(!this.open||!this.training||!G.Game.training||!G.Training.active||!G.Knives.equip(G.Player,id))return false;
+      G.UI.toast(G.Knives.catalog[id].name+' 장착');this.close();return true;
+    }
     if (!this.open || !this.training || !G.Game.training || !G.Training.active || !G.Game.player?.alive || !G.GUN_IDS.includes(id)) return false;
     const a = G.Game.player, p = G.Player, d = G.WEAPONS[id];
     a.give(id, 0); a.ammo[d.ammo] = 999; a.cur = d.cls;
@@ -93,6 +107,10 @@ const A = G.Armory = {
       this.camera = new T.PerspectiveCamera(32, 1, .01, 10);
     }
     if (this.object) this.scene.remove(this.object);
+    if(G.Knives.is(id)){
+      const shape=G.Knives.model(id),bounds=new T.Box3().setFromObject(shape),center=bounds.getCenter(new T.Vector3());
+      shape.position.sub(center);const group=this.object=new T.Group();group.add(shape);this.scene.add(group);this.renderPreview();return;
+    }
     const data = G.Guns.gunData(id), group = this.object = new T.Group(), shape = new T.Group();
     // Cached model geometry/materials are shared, never disposed by this viewer.
     for (const part of Object.values(data.parts)) for (const [mat, geometry] of Object.entries(part)) shape.add(new T.Mesh(geometry, data.real ? data.mats[mat] : G.Guns.mats()[mat] || G.Guns.mats().metal));
