@@ -2,7 +2,7 @@
 const assert = require('assert'), fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
 const fixture = require('./optimize/browser-fixture.cjs');
 const baseline = process.env.AIR_BASELINE === '1';
-const shots = path.resolve(__dirname, '../docs/validation/v88');
+const shots = path.resolve(process.env.AIR_SHOTS_DIR || path.join(require('os').tmpdir(), 'last-zone-airdrop'));
 (async () => {
   const originals = {};
   if (baseline) for (const name of ['plane','character','player','game','bots','ui']) originals[name] = execFileSync('git', ['show', 'a3fe0d5:js/' + name + '.js'], { encoding: 'utf8' });
@@ -85,18 +85,15 @@ const shots = path.resolve(__dirname, '../docs/validation/v88');
               result.templates.push(m.soldier?.T.name||'절차적 대체 모델');
             } finally { m.dispose(); }
           }
-          let patches=0;
-          Game.plane.mesh.traverse(m=>{
-            if(!m.geometry?.userData.surfacePatch)return;
-            const p=m.geometry.attributes.position,n=m.geometry.attributes.normal,i=Math.floor(p.count/2);
-            const dot=p.getX(i)*n.getX(i)+p.getY(i)*n.getY(i);
-            if(p.getZ(i)>-16.5&&p.getZ(i)<7.5){check(dot>0,'창/문의 면이 안쪽을 향함');patches++;}
-          });
-          check(patches>=25,'수송기 표면 검증 누락');result.outwardPatches=patches;
+          const glass=Game.plane.mesh.getObjectByName('수송기_glass')?.geometry;
+          check(glass,'수송기 조종석 창 누락');
+          const gp=glass.attributes.position,gn=glass.attributes.normal;
+          for(let i=0;i<gp.count;i++)check(gp.getX(i)*gn.getX(i)+(gp.getY(i)-.25)*gn.getY(i)>0,'창의 면이 안쪽을 향함');
+          result.outwardGlassVertices=gp.count;
           const prop=Game.props[0],z=prop.rotation.z;Game.updatePlane(.1);
-          check(Math.abs(prop.rotation.z-z-4)<1e-6,'프로펠러 축 애니메이션 실패');
+          check(Math.abs(prop.rotation.z-z-4)<1e-6,'엔진 팬 축 애니메이션 실패');
           result.rotorMeshes=Game.props.reduce((sum,p)=>sum+p.children.filter(c=>c.isMesh).length,0);
-          check(result.rotorMeshes===16,'프로펠러 메시 병합 누락');
+          check(result.rotorMeshes===8,'엔진 팬 메시 병합 누락');
           const bot=Game.actors.find(b=>b.brain&&b.team!==a.team);
           bot.state='plane';Game.jump(bot);bot.pos.set(100,300,100);bot.brain.dropTarget.set(100,0,100);
           let botOpened=false;
