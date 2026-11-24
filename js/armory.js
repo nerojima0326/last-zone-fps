@@ -94,7 +94,7 @@ const A = G.Armory = {
   },
   preview(id) {
     if (!this.renderer) {
-      this.renderer = new T.WebGLRenderer({ alpha: true, antialias: true }); this.renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+      this.renderer = new T.WebGLRenderer({ alpha: true, antialias: true }); this.renderer.setPixelRatio(Math.min(G.screenPixelRatio(), 1.5));
       this.renderer.outputColorSpace = T.SRGBColorSpace; $('armoryPreview').append(this.renderer.domElement);
       this.scene = new T.Scene();
       // Render targets belong to their WebGL context; build this viewer's
@@ -139,6 +139,7 @@ const A = G.Armory = {
     const size = new T.Box3().setFromObject(this.object).getSize(new T.Vector3()), f = 2 * Math.tan(this.camera.fov * Math.PI / 360);
     this.camera.position.set(0, 0, Math.max(size.y / f, size.x / (f * this.camera.aspect)) * 1.12 + size.z / 2);
     this.camera.lookAt(0, 0, 0); this.camera.updateProjectionMatrix();
+    G.TextureQuality?.scan(this.scene, true);
     this.renderer.render(this.scene, this.camera);
   }
 };

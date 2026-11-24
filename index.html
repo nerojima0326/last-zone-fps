@@ -11,7 +11,7 @@
 <script>
 // 새 버전이 올라왔는데 휴대폰이 예전 페이지를 기억하고 있으면 새로 불러온다
 (function () {
-  var BUILD = '90';
+  var BUILD = '91';
   window.LZ_BUILD = BUILD;
   try {
     fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (v) {
@@ -389,7 +389,7 @@ try {
   const vegetation = location.protocol === 'file:' ? Promise.resolve() : import('./vendor/ez-tree.es.js')
     .then(module => { window.EZTree = module; }).catch(() => console.info('[veg] vendor/ez-tree.es.js 없음 — 기존 나무 사용'));
   loadFill.style.width = '15%';
-  const files = ['core', 'render-prep', 'pose-recovery', 'session-perf', 'texture-quality', 'thin-details', 'acoustics', 'surface-wear', 'room-lighting', 'hit-response', 'impact-detail', 'weapon-obstruction', 'footsteps', 'locomotion', 'weapon-finish', 'lod-fade', 'assets', 'range-props', 'vegetation', 'static-ao', 'map-layout', 'world', 'effects', 'throwable-vfx', 'ambient', 'plane', 'airborne', 'character', 'soldiers', 'weapon-catalog', 'gunlib', 'weapon-expansion-models', 'gunmodels', 'world-weapon-lods', 'reload-assets', 'weapons','knives','weapon-motion','hand-contact','weapon-sound-design','weapon-audio','attachments','g17-pilot','m4-viewmodel','asset-viewmodels','real-arms', 'throwable-models', 'throwables', 'actor', 'player', 'bots', 'extras', 'vehicle-wheels', 'vehicle-suspension', 'vehicles', 'game', 'training', 'training-records', 'ui', 'settings', 'armory', 'raytrace', 'perf', 'main', 'touch'];
+  const files = ['core', 'render-prep', 'graphics-recovery', 'pose-recovery', 'session-perf', 'texture-quality', 'thin-details', 'acoustics', 'surface-wear', 'room-lighting', 'hit-response', 'impact-detail', 'weapon-obstruction', 'footsteps', 'locomotion', 'weapon-finish', 'lod-fade', 'assets', 'range-props', 'vegetation', 'static-ao', 'map-layout', 'world', 'effects', 'throwable-vfx', 'ambient', 'plane', 'airborne', 'character', 'soldiers', 'weapon-catalog', 'gunlib', 'weapon-expansion-models', 'gunmodels', 'world-weapon-lods', 'reload-assets', 'weapons','knives','weapon-motion','hand-contact','weapon-sound-design','weapon-audio','attachments','g17-pilot','m4-viewmodel','asset-viewmodels','real-arms', 'throwable-models', 'throwables', 'actor', 'player', 'bots', 'extras', 'vehicle-wheels', 'vehicle-suspension', 'vehicles', 'game', 'training', 'training-records', 'ui', 'settings', 'armory', 'raytrace', 'perf', 'main', 'touch'];
   // 미리 받기만 병렬로 하고, 실행은 기존 순서를 지켜 파일 누락 시에도 첫 오류에서 멈춘다.
   for (const file of files) {
     const preload = document.createElement('link'); preload.rel = 'preload'; preload.as = 'script';

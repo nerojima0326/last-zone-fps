@@ -30,21 +30,33 @@
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, rb);
   }
   P.gpuWait = () => gpuWait();
+  // 복구 전 컨텍스트의 쿼리·읽기 버퍼를 새 컨텍스트에 재사용하면 GL 오류가 난다.
+  P.contextLost = function () { syncFb = null; P.cur = null; P.pool = []; P.pending = []; P.gpu = {}; };
+  P.contextRestored = function () {
+    if (!P.renderer) return;
+    P.gl = P.renderer.getContext();
+    try { P.ext = P.gl.getExtension('EXT_disjoint_timer_query_webgl2'); } catch (e) { P.ext = null; }
+    hookShadow();
+  };
   function ema(o, k, v) { o[k] = o[k] === undefined ? v : o[k] * 0.9 + v * 0.1; }
 
   P.init = function (renderer) {
     P.renderer = renderer;
     P.gl = renderer.getContext();
     try { P.ext = P.gl.getExtension('EXT_disjoint_timer_query_webgl2'); } catch (e) { P.ext = null; }
-    // 그림자 맵은 RenderPass 안에서 그려진다 → 따로 끊어서 잰다
+    hookShadow();
+    if (qs.has('perf')) P.toggle(true);
+    addEventListener('keydown', e => { if (e.code === 'F3') { e.preventDefault(); P.toggle(); } });
+  };
+  // 그림자 맵은 RenderPass 안에서 그려진다 → 따로 끊어서 잰다
+  function hookShadow() {
+    const renderer = P.renderer;
     const sm = renderer.shadowMap, r0 = sm.render.bind(sm);
     sm.render = function (lights, scene, camera) {
       if (!P.on || !P.cur) return r0(lights, scene, camera);
       const back = P.cur; P.seg('shadow'); r0(lights, scene, camera); P.seg(back);
     };
-    if (qs.has('perf')) P.toggle(true);
-    addEventListener('keydown', e => { if (e.code === 'F3') { e.preventDefault(); P.toggle(); } });
-  };
+  }
   // 오버레이 없이 시간만 잰다 (자동 품질 측정용)
   P.setQuiet = function (v) { P.quiet = !!v; setOn(P.show || P.quiet); };
   function setOn(v) {

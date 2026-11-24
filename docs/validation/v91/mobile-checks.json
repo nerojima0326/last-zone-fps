@@ -1,0 +1,3637 @@
+{
+  "menu": {
+    "dpr": 2.625,
+    "mobile": true,
+    "viewport": [
+      412,
+      892
+    ],
+    "stage": [
+      1559,
+      720
+    ],
+    "stageScale": 0.5721616420782553,
+    "canvas": [
+      2341,
+      1081
+    ],
+    "display": [
+      411.95635986328125,
+      891.9999389648438
+    ],
+    "rendererPR": 1.50192431045542,
+    "scene": [
+      1756,
+      811,
+      2
+    ],
+    "viewmodel": [
+      1,
+      1,
+      2
+    ],
+    "presentation": [
+      2341,
+      1081
+    ],
+    "quality": "low",
+    "drs": 0.75,
+    "memory": {
+      "geometries": 187,
+      "textures": 194
+    },
+    "heap": 455531275,
+    "gpu": {
+      "contexts": 1,
+      "lost": 0,
+      "estimatedBytes": 287134445,
+      "peakEstimatedBytes": 287134445,
+      "unknownFormats": [],
+      "storage": [
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 35907,
+          "count": 48,
+          "bytes": 67108800
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 32856,
+          "count": 71,
+          "bytes": 99265100
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 256,
+          "format": 32856,
+          "count": 3,
+          "bytes": 1048572
+        },
+        {
+          "kind": "texture",
+          "w": 128,
+          "h": 128,
+          "format": 32856,
+          "count": 2,
+          "bytes": 174760
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 256,
+          "format": 35907,
+          "count": 3,
+          "bytes": 2097156
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 256,
+          "format": 35907,
+          "count": 3,
+          "bytes": 1048572
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 36493,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 37808,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 36492,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 1024,
+          "h": 512,
+          "format": 34842,
+          "count": 2,
+          "bytes": 8388608
+        },
+        {
+          "kind": "texture",
+          "w": 13,
+          "h": 13,
+          "format": 33330,
+          "count": 1,
+          "bytes": 169
+        },
+        {
+          "kind": "texture",
+          "w": 128,
+          "h": 128,
+          "format": 35907,
+          "count": 5,
+          "bytes": 436900
+        },
+        {
+          "kind": "texture",
+          "w": 1536,
+          "h": 1536,
+          "format": 32856,
+          "count": 1,
+          "bytes": 12582908
+        },
+        {
+          "kind": "texture",
+          "w": 64,
+          "h": 64,
+          "format": 35907,
+          "count": 1,
+          "bytes": 21844
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 416,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 425984
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 448,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 458752
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 576,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 589824
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 288,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 294912
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 256,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 262144
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 512,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 524288
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 128,
+          "h": 96,
+          "format": 33190,
+          "samples": 1,
+          "count": 2,
+          "bytes": 98304
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 128,
+          "h": 64,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 32768
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 34842,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 45571712
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 33190,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 22785856
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 5696464
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1024,
+          "h": 1024,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 4194304
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 128,
+          "h": 128,
+          "format": 33190,
+          "samples": 1,
+          "count": 6,
+          "bytes": 393216
+        }
+      ]
+    },
+    "imageLimit": 512,
+    "resized": 151
+  },
+  "training": {
+    "dpr": 2.625,
+    "mobile": true,
+    "viewport": [
+      412,
+      892
+    ],
+    "stage": [
+      1559,
+      720
+    ],
+    "stageScale": 0.5721616420782553,
+    "canvas": [
+      2341,
+      1081
+    ],
+    "display": [
+      411.95635986328125,
+      891.9999389648438
+    ],
+    "rendererPR": 1.50192431045542,
+    "scene": [
+      1756,
+      811,
+      2
+    ],
+    "viewmodel": [
+      2341,
+      1081,
+      2
+    ],
+    "presentation": [
+      2341,
+      1081
+    ],
+    "quality": "low",
+    "drs": 0.75,
+    "memory": {
+      "geometries": 316,
+      "textures": 220
+    },
+    "heap": 306848929,
+    "gpu": {
+      "contexts": 1,
+      "lost": 0,
+      "estimatedBytes": 434792177,
+      "peakEstimatedBytes": 434792177,
+      "unknownFormats": [],
+      "storage": [
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 35907,
+          "count": 52,
+          "bytes": 72701200
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 32856,
+          "count": 76,
+          "bytes": 106255600
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 256,
+          "format": 32856,
+          "count": 3,
+          "bytes": 1048572
+        },
+        {
+          "kind": "texture",
+          "w": 128,
+          "h": 128,
+          "format": 32856,
+          "count": 3,
+          "bytes": 262140
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 256,
+          "format": 35907,
+          "count": 3,
+          "bytes": 2097156
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 256,
+          "format": 35907,
+          "count": 4,
+          "bytes": 1398096
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 36493,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 37808,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 36492,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 1024,
+          "h": 512,
+          "format": 34842,
+          "count": 2,
+          "bytes": 8388608
+        },
+        {
+          "kind": "texture",
+          "w": 13,
+          "h": 13,
+          "format": 33330,
+          "count": 1,
+          "bytes": 169
+        },
+        {
+          "kind": "texture",
+          "w": 128,
+          "h": 128,
+          "format": 35907,
+          "count": 6,
+          "bytes": 524280
+        },
+        {
+          "kind": "texture",
+          "w": 1536,
+          "h": 1536,
+          "format": 32856,
+          "count": 1,
+          "bytes": 12582908
+        },
+        {
+          "kind": "texture",
+          "w": 64,
+          "h": 64,
+          "format": 35907,
+          "count": 1,
+          "bytes": 21844
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 128,
+          "format": 35907,
+          "count": 3,
+          "bytes": 1048596
+        },
+        {
+          "kind": "texture",
+          "w": 170,
+          "h": 512,
+          "format": 35907,
+          "count": 1,
+          "bytes": 463772
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 128,
+          "format": 35907,
+          "count": 7,
+          "bytes": 1223348
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 160,
+          "format": 35907,
+          "count": 1,
+          "bytes": 218444
+        },
+        {
+          "kind": "texture",
+          "w": 16,
+          "h": 16,
+          "format": 34836,
+          "count": 1,
+          "bytes": 4096
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 416,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 425984
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 448,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 458752
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 576,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 589824
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 288,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 294912
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 256,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 262144
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 512,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 524288
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 128,
+          "h": 96,
+          "format": 33190,
+          "samples": 1,
+          "count": 2,
+          "bytes": 98304
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 128,
+          "h": 64,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 32768
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 34842,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 45571712
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 33190,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 22785856
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 5696464
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1024,
+          "h": 1024,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 4194304
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 128,
+          "h": 128,
+          "format": 33190,
+          "samples": 1,
+          "count": 6,
+          "bytes": 393216
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 34842,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 80979872
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 33190,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 40489936
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 10122484
+        }
+      ]
+    },
+    "imageLimit": 512,
+    "resized": 172
+  },
+  "controls": {
+    "fired": true,
+    "reloading": true,
+    "reloaded": true,
+    "knife": true,
+    "inspect": true,
+    "scope": [
+      2341,
+      1081
+    ]
+  },
+  "tiers": [
+    {
+      "dpr": 2.625,
+      "mobile": true,
+      "viewport": [
+        412,
+        892
+      ],
+      "stage": [
+        1559,
+        720
+      ],
+      "stageScale": 0.5721616420782553,
+      "canvas": [
+        2341,
+        1081
+      ],
+      "display": [
+        411.95635986328125,
+        891.9999389648438
+      ],
+      "rendererPR": 1.50192431045542,
+      "scene": [
+        1404,
+        648,
+        0
+      ],
+      "viewmodel": [
+        2341,
+        1081,
+        0
+      ],
+      "presentation": [
+        2341,
+        1081
+      ],
+      "quality": "potato",
+      "drs": 0.6,
+      "memory": {
+        "geometries": 317,
+        "textures": 250
+      },
+      "heap": 380937321,
+      "gpu": {
+        "contexts": 1,
+        "lost": 0,
+        "estimatedBytes": 271576737,
+        "peakEstimatedBytes": 459258917,
+        "unknownFormats": [],
+        "storage": [
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 35907,
+            "count": 58,
+            "bytes": 81089800
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 32856,
+            "count": 90,
+            "bytes": 125829000
+          },
+          {
+            "kind": "texture",
+            "w": 256,
+            "h": 256,
+            "format": 32856,
+            "count": 3,
+            "bytes": 1048572
+          },
+          {
+            "kind": "texture",
+            "w": 128,
+            "h": 128,
+            "format": 32856,
+            "count": 7,
+            "bytes": 611660
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 256,
+            "format": 35907,
+            "count": 3,
+            "bytes": 2097156
+          },
+          {
+            "kind": "texture",
+            "w": 256,
+            "h": 256,
+            "format": 35907,
+            "count": 4,
+            "bytes": 1398096
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 36493,
+            "count": 13,
+            "bytes": 4544176
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 37808,
+            "count": 13,
+            "bytes": 4544176
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 36492,
+            "count": 13,
+            "bytes": 4544176
+          },
+          {
+            "kind": "texture",
+            "w": 1024,
+            "h": 512,
+            "format": 34842,
+            "count": 2,
+            "bytes": 8388608
+          },
+          {
+            "kind": "texture",
+            "w": 13,
+            "h": 13,
+            "format": 33330,
+            "count": 1,
+            "bytes": 169
+          },
+          {
+            "kind": "texture",
+            "w": 128,
+            "h": 128,
+            "format": 35907,
+            "count": 10,
+            "bytes": 873800
+          },
+          {
+            "kind": "texture",
+            "w": 1536,
+            "h": 1536,
+            "format": 32856,
+            "count": 1,
+            "bytes": 12582908
+          },
+          {
+            "kind": "texture",
+            "w": 64,
+            "h": 64,
+            "format": 35907,
+            "count": 1,
+            "bytes": 21844
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 128,
+            "format": 35907,
+            "count": 3,
+            "bytes": 1048596
+          },
+          {
+            "kind": "texture",
+            "w": 170,
+            "h": 512,
+            "format": 35907,
+            "count": 1,
+            "bytes": 463772
+          },
+          {
+            "kind": "texture",
+            "w": 256,
+            "h": 128,
+            "format": 35907,
+            "count": 7,
+            "bytes": 1223348
+          },
+          {
+            "kind": "texture",
+            "w": 256,
+            "h": 160,
+            "format": 35907,
+            "count": 1,
+            "bytes": 218444
+          },
+          {
+            "kind": "texture",
+            "w": 16,
+            "h": 16,
+            "format": 34836,
+            "count": 3,
+            "bytes": 12288
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 416,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 425984
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 448,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 458752
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 576,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 589824
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 288,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 294912
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 256,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 262144
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 512,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 524288
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 128,
+            "h": 96,
+            "format": 33190,
+            "samples": 1,
+            "count": 2,
+            "bytes": 98304
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 128,
+            "h": 64,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 32768
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 1024,
+            "h": 1024,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 4194304
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 128,
+            "h": 128,
+            "format": 33190,
+            "samples": 1,
+            "count": 6,
+            "bytes": 393216
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 1404,
+            "h": 648,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 3639168
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 2341,
+            "h": 1081,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 10122484
+          }
+        ]
+      },
+      "imageLimit": 512,
+      "resized": 189
+    },
+    {
+      "dpr": 2.625,
+      "mobile": true,
+      "viewport": [
+        412,
+        892
+      ],
+      "stage": [
+        1559,
+        720
+      ],
+      "stageScale": 0.5721616420782553,
+      "canvas": [
+        2341,
+        1081
+      ],
+      "display": [
+        411.95635986328125,
+        891.9999389648438
+      ],
+      "rendererPR": 1.50192431045542,
+      "scene": [
+        1756,
+        811,
+        2
+      ],
+      "viewmodel": [
+        2341,
+        1081,
+        2
+      ],
+      "presentation": [
+        2341,
+        1081
+      ],
+      "quality": "low",
+      "drs": 0.75,
+      "memory": {
+        "geometries": 317,
+        "textures": 250
+      },
+      "heap": 368121330,
+      "gpu": {
+        "contexts": 1,
+        "lost": 0,
+        "estimatedBytes": 463461409,
+        "peakEstimatedBytes": 463461409,
+        "unknownFormats": [],
+        "storage": [
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 35907,
+            "count": 58,
+            "bytes": 81089800
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 32856,
+            "count": 90,
+            "bytes": 125829000
+          },
+          {
+            "kind": "texture",
+            "w": 256,
+            "h": 256,
+            "format": 32856,
+            "count": 3,
+            "bytes": 1048572
+          },
+          {
+            "kind": "texture",
+            "w": 128,
+            "h": 128,
+            "format": 32856,
+            "count": 7,
+            "bytes": 611660
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 256,
+            "format": 35907,
+            "count": 3,
+            "bytes": 2097156
+          },
+          {
+            "kind": "texture",
+            "w": 256,
+            "h": 256,
+            "format": 35907,
+            "count": 4,
+            "bytes": 1398096
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 36493,
+            "count": 13,
+            "bytes": 4544176
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 37808,
+            "count": 13,
+            "bytes": 4544176
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 36492,
+            "count": 13,
+            "bytes": 4544176
+          },
+          {
+            "kind": "texture",
+            "w": 1024,
+            "h": 512,
+            "format": 34842,
+            "count": 2,
+            "bytes": 8388608
+          },
+          {
+            "kind": "texture",
+            "w": 13,
+            "h": 13,
+            "format": 33330,
+            "count": 1,
+            "bytes": 169
+          },
+          {
+            "kind": "texture",
+            "w": 128,
+            "h": 128,
+            "format": 35907,
+            "count": 10,
+            "bytes": 873800
+          },
+          {
+            "kind": "texture",
+            "w": 1536,
+            "h": 1536,
+            "format": 32856,
+            "count": 1,
+            "bytes": 12582908
+          },
+          {
+            "kind": "texture",
+            "w": 64,
+            "h": 64,
+            "format": 35907,
+            "count": 1,
+            "bytes": 21844
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 128,
+            "format": 35907,
+            "count": 3,
+            "bytes": 1048596
+          },
+          {
+            "kind": "texture",
+            "w": 170,
+            "h": 512,
+            "format": 35907,
+            "count": 1,
+            "bytes": 463772
+          },
+          {
+            "kind": "texture",
+            "w": 256,
+            "h": 128,
+            "format": 35907,
+            "count": 7,
+            "bytes": 1223348
+          },
+          {
+            "kind": "texture",
+            "w": 256,
+            "h": 160,
+            "format": 35907,
+            "count": 1,
+            "bytes": 218444
+          },
+          {
+            "kind": "texture",
+            "w": 16,
+            "h": 16,
+            "format": 34836,
+            "count": 3,
+            "bytes": 12288
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 416,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 425984
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 448,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 458752
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 576,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 589824
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 288,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 294912
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 256,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 262144
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 512,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 524288
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 128,
+            "h": 96,
+            "format": 33190,
+            "samples": 1,
+            "count": 2,
+            "bytes": 98304
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 128,
+            "h": 64,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 32768
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 1024,
+            "h": 1024,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 4194304
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 128,
+            "h": 128,
+            "format": 33190,
+            "samples": 1,
+            "count": 6,
+            "bytes": 393216
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 1756,
+            "h": 811,
+            "format": 34842,
+            "samples": 4,
+            "requested": 2,
+            "count": 1,
+            "bytes": 45571712
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 1756,
+            "h": 811,
+            "format": 33190,
+            "samples": 4,
+            "requested": 2,
+            "count": 1,
+            "bytes": 22785856
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 1756,
+            "h": 811,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 5696464
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 2341,
+            "h": 1081,
+            "format": 34842,
+            "samples": 4,
+            "requested": 2,
+            "count": 1,
+            "bytes": 80979872
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 2341,
+            "h": 1081,
+            "format": 33190,
+            "samples": 4,
+            "requested": 2,
+            "count": 1,
+            "bytes": 40489936
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 2341,
+            "h": 1081,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 10122484
+          }
+        ]
+      },
+      "imageLimit": 512,
+      "resized": 189
+    },
+    {
+      "dpr": 2.625,
+      "mobile": true,
+      "viewport": [
+        412,
+        892
+      ],
+      "stage": [
+        1559,
+        720
+      ],
+      "stageScale": 0.5721616420782553,
+      "canvas": [
+        2341,
+        1081
+      ],
+      "display": [
+        411.95635986328125,
+        891.9999389648438
+      ],
+      "rendererPR": 1.50192431045542,
+      "scene": [
+        2341,
+        1081,
+        2
+      ],
+      "viewmodel": [
+        1,
+        1,
+        2
+      ],
+      "presentation": [
+        1,
+        1
+      ],
+      "quality": "medium",
+      "drs": 1,
+      "memory": {
+        "geometries": 321,
+        "textures": 261
+      },
+      "heap": 367795674,
+      "gpu": {
+        "contexts": 1,
+        "lost": 0,
+        "estimatedBytes": 406231695,
+        "peakEstimatedBytes": 463461409,
+        "unknownFormats": [],
+        "storage": [
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 35907,
+            "count": 58,
+            "bytes": 81089800
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 32856,
+            "count": 91,
+            "bytes": 127227100
+          },
+          {
+            "kind": "texture",
+            "w": 256,
+            "h": 256,
+            "format": 32856,
+            "count": 3,
+            "bytes": 1048572
+          },
+          {
+            "kind": "texture",
+            "w": 128,
+            "h": 128,
+            "format": 32856,
+            "count": 7,
+            "bytes": 611660
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 256,
+            "format": 35907,
+            "count": 3,
+            "bytes": 2097156
+          },
+          {
+            "kind": "texture",
+            "w": 256,
+            "h": 256,
+            "format": 35907,
+            "count": 4,
+            "bytes": 1398096
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 36493,
+            "count": 13,
+            "bytes": 4544176
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 37808,
+            "count": 13,
+            "bytes": 4544176
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 36492,
+            "count": 13,
+            "bytes": 4544176
+          },
+          {
+            "kind": "texture",
+            "w": 1024,
+            "h": 512,
+            "format": 34842,
+            "count": 2,
+            "bytes": 8388608
+          },
+          {
+            "kind": "texture",
+            "w": 13,
+            "h": 13,
+            "format": 33330,
+            "count": 1,
+            "bytes": 169
+          },
+          {
+            "kind": "texture",
+            "w": 128,
+            "h": 128,
+            "format": 35907,
+            "count": 10,
+            "bytes": 873800
+          },
+          {
+            "kind": "texture",
+            "w": 1536,
+            "h": 1536,
+            "format": 32856,
+            "count": 1,
+            "bytes": 12582908
+          },
+          {
+            "kind": "texture",
+            "w": 64,
+            "h": 64,
+            "format": 35907,
+            "count": 1,
+            "bytes": 21844
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 128,
+            "format": 35907,
+            "count": 3,
+            "bytes": 1048596
+          },
+          {
+            "kind": "texture",
+            "w": 170,
+            "h": 512,
+            "format": 35907,
+            "count": 1,
+            "bytes": 463772
+          },
+          {
+            "kind": "texture",
+            "w": 256,
+            "h": 128,
+            "format": 35907,
+            "count": 7,
+            "bytes": 1223348
+          },
+          {
+            "kind": "texture",
+            "w": 256,
+            "h": 160,
+            "format": 35907,
+            "count": 1,
+            "bytes": 218444
+          },
+          {
+            "kind": "texture",
+            "w": 16,
+            "h": 16,
+            "format": 34836,
+            "count": 3,
+            "bytes": 12288
+          },
+          {
+            "kind": "texture",
+            "w": 513,
+            "h": 513,
+            "format": 33325,
+            "count": 1,
+            "bytes": 526338
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 416,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 425984
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 448,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 458752
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 576,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 589824
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 288,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 294912
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 256,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 262144
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 512,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 524288
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 128,
+            "h": 96,
+            "format": 33190,
+            "samples": 1,
+            "count": 2,
+            "bytes": 98304
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 128,
+            "h": 64,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 32768
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 128,
+            "h": 128,
+            "format": 33190,
+            "samples": 1,
+            "count": 6,
+            "bytes": 393216
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 2341,
+            "h": 1081,
+            "format": 34842,
+            "samples": 4,
+            "requested": 2,
+            "count": 1,
+            "bytes": 80979872
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 2341,
+            "h": 1081,
+            "format": 33190,
+            "samples": 4,
+            "requested": 2,
+            "count": 1,
+            "bytes": 40489936
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 2341,
+            "h": 1081,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 10122484
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 2048,
+            "h": 2048,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 16777216
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 585,
+            "h": 270,
+            "format": 33190,
+            "samples": 1,
+            "count": 3,
+            "bytes": 1895400
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 293,
+            "h": 135,
+            "format": 33190,
+            "samples": 1,
+            "count": 2,
+            "bytes": 316440
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 147,
+            "h": 68,
+            "format": 33190,
+            "samples": 1,
+            "count": 2,
+            "bytes": 79968
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 74,
+            "h": 34,
+            "format": 33190,
+            "samples": 1,
+            "count": 2,
+            "bytes": 20128
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 37,
+            "h": 17,
+            "format": 33190,
+            "samples": 1,
+            "count": 2,
+            "bytes": 5032
+          }
+        ]
+      },
+      "imageLimit": 512,
+      "resized": 189
+    },
+    {
+      "dpr": 2.625,
+      "mobile": true,
+      "viewport": [
+        412,
+        892
+      ],
+      "stage": [
+        1559,
+        720
+      ],
+      "stageScale": 0.5721616420782553,
+      "canvas": [
+        2341,
+        1081
+      ],
+      "display": [
+        411.95635986328125,
+        891.9999389648438
+      ],
+      "rendererPR": 1.50192431045542,
+      "scene": [
+        2341,
+        1081,
+        4
+      ],
+      "viewmodel": [
+        1,
+        1,
+        2
+      ],
+      "presentation": [
+        1,
+        1
+      ],
+      "quality": "high",
+      "drs": 1,
+      "memory": {
+        "geometries": 322,
+        "textures": 265
+      },
+      "heap": 368497884,
+      "gpu": {
+        "contexts": 1,
+        "lost": 0,
+        "estimatedBytes": 411824095,
+        "peakEstimatedBytes": 463461409,
+        "unknownFormats": [],
+        "storage": [
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 35907,
+            "count": 58,
+            "bytes": 81089800
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 32856,
+            "count": 95,
+            "bytes": 132819500
+          },
+          {
+            "kind": "texture",
+            "w": 256,
+            "h": 256,
+            "format": 32856,
+            "count": 3,
+            "bytes": 1048572
+          },
+          {
+            "kind": "texture",
+            "w": 128,
+            "h": 128,
+            "format": 32856,
+            "count": 7,
+            "bytes": 611660
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 256,
+            "format": 35907,
+            "count": 3,
+            "bytes": 2097156
+          },
+          {
+            "kind": "texture",
+            "w": 256,
+            "h": 256,
+            "format": 35907,
+            "count": 4,
+            "bytes": 1398096
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 36493,
+            "count": 13,
+            "bytes": 4544176
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 37808,
+            "count": 13,
+            "bytes": 4544176
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 512,
+            "format": 36492,
+            "count": 13,
+            "bytes": 4544176
+          },
+          {
+            "kind": "texture",
+            "w": 1024,
+            "h": 512,
+            "format": 34842,
+            "count": 2,
+            "bytes": 8388608
+          },
+          {
+            "kind": "texture",
+            "w": 13,
+            "h": 13,
+            "format": 33330,
+            "count": 1,
+            "bytes": 169
+          },
+          {
+            "kind": "texture",
+            "w": 128,
+            "h": 128,
+            "format": 35907,
+            "count": 10,
+            "bytes": 873800
+          },
+          {
+            "kind": "texture",
+            "w": 1536,
+            "h": 1536,
+            "format": 32856,
+            "count": 1,
+            "bytes": 12582908
+          },
+          {
+            "kind": "texture",
+            "w": 64,
+            "h": 64,
+            "format": 35907,
+            "count": 1,
+            "bytes": 21844
+          },
+          {
+            "kind": "texture",
+            "w": 512,
+            "h": 128,
+            "format": 35907,
+            "count": 3,
+            "bytes": 1048596
+          },
+          {
+            "kind": "texture",
+            "w": 170,
+            "h": 512,
+            "format": 35907,
+            "count": 1,
+            "bytes": 463772
+          },
+          {
+            "kind": "texture",
+            "w": 256,
+            "h": 128,
+            "format": 35907,
+            "count": 7,
+            "bytes": 1223348
+          },
+          {
+            "kind": "texture",
+            "w": 256,
+            "h": 160,
+            "format": 35907,
+            "count": 1,
+            "bytes": 218444
+          },
+          {
+            "kind": "texture",
+            "w": 16,
+            "h": 16,
+            "format": 34836,
+            "count": 3,
+            "bytes": 12288
+          },
+          {
+            "kind": "texture",
+            "w": 513,
+            "h": 513,
+            "format": 33325,
+            "count": 1,
+            "bytes": 526338
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 416,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 425984
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 448,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 458752
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 576,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 589824
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 288,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 294912
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 256,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 262144
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 256,
+            "h": 512,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 524288
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 128,
+            "h": 96,
+            "format": 33190,
+            "samples": 1,
+            "count": 2,
+            "bytes": 98304
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 128,
+            "h": 64,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 32768
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 128,
+            "h": 128,
+            "format": 33190,
+            "samples": 1,
+            "count": 6,
+            "bytes": 393216
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 2048,
+            "h": 2048,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 16777216
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 2341,
+            "h": 1081,
+            "format": 34842,
+            "samples": 4,
+            "requested": 4,
+            "count": 1,
+            "bytes": 80979872
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 2341,
+            "h": 1081,
+            "format": 33190,
+            "samples": 4,
+            "requested": 4,
+            "count": 1,
+            "bytes": 40489936
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 2341,
+            "h": 1081,
+            "format": 33190,
+            "samples": 1,
+            "count": 1,
+            "bytes": 10122484
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 585,
+            "h": 270,
+            "format": 33190,
+            "samples": 1,
+            "count": 3,
+            "bytes": 1895400
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 293,
+            "h": 135,
+            "format": 33190,
+            "samples": 1,
+            "count": 2,
+            "bytes": 316440
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 147,
+            "h": 68,
+            "format": 33190,
+            "samples": 1,
+            "count": 2,
+            "bytes": 79968
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 74,
+            "h": 34,
+            "format": 33190,
+            "samples": 1,
+            "count": 2,
+            "bytes": 20128
+          },
+          {
+            "kind": "renderbuffer",
+            "w": 37,
+            "h": 17,
+            "format": 33190,
+            "samples": 1,
+            "count": 2,
+            "bytes": 5032
+          }
+        ]
+      },
+      "imageLimit": 512,
+      "resized": 192
+    }
+  ],
+  "fixed": {
+    "dpr": 2.625,
+    "mobile": true,
+    "viewport": [
+      412,
+      892
+    ],
+    "stage": [
+      1559,
+      720
+    ],
+    "stageScale": 0.5721616420782553,
+    "canvas": [
+      2341,
+      1081
+    ],
+    "display": [
+      411.95635986328125,
+      891.9999389648438
+    ],
+    "rendererPR": 1.50192431045542,
+    "scene": [
+      2341,
+      1081,
+      2
+    ],
+    "viewmodel": [
+      1,
+      1,
+      2
+    ],
+    "presentation": [
+      1,
+      1
+    ],
+    "quality": "low",
+    "drs": 1,
+    "memory": {
+      "geometries": 321,
+      "textures": 254
+    },
+    "heap": 368870996,
+    "gpu": {
+      "contexts": 1,
+      "lost": 0,
+      "estimatedBytes": 396924215,
+      "peakEstimatedBytes": 463461409,
+      "unknownFormats": [],
+      "storage": [
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 35907,
+          "count": 58,
+          "bytes": 81089800
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 32856,
+          "count": 95,
+          "bytes": 132819500
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 256,
+          "format": 32856,
+          "count": 3,
+          "bytes": 1048572
+        },
+        {
+          "kind": "texture",
+          "w": 128,
+          "h": 128,
+          "format": 32856,
+          "count": 7,
+          "bytes": 611660
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 256,
+          "format": 35907,
+          "count": 3,
+          "bytes": 2097156
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 256,
+          "format": 35907,
+          "count": 4,
+          "bytes": 1398096
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 36493,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 37808,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 36492,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 1024,
+          "h": 512,
+          "format": 34842,
+          "count": 2,
+          "bytes": 8388608
+        },
+        {
+          "kind": "texture",
+          "w": 13,
+          "h": 13,
+          "format": 33330,
+          "count": 1,
+          "bytes": 169
+        },
+        {
+          "kind": "texture",
+          "w": 128,
+          "h": 128,
+          "format": 35907,
+          "count": 10,
+          "bytes": 873800
+        },
+        {
+          "kind": "texture",
+          "w": 1536,
+          "h": 1536,
+          "format": 32856,
+          "count": 1,
+          "bytes": 12582908
+        },
+        {
+          "kind": "texture",
+          "w": 64,
+          "h": 64,
+          "format": 35907,
+          "count": 1,
+          "bytes": 21844
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 128,
+          "format": 35907,
+          "count": 3,
+          "bytes": 1048596
+        },
+        {
+          "kind": "texture",
+          "w": 170,
+          "h": 512,
+          "format": 35907,
+          "count": 1,
+          "bytes": 463772
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 128,
+          "format": 35907,
+          "count": 7,
+          "bytes": 1223348
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 160,
+          "format": 35907,
+          "count": 1,
+          "bytes": 218444
+        },
+        {
+          "kind": "texture",
+          "w": 16,
+          "h": 16,
+          "format": 34836,
+          "count": 3,
+          "bytes": 12288
+        },
+        {
+          "kind": "texture",
+          "w": 513,
+          "h": 513,
+          "format": 33325,
+          "count": 1,
+          "bytes": 526338
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 416,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 425984
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 448,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 458752
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 576,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 589824
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 288,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 294912
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 256,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 262144
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 512,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 524288
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 128,
+          "h": 96,
+          "format": 33190,
+          "samples": 1,
+          "count": 2,
+          "bytes": 98304
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 128,
+          "h": 64,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 32768
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 128,
+          "h": 128,
+          "format": 33190,
+          "samples": 1,
+          "count": 6,
+          "bytes": 393216
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 34842,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 80979872
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 33190,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 40489936
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 10122484
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1024,
+          "h": 1024,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 4194304
+        }
+      ]
+    },
+    "imageLimit": 512,
+    "resized": 192
+  },
+  "landscape": {
+    "dpr": 2.625,
+    "mobile": true,
+    "viewport": [
+      892,
+      412
+    ],
+    "stage": [
+      1559,
+      720
+    ],
+    "stageScale": 0.5721616420782553,
+    "canvas": [
+      2341,
+      1081
+    ],
+    "display": [
+      891.9999389648438,
+      411.95635986328125
+    ],
+    "rendererPR": 1.50192431045542,
+    "scene": [
+      1756,
+      811,
+      2
+    ],
+    "viewmodel": [
+      2341,
+      1081,
+      2
+    ],
+    "presentation": [
+      2341,
+      1081
+    ],
+    "quality": "low",
+    "drs": 0.75,
+    "memory": {
+      "geometries": 321,
+      "textures": 256
+    },
+    "heap": 368820024,
+    "gpu": {
+      "contexts": 1,
+      "lost": 0,
+      "estimatedBytes": 470978247,
+      "peakEstimatedBytes": 470978247,
+      "unknownFormats": [],
+      "storage": [
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 35907,
+          "count": 58,
+          "bytes": 81089800
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 32856,
+          "count": 95,
+          "bytes": 132819500
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 256,
+          "format": 32856,
+          "count": 3,
+          "bytes": 1048572
+        },
+        {
+          "kind": "texture",
+          "w": 128,
+          "h": 128,
+          "format": 32856,
+          "count": 7,
+          "bytes": 611660
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 256,
+          "format": 35907,
+          "count": 3,
+          "bytes": 2097156
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 256,
+          "format": 35907,
+          "count": 4,
+          "bytes": 1398096
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 36493,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 37808,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 36492,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 1024,
+          "h": 512,
+          "format": 34842,
+          "count": 2,
+          "bytes": 8388608
+        },
+        {
+          "kind": "texture",
+          "w": 13,
+          "h": 13,
+          "format": 33330,
+          "count": 1,
+          "bytes": 169
+        },
+        {
+          "kind": "texture",
+          "w": 128,
+          "h": 128,
+          "format": 35907,
+          "count": 10,
+          "bytes": 873800
+        },
+        {
+          "kind": "texture",
+          "w": 1536,
+          "h": 1536,
+          "format": 32856,
+          "count": 1,
+          "bytes": 12582908
+        },
+        {
+          "kind": "texture",
+          "w": 64,
+          "h": 64,
+          "format": 35907,
+          "count": 1,
+          "bytes": 21844
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 128,
+          "format": 35907,
+          "count": 3,
+          "bytes": 1048596
+        },
+        {
+          "kind": "texture",
+          "w": 170,
+          "h": 512,
+          "format": 35907,
+          "count": 1,
+          "bytes": 463772
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 128,
+          "format": 35907,
+          "count": 7,
+          "bytes": 1223348
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 160,
+          "format": 35907,
+          "count": 1,
+          "bytes": 218444
+        },
+        {
+          "kind": "texture",
+          "w": 16,
+          "h": 16,
+          "format": 34836,
+          "count": 3,
+          "bytes": 12288
+        },
+        {
+          "kind": "texture",
+          "w": 513,
+          "h": 513,
+          "format": 33325,
+          "count": 1,
+          "bytes": 526338
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 416,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 425984
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 448,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 458752
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 576,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 589824
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 288,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 294912
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 256,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 262144
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 256,
+          "h": 512,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 524288
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 128,
+          "h": 96,
+          "format": 33190,
+          "samples": 1,
+          "count": 2,
+          "bytes": 98304
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 128,
+          "h": 64,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 32768
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 128,
+          "h": 128,
+          "format": 33190,
+          "samples": 1,
+          "count": 6,
+          "bytes": 393216
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1024,
+          "h": 1024,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 4194304
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 34842,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 45571712
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 33190,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 22785856
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 5696464
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 34842,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 80979872
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 33190,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 40489936
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 10122484
+        }
+      ]
+    },
+    "imageLimit": 512,
+    "resized": 192
+  },
+  "textures": {
+    "image": [
+      512,
+      256
+    ],
+    "shared": true,
+    "compressed": [
+      512,
+      512,
+      2
+    ],
+    "data": [
+      1024,
+      1024
+    ]
+  },
+  "recovery": {
+    "paused": true,
+    "pauseMenu": true,
+    "loading": false,
+    "recoveries": 1,
+    "error": 0
+  },
+  "restored": {
+    "dpr": 2.625,
+    "mobile": true,
+    "viewport": [
+      892,
+      412
+    ],
+    "stage": [
+      1559,
+      720
+    ],
+    "stageScale": 0.5721616420782553,
+    "canvas": [
+      2341,
+      1081
+    ],
+    "display": [
+      891.9999389648438,
+      411.95635986328125
+    ],
+    "rendererPR": 1.50192431045542,
+    "scene": [
+      1756,
+      811,
+      2
+    ],
+    "viewmodel": [
+      2341,
+      1081,
+      2
+    ],
+    "presentation": [
+      2341,
+      1081
+    ],
+    "quality": "low",
+    "drs": 0.75,
+    "memory": {
+      "geometries": 281,
+      "textures": 93
+    },
+    "heap": 373967018,
+    "gpu": {
+      "contexts": 1,
+      "lost": 1,
+      "estimatedBytes": 274735525,
+      "peakEstimatedBytes": 470978247,
+      "unknownFormats": [],
+      "storage": [
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 36493,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 256,
+          "format": 35907,
+          "count": 1,
+          "bytes": 699052
+        },
+        {
+          "kind": "texture",
+          "w": 13,
+          "h": 13,
+          "format": 33330,
+          "count": 1,
+          "bytes": 169
+        },
+        {
+          "kind": "texture",
+          "w": 128,
+          "h": 128,
+          "format": 32856,
+          "count": 2,
+          "bytes": 174760
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 36492,
+          "count": 8,
+          "bytes": 2796416
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 37808,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 128,
+          "h": 128,
+          "format": 35907,
+          "count": 6,
+          "bytes": 524280
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 35907,
+          "count": 14,
+          "bytes": 19573400
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 32856,
+          "count": 11,
+          "bytes": 15379100
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 128,
+          "format": 35907,
+          "count": 3,
+          "bytes": 1048596
+        },
+        {
+          "kind": "texture",
+          "w": 1536,
+          "h": 1536,
+          "format": 32856,
+          "count": 1,
+          "bytes": 12582908
+        },
+        {
+          "kind": "texture",
+          "w": 170,
+          "h": 512,
+          "format": 35907,
+          "count": 1,
+          "bytes": 463772
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 128,
+          "format": 35907,
+          "count": 7,
+          "bytes": 1223348
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 160,
+          "format": 35907,
+          "count": 1,
+          "bytes": 218444
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 256,
+          "format": 35907,
+          "count": 1,
+          "bytes": 349524
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 256,
+          "format": 32856,
+          "count": 1,
+          "bytes": 349524
+        },
+        {
+          "kind": "texture",
+          "w": 64,
+          "h": 64,
+          "format": 35907,
+          "count": 1,
+          "bytes": 21844
+        },
+        {
+          "kind": "texture",
+          "w": 16,
+          "h": 16,
+          "format": 34836,
+          "count": 2,
+          "bytes": 8192
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 34842,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 45571712
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 33190,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 22785856
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 5696464
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1024,
+          "h": 1024,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 4194304
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 128,
+          "h": 128,
+          "format": 33190,
+          "samples": 1,
+          "count": 6,
+          "bytes": 393216
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 34842,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 80979872
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 33190,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 40489936
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 10122484
+        }
+      ]
+    },
+    "imageLimit": 512,
+    "resized": 194
+  },
+  "reentry": {
+    "dpr": 2.625,
+    "mobile": true,
+    "viewport": [
+      892,
+      412
+    ],
+    "stage": [
+      1559,
+      720
+    ],
+    "stageScale": 0.5721616420782553,
+    "canvas": [
+      2341,
+      1081
+    ],
+    "display": [
+      891.9999389648438,
+      411.95635986328125
+    ],
+    "rendererPR": 1.50192431045542,
+    "scene": [
+      1756,
+      811,
+      2
+    ],
+    "viewmodel": [
+      2341,
+      1081,
+      2
+    ],
+    "presentation": [
+      2341,
+      1081
+    ],
+    "quality": "low",
+    "drs": 0.75,
+    "memory": {
+      "geometries": 289,
+      "textures": 98
+    },
+    "heap": 383933462,
+    "gpu": {
+      "contexts": 1,
+      "lost": 1,
+      "estimatedBytes": 280332021,
+      "peakEstimatedBytes": 470978247,
+      "unknownFormats": [],
+      "storage": [
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 36493,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 256,
+          "format": 35907,
+          "count": 1,
+          "bytes": 699052
+        },
+        {
+          "kind": "texture",
+          "w": 13,
+          "h": 13,
+          "format": 33330,
+          "count": 1,
+          "bytes": 169
+        },
+        {
+          "kind": "texture",
+          "w": 128,
+          "h": 128,
+          "format": 32856,
+          "count": 2,
+          "bytes": 174760
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 36492,
+          "count": 8,
+          "bytes": 2796416
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 37808,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 128,
+          "h": 128,
+          "format": 35907,
+          "count": 6,
+          "bytes": 524280
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 35907,
+          "count": 16,
+          "bytes": 22369600
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 32856,
+          "count": 13,
+          "bytes": 18175300
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 128,
+          "format": 35907,
+          "count": 3,
+          "bytes": 1048596
+        },
+        {
+          "kind": "texture",
+          "w": 1536,
+          "h": 1536,
+          "format": 32856,
+          "count": 1,
+          "bytes": 12582908
+        },
+        {
+          "kind": "texture",
+          "w": 170,
+          "h": 512,
+          "format": 35907,
+          "count": 1,
+          "bytes": 463772
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 256,
+          "format": 32856,
+          "count": 1,
+          "bytes": 349524
+        },
+        {
+          "kind": "texture",
+          "w": 64,
+          "h": 64,
+          "format": 35907,
+          "count": 1,
+          "bytes": 21844
+        },
+        {
+          "kind": "texture",
+          "w": 16,
+          "h": 16,
+          "format": 34836,
+          "count": 3,
+          "bytes": 12288
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 128,
+          "format": 35907,
+          "count": 7,
+          "bytes": 1223348
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 160,
+          "format": 35907,
+          "count": 1,
+          "bytes": 218444
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 256,
+          "format": 35907,
+          "count": 1,
+          "bytes": 349524
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 34842,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 45571712
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 33190,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 22785856
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 5696464
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1024,
+          "h": 1024,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 4194304
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 128,
+          "h": 128,
+          "format": 33190,
+          "samples": 1,
+          "count": 6,
+          "bytes": 393216
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 34842,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 80979872
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 33190,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 40489936
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 10122484
+        }
+      ]
+    },
+    "imageLimit": 512,
+    "resized": 194
+  },
+  "match": {
+    "dpr": 2.625,
+    "mobile": true,
+    "viewport": [
+      892,
+      412
+    ],
+    "stage": [
+      1559,
+      720
+    ],
+    "stageScale": 0.5721616420782553,
+    "canvas": [
+      2341,
+      1081
+    ],
+    "display": [
+      891.9999389648438,
+      411.95635986328125
+    ],
+    "rendererPR": 1.50192431045542,
+    "scene": [
+      1756,
+      811,
+      2
+    ],
+    "viewmodel": [
+      2341,
+      1081,
+      2
+    ],
+    "presentation": [
+      2341,
+      1081
+    ],
+    "quality": "low",
+    "drs": 0.75,
+    "memory": {
+      "geometries": 288,
+      "textures": 136
+    },
+    "heap": 472531824,
+    "gpu": {
+      "contexts": 1,
+      "lost": 1,
+      "estimatedBytes": 319872045,
+      "peakEstimatedBytes": 470978247,
+      "unknownFormats": [],
+      "storage": [
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 36493,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 256,
+          "format": 35907,
+          "count": 4,
+          "bytes": 2796208
+        },
+        {
+          "kind": "texture",
+          "w": 13,
+          "h": 13,
+          "format": 33330,
+          "count": 1,
+          "bytes": 169
+        },
+        {
+          "kind": "texture",
+          "w": 128,
+          "h": 128,
+          "format": 32856,
+          "count": 11,
+          "bytes": 961180
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 36492,
+          "count": 8,
+          "bytes": 2796416
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 37808,
+          "count": 13,
+          "bytes": 4544176
+        },
+        {
+          "kind": "texture",
+          "w": 128,
+          "h": 128,
+          "format": 35907,
+          "count": 9,
+          "bytes": 786420
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 35907,
+          "count": 32,
+          "bytes": 44739200
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 512,
+          "format": 32856,
+          "count": 24,
+          "bytes": 33554400
+        },
+        {
+          "kind": "texture",
+          "w": 512,
+          "h": 128,
+          "format": 35907,
+          "count": 3,
+          "bytes": 1048596
+        },
+        {
+          "kind": "texture",
+          "w": 1536,
+          "h": 1536,
+          "format": 32856,
+          "count": 1,
+          "bytes": 12582908
+        },
+        {
+          "kind": "texture",
+          "w": 170,
+          "h": 512,
+          "format": 35907,
+          "count": 1,
+          "bytes": 463772
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 256,
+          "format": 32856,
+          "count": 1,
+          "bytes": 349524
+        },
+        {
+          "kind": "texture",
+          "w": 64,
+          "h": 64,
+          "format": 35907,
+          "count": 1,
+          "bytes": 21844
+        },
+        {
+          "kind": "texture",
+          "w": 16,
+          "h": 16,
+          "format": 34836,
+          "count": 3,
+          "bytes": 12288
+        },
+        {
+          "kind": "texture",
+          "w": 128,
+          "h": 64,
+          "format": 35907,
+          "count": 1,
+          "bytes": 43692
+        },
+        {
+          "kind": "texture",
+          "w": 128,
+          "h": 32,
+          "format": 35907,
+          "count": 1,
+          "bytes": 21852
+        },
+        {
+          "kind": "texture",
+          "w": 128,
+          "h": 32,
+          "format": 32856,
+          "count": 1,
+          "bytes": 21852
+        },
+        {
+          "kind": "texture",
+          "w": 256,
+          "h": 128,
+          "format": 32856,
+          "count": 2,
+          "bytes": 349528
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 34842,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 45571712
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 33190,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 22785856
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1756,
+          "h": 811,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 5696464
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 1024,
+          "h": 1024,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 4194304
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 128,
+          "h": 128,
+          "format": 33190,
+          "samples": 1,
+          "count": 6,
+          "bytes": 393216
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 34842,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 80979872
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 33190,
+          "samples": 4,
+          "requested": 2,
+          "count": 1,
+          "bytes": 40489936
+        },
+        {
+          "kind": "renderbuffer",
+          "w": 2341,
+          "h": 1081,
+          "format": 33190,
+          "samples": 1,
+          "count": 1,
+          "bytes": 10122484
+        }
+      ]
+    },
+    "imageLimit": 512,
+    "resized": 196,
+    "landing": {
+      "steps": 578,
+      "state": "ground",
+      "camera": "fp",
+      "height": 22.96520233154297,
+      "ground": 17.342316886386122,
+      "water": 24.21520233154297
+    },
+    "actors": 40
+  },
+  "crashes": [],
+  "errors": []
+}

@@ -3,6 +3,8 @@
 'use strict';
 const G = window.G = window.G || {};
 const THREE = window.THREE;
+// 모바일의 가상 PC 화면은 body에서 축소된다. 실제 표시 픽셀에 맞춘 배율이다.
+G.screenPixelRatio = () => (window.devicePixelRatio || 1) * (document.documentElement.classList.contains('mobile') ? (window.__stageScale || 1) : 1);
 
 /* ------------------------------------------------------------------ */
 /* 유틸리티                                                             */

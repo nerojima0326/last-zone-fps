@@ -431,7 +431,7 @@ const UI = G.UI = {
       return;
     }
     const W = innerWidth, H = innerHeight;
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = G.screenPixelRatio();
     const key = type + W + 'x' + H + '@' + dpr;
     if (this.scopeKey !== key) {
       this.scopeKey = key;

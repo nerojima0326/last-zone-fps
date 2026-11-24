@@ -4,9 +4,35 @@
 const G = window.G, THREE = window.THREE;
 const Q = G.TextureQuality = {
   maxAnisotropy: 1, roots: new WeakMap(), covered: new WeakSet(), changed: 0,
+  imageLimit: 0, images: new WeakMap(), resized: 0,
+  fit(t) {
+    const limit = this.imageLimit, image = t.image;
+    if (!limit || !image) return;
+    if (t.isCompressedTexture) {
+      const levels = t.mipmaps; let first = 0;
+      while (first < levels.length && (levels[first].width > limit || levels[first].height > limit)) first++;
+      if (first > 0 && first < levels.length) {
+        t.mipmaps = levels.slice(first); t.image = { ...image, width: levels[first].width, height: levels[first].height };
+        t.needsUpdate = true; this.resized++;
+      }
+      return;
+    }
+    if (!(image.width > limit || image.height > limit)) return;
+    let small = this.images.get(image);
+    if (!small) {
+      const scale = limit / Math.max(image.width, image.height);
+      small = document.createElement('canvas'); small.width = Math.max(1, Math.floor(image.width * scale)); small.height = Math.max(1, Math.floor(image.height * scale));
+      const ctx = small.getContext('2d'); if (!ctx) return;
+      ctx.imageSmoothingQuality = 'high'; ctx.drawImage(image, 0, 0, small.width, small.height);
+      this.images.set(image, small);
+    }
+    // 공유 ImageBitmap을 닫지 않아 다른 재질·컨텍스트 복구에서도 사용할 수 있다.
+    t.image = small; t.needsUpdate = true; this.resized++;
+  },
   texture(t) {
     // 데이터·깊이·렌더 타깃은 조회 의미가 달라 이미지용 밉맵을 만들면 안 된다.
     if (!t?.isTexture || t.isDataTexture || t.isData3DTexture || t.isDataArrayTexture || t.isDepthTexture || t.isRenderTargetTexture || t.isFramebufferTexture || t.isCubeTexture || t.isVideoTexture) return;
+    this.fit(t);
     const mip = !t.isCompressedTexture || t.mipmaps.length > 1;
     const min = mip ? THREE.LinearMipmapLinearFilter : THREE.LinearFilter;
     const generate = !t.isCompressedTexture;
@@ -50,6 +76,7 @@ const Q = G.TextureQuality = {
     for (const m of materials) this.material(m);
   },
   init(renderer) {
+    this.imageLimit = document.documentElement.classList.contains('mobile') ? 512 : 0;
     this.maxAnisotropy = Math.min(16, renderer.capabilities.getMaxAnisotropy());
     const init = renderer.initTexture.bind(renderer), render = renderer.render.bind(renderer), compile = renderer.compile.bind(renderer);
     renderer.initTexture = t => { this.texture(t); return init(t); };
