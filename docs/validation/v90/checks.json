@@ -1,0 +1,220 @@
+{
+  "assets": {
+    "version": "90",
+    "loaded": 6,
+    "motion": true,
+    "ready": true,
+    "guns": 30,
+    "ids": [
+      "knife_butterfly",
+      "knife_dagger",
+      "knife_combat",
+      "knife_karambit",
+      "knife_kunai",
+      "knife_machete"
+    ],
+    "sourceClips": [
+      "Armature|Arms_FPS_Anim_Draw",
+      "Armature|Arms_FPS_Anim_rifle_inspect",
+      "Sword_Attack"
+    ],
+    "maxNormalTangentDot": 6.265171137442849e-8
+  },
+  "gameplay": {
+    "singleHits": [
+      {
+        "hz": 30,
+        "id": "knife_butterfly",
+        "damage": 40
+      },
+      {
+        "hz": 30,
+        "id": "knife_dagger",
+        "damage": 52
+      },
+      {
+        "hz": 30,
+        "id": "knife_combat",
+        "damage": 46
+      },
+      {
+        "hz": 30,
+        "id": "knife_karambit",
+        "damage": 42
+      },
+      {
+        "hz": 30,
+        "id": "knife_kunai",
+        "damage": 38
+      },
+      {
+        "hz": 30,
+        "id": "knife_machete",
+        "damage": 62
+      },
+      {
+        "hz": 60,
+        "id": "knife_butterfly",
+        "damage": 40
+      },
+      {
+        "hz": 60,
+        "id": "knife_dagger",
+        "damage": 52
+      },
+      {
+        "hz": 60,
+        "id": "knife_combat",
+        "damage": 46
+      },
+      {
+        "hz": 60,
+        "id": "knife_karambit",
+        "damage": 42
+      },
+      {
+        "hz": 60,
+        "id": "knife_kunai",
+        "damage": 38
+      },
+      {
+        "hz": 60,
+        "id": "knife_machete",
+        "damage": 62
+      },
+      {
+        "hz": 144,
+        "id": "knife_butterfly",
+        "damage": 40
+      },
+      {
+        "hz": 144,
+        "id": "knife_dagger",
+        "damage": 52
+      },
+      {
+        "hz": 144,
+        "id": "knife_combat",
+        "damage": 46
+      },
+      {
+        "hz": 144,
+        "id": "knife_karambit",
+        "damage": 42
+      },
+      {
+        "hz": 144,
+        "id": "knife_kunai",
+        "damage": 38
+      },
+      {
+        "hz": 144,
+        "id": "knife_machete",
+        "damage": 62
+      }
+    ],
+    "friendProtected": true,
+    "wallBlocked": true,
+    "rangeLimited": true,
+    "switchCancelled": true,
+    "deathCancelled": true,
+    "trainingHit": true
+  },
+  "thirdPerson": {
+    "poses": [
+      {
+        "id": "knife_butterfly",
+        "palmGap": 0,
+        "fingers": 12
+      },
+      {
+        "id": "knife_dagger",
+        "palmGap": 0,
+        "fingers": 12
+      },
+      {
+        "id": "knife_combat",
+        "palmGap": 0,
+        "fingers": 12
+      },
+      {
+        "id": "knife_karambit",
+        "palmGap": 0,
+        "fingers": 12
+      },
+      {
+        "id": "knife_kunai",
+        "palmGap": 0,
+        "fingers": 12
+      },
+      {
+        "id": "knife_machete",
+        "palmGap": 0,
+        "fingers": 12
+      }
+    ],
+    "restored": true
+  },
+  "keyboard": {
+    "equip5": true,
+    "inspectT": true,
+    "remappedY": true
+  },
+  "poses": [
+    {
+      "id": "knife_butterfly",
+      "imported": true,
+      "maxGripError": 1.6725469333392293e-16,
+      "maxWrist": 1.4296273487151558,
+      "maxScreenX": 0.5827040331882204,
+      "maxScreenY": 0.8212821516269821,
+      "source": "가져온 모델"
+    },
+    {
+      "id": "knife_dagger",
+      "imported": true,
+      "maxGripError": 1.1636878843346592e-16,
+      "maxWrist": 1.4296273487151554,
+      "maxScreenX": 0.5827040331882204,
+      "maxScreenY": 0.8212595055352345,
+      "source": "가져온 모델"
+    },
+    {
+      "id": "knife_combat",
+      "imported": true,
+      "maxGripError": 1.1527756336890508e-16,
+      "maxWrist": 1.4296273487151556,
+      "maxScreenX": 0.5827040331882204,
+      "maxScreenY": 0.8212477443480329,
+      "source": "가져온 모델"
+    },
+    {
+      "id": "knife_karambit",
+      "imported": true,
+      "maxGripError": 1.1188630228279524e-16,
+      "maxWrist": 1.429627348715156,
+      "maxScreenX": 0.5827040331882204,
+      "maxScreenY": 0.821246882593239,
+      "source": "가져온 모델"
+    },
+    {
+      "id": "knife_kunai",
+      "imported": true,
+      "maxGripError": 1.1443916996305594e-16,
+      "maxWrist": 1.4296273487151554,
+      "maxScreenX": 0.5827040331882204,
+      "maxScreenY": 0.8212569213353407,
+      "source": "가져온 모델"
+    },
+    {
+      "id": "knife_machete",
+      "imported": true,
+      "maxGripError": 1.1443916996305594e-16,
+      "maxWrist": 1.4296273487151556,
+      "maxScreenX": 0.5827040331882204,
+      "maxScreenY": 0.8212778481739157,
+      "source": "가져온 모델"
+    }
+  ],
+  "errors": []
+}

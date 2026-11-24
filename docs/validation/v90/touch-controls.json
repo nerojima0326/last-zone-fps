@@ -1,0 +1,21 @@
+{
+  "equip": {
+    "slot": "melee",
+    "knife": "knife_combat"
+  },
+  "inspect": {
+    "slot": "melee",
+    "kind": "inspect",
+    "knife": "knife_combat"
+  },
+  "slash": {
+    "slot": "melee",
+    "kind": "slash",
+    "knife": "knife_combat"
+  },
+  "next": {
+    "slot": "melee",
+    "knife": "knife_karambit"
+  },
+  "errors": []
+}

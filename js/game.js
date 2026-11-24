@@ -41,6 +41,7 @@ for (const t in G.SCOPES) LOOT_NAMES['scope_' + t] = G.SCOPES[t].name;
 for(const [k,v] of Object.entries(G.Attachments.catalog())) LOOT_NAMES[k]=v.name;
 const WEAPON_LABEL = { fists: '주먹', frag: '수류탄', molotov: '화염병', zone: '자기장', fall: '낙하', bleed: '출혈', vehicle: '차량', carbomb: '차량 폭발' };
 for (const k of G.GUN_IDS) WEAPON_LABEL[k] = G.WEAPONS[k].short;
+for (const k of G.Knives?.ids || []) WEAPON_LABEL[k] = G.WEAPONS[k].short;
 // 봇이 처음 받는 총: 같은 종류 안에서 낮은 등급일수록 자주
 function pickGun(cls) {
   const ids = G.GUN_CLASSES[cls];
@@ -679,7 +680,7 @@ const Game = G.Game = {
       m.root.rotation.y = a.yaw;
       const airborne = a.state === 'freefall' || a.state === 'chute';
       m.setLOD(d2 > (airborne ? 150 * 150 : 45 * 45), a.crouch && a.alive && !a.knocked);
-      m.update(dt, { speed: a.gait?.speed ?? a.hspeed, gait: a.gait, groundMat: a.groundMat, groundY: a.pos.y, distance2: d2, pitch: a.pitch, crouch: a.crouch, knocked: a.knocked, prone: a.prone && !a.knocked, lean: a.leanX, eyeH: a.eyeH(), dead: !a.alive, state: a.state, air: a.air, cur: a.cur, gun: a.gunId(a.cur), onGround: a.onGround });
+      m.update(dt, { speed: a.gait?.speed ?? a.hspeed, gait: a.gait, groundMat: a.groundMat, groundY: a.pos.y, distance2: d2, pitch: a.pitch, crouch: a.crouch, knocked: a.knocked, prone: a.prone && !a.knocked, lean: a.leanX, eyeH: a.eyeH(), dead: !a.alive, state: a.state, air: a.air, melee: a.melee, cur: a.cur, gun: a.gunId(a.cur), onGround: a.onGround });
       m.showChute(a.state === 'chute' && a.alive);
       m.setHelmet(!!a.helmet);
       // 지상 45m·강하 150m 밖은 병합 LOD, 그림자는 40m 안쪽만

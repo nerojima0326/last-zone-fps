@@ -1,0 +1,38 @@
+{
+  "waiting": {
+    "world": true,
+    "m4": false,
+    "loading": true,
+    "menu": false
+  },
+  "ready": {
+    "m4": true,
+    "glock": true,
+    "guns": 30,
+    "lods": 30,
+    "soldiers": 4,
+    "ao": 406,
+    "rejected": 0,
+    "reloads": true,
+    "expansion": true
+  },
+  "training": {
+    "active": true,
+    "weapon": "ar7",
+    "m4": true,
+    "mag": 30
+  },
+  "fallback": {
+    "m4": false,
+    "glock": false,
+    "vegetation": false,
+    "procedural": true,
+    "world": true
+  },
+  "scriptError": {
+    "text": "오류: world.js 를 불러올 수 없습니다 — 인터넷 연결(three.js CDN)을 확인하세요.",
+    "loading": true,
+    "menu": false,
+    "laterScript": false
+  }
+}

@@ -46,6 +46,7 @@ const _q = new THREE.Quaternion(), _q2 = new THREE.Quaternion(), _e = new THREE.
 const _S = new THREE.Vector3(), _T = new THREE.Vector3(), _D = new THREE.Vector3(), _E = new THREE.Vector3(), _P = new THREE.Vector3(), _u = new THREE.Vector3(), _f = new THREE.Vector3();
 // 총을 쥔 손목 목표점 (절차적 총 거치대 gunMount 기준, m) — 오른손: 손잡이, 왼손: 총열 덮개
 const GRIP = {
+  knife: { r: [0, 0, 0] },
   rifle: { r: [0.02, -0.075, 0.11], l: [-0.035, -0.07, -0.24] },
   shotgun: { r: [0.02, -0.07, 0.12], l: [-0.035, -0.065, -0.27] },
   pistol: { r: [0.02, -0.06, 0.06], l: [-0.045, -0.075, 0.05] }
@@ -296,7 +297,7 @@ const Soldiers = G.Soldiers = {
       _P.set(0, m.hip.position.y + 0.06, 0).add(_v.set(0, 0.42, 0).applyQuaternion(P.spine)).add(_w.copy(m.gunMount.position).applyQuaternion(P.chest));
       this.ikArm(s, T.ik.R, _T.fromArray(gp.r).applyQuaternion(P.chest).add(_P), _w.set(0.7, -1, 0.35).applyQuaternion(P.chest));
       _P.set(0, m.hip.position.y + 0.06, 0).add(_v.set(0, 0.42, 0).applyQuaternion(P.spine)).add(_w.copy(m.gunMount.position).applyQuaternion(P.chest));
-      this.ikArm(s, T.ik.L, _T.fromArray(gp.l).applyQuaternion(P.chest).add(_P), _w.set(-0.8, -1, 0.1).applyQuaternion(P.chest));
+      if (gp.l) this.ikArm(s, T.ik.L, _T.fromArray(gp.l).applyQuaternion(P.chest).add(_P), _w.set(-0.8, -1, 0.1).applyQuaternion(P.chest));
     }
     // Retarget planted feet with this source's own segment lengths. Arm and
     // aiming targets stay independent of the foot solve.

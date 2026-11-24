@@ -16,6 +16,7 @@ class Actor {
     this.throwables = { frag: 0, smoke: 0, molotov: 0, flash: 0 };
     this.meds = { bandage: 0, medkit: 0 };
     this.cur = 'fists';
+    this.knife = 'knife_combat'; this.melee = null;
     this.kills = 0; this.dmgDealt = 0;
     this.state = 'plane'; this.onGround = false; this.crouch = false; this.prone = false; this.leanX = 0; this.swimming = false; this.inWater = false;
     this.landV = 0; this.groundMat = 'terrain';
@@ -38,7 +39,7 @@ class Actor {
   lookDir(out) { const cp = Math.cos(this.pitch); return out.set(-Math.sin(this.yaw) * cp, Math.sin(this.pitch), -Math.cos(this.yaw) * cp); }
   hasGun() { return !!(this.weapons.rifle || this.weapons.shotgun || this.weapons.pistol); }
   wdef(k) { const w = this.weapons[k]; return w ? G.WEAPONS[w.id] : null; }
-  gunId(k) { const w = this.weapons[k]; return w ? w.id : k; }
+  gunId(k) { if (k === 'melee') return this.knife; const w = this.weapons[k]; return w ? w.id : k; }
   gunAmmo(k) { const w = this.weapons[k]; return w ? w.mag + this.ammo[G.WEAPONS[w.id].ammo] : 0; }
   bestGun() {
     for (const k of ['rifle', 'shotgun', 'pistol']) if (this.weapons[k] && this.gunAmmo(k) > 0) return k;

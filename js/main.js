@@ -457,7 +457,7 @@ G.boot = async function () {
   G.Input.init(renderer.domElement);
   // VM 설치 순서는 유지하고, 모델 파일을 읽고 해석하는 시간은 맵 생성과 겹친다.
   const viewmodels = Promise.allSettled([G.G17Pilot?.preload(), G.M4Viewmodel?.preload()]);
-  await Promise.all([G.World.init(scene, renderer, progress), G.ReloadAssets?.load(), G.ThrowModels?.load(renderer), G.Vehicles?.load()]);
+  await Promise.all([G.World.init(scene, renderer, progress), G.ReloadAssets?.load(), G.ThrowModels?.load(renderer), G.Vehicles?.load(), G.Knives.load(renderer)]);
   await viewmodels;
   progress(0.92, '효과 준비 중...');
   G.FX.init(scene);

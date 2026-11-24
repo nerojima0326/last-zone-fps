@@ -1,0 +1,38 @@
+# 칼 모델·모션 출처 (v90)
+
+이 폴더의 에셋은 아래 원작자의 조건을 유지합니다. 저장소 코드의 라이선스가 외부 모델·애니메이션의 라이선스를 대신하지 않습니다. 원본 파일·불변 커밋·SHA-256은 [소스 목록](../../../tools/knives/sources.json), 변환 결과는 [manifest.json](manifest.json)에 기록했습니다. 게임 실행 중 외부 에셋 서비스에 접속하지 않습니다.
+
+## 모델
+
+| 게임 칼 | 원작자·원본 | GitHub 배포본 | 라이선스 |
+| --- | --- | --- | --- |
+| 버터플라이 | **Ginsta**, [Butterfly Knife](https://poly.pizza/m/FnD4lI5Wz1) | [niganmahhh/FPSGame](https://github.com/niganmahhh/FPSGame/tree/4d582665057e12f0e5d1c44d1ae1ebd048d9e046), `butterfly-knife.glb` | Creative Commons Attribution — 배포본은 버전 번호를 명시하지 않습니다. [원본 배포본의 출처 표기](https://github.com/niganmahhh/FPSGame/blob/4d582665057e12f0e5d1c44d1ae1ebd048d9e046/public/models/ASSET_CREDITS.md)를 보존합니다. |
+| 양날 단검 | **3dmodelscc0**, [Melee Weapons Pack](https://3dmodelscc0.itch.io/free-cc0-melee-weapons-pack) | 위 FPSGame의 `cc0-dagger.glb`; 원본 GLB 변환 배포처 [BoQsc/cc0-melee-weapons-pack-glb](https://github.com/BoQsc/cc0-melee-weapons-pack-glb) | CC0 1.0 |
+| 전투 나이프 | **3dmodelscc0**, 같은 팩 | 위 FPSGame의 `cc0-combat-knife.glb` | CC0 1.0 |
+| 쿠나이 | **3dmodelscc0**, 같은 팩 | 위 FPSGame의 `cc0-kunai.glb` | CC0 1.0 |
+| 마체테 | **3dmodelscc0**, 같은 팩 | 위 FPSGame의 `cc0-machete.glb` | CC0 1.0 |
+| 카람빗 | **Diamonddogkz**, [Karambit](https://sketchfab.com/3d-models/karambit-dfd7606f189a413681305a39b8841ce8) | [EldarJamiyev/GARAM](https://github.com/EldarJamiyev/GARAM/tree/90fc4fc41c9bb3fcc07c9d61d835defaa9ce76fa), `packages/client/public/models/raw/karambit.glb` | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — 원본 GLB의 작가·라이선스·원본 주소 메타데이터도 확인했습니다. |
+
+가공: 실제 미터 단위와 손잡이 접점을 기준으로 좌표·방향을 맞추고, 카메라·조명 노드를 제거했습니다. 노멀과 노멀맵 접선을 함께 변환했습니다. 텍스처는 최대 1024px WebP, 지오메트리는 meshopt로 압축했습니다. 버터플라이는 Ginsta의 손잡이 메시를 유지하고 게임용의 뾰족한 칼날·기계식 회전축을 추가했습니다. 손잡이의 닫힘·열림·검사 중 회전은 이 게임에서 추가한 동작입니다. 버터플라이의 재질, 쿠나이의 잡는 방향을 조정했고 마체테는 1인칭 화면에 맞게 크기를 추가 조정했습니다.
+
+## 가져온 모션
+
+| 동작 | 원작·클립 | 라이선스 |
+| --- | --- | --- |
+| 꺼내기 | **Cransh**, [Animated FPS hands (rifle animation pack)](https://sketchfab.com/3d-models/animated-fps-hands-rifle-animation-pack-5f2d0ed780a94724b36ab505f7564057), `Armature\|Arms_FPS_Anim_Draw` | CC BY 4.0 |
+| 자세히 보기 | 같은 팩, `Armature\|Arms_FPS_Anim_rifle_inspect` | CC BY 4.0 |
+| 휘두르기 | **Quaternius**, [Universal Animation Library](https://quaternius.com/packs/universalanimationlibrary.html), `Sword_Attack`의 0~0.65초 구간 | CC0 1.0 |
+
+Cransh 팩의 팔 모델 원작자는 **DJMaesen**이며 팩의 총 모델은 **doomsentinel**입니다. 이 작업에서는 팩의 총 메시를 가져오지 않고 손목의 위치·회전 곡선을 추출했습니다. 기존에 번들된 [ACR 팩과 출처](../viewmodels/CREDITS.md)를 사용했습니다. Quaternius 팩은 [cktang88/3d-fps의 고정 커밋](https://github.com/cktang88/3d-fps/tree/130ac2a5c856401ec36e7d35afcfefe40c5801f4)에서 배포된 ZIP을 사용했으며 ZIP 안의 [원본 라이선스](UAL-LICENSE.txt)를 함께 보관했습니다.
+
+모션은 60Hz로 샘플링하여 [motion.json](motion.json)에 저장했습니다. 원작의 FPS 소총 검사·3인칭 검 공격 클립을 칼에 맞게 재배치했습니다. 팔 길이·손목 각도·그립 위치에 맞춰 변위를 제한하고, 공격·검사의 시각과 손잡이 동작을 게임에 맞게 조정했습니다. 실제 손·팔은 기존 게임의 [1인칭 팔 리그](../viewmodels/CREDITS.md)를 사용합니다.
+
+라이선스 전문: [CC0 1.0](LICENSE-CC0-1.0.txt), [CC BY 4.0](LICENSE-CC-BY-4.0.txt).
+
+## 재현
+
+```sh
+python tools/knives/fetch.py /tmp/lz-knife-source
+# three, @gltf-transform/{core,extensions,functions}, meshoptimizer, sharp 필요
+NODE_PATH=/path/to/dependencies/node_modules node tools/knives/build.cjs /tmp/lz-knife-source
+```
