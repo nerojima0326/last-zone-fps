@@ -1,8 +1,24 @@
 # Attachment model credits
 
+## v93 실사 스코프 재가공
+
+현재 조준경 6종은 `v93/`, 나머지 부착물 15종은 `v92/`를 사용합니다. `tools/attachments/build-v93.cjs`로 아래 기존 원본을 현재 광축·미터 단위·전방 -Z·레일 접면 Y=0에 맞게 다시 변환했습니다.
+
+| 현재 파일 | 원본 파일 | 원형과 저작자 |
+|---|---|---|
+| `v93/micro.glb` | `rmr.glb` | v61에서 직접 작성한 소형 도트 |
+| `v93/reddot.glb` | `rd-aimpoint.glb` | Generic Red Dot Scope — valterjherson1, CC-BY-4.0 |
+| `v93/holo.glb` | `holo-eotech.glb` | EoTech EXPS3-0 — valterjherson1, CC-BY-4.0 |
+| `v93/x2.glb`, `v93/x4.glb` | `scope-acog.glb` | ACOG Scope — GC_3D_ART, CC-BY-4.0 |
+| `v93/x8.glb` | `scope-sniper.glb` | SV-98의 조준경 — SpatialNeglect, CC-BY-4.0 |
+
+CC-BY 원본 링크와 저작자·라이선스 표시는 아래 v59 항목에 그대로 보존합니다. 변경 내용은 광축 중심·방향·배율 조정, 불투명 본체 설정 수정, 별도 렌즈 면 분리, 금속 일체형 체결부 추가, 양자화·meshopt 재압축입니다. 원본 텍스처는 최대 512px입니다.
+
+`js/scope-profiles.js`는 위 변환에서 생성한 광축/체결면 제원입니다. 파일 누락 시에는 `js/attachment-models.js`의 직접 작성한 대체 형상을 사용하며 같은 제원을 따릅니다.
+
 ## v92 직접 만든 스코프·부착물
 
-현재 게임은 `v92/`의 21종 모델을 사용합니다. 외부 원본 메시·텍스처를 사용하지 않고 `js/attachment-models.js`에서 직접 작성했습니다.
+v92에서 `v92/`의 21종 모델을 추가했습니다. 외부 원본 메시·텍스처를 사용하지 않고 `js/attachment-models.js`에서 직접 작성했습니다.
 
 - 조준경 6종: 소형 개방형 도트, 밀폐형 레드닷, 홀로그램, 2배율 프리즘, 4배율 소형 스코프, 8배율 장거리 스코프.
 - 총구 5종: 소총/권총 소음기, 보정기, 삼지 소염기, 초크.

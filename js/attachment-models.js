@@ -1,9 +1,9 @@
 // 부착물 원형: 미터 단위, 총구 방향 -Z, 레일 접면 Y=0, 총구 체결면 Z=0.
-// 빌드 도구와 파일 누락 시 대체 모델이 같은 형상을 사용한다.
+// 스코프 누락 시 같은 광축·체결면을 갖는 대체 형상으로 복귀한다.
 (function(factory){
  if(typeof module==='object'&&module.exports)module.exports=factory;
- else window.G.AttachmentModels=factory(window.THREE,window.THREE.mergeGeometries);
-})(function(T,merge){
+ else window.G.AttachmentModels=factory(window.THREE,window.THREE.mergeGeometries,window.G.ScopeProfiles);
+})(function(T,merge,profiles){
 'use strict';
 const specs={
  micro:{kind:'optic',eye:[0,.023,.014],foot:[.026,.035],label:'소형 개방형 도트'},
@@ -18,12 +18,13 @@ const specs={
  laser:{kind:'side',label:'소형 레이저 모듈'},tactical:{kind:'stock',foot:[.038,.085],label:'전술 패드'},cheek:{kind:'stock',foot:[.038,.075],label:'뺨 받침대'},
  mag_extended:{kind:'magazine',foot:[.032,.055],label:'대용량 바닥판'},mag_quick:{kind:'magazine',foot:[.032,.055],label:'퀵드로우 고리'},mag_extendedQuick:{kind:'magazine',foot:[.032,.055],label:'대용량 퀵드로우 바닥판'}
 };
+Object.assign(specs,profiles||{});
 const mats={
  body:new T.MeshStandardMaterial({name:'LZ anodized',color:0x3c4447,metalness:.52,roughness:.43}),
  edge:new T.MeshStandardMaterial({name:'LZ machined',color:0x636d70,metalness:.7,roughness:.32}),
  rubber:new T.MeshStandardMaterial({name:'LZ polymer',color:0x222728,metalness:.08,roughness:.78}),
  dark:new T.MeshStandardMaterial({name:'LZ recess',color:0x101516,metalness:.2,roughness:.62}),
- glass:new T.MeshStandardMaterial({name:'LZ glass',color:0x769ca5,metalness:.12,roughness:.13,transparent:true,opacity:.08,depthWrite:false,side:T.DoubleSide})
+ glass:new T.MeshStandardMaterial({name:'LZ glass',color:0x769ca5,metalness:.12,roughness:.13,transparent:true,opacity:.20,depthWrite:false,side:T.DoubleSide})
 };
 const templates={};
 function rounded(w,h,r){
@@ -53,40 +54,40 @@ function make(id){
   block(w*.66,.002,l*.22,0,.001,0,'edge');
  };
  const ring=(r,z,axisY)=>{
-  put(tube(r+.002,r-.0004,.009),'body',0,axisY,z);block(r*2+.007,.004,.010,0,axisY+.001,z,'body');
+  put(tube(r+.002,r-.0004,.009),'body',0,axisY,z);block(r*2+.007,.004,.010,0,axisY-r-.001,z,'body');
   for(const x of [-r-.001,r+.001])bolt(x,axisY+.004,z,'y');
  };
  const turret=(y,z)=>{
-  cyl(.0085,.008,0,y,z,'body');cyl(.0088,.0016,0,y+.0042,z,'edge');
+  cyl(.0065,.006,0,y-.003,z,'body');cyl(.005,.014,.009,y-.006,z,'body','x');cyl(.0085,.008,0,y,z,'body');cyl(.0088,.0016,0,y+.0042,z,'edge');
   for(let i=0;i<12;i++){const a=i/12*Math.PI*2;put(box(.001,.0045,.0018,.00015),'rubber',Math.sin(a)*.0087,y,Math.cos(a)*.0087+z,0,a,0)}
   block(.009,.0005,.0007,0,y+.0052,z,'edge');cyl(.007,.007,.014,y-.006,z,'body','x');bolt(.018,y-.006,z);
  };
  const lens=(r,y,z)=>put(new T.CircleGeometry(r,24),'glass',0,y,z);
+ const eye=specs[id].eye?.[1];
  if(id==='micro'){
-  foot(.026,.035);put(frame(.030,.024,.008,.0023),'body',0,.024,-.007);
-  block(.028,.004,.033,0,.008,0,'body');block(.015,.003,.009,0,.011,.012,'rubber');
-  put(new T.PlaneGeometry(.024,.017),'glass',0,.023,-.008,-.12);bolt(.015,.016,.003);bolt(0,.010,.010,'y');
+  foot(.026,.040);block(.028,eye-.010,.035,0,(eye-.010)/2,0,'body');put(frame(.030,.025,.010,.0028),'body',0,eye+.001,-.007);
+  put(new T.PlaneGeometry(.023,.017),'glass',0,eye,-.008,-.12);bolt(.015,eye-.006,.003);block(.012,.002,.008,0,eye-.010,.012,'rubber');
  }else if(id==='reddot'){
-  foot(.027,.050);block(.020,.012,.033,0,.011,-.003,'body');
-  put(tube(.0145,.0118,.074),'body',0,.036,-.003);put(tube(.0152,.0116,.005),'rubber',0,.036,.033);
-  put(tube(.0152,.0116,.005),'rubber',0,.036,-.039);lens(.0115,.036,.031);lens(.0115,.036,-.039);
-  turret(.052,-.008);cyl(.0068,.006,.015,.036,-.008,'body','x');bolt(.019,.036,-.008);
+  foot(.029,.044);block(.023,eye-.012,.038,0,(eye-.012)/2,0,'body');
+  const z=specs[id].eye[2]-.036;put(tube(.0175,.014,.074),'body',0,eye,z);for(const dz of [-.037,.037])put(tube(.018,.0137,.005),'rubber',0,eye,z+dz);
+  lens(.0135,eye,z+.037);lens(.0135,eye,z-.037);turret(eye+.021,z-.006);cyl(.008,.009,.018,eye,z-.004,'body','x');bolt(.023,eye,z-.004);
  }else if(id==='holo'){
-  foot(.034,.060);block(.034,.014,.053,0,.011,0,'body');put(frame(.043,.031,.018,.0034),'body',0,.037,-.010);
-  put(frame(.036,.025,.012,.0015),'rubber',0,.037,-.010);put(new T.PlaneGeometry(.030,.020),'glass',0,.038,-.011,-.10);
-  block(.022,.009,.020,0,.015,.027,'rubber');for(const x of [-.006,.006])cyl(.0026,.0012,x,.020,.028,'edge');bolt(.022,.027,-.006);
- }else if(id==='x2'){
-  foot(.032,.064);block(.024,.012,.050,0,.011,0,'body');put(frame(.038,.032,.083,.007),'body',0,.043,0);
-  put(tube(.017,.012,.015),'rubber',0,.043,.043);put(tube(.0185,.014,.012),'edge',0,.043,-.047);lens(.0115,.043,.047);lens(.0136,.043,-.052);turret(.062,-.004);
- }else if(id==='x4'||id==='x8'){
-  const big=id==='x8',y=big?.049:.041,L=big?.292:.204,r=big?.022:.017;
-  foot(big?.032:.030,big?.106:.090);for(const z of big?[-.035,.039]:[-.028,.031]){block(.020,y-.012,.013,0,(y-.012)/2,z,'body');ring(.014,z,y)}
-  put(tube(.014,.0105,L*.68),'body',0,y,0);
-  const bell=[[r-.0025,-L*.49],[r-.0006,-L*.49],[r,-L*.49+.001],[.014,-L*.31],[.0105,-L*.31],[r-.0025,-L*.49]].map(v=>new T.Vector2(...v));
-  put(new T.LatheGeometry(bell,24).rotateX(Math.PI/2),'body',0,y,0);
-  put(tube(.0175,.014,L*.18),'rubber',0,y,L*.40);put(tube(r+.001,r-.0025,.004),'edge',0,y,-L*.49);
-  put(tube(.018,.014,.005),'edge',0,y,L*.49);lens(.0138,y,L*.49);lens(r-.0028,y,-L*.49);turret(y+.019,0);
-  for(let i=0;i<14;i++){const a=i/14*Math.PI*2;put(box(.001,.0022,.014,.0002),'body',Math.sin(a)*.0174,y+Math.cos(a)*.0174,L*.36,0,0,-a)}
+  foot(.035,.063);block(.036,eye-.013,.055,0,(eye-.013)/2,0,'body');
+  const z=specs[id].eye[2]-.007;put(frame(.043,.033,.020,.004),'body',0,eye-.001,z);put(new T.PlaneGeometry(.030,.022),'glass',0,eye,z+.006,-.10);
+  block(.024,.008,.022,0,eye-.018,-.020,'rubber');for(const x of [-.006,.006])cyl(.0026,.002,x,eye-.013,-.025,'edge');bolt(.023,eye-.008,z);
+ }else if(id==='x2'||id==='x4'){
+  const big=id==='x4',L=big?.152:.126,z=specs[id].eye[2]-L*.48;
+  foot(big?.035:.031,big?.087:.073);block(.023,eye-.014,big?.070:.057,0,(eye-.014)/2,.007,'body');
+  put(tube(.019,.012,L*.84),'body',0,eye,z);put(tube(.021,.0125,.025),'rubber',0,eye,z+L*.38);put(tube(.024,.015,.025),'body',0,eye,z-L*.38);
+  lens(.012,eye,z+L*.48);lens(.0148,eye,z-L*.48);turret(eye+.024,z-.006);
+  for(const x of [-.015,.015])block(.009,.023,L*.55,x,eye-.002,z-.005,'body');
+ }else if(id==='x8'){
+  const y=eye,L=.246,z=specs[id].eye[2]-L*.49,r=.023;
+  foot(.032,.106);for(const dz of [-.035,.039]){block(.020,y-.012,.015,0,(y-.012)/2,z+dz,'body');ring(.014,z+dz,y)}
+  put(tube(.014,.0105,L*.70),'body',0,y,z);
+  const bell=[[.0105,-L*.27],[.014,-L*.27],[r,-L*.39],[r,-L*.49],[.018,-L*.49],[.018,-L*.40],[.0105,-L*.27]].map(p=>new T.Vector2(...p));
+  put(new T.LatheGeometry(bell,24).rotateX(Math.PI/2),'body',0,y,z);put(tube(.018,.0135,L*.20),'rubber',0,y,z+L*.39);
+  lens(.0138,y,z+L*.49);lens(.0178,y,z-L*.49);turret(y+.019,z);
  }else if(id==='suppressor'||id==='suppressor_pistol'){
   const pistol=id.endsWith('pistol'),r=pistol?.0145:.0195,L=pistol?.145:.182;
   put(tube(r,.0045,L-.012),'body',0,0,-L/2-.003);put(tube(r+.0008,.0045,.009),'edge',0,0,-L+.001);

@@ -1,0 +1,189 @@
+{
+  "current": [
+    {
+      "id": "micro",
+      "opticalCheck": "전방 투과",
+      "cellMM": 1,
+      "triangles": 524,
+      "housingVoxels": 7021,
+      "connectedVoxels": 7021,
+      "connectedRatio": 1,
+      "blockers": []
+    },
+    {
+      "id": "reddot",
+      "opticalCheck": "전방 투과",
+      "cellMM": 1,
+      "triangles": 4612,
+      "housingVoxels": 13787,
+      "connectedVoxels": 13787,
+      "connectedRatio": 1,
+      "blockers": []
+    },
+    {
+      "id": "holo",
+      "opticalCheck": "전방 투과",
+      "cellMM": 1,
+      "triangles": 7017,
+      "housingVoxels": 18439,
+      "connectedVoxels": 18439,
+      "connectedRatio": 1,
+      "blockers": []
+    },
+    {
+      "id": "x2",
+      "opticalCheck": "접안부 20mm",
+      "cellMM": 1,
+      "triangles": 7541,
+      "housingVoxels": 33460,
+      "connectedVoxels": 33460,
+      "connectedRatio": 1,
+      "blockers": []
+    },
+    {
+      "id": "x4",
+      "opticalCheck": "접안부 20mm",
+      "cellMM": 1,
+      "triangles": 7541,
+      "housingVoxels": 44837,
+      "connectedVoxels": 44837,
+      "connectedRatio": 1,
+      "blockers": []
+    },
+    {
+      "id": "x8",
+      "opticalCheck": "접안부 20mm",
+      "cellMM": 1,
+      "triangles": 2051,
+      "housingVoxels": 52226,
+      "connectedVoxels": 52226,
+      "connectedRatio": 1,
+      "blockers": []
+    }
+  ],
+  "fallback": [
+    {
+      "id": "micro",
+      "opticalCheck": "전방 투과",
+      "cellMM": 1,
+      "triangles": 1892,
+      "housingVoxels": 4258,
+      "connectedVoxels": 4202,
+      "connectedRatio": 0.9868482855800845,
+      "blockers": []
+    },
+    {
+      "id": "reddot",
+      "opticalCheck": "전방 투과",
+      "cellMM": 1,
+      "triangles": 3744,
+      "housingVoxels": 24045,
+      "connectedVoxels": 24045,
+      "connectedRatio": 1,
+      "blockers": []
+    },
+    {
+      "id": "holo",
+      "opticalCheck": "전방 투과",
+      "cellMM": 1,
+      "triangles": 2020,
+      "housingVoxels": 6699,
+      "connectedVoxels": 6699,
+      "connectedRatio": 1,
+      "blockers": []
+    },
+    {
+      "id": "x2",
+      "opticalCheck": "접안부 20mm",
+      "cellMM": 1,
+      "triangles": 3724,
+      "housingVoxels": 49331,
+      "connectedVoxels": 49331,
+      "connectedRatio": 1,
+      "blockers": []
+    },
+    {
+      "id": "x4",
+      "opticalCheck": "접안부 20mm",
+      "cellMM": 1,
+      "triangles": 3724,
+      "housingVoxels": 55882,
+      "connectedVoxels": 55882,
+      "connectedRatio": 1,
+      "blockers": []
+    },
+    {
+      "id": "x8",
+      "opticalCheck": "접안부 20mm",
+      "cellMM": 1,
+      "triangles": 4952,
+      "housingVoxels": 65625,
+      "connectedVoxels": 65625,
+      "connectedRatio": 1,
+      "blockers": []
+    }
+  ],
+  "baseline": [
+    {
+      "id": "micro",
+      "opticalCheck": "전방 투과",
+      "cellMM": 1,
+      "triangles": 2032,
+      "housingVoxels": 3538,
+      "connectedVoxels": 1394,
+      "connectedRatio": 0.39400791407574903,
+      "blockers": []
+    },
+    {
+      "id": "reddot",
+      "opticalCheck": "전방 투과",
+      "cellMM": 1,
+      "triangles": 3616,
+      "housingVoxels": 19931,
+      "connectedVoxels": 0,
+      "connectedRatio": 0,
+      "blockers": []
+    },
+    {
+      "id": "holo",
+      "opticalCheck": "전방 투과",
+      "cellMM": 1,
+      "triangles": 2660,
+      "housingVoxels": 6975,
+      "connectedVoxels": 0,
+      "connectedRatio": 0,
+      "blockers": []
+    },
+    {
+      "id": "x2",
+      "opticalCheck": "접안부 20mm",
+      "cellMM": 1,
+      "triangles": 3764,
+      "housingVoxels": 25043,
+      "connectedVoxels": 0,
+      "connectedRatio": 0,
+      "blockers": []
+    },
+    {
+      "id": "x4",
+      "opticalCheck": "접안부 20mm",
+      "cellMM": 1,
+      "triangles": 6640,
+      "housingVoxels": 53694,
+      "connectedVoxels": 53694,
+      "connectedRatio": 1,
+      "blockers": []
+    },
+    {
+      "id": "x8",
+      "opticalCheck": "접안부 20mm",
+      "cellMM": 1,
+      "triangles": 6640,
+      "housingVoxels": 73761,
+      "connectedVoxels": 73761,
+      "connectedRatio": 1,
+      "blockers": []
+    }
+  ],
+  "failures": []
+}

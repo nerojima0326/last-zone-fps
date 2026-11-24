@@ -1,11 +1,12 @@
 (function(){
 'use strict';
 const G=window.G,T=window.THREE;
-// v92 직접 만든 경량 부품: 동일한 단위·광축·접면을 모든 뷰모델에서 사용한다.
+// 실사 스코프와 경량 부품은 같은 단위·광축·접면을 모든 뷰모델에서 사용한다.
 const A=G.Attachments={models:{},open:false,
  async load(){await Promise.all(G.AttachmentModels.ids.map(async id=>{
-  try{const L=new T.GLTFLoader();if(T.MeshoptDecoder)L.setMeshoptDecoder(T.MeshoptDecoder);const m=await L.loadAsync('assets/models/attachments/v92/'+id+'.glb?v='+(window.LZ_BUILD||'92'));this.models[id]=m.scene}
+  try{const L=new T.GLTFLoader();if(T.MeshoptDecoder)L.setMeshoptDecoder(T.MeshoptDecoder);const m=await L.loadAsync('assets/models/attachments/'+(G.ScopeProfiles?.[id]?'v93/':'v92/')+id+'.glb?v='+(window.LZ_BUILD||'93'));this.models[id]=m.scene}
   catch(e){this.models[id]=G.AttachmentModels.build(id)}
+  if(G.ScopeProfiles?.[id])G.WeaponFinish?.root(this.models[id]);
   Object.assign(this.models[id].userData,G.AttachmentModels.specs[id]);
  }));this.models.brake=this.models.compensator},
  options(def){
