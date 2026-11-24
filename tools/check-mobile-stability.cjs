@@ -24,9 +24,10 @@ function native(row){assert(row.mobile);assert(Math.abs(row.rendererPR-row.dpr*r
    press('knife',90);const knife=P.a.cur==='melee';press('ads',1);const inspect=P.melee?.kind==='inspect';
    G.UI.drawScope(1,'x4',P);const c=document.getElementById('scopeOverlay'),scope=[c.width,c.height];G.UI.drawScope(0,null,P);G.paused=true;I.reset();return{fired,reloading,reloaded,knife,inspect,scope};
   });for(const key of ['fired','reloading','reloaded','knife','inspect'])assert(report.controls[key],key);assert.deepEqual(report.controls.scope,report.training.canvas);
-  // 실사 스코프 6종을 모두 실제로 업로드한 뒤 모바일 예산을 확인한다.
+  // 장착 가능한 실사 스코프를 실제로 업로드한 뒤 모바일 예산을 확인한다.
   report.scopes=[];
-  for(const scope of ['reddot','holo','x2','x4','x8']){
+  const scopes=await page.evaluate(()=>G.WEAPONS.ar7.scopes);assert(!scopes.includes('x8'));
+  for(const scope of scopes){
    await page.evaluate(scope=>{const P=G.Player,a=P.a;a.cur='rifle';a.weapons.rifle.scope=scope;a.weapons.rifle.iron=false;Object.assign(P,{melee:null,sw:null,reload:null,ads:0,scopeView:0,raise:1});for(let i=0;i<90;i++)P.updateCamera(1/60)},scope);
    const row=await snapshot(page);native(row);assert(row.gpu.estimatedBytes<550*1048576,'실사 스코프 저장소 예산 초과');report.scopes.push({scope,estimatedBytes:row.gpu.estimatedBytes,textures:row.memory.textures});
   }

@@ -488,6 +488,7 @@ const P = G.Player = {
   cycleScope() {
     const a = this.a, inst = a.weapons[a.cur];
     if (!inst || this.reload) return;
+    a.detachUnsupportedScope(inst);
     const def = G.WEAPONS[inst.id];
     const opts = ['iron'].concat(G.SCOPE_ORDER.filter(t=>def.scopes.includes(t)&&(t===def.baseSight||a.scopes[t]>0||inst.scope===t)));
     if(opts.length<=1){G.UI.toast('보유한 조준경이 없습니다');return;}
@@ -732,6 +733,7 @@ const P = G.Player = {
     const VMc = G.VM;
     cam.rotation.set(a.pitch + this.camKick + VMc.camRX + (Math.random() - 0.5) * sh * 0.02, a.yaw + VMc.camRY + (Math.random() - 0.5) * sh * 0.02, VMc.camRZ + leanRoll + (Math.random() - 0.5) * sh * 0.015, 'YXZ');
     const inst = a.weapons[a.cur], def = inst ? G.WEAPONS[inst.id] : G.WEAPONS[a.cur];
+    a.detachUnsupportedScope(inst);
     const scope = inst ? (G.Attachments ? G.Attachments.optic(inst,def) : (inst.scope || def.baseSight || null)) : null;
     if(inst&&G.Attachments)G.Attachments.update(G.VM.ensure(inst.id),inst);
     const zoom = scope ? G.SCOPES[scope].zoom : 1;

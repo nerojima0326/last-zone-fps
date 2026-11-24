@@ -34,6 +34,7 @@ jobs:
         run: |
           node tools/check-attachments.cjs
           node tools/check-scope-models.mjs
+          node tools/check-primary-scopes.cjs
       - name: Check startup ordering and delayed or missing assets
         run: node tools/check-startup.cjs
       - name: 모바일 해상도·메모리·터치·그래픽 복구 검사

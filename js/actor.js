@@ -49,12 +49,22 @@ class Actor {
   throwCount() { let n = 0; for (const k in this.throwables) n += this.throwables[k]; return n; }
   give(id, extraAmmo, scope) {
     const def = G.WEAPONS[id];
+    this.detachUnsupportedScope(this.weapons[def.cls]);
     this.weapons[def.cls] = { id, mag: def.mag, scope: scope || null };
+    this.detachUnsupportedScope(this.weapons[def.cls]);
     if (extraAmmo) this.ammo[def.ammo] = Math.min(Math.max(this.ammoMax(def.ammo), this.ammo[def.ammo]), this.ammo[def.ammo] + extraAmmo);
+  }
+  // 이전 장착 상태나 줍는 총의 비호환 조준경은 한 번만 가방으로 돌려준다.
+  detachUnsupportedScope(inst) {
+    const def=G.WEAPONS[inst?.id],scope=inst?.scope;
+    if(!def||!scope||def.scopes.includes(scope))return false;
+    inst.scope=null;
+    if(G.SCOPES[scope])this.scopes[scope]=(this.scopes[scope]||0)+1;
+    return true;
   }
   // 조준경이 없는 총에 가방의 가장 좋은 호환 조준경을 끼운다
   autoScope(cls) {
-    const w = this.weapons[cls]; if (!w || w.scope || w.iron) return false;
+    const w = this.weapons[cls];this.detachUnsupportedScope(w);if (!w || w.scope || w.iron) return false;
     const def = G.WEAPONS[w.id];
     for (let i = G.SCOPE_ORDER.length - 1; i >= 0; i--) {
       const t = G.SCOPE_ORDER[i];
@@ -80,11 +90,13 @@ class Actor {
     let res = null;
     const W = G.WEAPONS[k];
     if (W && W.cls) {
+      this.detachUnsupportedScope(this.weapons[W.cls]);
       const cur = this.weapons[W.cls];
       const mag = it.mag !== undefined ? it.mag : W.mag;
       if (!cur) {
         this.weapons[W.cls] = { id: k, mag, scope: it.scope || null, iron: !!it.iron, attachments: { ...it.attachments } };
-        if (!it.scope && !this.isPlayer) this.autoScope(W.cls);
+        this.detachUnsupportedScope(this.weapons[W.cls]);
+        if (!this.weapons[W.cls].scope && !this.isPlayer) this.autoScope(W.cls);
         res = W.name;
       } else if (cur.id === k || (fromCrate && W.tier <= G.WEAPONS[cur.id].tier)) {
         // 같은 총(또는 상자 속 더 나쁜 총): 탄약과 조준경만 챙긴다
@@ -100,7 +112,8 @@ class Actor {
         // 다른 총: 들고 있던 총을 내려놓고 바꾼다
         this._drop = { kind: cur.id, mag: cur.mag, scope: cur.scope, iron: !!cur.iron, attachments: { ...cur.attachments } };
         this.weapons[W.cls] = { id: k, mag, scope: it.scope || null, iron: !!it.iron, attachments: { ...it.attachments } };
-        if (!it.scope && !this.isPlayer) this.autoScope(W.cls);
+        this.detachUnsupportedScope(this.weapons[W.cls]);
+        if (!this.weapons[W.cls].scope && !this.isPlayer) this.autoScope(W.cls);
         res = W.name;
       }
     } else if (k.startsWith('att_')) {
@@ -147,6 +160,7 @@ class Actor {
   // 사망 시 상자에 담을 아이템
   dropAll() {
     const items = [];
+    for(const w of Object.values(this.weapons))this.detachUnsupportedScope(w);
     for (const k of ['rifle', 'shotgun', 'pistol']) if (this.weapons[k]) items.push({ kind: this.weapons[k].id, mag: this.weapons[k].mag, scope: this.weapons[k].scope, iron: !!this.weapons[k].iron, attachments: { ...this.weapons[k].attachments }, amount: 1 });
     for(const k in this.attachmentBag)for(let i=0;i<this.attachmentBag[k];i++)items.push({kind:k,amount:1});
     for (const t in this.scopes) for (let i = 0; i < this.scopes[t]; i++) items.push({ kind: 'scope_' + t, amount: 1 });
