@@ -116,16 +116,9 @@ const A = G.Armory = {
     for (const part of Object.values(data.parts)) for (const [mat, geometry] of Object.entries(part)) shape.add(new T.Mesh(geometry, data.real ? data.mats[mat] : G.Guns.mats()[mat] || G.Guns.mats().metal));
     const sight = G.WEAPONS[id].baseSight;
     if (sight && data.rail) {
-      const scope = new T.Group(), asset = G.Attachments.make(sight, 1);
-      if (asset) {
-        const b = new T.Box3().setFromObject(asset); asset.position.y -= b.min.y;
-        if (sight === 'x4' || sight === 'x8') { asset.rotation.y = Math.PI; asset.scale.multiplyScalar(1.05); asset.position.y = -b.min.y * 1.05; }
-        scope.add(asset);
-      } else {
-        const sd = G.GunLib.scope(sight);
-        for (const part of Object.values(sd.parts)) for (const [mat, geometry] of Object.entries(part)) scope.add(new T.Mesh(geometry, G.Guns.mats()[mat] || G.Guns.mats().metal));
-      }
-      scope.position.set(0, data.rail.y, data.rail.z); shape.add(scope);
+      let profile=G.VM.models[id]?.attachmentProfile;
+      if(!profile){shape.updateWorldMatrix(true,true);profile=G.AttachmentMounts.measure([shape],new T.Matrix4(),{rail:[data.muzzle.x,data.rail.y,data.rail.z],muzzle:data.muzzle,under:data.fore},G.WEAPONS[id])}
+      const optic=G.AttachmentMounts.optic(profile,sight,G.WEAPONS[id]);if(optic)shape.add(optic.root);
     }
     const bounds = new T.Box3().setFromObject(shape), center = bounds.getCenter(new T.Vector3());
     shape.position.sub(center); group.add(shape); this.scene.add(group);

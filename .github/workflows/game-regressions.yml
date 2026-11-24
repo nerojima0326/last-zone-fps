@@ -30,6 +30,8 @@ jobs:
           echo "THREE_DIR=$RUNNER_TEMP/lz-tests/node_modules/three" >> "$GITHUB_ENV"
       - name: Check ADS, distance zero and all-weapon recoil motion
         run: node tools/check-aim.cjs
+      - name: 부착물 형상·접면·광축·미리보기
+        run: node tools/check-attachments.cjs
       - name: Check startup ordering and delayed or missing assets
         run: node tools/check-startup.cjs
       - name: 모바일 해상도·메모리·터치·그래픽 복구 검사

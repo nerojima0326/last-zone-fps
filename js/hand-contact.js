@@ -133,7 +133,8 @@ function bind(model, frame) {
       }
     }
     for (const finger of fingers) finger.restQ = finger.map(b => b.quaternion.clone());
-    rig.hands.push({ hand, side, upper, fore, fingers, rest: hand.getWorldPosition(new V()).applyMatrix4(inv), restMatrix: inv.clone().multiply(hand.matrixWorld) });
+    const palm=fingers.reduce((v,f)=>v.add(f[0].getWorldPosition(new V())),new V()).multiplyScalar(.65/Math.max(1,fingers.length)).addScaledVector(hand.getWorldPosition(new V()),.35).applyMatrix4(inv);
+    rig.hands.push({ hand, side, upper, fore, fingers, palmRest:palm, rest: hand.getWorldPosition(new V()).applyMatrix4(inv), restMatrix: inv.clone().multiply(hand.matrixWorld) });
   }
   rigs.set(model, rig); return rig;
 }
@@ -276,6 +277,13 @@ G.HandContact = {
         const inverseRest = h.restMatrix.clone().invert();
         offset.applyMatrix4(inverseRest).sub(new V().setFromMatrixPosition(inverseRest)); offsetFrame = sourceMatrix;
       }
+      // 왼손은 장착된 손잡이의 접점으로 옮긴다. 자유 손의 장전 경로에는 기존 블렌드를 유지한다.
+      const support=h.side==='L'&&context?.supportPoint;
+      const supportQ=support&&context.supportTurn?new Q().setFromEuler(new T.Euler(...context.supportTurn.map(v=>v*Math.PI/180))):new Q();
+      if(support){
+        const palm=h.palmRest.clone().sub(h.rest).applyQuaternion(supportQ).add(h.rest);
+        offset.copy(support).sub(palm);offsetFrame=frame;
+      }
       const delta = offset.applyMatrix4(offsetFrame).sub(new V().setFromMatrixPosition(offsetFrame)).multiplyScalar(weight);
       const target = W.clone();
       if (C.freeAt && freeWeight) {
@@ -299,6 +307,7 @@ G.HandContact = {
         restMatrix.premultiply(new T.Matrix4().makeRotationFromEuler(new T.Euler(...C.turn.map(v => v * Math.PI / 180), 'YXZ')));
         restMatrix.setPosition(h.rest);
       }
+      if(support){restMatrix.premultiply(new T.Matrix4().makeRotationFromQuaternion(supportQ));restMatrix.setPosition(h.rest)}
       moveHand(rig, h, target.add(delta).addScaledVector(magDelta, magWeight), sourceMatrix,
         moving ? sourceMatrix : frame.clone().multiply(restMatrix), moving ? 0 : weight);
       for (let i = 0; i < h.fingers.length; i++) {

@@ -55,11 +55,11 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
   this.shotT+=dt;
   const reload=s.reload?.type==='mag',fireDuration=this.actions.Fire.end-this.actions.Fire.start,firing=!reload&&this.shotT<fireDuration;
   this.sample(reload?(s.reload.empty?'ReloadEmpty':'Reload'):firing?'Fire':'Idle',reload?s.reload.p:firing?this.shotT/fireDuration:0);
-  G.HandContact?.apply('g18',this.model,G.HandContact.frame(this.main,this.mainRestMatrix),undefined,{reload:s.reload});
+  this.syncAttachments(s.scope);
+  G.HandContact?.apply('g18',this.model,G.HandContact.frame(this.main,this.mainRestMatrix),undefined,{reload:s.reload,supportPoint:this.supportPoint,supportTurn:this.supportTurn});
   // The spare magazine lives behind the camera in the source idle; omit it then.
   if(this.spare)this.spare.visible=!!reload;
   if(this.slide&&!reload&&s.empty)this.slide.position.z=this.slideRestZ-5.1;
-  this.syncAttachments(s.scope);
   const aim=T.MathUtils.clamp(s.ads||0,0,1),weight=1-aim;
   this.pivot.position.copy(this.aimOffset).multiplyScalar(aim);
   // v60 지향 자세를 다른 총들처럼 화면 오른쪽 아래·조금 앞으로 (손·총이 화면 가운데를 덮지 않게)
@@ -76,38 +76,24 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
   this.active=true;
  },
  syncAttachments(scope){
-  const inst=G.Game?.player?.weapons?.pistol,parts=inst?.id==='g18'?(inst.attachments||{}):{};
-  const key=JSON.stringify([scope,parts]);if(this.mountKey===key)return;this.mountKey=key;
-  if(this.mount)this.mount.removeFromParent();this.mount=new T.Group();this.main.add(this.mount);
-  this.aimOffset.copy(this.ironOffset);
-  const A=G.Attachments;if(!A)return;
-  if(scope==='reddot'){
-   const optic=A.make('micro',100);if(optic){
-    const box=new T.Box3().setFromObject(optic);optic.position.y-=box.min.y;
-    const glass=new T.Box3();optic.updateMatrixWorld(true);
-    optic.traverse(x=>{if(x.isMesh&&/glass|blue/i.test(x.material?.name||'')){if(/glass/i.test(x.material.name))glass.union(new T.Box3().setFromObject(x));x.material=x.material.clone();x.material.transparent=true;x.material.opacity=.15;x.material.depthWrite=false}});
-    const eye=glass.isEmpty()?3.1:glass.getCenter(new T.Vector3()).y;
-    const holder=new T.Group();holder.rotation.y=Math.PI;holder.position.set(0,4.15,1);holder.add(optic);this.mount.add(holder);
-    const point=new T.Object3D();point.position.set(0,eye,0);holder.add(point);
-    const dot=new T.Mesh(new T.CircleGeometry(.08,16),new T.MeshBasicMaterial({color:0xff2519,depthTest:false}));dot.position.set(0,eye,2);holder.add(dot);
-    holder.updateMatrix();v.copy(point.position).applyMatrix4(holder.matrix).applyMatrix4(this.mainRestMatrix);this.aimOffset.set(-v.x,-v.y,-.28-v.z);
-   }
-  }
-  if(parts.muzzle){
-   // v62 총구 위치는 슬라이드에서 잰 muzzleLocal 기준 (예전 고정값 z 23.5 는 총구보다 11 cm 앞이라 소염기가 허공에 떠 있었다)
-   let o=parts.muzzle==='suppressor'?A.make('suppressor',75):parts.muzzle!=='choke'?A.make('brake',70):null;
-   if(!o)o=new T.Mesh(new T.CylinderGeometry(1.2,1.3,3.8,12).rotateX(Math.PI/2),new T.MeshStandardMaterial({color:0x252b2d,metalness:.75,roughness:.45}));
-   if(parts.muzzle==='flash')o.scale.z*=.75;
-   o.rotation.y=Math.PI;o.position.set(this.muzzleLocal.x,this.muzzleLocal.y,this.muzzleLocal.z+.3);this.mount.add(o);
-  }
-  // 레이저는 총열 아래 레일 (총구에서 4.5 cm 뒤, 3.2 cm 아래)
-  if(parts.side==='laser'){const o=A.make('laser',100);if(o){o.rotation.y=Math.PI;o.position.set(this.muzzleLocal.x,this.muzzleLocal.y-3.2,this.muzzleLocal.z-4.5);this.mount.add(o)}}
+  const inst=G.Game?.player?.weapons?.pistol,parts=inst?.id==='g18'?(inst.attachments||{}):{},key=JSON.stringify([scope,parts]);
+  if(key===this.mountKey)return;this.mountKey=key;this.scope=scope;
+  const F=G.AttachmentMounts,def=G.WEAPONS.g18;F.clear(this);this.mount?.removeFromParent();
+  this.aimOffset.copy(this.ironOffset);if(this.rearSight)this.rearSight.visible=!scope;
+  const built=F.accessories(this.attachmentProfile,parts,def),toMain=F.nativeFrame.clone().invert();
+  this.mount=built.root;this.mount.name='G18Attachments';F.attach(this.main,this.mount,toMain);
+  if(scope){const optic=F.optic(this.attachmentProfile,scope,def);if(optic){
+   const toHost=toMain.clone();let host=this.main;
+   if(this.slide&&this.slideRestMain){host=this.slide;toHost.premultiply(this.slideRestMain.clone().invert())}
+   F.attach(host,optic.root,toHost);this.attachmentExtras.push(optic.root);this.opticRoot=optic.root;
+   const eye=optic.eye.clone().applyMatrix4(toMain).applyMatrix4(this.mainRestMatrix);
+   this.aimOffset.set(-eye.x,-eye.y,-({reddot:.32,holo:.30,x2:.25,x4:.22,x8:.20}[scope]||.3)-eye.z);
+  }}else this.opticRoot=null;
+  for(const contact of this.magContacts){const o=F.magazine(contact,parts.magazine);if(o)this.attachmentExtras.push(o)}
+  this.supportPoint=built.support?.clone().applyMatrix4(toMain).applyMatrix4(this.mainRestMatrix);
+  this.supportTurn=parts.under==='angled'?[0,0,0]:parts.under?[0,0,-60]:null;
  },
- preview(scope){
-  this.syncAttachments(scope);const result=this.pivot.clone(true),remove=[];
-  result.traverse(o=>{if(o.isSkinnedMesh||o.isCamera||o.name==='G18Flash')remove.push(o)});
-  for(const o of remove)o.removeFromParent();result.visible=true;return result;
- },
+ preview(scope){this.syncAttachments(scope);return G.AttachmentMounts.nativeSnapshot(this)},
  async load(bytes,TGALoader){
   const manager=new T.LoadingManager();if(TGALoader)manager.addHandler(/\.tga$/i,new TGALoader(manager));
   this.setup(new T.FBXLoader(manager).parse(bytes,''));
@@ -136,12 +122,19 @@ const pilot=G.G17Pilot={ready:false,active:false,name:null,pivot:null,shotT:99,
   this.unload();G.VM.root.add(pivot);
   Object.assign(this,{ready:true,model,pivot,mixer,actions,active:false,name:'Idle',main,mainRestMatrix,slide,slideRestZ:slide?.position.z,spare,flash,muzzleLocal,ironOffset,aimOffset:ironOffset.clone(),mount:null,mountKey:null,shotT:99});
   G.HandContact?.bind(model,G.HandContact.frame(main,mainRestMatrix));
+  const F=G.AttachmentMounts,N=F.nativeFrame,fromWorld=N.clone().multiply(main.matrixWorld.clone().invert()),meshes=[];
+  model.traverse(o=>{if(o.isMesh&&!o.isSkinnedMesh)meshes.push(o)});
+  this.attachmentProfile=F.measure(meshes,fromWorld,{rail:new T.Vector3(0,4.15,1).applyMatrix4(N),muzzle:muzzleLocal.clone().applyMatrix4(N),under:new T.Vector3(0,-.5,9).applyMatrix4(N)},G.WEAPONS.g18);
+  this.magContacts=['Mag1_j','Mag2_j'].map(n=>G.HandContact?.magazine(model,model.getObjectByName(n),meshes)).filter(Boolean);
+  for(const c of this.magContacts)c.toCanonical=fromWorld.clone().multiply(c.bone.matrixWorld);
+  this.slideRestMain=slide?main.matrixWorld.clone().invert().multiply(slide.matrixWorld):null;
+
   if(spare)spare.visible=false;
   // v60 다른 1인칭 팩과 같은 장갑·소매 색
   if(G.AssetVM?.tintArms)G.AssetVM.tintArms(model).catch(e=>console.warn('[G18] 팔 색',e));
  },
  unload(){
-  if(this.pivot)this.pivot.removeFromParent();if(this.mixer)this.mixer.stopAllAction();
+  G.AttachmentMounts.clear(this);if(this.pivot)this.pivot.removeFromParent();if(this.mixer)this.mixer.stopAllAction();
   if(this.ready&&G.VM.cur==='g18')G.VM.models.g18.root.visible=true;
   Object.assign(this,{ready:false,active:false,name:null,pivot:null,mixer:null,model:null,actions:null,mount:null,mountKey:null});
  }

@@ -1,12 +1,13 @@
 (function(){
 'use strict';
 const G=window.G,T=window.THREE;
-// v59 실사 부착물 (Sketchfab CC-BY-4.0, tools/attachments/build-real.cjs): 도트 = Aimpoint 류, 홀로 = EOTech EXPS3, x2 = ACOG, x4·x8 = 저격 조준경, 소음기 · 제퇴기 · 수직 손잡이 · 레이저(Perst-4)
-//  권총 미니 도트(micro)만 예전 Flat 모델. 조준선 높이는 모델의 extras.eye (바닥 기준 m)
-// v61 권총 미니 도트 = RMR 꼴, 산탄총 초크 = 연장 초크 (tools/attachments/build-procedural.mjs, 직접 만든 모델)
-const files={choke:'choke',micro:'rmr',reddot:'rd-aimpoint',holo:'holo-eotech',x2:'scope-acog',x4:'scope-sniper',x8:'scope-sniper',suppressor:'sup-rifle',brake:'brake-rifle',grip:'grip-vertical',laser:'laser-perst'};
+// v92 직접 만든 경량 부품: 동일한 단위·광축·접면을 모든 뷰모델에서 사용한다.
 const A=G.Attachments={models:{},open:false,
- async load(){if(!T.GLTFLoader)return;await Promise.all(Object.entries(files).map(async([id,file])=>{try{const L=new T.GLTFLoader();if(T.MeshoptDecoder)L.setMeshoptDecoder(T.MeshoptDecoder);const m=await L.loadAsync('assets/models/attachments/'+file+'.glb?v='+(window.LZ_BUILD||'59'));this.models[id]=m.scene;const e=m.scene.children[0]?.userData?.eye;if(e)m.scene.userData.eye=e}catch(e){console.info('Attachment unavailable',id)}}))},
+ async load(){await Promise.all(G.AttachmentModels.ids.map(async id=>{
+  try{const L=new T.GLTFLoader();if(T.MeshoptDecoder)L.setMeshoptDecoder(T.MeshoptDecoder);const m=await L.loadAsync('assets/models/attachments/v92/'+id+'.glb?v='+(window.LZ_BUILD||'92'));this.models[id]=m.scene}
+  catch(e){this.models[id]=G.AttachmentModels.build(id)}
+  Object.assign(this.models[id].userData,G.AttachmentModels.specs[id]);
+ }));this.models.brake=this.models.compensator},
  options(def){
   const mag=def.reloadType==='mag'&&def.key!=='kr98';
   return {
@@ -51,47 +52,30 @@ const A=G.Attachments={models:{},open:false,
   return {v,h,hip,spread,ads,reload};
  },
  optic(inst,def){return inst.iron?null:(inst.scope||def.baseSight||null)},
- make(id,scale){const source=this.models[id];if(!source)return null;const obj=source.clone(true);obj.scale.setScalar(scale);
-  // x2(ACOG)는 x4·x8 처럼 앞 = +Z 로 만들어져 있어, 돌리지 않는 x2 자리에서는 미리 돌려 둔다
-  if(id==='x2'){const w=new T.Group();obj.rotation.y=Math.PI;w.add(obj);w.userData.lzEye=(source.userData.eye||0)*scale;return w}
-  // x4 는 x8 과 같은 조준경을 0.75 배로 (소총 위에서 덜 크게) · v62 x8 도 1.35 → 1.05 배 (지향 때 화면 가운데를 덮었다)
-  if(id==='x4'){obj.scale.multiplyScalar(.75);if(source.userData.eye)obj.userData.lzEye=source.userData.eye*scale*.75;return obj}
-  if(source.userData.eye)obj.userData.lzEye=source.userData.eye*scale;return obj},
- // 조준선 높이: 모델에 적힌 값이 있으면 그것 (x4·x8 는 부르는 쪽이 키운 배율 k 를 곱한다)
- eyeOf(obj,fallback,k=1){return obj?.userData?.lzEye?obj.userData.lzEye*k:fallback},
+ make(id,scale=1){const source=this.models[id]||G.AttachmentModels.build(id);if(!source)return null;const obj=source.clone(true);obj.scale.setScalar(scale);obj.userData.keep=true;obj.userData.lzAttachment=true;return obj},
+ eyeOf(obj,fallback,k=1){return (obj?.userData?.eye?.[1]??obj?.userData?.eyePoint?.[1])?((obj.userData.eye?.[1]??obj.userData.eyePoint[1])*obj.scale.y*k):fallback},
  install(m,def,D,P){
-  if(!D.rail)return;
-  const base=P(new T.Vector3(0,D.rail.y,D.rail.z));const host=D.rail.on==='slide'&&m.parts.slide?m.parts.slide:(m.id==='db2'&&m.parts.barrel?m.parts.barrel:m.gun);
+  const rail=D.rail||{y:D.sight?.y??D.muzzle.y+.02,z:D.sight?.z??D.trigger.z-.05};const F=G.AttachmentMounts,offset=P(new T.Vector3()),toGun=new T.Matrix4().makeScale(m.s,m.s,m.s).setPosition(offset);
+  m.gun.updateWorldMatrix(true,true);
+  const fromWorld=toGun.clone().invert().multiply(m.gun.matrixWorld.clone().invert());
+  const roots=m.gun.children.filter(o=>o!==m.flash&&o!==m.parts.rearsight&&o!==m.parts.mag&&!Object.values(m.scopes).some(s=>s.group===o));
+  m.attachmentProfile=F.measure(roots,fromWorld,{rail:[D.muzzle.x,rail.y,rail.z],muzzle:D.muzzle,under:D.fore},def);m.attachmentTransform=toGun;
+  const host=rail.on==='slide'&&m.parts.slide?m.parts.slide:(m.id==='db2'&&m.parts.barrel?m.parts.barrel:m.gun);
+  const transform=toGun.clone();if(host!==m.gun)transform.premultiply(new T.Matrix4().makeTranslation(-host.position.x,-host.position.y,-host.position.z));
   for(const id of Object.keys(m.scopes)){
-   const old=m.scopes[id],asset=this.make(id==='reddot'&&m.cls==='pistol'?'micro':id,m.s);if(!asset)continue;
-   const g=new T.Group();g.position.copy(base);if(host!==m.gun)g.position.sub(host.position);
-   const box=new T.Box3().setFromObject(asset);asset.position.y-=box.min.y;g.add(asset);
-   let eye=id==='reddot'?.032:id==='holo'?.044:id==='x2'?.050:.0264;
-   // Derive the optical centre from this asset's glass, including pistol micro sights.
-   if(id==='reddot'||id==='holo'||id==='x2'){
-    asset.updateMatrixWorld(true);const glass=new T.Box3();
-    asset.traverse(x=>{if(x.isMesh&&/glass/i.test(x.material?.name||''))glass.union(new T.Box3().setFromObject(x))});
-    if(!glass.isEmpty())eye=glass.getCenter(new T.Vector3()).y/m.s;
-   }
-   if(id==='x4'||id==='x8'){asset.rotation.y=Math.PI;asset.scale.multiplyScalar(1.05);asset.position.y=-box.min.y*1.05}
-   eye=this.eyeOf(asset,eye*m.s,id==='x8'||id==='x4'?1.05:1)/m.s/(id==='x8'||id==='x4'?1.05:1);
-   if(id==='reddot'||id==='holo'){
-    asset.traverse(x=>{if(x.isMesh&&/glass|blue/i.test(x.material?.name||'')){x.material=x.material.clone();x.material.transparent=true;x.material.opacity=.15;x.material.depthWrite=false}});
-    const dot=new T.Mesh(new T.CircleGeometry(.0009*m.s,16),new T.MeshBasicMaterial({color:0xff2415,depthTest:false}));dot.position.set(0,eye*m.s,.029*m.s);dot.renderOrder=10;g.add(dot);
-   }
-   old.group.removeFromParent();g.visible=false;host.add(g);const sight=base.clone().add(new T.Vector3(0,eye*m.s*(id==='x8'||id==='x4'?1.05:1),.02*m.s));
-   m.scopes[id]={group:g,sight,ads:new T.Vector3(0,0,-({reddot:.34,holo:.32,x2:.24,x4:.2,x8:.17}[id])).sub(sight)};
+   const optic=F.optic(m.attachmentProfile,id,def);if(!optic)continue;
+   m.scopes[id].group.removeFromParent();optic.root.visible=false;F.attach(host,optic.root,transform);
+   const sight=optic.eye.clone().applyMatrix4(toGun);
+   m.scopes[id]={group:optic.root,sight,ads:new T.Vector3(0,0,-({reddot:.34,holo:.32,x2:.24,x4:.2,x8:.17}[id])).sub(sight)};
   }
  },
- update(m,inst){if(!m?.def)return;const key=JSON.stringify(inst?.attachments||{});if(m.attachmentKey===key)return;m.attachmentKey=key;
-  if(m.accessories)m.accessories.removeFromParent();m.accessories=new T.Group();m.gun.add(m.accessories);
-  const a=inst?.attachments||{};if(a.muzzle==='suppressor'&&m.cls!=='shotgun'&&m.id!=='r45'){const o=this.make('suppressor',m.s);if(o){o.position.copy(m.muzzle).add(new T.Vector3(0,0,.025));m.accessories.add(o)}}
-  if(['grip','angled','light','half'].includes(a.under)&&m.cls==='rifle'){const o=this.make('grip',m.s);if(o){o.position.copy(m.fore).add(new T.Vector3(.01,-.01,-.09));if(a.under==='angled')o.rotation.x=-.5;if(a.under==='light'||a.under==='half')o.scale.y*=a.under==='light'?.7:.85;m.accessories.add(o)}}
-  if(a.muzzle==='choke'&&this.models.choke){const o=this.make('choke',m.s);o.position.copy(m.muzzle).add(new T.Vector3(0,0,.012));m.accessories.add(o)}
-  else if((a.muzzle==='compensator'||a.muzzle==='flash')&&this.models.brake){const o=this.make('brake',m.s);if(a.muzzle==='flash')o.scale.z*=.75;o.position.copy(m.muzzle).add(new T.Vector3(0,0,.012));m.accessories.add(o)}
-  else if(['compensator','flash','choke'].includes(a.muzzle)){const g=new T.CylinderGeometry(.012*m.s,.014*m.s,.038*m.s,12),mat=new T.MeshStandardMaterial({color:0x252b2d,metalness:.75,roughness:.42}),o=new T.Mesh(g,mat);o.rotation.x=Math.PI/2;o.position.copy(m.muzzle).add(new T.Vector3(0,0,-.012*m.s));m.accessories.add(o)}
-  if(['tactical','cheek'].includes(a.stock)){const g=new T.BoxGeometry(.024*m.s,.018*m.s,.08*m.s),mat=new T.MeshStandardMaterial({color:0x292e2d,roughness:.8}),o=new T.Mesh(g,mat);o.position.copy(m.grip).add(new T.Vector3(0,.055*m.s,.23*m.s));m.accessories.add(o)}
-  if(a.side==='laser'){const o=this.make('laser',m.s);if(o){o.position.copy(m.fore).add(new T.Vector3(.045,.015,-.08));m.accessories.add(o)}}
+ update(m,inst){if(!m?.def||!m.attachmentProfile)return;const key=JSON.stringify(inst?.attachments||{});if(m.attachmentKey===key)return;m.attachmentKey=key;
+  const F=G.AttachmentMounts;F.clear(m);m.accessories?.removeFromParent();
+  const a=inst?.attachments||{},built=F.accessories(m.attachmentProfile,a,m.def);m.accessories=built.root;F.attach(m.gun,built.root,m.attachmentTransform);
+  m.baseSupport||={fore:m.fore.clone(),normal:m.supportN,fingers:m.supportF};
+  if(built.support)G.Guns.fitSupport(m,built.support,a.under);else{m.fore.copy(m.baseSupport.fore);m.supportN=m.baseSupport.normal;m.supportF=m.baseSupport.fingers}
+  G.Guns.makeKeys(m);
+  for(const bone of [m.parts.mag,m.mag2])if(bone&&a.magazine){const box=m.magBox?.clone();if(box){const o=F.magazine({bone,box},a.magazine);if(o)m.attachmentExtras.push(o)}}
  },
  initUI(){const panel=document.createElement('div');panel.id='attachmentPanel';panel.hidden=true;panel.innerHTML='<div class="attach-card"><header><div><small>LAST ZONE / LOADOUT</small><h2>총기 부착물</h2></div><button data-close aria-label="닫기">✕</button></header><p class="attach-hint">주변에서 부착물을 획득하고 보유한 부품을 장착하세요. Tab 또는 Esc로 닫기</p><div id="attachPreview" aria-label="현재 총기 미리보기"></div><div id="attachBody"></div></div>';document.body.appendChild(panel);this.panel=panel;
   panel.addEventListener('click',e=>{
@@ -110,21 +94,26 @@ const A=G.Attachments={models:{},open:false,
  preview(m,scope){
   const host=document.getElementById('attachPreview');
   if(!this.previewRenderer){
-   const r=this.previewRenderer=new T.WebGLRenderer({antialias:true,alpha:true});r.setPixelRatio(Math.min(devicePixelRatio,1.5));r.setSize(660,210,false);r.outputColorSpace=T.SRGBColorSpace;
+   const r=this.previewRenderer=new T.WebGLRenderer({antialias:true,alpha:true});r.setPixelRatio(Math.min(G.screenPixelRatio(),1.5));r.setSize(660,210,false);r.outputColorSpace=T.SRGBColorSpace;
    this.previewScene=new T.Scene();this.previewScene.add(new T.HemisphereLight(0xe5efff,0x657481,2));
    const sun=new T.DirectionalLight(0xffffff,3);sun.position.set(1,3,2);this.previewScene.add(sun);
    this.previewCam=new T.PerspectiveCamera(35,660/210,0.01,30);host.appendChild(r.domElement);
   }
-  if(this.previewModel)this.previewScene.remove(this.previewModel);
+  if(this.previewModel){this.previewScene.remove(this.previewModel);G.AttachmentMounts.disposeSnapshot(this.previewModel)}
   const saved=Object.entries(m.scopes).map(([id,v])=>[v.group,v.group.visible]);
   for(const [id,v] of Object.entries(m.scopes))v.group.visible=id===scope;
   const flash=m.flash?.visible;if(m.flash)m.flash.visible=false;
-  const model=this.previewModel=m.id==='ar7'&&G.M4Viewmodel?.ready?G.M4Viewmodel.preview(scope):m.id==='g18'&&G.G17Pilot?.ready?G.G17Pilot.preview(scope):m.gun.clone(true);
+  const pack=G.AssetVM?.pack(m.id),M=m.id==='ar7'?G.M4Viewmodel:m.id==='g18'?G.G17Pilot:null;
+  let model;
+  if(M?.ready)model=M.preview(scope);
+  else if(pack)model=G.AssetVM.preview(pack,m.id,scope);
+  else{m.gun.updateWorldMatrix(true,true);model=G.AttachmentMounts.snapshot([m.gun],m.gun.matrixWorld.clone().invert())}
+  this.previewModel=model;
   for(const [group,visible]of saved)group.visible=visible;if(m.flash)m.flash.visible=flash;
-  this.previewScene.add(model);model.updateMatrixWorld(true);const box=new T.Box3().setFromObject(model),center=box.getCenter(new T.Vector3()),size=box.getSize(new T.Vector3());
+  this.previewScene.add(model);const box=new T.Box3().setFromObject(model),center=box.getCenter(new T.Vector3()),size=box.getSize(new T.Vector3());
   const distance=Math.max(size.z*0.95,size.x*2.2,size.y*2.2,0.4);
   this.previewCam.position.copy(center).add(new T.Vector3(distance*.62,distance*.32,distance*.85));this.previewCam.lookAt(center);this.previewCam.updateProjectionMatrix();
-  this.previewRenderer.render(this.previewScene,this.previewCam);
+  G.TextureQuality?.scan(this.previewScene,true);this.previewRenderer.render(this.previewScene,this.previewCam);
  },
  render(){
   const a=G.Game.player,inst=a.weapons[this.viewSlot],d=G.WEAPONS[inst.id],parts=inst.attachments||{},scope=this.optic(inst,d),opts=this.options(d),mod=this.modifiers(inst);

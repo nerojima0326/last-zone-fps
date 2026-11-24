@@ -844,6 +844,10 @@ const Guns = G.Guns = {
     return list.filter(e => Number.isFinite(e[0]) && e[0] >= 0 && e[0] <= 1).sort((a, b) => a[0] - b[0]);
   },
   armOverlap,
+  fitSupport(m,point,type){
+    m.supportN=type==='angled'?[0,1,0]:[1,.08,0];m.supportF=type==='angled'?[1,0,-.15]:[0,.95,-.12];
+    m.fore.copy(fitWristContact(m.toVM(point),m.supportN,m.supportF,PALM_CONTACT,-1,[]));
+  },
   buildVM(id) {
     if (id === 'fists' || id === 'throw') return this.buildHands(id);
     const M = mats();
@@ -1304,7 +1308,7 @@ const Guns = G.Guns = {
       const full = G.Game.training || (G.quality !== 'low' && G.quality !== 'potato');
       const m = this.tpModel(kind, full); m.rotation.set(0, 0, Math.PI / 2); m.position.y = 0.04; m.scale.multiplyScalar(def.cls === 'pistol' ? 1.6 : 1.15); g.add(m);
     } else if (kind.startsWith('att_') && G.Attachments) {
-      const info=G.Attachments.catalog()[kind],id=info?.slot==='under'?'grip':info?.slot==='side'?'laser':info?.slot==='muzzle'?(info.value==='suppressor'?'suppressor':info.value==='choke'?'choke':'brake'):null;
+      const info=G.Attachments.catalog()[kind],id=info?(info.slot==='magazine'?'mag_'+info.value:info.value):null;
       const m=id&&G.Attachments.make(id,1.5);
       if(m){m.rotation.x=Math.PI/2;m.position.y=.07;g.add(m)}else{const mat=new THREE.MeshStandardMaterial({color:0x45514a,metalness:.4,roughness:.65});const m=new THREE.Mesh(new THREE.BoxGeometry(.16,.05,.09),mat);m.position.y=.025;g.add(m)}
     } else if (kind.startsWith('scope_')) {
