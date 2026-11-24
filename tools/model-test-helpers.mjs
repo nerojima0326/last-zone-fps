@@ -9,6 +9,7 @@ export async function loadAttachmentFixtures(T, G, root) {
   const uri = file => pathToFileURL(path.join(process.env.THREE_DIR, file)).href;
   const { GLTFLoader } = await import(uri('examples/jsm/loaders/GLTFLoader.js'));
   const { MeshoptDecoder } = await import(uri('examples/jsm/libs/meshopt_decoder.module.js'));
+  const { mergeGeometries } = await import(uri('examples/jsm/utils/BufferGeometryUtils.js'));
   class LocalGLTFLoader extends GLTFLoader {
     constructor() {
       super();
@@ -30,7 +31,9 @@ export async function loadAttachmentFixtures(T, G, root) {
     }
   }
   window.G = G;
-  window.THREE = { ...T, GLTFLoader: LocalGLTFLoader, MeshoptDecoder };
+  window.THREE = { ...T, GLTFLoader: LocalGLTFLoader, MeshoptDecoder, mergeGeometries };
+  G.WEAPONS ||= {ar7:{key:'ar7',cls:'rifle'},g18:{key:'g18',cls:'pistol'}};
+  for(const file of ['attachment-models','attachment-mounts'])vm.runInThisContext(fs.readFileSync(path.join(root,'js/'+file+'.js'),'utf8'),{filename:'js/'+file+'.js'});
   vm.runInThisContext(fs.readFileSync(path.join(root, 'js/attachments.js'), 'utf8'), { filename: 'js/attachments.js' });
   await G.Attachments.load();
   for (const id of ['micro', 'reddot', 'holo', 'x2', 'x4', 'x8', 'grip', 'suppressor', 'brake', 'laser', 'choke']) {

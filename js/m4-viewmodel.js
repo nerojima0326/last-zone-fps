@@ -123,12 +123,17 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   up.addScaledVector(back,-up.dot(back)).normalize();
   const ironQ=new T.Quaternion().setFromRotationMatrix(new T.Matrix4().makeBasis(new V().crossVectors(up,back).normalize(),up,back).transpose());
   point.copy(rear).applyQuaternion(ironQ);ironOffset.set(-point.x,-point.y,-.22-point.z);
-  const previewTemplate=frame.clone(true),remove=[];previewTemplate.traverse(o=>{if(o.isSkinnedMesh||o.isCamera||o.name==='Mag2')remove.push(o)});for(const o of remove)o.removeFromParent();
   G.WeaponFinish?.root(model);
   const flash=G.VM.models.ar7.flash.clone();flash.name='M4Flash';flash.visible=false;pivot.add(flash);
   this.unload();G.VM.root.add(pivot);
-  Object.assign(this,{ready:true,active:false,model,pivot,frame,main,mainRestMatrix,body,rearSight,mixer,actions,spare,flash,muzzleLocal,ironLocal,ironQ,ironOffset,aimOffset:ironOffset.clone(),previewTemplate,scope:null,mount:null,mountKey:null,name:'Idle',shotT:99,equipT:99,aim:0});
+  Object.assign(this,{ready:true,active:false,model,pivot,frame,main,mainRestMatrix,body,rearSight,mixer,actions,spare,flash,muzzleLocal,ironLocal,ironQ,ironOffset,aimOffset:ironOffset.clone(),scope:null,mount:null,mountKey:null,name:'Idle',shotT:99,equipT:99,aim:0});
   G.HandContact?.bind(model,G.HandContact.frame(main,mainRestMatrix,ironQ.clone().invert()));
+  const F=G.AttachmentMounts,N=F.nativeFrame,fromWorld=N.clone().multiply(main.matrixWorld.clone().invert()),meshes=[];
+  model.traverse(o=>{if(o.isMesh&&!o.isSkinnedMesh)meshes.push(o)});
+  this.attachmentProfile=F.measure(meshes,fromWorld,{rail:new V(.344,5.1,-3).applyMatrix4(N),muzzle:muzzleLocal.clone().applyMatrix4(N),under:new V(.344,-3.1,23).applyMatrix4(N)},G.WEAPONS.ar7);
+  this.magContacts=['Mag1_j','Mag2_j'].map(n=>G.HandContact?.magazine(model,model.getObjectByName(n),meshes)).filter(Boolean);
+  for(const c of this.magContacts)c.toCanonical=fromWorld.clone().multiply(c.bone.matrixWorld);
+
  },
  splitRearSight(body,main){
   const source=body.geometry.index?body.geometry.toNonIndexed():body.geometry,lists=[[],[]],v=new V();
@@ -160,10 +165,10 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   const draw=!reload&&!firing&&this.equipT<this.actions.Draw.duration&&(s.ads||0)<.05;
   const name=reload?(s.reload.empty?'Reload_Empty':'Reload'):firing?'Fire':draw?'Draw':'Idle';
   this.sample(name,reload?s.reload.p:firing?this.shotT/this.actions.Fire.duration:draw?this.equipT/this.actions.Draw.duration:0);
-  G.HandContact?.apply('ar7',this.model,G.HandContact.frame(this.main,this.mainRestMatrix,this.ironQ.clone().invert()),undefined,{reload:s.reload});
+  this.syncAttachments(s.scope);
+  G.HandContact?.apply('ar7',this.model,G.HandContact.frame(this.main,this.mainRestMatrix,this.ironQ.clone().invert()),undefined,{reload:s.reload,supportPoint:this.supportPoint,supportTurn:this.supportTurn});
   if(s.ads>.05||reload)this.equipT=99;
   if(!reload&&s.empty){const bolt=this.model.getObjectByName('Bolt_j');if(bolt)bolt.position.z=-.7}
-  this.syncAttachments(s.scope);
   const aim=reload?0:clamp(s.ads||0,0,1),weight=1-aim;
   this.aim=aim;this.pivot.position.copy(this.aimOffset).multiplyScalar(aim);
   // v60 지향 자세를 다른 총들처럼 화면 오른쪽 아래·조금 앞으로 (손·총이 화면 가운데를 덮지 않게)
@@ -184,47 +189,20 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
  syncAttachments(scope){
   const inst=G.Game?.player?.weapons?.rifle,parts=inst?.id==='ar7'?(inst.attachments||{}):{},key=JSON.stringify([scope,parts]);
   if(key===this.mountKey)return;this.mountKey=key;this.scope=scope;
-  if(this.mount){this.mount.removeFromParent();this.disposeMount()}this.mount=new T.Group();this.mount.name='M4Attachments';this.mountMaterials=[];this.mountGeometries=[];this.main.add(this.mount);
-  if(this.rearSight)this.rearSight.visible=!scope;
-  this.aimOffset.copy(this.ironOffset);const A=G.Attachments;if(!A)return;
-  if(scope){
-   const optic=A.make(scope,100);if(optic){
-    let eye=scope==='reddot'?3.2:scope==='holo'?4.4:scope==='x2'?5:2.64;
-    if(scope==='x4'||scope==='x8'){optic.rotation.y=Math.PI;optic.scale.multiplyScalar(1.05);eye*=1.05}
-    const box=new T.Box3().setFromObject(optic);optic.position.y-=box.min.y;
-    if(['reddot','holo','x2'].includes(scope)){
-     const glass=new T.Box3();optic.updateMatrixWorld(true);
-     optic.traverse(x=>{if(x.isMesh&&/glass/i.test(x.material?.name||''))glass.union(new T.Box3().setFromObject(x))});
-     if(!glass.isEmpty())eye=glass.getCenter(new V()).y;
-    }
-    eye=A.eyeOf(optic,eye,scope==='x8'||scope==='x4'?1.05:1);
-    const half=(box.max.z-box.min.z)/2,push=['x2','x4','x8'].includes(scope)?Math.max(0,half-4.5)+(scope==='x2'?0:3):0;
-    const holder=new T.Group();holder.rotation.y=Math.PI;holder.position.set(.344,5.1,-3+push);holder.add(optic);this.mount.add(holder);
-    if(scope==='reddot'||scope==='holo'){
-     optic.traverse(x=>{if(x.isMesh&&/glass|blue/i.test(x.material?.name||'')){x.material=x.material.clone();this.mountMaterials.push(x.material);x.material.transparent=true;x.material.opacity=.15;x.material.depthWrite=false}});
-     const dot=new T.Mesh(new T.CircleGeometry(.09,16),new T.MeshBasicMaterial({color:0xff2415,depthTest:false}));dot.position.set(0,eye,3);dot.renderOrder=10;holder.add(dot);
-     this.mountGeometries.push(dot.geometry);this.mountMaterials.push(dot.material);
-    }
-    // Calibrate against the idle pose, even when the rail is rebuilt during draw or reload.
-    holder.updateMatrix();const sight=new V(0,eye,0).applyMatrix4(holder.matrix).applyMatrix4(this.mainRestMatrix);
-    this.aimOffset.set(-sight.x,-sight.y,-({reddot:.32,holo:.3,x2:.25,x4:.22,x8:.2}[scope]||.3)-sight.z);
-   }
-  }
-  const add=(o,x,y,z,turn=true)=>{if(o){if(turn)o.rotation.y=Math.PI;o.position.set(x,y,z);this.mount.add(o)}};
-  const metal=()=>{const m=new T.MeshStandardMaterial({color:0x252c2e,metalness:.6,roughness:.48});this.mountMaterials.push(m);return m};
-  if(parts.muzzle==='suppressor')add(A.make('suppressor',100),.344,1.8,52.5);
-  else if((parts.muzzle==='compensator'||parts.muzzle==='flash')&&A.models.brake){const o=A.make('brake',100);if(parts.muzzle==='flash')o.scale.z*=.75;add(o,.344,1.8,52.5)}
-  else if(parts.muzzle){const o=new T.Mesh(new T.CylinderGeometry(1.2,1.4,3.8,12).rotateX(Math.PI/2),metal());this.mountGeometries.push(o.geometry);add(o,.344,1.8,52.5)}
-  if(parts.under){const o=A.make('grip',100);if(o){if(parts.under==='angled')o.rotation.x=-.5;if(parts.under==='light'||parts.under==='half')o.scale.y*=parts.under==='light'?.7:.85;add(o,.344,-3.1,23)}}
-  if(parts.side==='laser')add(A.make('laser',100),-3.6,1.8,25);
-  if(parts.stock){const o=new T.Mesh(new T.BoxGeometry(2.4,1.8,8),metal());this.mountGeometries.push(o.geometry);add(o,.344,2.8,-24)}
+  const F=G.AttachmentMounts,def=G.WEAPONS.ar7;F.clear(this);this.mount?.removeFromParent();
+  this.aimOffset.copy(this.ironOffset);if(this.rearSight)this.rearSight.visible=!scope;
+  const built=F.accessories(this.attachmentProfile,parts,def),toMain=F.nativeFrame.clone().invert();
+  this.mount=built.root;this.mount.name='M4Attachments';F.attach(this.main,this.mount,toMain);
+  if(scope){const optic=F.optic(this.attachmentProfile,scope,def);if(optic){
+   F.attach(this.main,optic.root,toMain);this.attachmentExtras.push(optic.root);this.opticRoot=optic.root;
+   const eye=optic.eye.clone().applyMatrix4(toMain).applyMatrix4(this.mainRestMatrix);
+   this.aimOffset.set(-eye.x,-eye.y,-({reddot:.32,holo:.30,x2:.25,x4:.22,x8:.20}[scope]||.3)-eye.z);
+  }}else this.opticRoot=null;
+  for(const contact of this.magContacts){const o=F.magazine(contact,parts.magazine);if(o)this.attachmentExtras.push(o)}
+  this.supportPoint=built.support?.clone().applyMatrix4(toMain).applyMatrix4(this.mainRestMatrix)?.applyQuaternion(this.ironQ);
+  this.supportTurn=parts.under==='angled'?[0,0,0]:parts.under?[0,0,-60]:null;
  },
- preview(scope){
-  this.syncAttachments(scope);const frame=this.previewTemplate.clone(true);frame.getObjectByName('M4RearSight').visible=!scope;if(this.mount)frame.getObjectByName('Main_j').add(this.mount.clone(true));return frame;
- },
- disposeMount(){
-  for(const m of this.mountMaterials||[])m.dispose();for(const g of this.mountGeometries||[])g.dispose();this.mountMaterials=[];this.mountGeometries=[];
- },
+ preview(scope){this.syncAttachments(scope);return G.AttachmentMounts.nativeSnapshot(this)},
  dispose(root){
   const geometries=new Set(),materials=new Set(),textures=new Set();const collect=o=>{if(o.name==='M4Attachments')return;if(o.geometry)geometries.add(o.geometry);for(const m of Array.isArray(o.material)?o.material:o.material?[o.material]:[]){materials.add(m);for(const v of Object.values(m))if(v?.isTexture)textures.add(v)}for(const child of o.children)collect(child)};collect(root);
   // Attachment clones share geometry/textures with the existing asset catalogue.
@@ -232,9 +210,9 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
   for(const x of geometries)x.dispose();for(const x of materials)x.dispose();for(const x of textures)x.dispose();
  },
  unload(){
-  if(this.pivot)this.pivot.removeFromParent();if(this.mixer)this.mixer.stopAllAction();if(this.model)this.dispose(this.model);this.disposeMount();
+  G.AttachmentMounts.clear(this);if(this.pivot)this.pivot.removeFromParent();if(this.mixer)this.mixer.stopAllAction();if(this.model)this.dispose(this.model);
   if(this.ready&&G.VM.cur==='ar7')G.VM.models.ar7.root.visible=true;
-  Object.assign(this,{ready:false,active:false,pivot:null,model:null,mixer:null,actions:null,mount:null,mountKey:null,previewTemplate:null,name:null});
+  Object.assign(this,{ready:false,active:false,pivot:null,model:null,mixer:null,actions:null,mount:null,mountKey:null,name:null});
  }
 };
 })();

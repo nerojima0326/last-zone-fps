@@ -29,14 +29,14 @@ function checkAim() {
     }
     const pack = AV.pack(id), M = id === 'ar7' ? G.M4Viewmodel : id === 'g18' ? G.G17Pilot : null;
     if (scope && M) {
-      const dots = []; M.mount.traverse(o => { if (o.isMesh && o.geometry.type === 'CircleGeometry' && !o.material.depthTest) dots.push(o); });
+      const dots = []; (M.opticRoot||M.mount).traverse(o => { if (o.isMesh && o.userData.lzReticle) dots.push(o); });
       if (dots.length !== 1) throw Error(id + ' missing visible optic reticle');
       return [dots[0].getWorldPosition(new THREE.Vector3())];
     }
     if (pack) {
       const matrix = pack.gunBone.matrixWorld.clone().multiply(pack.gunRestInv);
       if (scope) {
-        const dots = []; pack.mountGroup.traverse(o => { if (o.isMesh && o.geometry.type === 'CircleGeometry' && !o.material.depthTest) dots.push(o); });
+        const dots = []; pack.mountGroup.traverse(o => { if (o.isMesh && o.userData.lzReticle) dots.push(o); });
         if (dots.length !== 1) throw Error(id + ' missing visible optic reticle');
         return [dots[0].getWorldPosition(new THREE.Vector3())];
       }
@@ -151,6 +151,8 @@ function checkAim() {
     for (const distance of [10, 50, 100]) {
       assert(await page.evaluate(distance => {
         window.liveAimHits = [];
+        // 앞선 사격의 의도된 반동을 마친 뒤 다음 거리로 조준한다.
+        for(let i=0;i<120;i++)G.Player.updateCamera(1/60);
         const a = G.Game.player, t = G.Training.targets.find(t => !t.kh && !t.zone && !t.move && t.d === distance);
         const target = t.pivot.localToWorld(new THREE.Vector3(0, 1.15, 0));
         const dir = target.sub(G.camera.position).normalize();

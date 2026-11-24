@@ -56,11 +56,12 @@ function native(row){assert(row.mobile);assert(Math.abs(row.rendererPR-row.dpr*r
   const landing=await page.evaluate(()=>{
    G.toMenu();G.startGame({...G.UI.opts,mode:'battle',players:40});G.paused=true;G.UI.showPause(false);
    const a=G.Player.a;G.Game.updatePlane(8);G.Game.jump(a);let steps=0;
-   while(a.state!=='ground'&&steps++<600){G.Game.time+=1/30;G.Game.updatePlane(1/30);G.Player.update(1/30);G.UI.update(1/30);G.Input.endFrame()}
+   // 지형 고도에 따라 자동 낙하산 착지가 20초를 넘을 수 있다.
+   while(a.state!=='ground'&&steps++<900){G.Game.time+=1/30;G.Game.updatePlane(1/30);G.Player.update(1/30);G.UI.update(1/30);G.Input.endFrame()}
    for(let i=0;i<90;i++){G.Player.update(1/60);G.UI.update(1/60);G.Input.endFrame()}G.Game.syncModels(1/60);
    return{steps,state:a.state,camera:G.Player.camMode,height:a.pos.y,ground:G.World.heightAt(a.pos.x,a.pos.z),water:G.World.waterAt(a.pos.x,a.pos.z)};
   });
-  report.match=await snapshot(page);native(report.match);report.match.landing=landing;assert.equal(landing.state,'ground');assert.equal(landing.camera,'fp');assert(landing.steps<600);report.match.actors=await page.evaluate(()=>G.Game.actors.length);assert.equal(report.match.actors,40);assert(report.match.gpu.estimatedBytes<550*1048576);
+  report.match=await snapshot(page);native(report.match);report.match.landing=landing;assert.equal(landing.state,'ground');assert.equal(landing.camera,'fp');assert(landing.steps<900);report.match.actors=await page.evaluate(()=>G.Game.actors.length);assert.equal(report.match.actors,40);assert(report.match.gpu.estimatedBytes<550*1048576);
   await page.screenshot({path:path.join(out,'match.png'),timeout:90000});console.log('PASS 40명 매치 생성·강하·착지·게임 화면');
   assert.deepEqual(crashes,[]);assert.deepEqual(f.errors,[]);report.crashes=crashes;report.errors=f.errors;fs.writeFileSync(path.join(out,'checks.json'),JSON.stringify(report,null,2)+'\n');console.log('PASS 실제 컨텍스트 손실·정지·복구·재개·재진입·GL 오류 없음');
  }finally{await f.close()}

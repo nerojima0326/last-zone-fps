@@ -1,5 +1,17 @@
 # Attachment model credits
 
+## v92 직접 만든 스코프·부착물
+
+현재 게임은 `v92/`의 21종 모델을 사용합니다. 외부 원본 메시·텍스처를 사용하지 않고 `js/attachment-models.js`에서 직접 작성했습니다.
+
+- 조준경 6종: 소형 개방형 도트, 밀폐형 레드닷, 홀로그램, 2배율 프리즘, 4배율 소형 스코프, 8배율 장거리 스코프.
+- 총구 5종: 소총/권총 소음기, 보정기, 삼지 소염기, 초크.
+- 손잡이 4종, 소형 레이저, 전술/뺨 패드 2종, 탄창 바닥판/고리 3종.
+- `tools/attachments/build-v92.cjs`로 재질별 병합·이미지 텍스처 없는 PBR 재질·위치/법선 양자화·meshopt 압축을 적용했습니다. 미터 단위, 전방 -Z, 레일 접면 Y=0, 총구 체결면 Z=0입니다.
+- `v92/manifest.json`에 파일 크기·SHA-256·삼각형 수·광축·접면을 기록했습니다. 런타임의 누락 시 대체 형상도 동일한 원형 코드에서 생성됩니다.
+
+이전 모델의 원본 파일과 아래 출처는 기존 버전 재현을 위해 보존합니다.
+
 ## v59 실사 부착물 (CC-BY-4.0)
 
 `tools/attachments/build-real.cjs` 로 만들었습니다. 원본은 Sketchfab 모델이고, GitHub 사본(trusthemind/game `apps/web/public/models/attach.glb`)에서 가져왔습니다.

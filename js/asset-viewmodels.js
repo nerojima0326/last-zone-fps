@@ -561,7 +561,7 @@ const AV = G.AssetVM = {
   },
   // 여러 클립을 가중치로 섞어 한 자세를 만든다 (모든 클립이 시간 t 를 따로 가진다)
   pose(P, list) {
-    G.HandContact?.restore(P.model);
+    P.poseList=list;G.HandContact?.restore(P.model);
     for (const k in P.acts) P.acts[k].action.enabled = false;
     for (const [k, t, w] of list) {
       const A = P.acts[k].action;
@@ -655,12 +655,12 @@ const AV = G.AssetVM = {
     P.aimIdle = list.length === 1 && list[0][0] === 'idle';
     this.pose(P, list);
     if (P.swaps[id]?.kar && P.gunId === id) this.karUpdate(P, P.swaps[id].kar, id, R, dt);
+    this.syncMount(P, id, s.scope);
     G.HandContact?.apply(id, P.model, G.HandContact.frame(P.gunBone, P.gunRest, P.sight0.qInv), undefined,
-      { reload: R, magazine: P.swaps[id]?.magazineContact || P.magazineContact,
+      { reload: R, magazine: P.swaps[id]?.magazineContact || P.magazineContact,supportPoint:P.supportPoint,supportTurn:P.supportTurn,
         movingLeft: G.WEAPONS[id].action === 'pump' && !R && P.shotT * fireSpd < fireLen + .15,
         movingRight: id === 'kr98' && (R || P.shotT < (G.WEAPONS[id].cycle || .95)) || id === 'r45' && !!R });
     for (const b of P.spare) b.scale.setScalar(reload ? 1 : 1e-4);
-    this.syncMount(P, id, s.scope);
     // ADS: 총의 가늠선을 시선과 나란히 돌리고, 가늠쇠(또는 조준경 중심)를 화면 가운데로
     const aim = reload ? 0 : clamp(s.ads || 0, 0, 1), weight = 1 - aim, M = P.mount;
     const sprint = (vm.sprint || 0) * weight * weight * (!reload && !draw ? 1 : 0);
@@ -955,25 +955,28 @@ const AV = G.AssetVM = {
     if (eul) P.pivot.quaternion.setFromEuler(eul).multiply(_q); else P.pivot.quaternion.copy(_q);
     P.pivot.position.copy(S.posH).lerp(_aimT, aim);
   },
-  // 휴식 자세 기준 피벗 공간 변환을 총 몸통 뼈에 붙인다
-  onBone(P, obj, pos, quat) {
-    _m.compose(pos, quat, _v.set(1, 1, 1)).premultiply(P.gunRestInv);
-    _m.decompose(obj.position, obj.quaternion, obj.scale);
-    P.mountGroup.add(obj);
+  // 선택한 총의 휴식 자세를 굽고, 플레이 중인 팩의 상태는 복원한다.
+  preview(P,id,scope){
+    const saved={id:P.gunId,sight:P.sight,muzzle:P.muzzleLocal,scope:P.mountScope,pose:P.poseList||[['idle',0,1]]};
+    this.useGun(P,id);this.pose(P,[['idle',0,1]]);this.syncMount(P,id,scope);P.pivot.updateWorldMatrix(true,true);
+    const result=G.AttachmentMounts.snapshot([...(P.swaps[id]?.groups||P.gunMeshes),P.mountGroup,...(P.attachmentExtras||[])],P.pivot.matrixWorld.clone().invert());
+    if(saved.id){this.useGun(P,saved.id);this.pose(P,saved.pose);this.syncMount(P,saved.id,saved.scope)}
+    else{P.sight=saved.sight;P.muzzleLocal=saved.muzzle;P.mountKey=null}
+    return result;
   },
   syncMount(P, id, scope) {
     const a = G.Game?.player, inst = Object.values(a?.weapons || {}).find(w => w && w.id === id);
     const parts = inst?.attachments || {}, key = id + JSON.stringify([scope, parts]);
     if (key === P.mountKey) return;
     P.mountKey = key;
-    if (P.mountGroup) { P.mountGroup.removeFromParent(); for (const x of P.mountDispose || []) x.dispose(); }
-    P.mountGroup = new T.Group(); P.mountDispose = [];
+    if(P.mountGroup)P.mountGroup.removeFromParent();
+    P.mountGroup = new T.Group();P.mountScope=scope;
     P.gunBone.add(P.mountGroup);
     // 뼈 공간 그룹은 단위 변환 없이 쓰고, 자식마다 휴식 자세 기준 변환을 넣는다
     if (!P.flashes[id] && G.VM.models[id]?.flash) { const fl = G.VM.models[id].flash.clone(); fl.visible = false; P.pivot.add(fl); P.flashes[id] = fl; }
     for (const k in P.flashes) if (k !== id) P.flashes[k].visible = false;
-    const S = P.sight, A = G.Attachments, pistol = P.def.pistol, cls = G.WEAPONS[id].cls;
-    for (const m of P.swaps?.[id]?.foldParts || []) m.visible = !scope;   // v70 조준경을 달면 가늠자·가늠쇠 접기
+    const S = P.sight, A = G.Attachments, pistol = P.def.pistol;
+    for (const m of P.swaps?.[id]?.foldParts || []) {m.visible = !scope;m.userData.lzFoldSight=true}   // v70 조준경을 달면 가늠자·가늠쇠 접기
     const I = S.iron || S, t = new V(), q = I.q.clone();
     const Fq = I.F.clone().applyQuaternion(q), Rq = I.R.clone().applyQuaternion(q);
     // v70 영점: 가늠쇠 끝(F)을 화면 정가운데(=총알이 가는 곳)에 정확히 둔다.
@@ -986,62 +989,30 @@ const AV = G.AssetVM = {
     // 소매 끝이 들어오지 않도록 기본 전진은 7 cm 제한. 가까운 가늠자는 총별 adsFwd 로 조절한다.
     t.z = Math.max(t.z, -(SWAP[id]?.adsFwd ?? P.def.adsFwd ?? 0.07));
     let aimPt = I.F.clone().add(new V(0, lift, 0).applyQuaternion(I.qInv));
-    const fwd = new V(0, 0, -1).applyQuaternion(S.qInv);
-    const metal = () => { const m = new T.MeshStandardMaterial({ color: 0x252b2d, metalness: 0.7, roughness: 0.45 }); P.mountDispose.push(m); return m; };
-    if (scope && A) {
-      const optic = A.make(scope === 'reddot' && pistol ? 'micro' : scope, 1);
-      if (optic) {
-        q.copy(S.q);
-        let eye = scope === 'reddot' ? 0.032 : scope === 'holo' ? 0.044 : scope === 'x2' ? 0.05 : 0.0264;
-        if (scope === 'x4' || scope === 'x8') { optic.rotation.y = Math.PI; optic.scale.multiplyScalar(1.05); eye *= 1.05; }
-        optic.updateMatrixWorld(true);
-        const box = new T.Box3().setFromObject(optic); optic.position.y -= box.min.y;
-        if (['reddot', 'holo', 'x2'].includes(scope)) {
-          const glass = new T.Box3(); optic.updateMatrixWorld(true);
-          optic.traverse(x => { if (x.isMesh && /glass/i.test(x.material?.name || '')) glass.union(new T.Box3().setFromObject(x)); });
-          if (!glass.isEmpty()) eye = glass.getCenter(new V()).y;
-        }
-        eye = A.eyeOf(optic, eye, scope === 'x8' ? 1.05 : scope === 'x4' ? 1.05 : 1);   // v59 실사 조준경은 모델에 적힌 조준선 높이
-        const holder = new T.Group(); holder.add(optic);
-        if (scope === 'reddot' || scope === 'holo') {
-          optic.traverse(x => { if (x.isMesh && /glass|blue/i.test(x.material?.name || '')) { x.material = x.material.clone(); P.mountDispose.push(x.material); x.material.transparent = true; x.material.opacity = 0.15; x.material.depthWrite = false; } });
-          const dot = new T.Mesh(new T.CircleGeometry(0.0009, 16), new T.MeshBasicMaterial({ color: 0xff2415, depthTest: false }));
-          dot.position.set(0, eye, 0.03); dot.renderOrder = 10; holder.add(dot); P.mountDispose.push(dot.geometry, dot.material);
-        }
-        // 가늠자 바로 앞, 조금 낮춰 레일·덮개 위에 얹는다
-        // v59 긴 배율 조준경은 접안렌즈(뒤 끝)가 가늠자 근처에 오도록 반 길이만큼 앞으로 (화면을 덮지 않게)
-        const half = (box.max.z - box.min.z) / 2, push = ['x2', 'x4', 'x8'].includes(scope) ? Math.max(0, half - 0.045) + (scope === 'x2' ? 0 : 0.03) : 0;   // v62 x4·x8 은 3 cm 더 앞으로 (접안렌즈가 눈앞을 덮지 않게)
-        const base = S.mount ? S.mount.clone().addScaledVector(fwd, push) : S.R.clone().add(_v.set(0, (pistol ? -0.003 : -0.006) - (push ? P.def.scopeDrop || 0 : 0), 0)).addScaledVector(fwd, (pistol ? 0.012 : 0.03) + push);
-        this.onBone(P, holder, base, S.qInv);
-        const O = base.clone().add(new V(0, eye, 0).applyQuaternion(S.qInv)).applyQuaternion(q);
-        t.set(-O.x, -O.y, -(ADS_DIST[scope] || 0.3) - O.z);
-        aimPt = base.clone().add(new V(0, eye, 0).applyQuaternion(S.qInv));   // 조준점 (피벗 공간)
-      }
+    const F=G.AttachmentMounts,C=new T.Matrix4().makeRotationFromQuaternion(S.q),fromWorld=C.clone().multiply(P.gunRest).multiply(P.gunBone.matrixWorld.clone().invert());
+    P.attachmentProfiles ||= {};
+    const source=P.swaps[id]||P.gunMeshes;
+    let profile=P.attachmentProfiles[id];
+    if(!profile||profile.source!==source){
+      const rail=(S.mount||S.R).clone().applyQuaternion(S.q);if(!S.mount){rail.y-=pistol?.003:.006;rail.z-=pistol?.012:.03}
+      profile=F.measure(P.swaps[id]?.groups||P.gunMeshes,fromWorld,{rail,muzzle:S.muzzle.clone().applyQuaternion(S.q),under:S.grip.clone().applyQuaternion(S.q),side:S.side.clone().applyQuaternion(S.q)},G.WEAPONS[id]);
+      profile.source=source;P.attachmentProfiles[id]=profile;
     }
-    // v62 산탄총 초크도 실사 모델로 (예전 조건 cls !== 'shotgun' 때문에 늘 단순 원통이 나왔다)
-    if (A && (cls !== 'shotgun' || (parts.muzzle === 'choke' && A.models.choke))) {
-      const at = S.muzzle.clone().addScaledVector(fwd, 0.01);
-      if (parts.muzzle === 'suppressor') { const o = A.make('suppressor', pistol ? 0.75 : 1); if (o) this.onBone(P, o, at, S.qInv); }
-      else if (parts.muzzle === 'choke' && A.models.choke) this.onBone(P, A.make('choke', 1), at, S.qInv);
-      else if ((parts.muzzle === 'compensator' || parts.muzzle === 'flash') && A.models.brake) {
-        const o = A.make('brake', pistol ? 0.7 : 1); if (parts.muzzle === 'flash') o.scale.z *= 0.75; this.onBone(P, o, at, S.qInv);
-      } else if (parts.muzzle) {
-        const g = new T.CylinderGeometry(0.012, 0.014, 0.038, 12).rotateX(Math.PI / 2); P.mountDispose.push(g);
-        this.onBone(P, new T.Mesh(g, metal()), at.clone().addScaledVector(fwd, 0.015), S.qInv);
-      }
-    } else if (parts.muzzle === 'choke') {
-      const g = new T.CylinderGeometry(0.013, 0.014, 0.03, 12).rotateX(Math.PI / 2); P.mountDispose.push(g);
-      this.onBone(P, new T.Mesh(g, metal()), S.muzzle.clone().addScaledVector(fwd, 0.012), S.qInv);
+    F.clear(P);
+    const transform=P.gunRestInv.clone().multiply(new T.Matrix4().makeRotationFromQuaternion(S.qInv));
+    if(scope&&A){const optic=F.optic(profile,scope,G.WEAPONS[id]);if(optic){
+      F.attach(P.mountGroup,optic.root,transform);q.copy(S.q);
+      const O=optic.eye;t.set(-O.x,-O.y,-(ADS_DIST[scope]||.3)-O.z);aimPt=O.clone().applyQuaternion(S.qInv);
+    }}
+    const built=F.accessories(profile,parts,G.WEAPONS[id]);F.attach(P.mountGroup,built.root,transform);
+    P.supportPoint=built.support?.clone().applyQuaternion(S.qInv).applyQuaternion(P.sight0.q);
+    P.supportTurn=parts.under==='angled'?[0,0,0]:parts.under?[0,0,-60]:null;
+    const contact=P.swaps[id]?.magazineContact||P.magazineContact;
+    if(contact){
+      // 탄창 뼈의 휴식 변환으로 바닥판을 붙여 장전 때 총몸에 남지 않게 한다.
+      const c={...contact,toCanonical:C.clone().multiply(P.boneRest.mag.inv.clone().invert())};
+      const o=F.magazine(c,parts.magazine);if(o)P.attachmentExtras.push(o);
     }
-    if (A && parts.under && cls === 'rifle') {
-      const o = A.make('grip', 1);
-      if (o) {
-        if (parts.under === 'angled') o.rotation.x = -0.5;
-        if (parts.under === 'light' || parts.under === 'half') o.scale.y *= parts.under === 'light' ? 0.7 : 0.85;
-        const h = new T.Group(); h.add(o); this.onBone(P, h, S.grip, S.qInv);
-      }
-    }
-    if (A && parts.side === 'laser') { const o = A.make('laser', 1); if (o) { const h = new T.Group(); h.add(o); this.onBone(P, h, pistol ? S.grip.clone().add(_v.set(0, 0.02, 0)) : S.side, S.qInv); } }
     P.mount = { t, q, aimPt };
   }
 };
