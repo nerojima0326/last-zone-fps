@@ -207,6 +207,8 @@ const Veg = G.Veg = {
             world.addCollider(it[0] - tr, it[1] - 0.5, it[2] - tr, it[0] + tr, it[1] + v.h * 0.55 * s, it[2] + tr, 'wood');
           }
         });
+        v.cells=new Map();v.candidates=[];
+        v.items.forEach((it,i)=>{const x=Math.floor(it[0]/64),z=Math.floor(it[2]/64),key=G.MapLayout.key(x,z);let cell=v.cells.get(key);if(!cell)v.cells.set(key,cell={x:(x+.5)*64,z:(z+.5)*64,ids:[]});cell.ids.push(i)});
         if (!n) { this.variants.push(v); continue; }
         // 가까운 거리: 실제 메시 (인스턴스 목록은 카메라 이동에 따라 갱신)
         const nb = v.near = new THREE.InstancedMesh(v.gB, v.bark, n);
@@ -217,6 +219,7 @@ const Veg = G.Veg = {
         // 먼 거리: 임포스터 (전체 인스턴스, 반경 안은 셰이더에서 숨김)
         this.hideNear(v.imp.mat, kind === 'bush' ? this.uRB : this.uR);
         const im = v.far = new THREE.InstancedMesh(v.imp.geo, v.imp.mat, n);
+        im.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
         im.instanceMatrix.array.set(v.mats); im.instanceMatrix.needsUpdate = true;
         im.frustumCulled = false; im.castShadow = false; im.receiveShadow = true;
         world.scene.add(im);
@@ -294,6 +297,15 @@ const Veg = G.Veg = {
     if (!Number.isFinite(this.targetR)) { this.uR.value = this.range.tree; this.uRB.value = this.range.bush; }
     this.targetR = this.range.tree; this.targetRB = this.range.bush;
     this.lastT = -1e9;
+    this.farDirty=true;
+  },
+
+  // 가까운 그루 검색은 64m 격자로 한정하고, 먼 사진판도 시야 밖 인스턴스를 제출하지 않는다.
+  query(v,pos,r){
+    const a=v.candidates;a.length=0;
+    for(let z=Math.floor((pos.z-r)/64);z<=Math.floor((pos.z+r)/64);z++)for(let x=Math.floor((pos.x-r)/64);x<=Math.floor((pos.x+r)/64);x++){
+      const c=v.cells.get(G.MapLayout.key(x,z));if(c)for(const i of c.ids)a.push(i);
+    }return a;
   },
 
   update(dt, camPos, cam) {
@@ -333,13 +345,15 @@ const Veg = G.Veg = {
       const gx = ex + sx, gz = ez + sz, g = Math.hypot(gx, gz);
       return fx * gx + fz * gz > cosL * g - pad;
     };
+    this.candidatesVisited=0;
+    for(const v of this.variants)if(v.near){const bush=v.kind==='bush',radius=Math.max(bush?this.range.bush:this.range.tree,bush?this.uRB.value:this.uR.value)+8;this.candidatesVisited+=this.query(v,camPos,radius).length}
     // 반경 안 그루 수가 예산을 넘으면 반경을 줄인다 (그 밖은 임포스터가 그린다)
     const count = (bush, R) => {
       const R2 = R * R; let c = 0;
       for (const v of this.variants) {
         if (!v.near || (v.kind === 'bush') !== bush) continue;
         const M = v.mats;
-        for (let i = 0, n = v.items.length; i < n; i++) { const ex = M[i * 16 + 12] - camPos.x, ez = M[i * 16 + 14] - camPos.z; if (ex * ex + ez * ez < R2) c++; }
+        for (const i of v.candidates) { const ex = M[i * 16 + 12] - camPos.x, ez = M[i * 16 + 14] - camPos.z; if (ex * ex + ez * ez < R2) c++; }
       }
       return c;
     };
@@ -352,7 +366,7 @@ const Veg = G.Veg = {
       const R = (v.kind === 'bush' ? Math.max(rb, this.uRB.value) : Math.max(rt, this.uR.value)) + 8, R2 = R * R;
       const arr = v.near.instanceMatrix.array, M = v.mats;
       let c = 0;
-      for (let i = 0, n = v.items.length; i < n; i++) {
+      for (const i of v.candidates) {
         const ex = M[i * 16 + 12] - camPos.x, ez = M[i * 16 + 14] - camPos.z;
         if (ex * ex + ez * ez < R2 && inView(ex, ez, Math.max(7, v.w * .5 + 2))) { arr.set(M.subarray(i * 16, i * 16 + 16), c * 16); c++; }
       }
@@ -360,6 +374,18 @@ const Veg = G.Veg = {
       const im = v.near.instanceMatrix;
       if (im.addUpdateRange) { im.clearUpdateRanges(); im.addUpdateRange(0, Math.max(16, c * 16)); }   // 쓴 만큼만 GPU 로
       im.needsUpdate = true;
+    }
+    const fl=this.farLast,farTurn=!fl||cosL!==fl.cos||(cosL>-1.5&&fx*fl.fx+fz*fl.fz<.985);
+    if(this.farDirty||farTurn||!fl||(camPos.x-fl.x)**2+(camPos.z-fl.z)**2>144){
+      this.farDirty=false;this.farLast={x:camPos.x,z:camPos.z,fx,fz,cos:cosL};
+      for(const v of this.variants){
+        if(!v.far)continue;const arr=v.far.instanceMatrix.array,M=v.mats,pad=Math.max(7,v.w*.5+2);let count=0;
+        for(const cell of v.cells.values()){
+          if(!inView(cell.x-camPos.x,cell.z-camPos.z,92+pad))continue;
+          for(const i of cell.ids){this.candidatesVisited++;const ex=M[i*16+12]-camPos.x,ez=M[i*16+14]-camPos.z;if(inView(ex,ez,pad)){arr.set(M.subarray(i*16,i*16+16),count*16);count++}}
+        }
+        v.far.count=count;const im=v.far.instanceMatrix;if(im.addUpdateRange){im.clearUpdateRanges();im.addUpdateRange(0,Math.max(16,count*16))}im.needsUpdate=true;
+      }
     }
   }
 };

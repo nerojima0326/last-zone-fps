@@ -26,13 +26,16 @@ const W=G.VehicleWheels={
       const w=v.wheels[i],x=v.dim.wheelPts[i][0];w.steer=w.front?Math.sign(angle)*Math.atan(wb/Math.max(.5,turn+Math.sign(angle)*x)):0;w.o.quaternion.setFromAxisAngle(Y,w.steer);
     }
   },
-  update(v){
+  update(v,dt){
     if(!v.wheels)return;this.steer(v);v.mesh.updateMatrixWorld(true);
     for(const w of v.wheels){
       w.o.getWorldPosition(p);w.o.getWorldQuaternion(q);f.set(0,0,-1).applyQuaternion(q);prev.copy(w.forward).add(f).normalize();
       const travel=w.valid?d.copy(p).sub(w.last).dot(prev):0;
       // 뒷바퀴가 잠겼을 때도 접점을 갱신해 브레이크를 놓을 때 회전이 튀지 않게 한다.
-      if(!(v.handbrake&&!w.front))w.angle=(w.angle+travel/Math.max(.12,w.radius))%(Math.PI*2);
+      if(!(v.handbrake&&!w.front)){
+        const rotation=v.grounded===false?(w.spinRate||0)*(dt||0):travel/Math.max(.12,w.radius);
+        w.angle=(w.angle+rotation)%(Math.PI*2);if(v.grounded!==false&&dt>0)w.spinRate=rotation/dt;
+      }
       w.spin.quaternion.setFromAxisAngle(X,-w.angle);w.last.copy(p);w.forward.copy(f);w.valid=true;
     }v.mesh.updateMatrixWorld(true);
   },
@@ -78,7 +81,7 @@ const W=G.VehicleWheels={
     const left=v.wheels.filter(a=>a.flat&&v.dim.wheelPts[v.wheels.indexOf(a)][0]<0).length,right=v.wheelDamage-left;v.tirePull=(left-right)*.035;
     G.Audio.tireBurst?.(point);if(point.distanceTo(G.camera.position)<120){G.FX.debris(point,7,normal.x*.8,1.5,normal.z*.8,.035,.032,.029);G.FX.dust(point,5,normal.x*.7,.5,normal.z*.7,.22,.21,.19,.5)}
     const driver=v.driver;if(driver?.isPlayer)G.UI.toast('타이어 파손! 속도와 접지력이 감소합니다.');
-    if(!v.driver){const parked=!!v.box;if(parked)G.Vehicles.unblock(v);G.Vehicles.place(v,1);this.sync(v);if(parked)G.Vehicles.block(v)}return true;
+    if(!v.driver&&v.grounded!==false){const parked=!!v.box;if(parked)G.Vehicles.unblock(v);G.Vehicles.place(v,1);this.sync(v);if(parked)G.Vehicles.block(v)}return true;
   },
   dispose(v){for(const g of v.ownedGeometries||[])g.dispose();for(const m of v.ownedMaterials||[])m.dispose();v.ownedGeometries=[];v.ownedMaterials=[]}
 };

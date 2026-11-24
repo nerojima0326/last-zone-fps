@@ -1,0 +1,28 @@
+{
+  "version": 87,
+  "base": "cc88b96bd30ff88ec424d97e748fecfa2d28b4b5",
+  "files": {
+    "index.html": "fea3b665ce06a17b810be3dabd1724bf5f9dd289fd5c77de0ead863b908e36e7",
+    "version.txt": "fe028cccfcfd1aadf0cae5cdadc9fdb1e93988c41b242b575cb45a3dd4b0c24c",
+    "js/world.js": "afa90a664cbc27832fc382ebe73eb8b396cabda18687cccf625502cc0a76af0f",
+    "js/vegetation.js": "2b003eace58a5a6f743a4243eab5ca6749cdf678c19bd04ea4526a86298fdc8e",
+    "js/vehicles.js": "f803746fc3225d0a76167fb195a37cdff17dde80af6e3f3368c1a95c08a894aa",
+    "js/vehicle-wheels.js": "8ff86a1b4e08a493a07b971a5086ce8ddfc112798678161423a1780f346c487e",
+    "js/map-layout.js": "9297110b860f96132b691deda95c208fd9381769dd80aa6c51ac360db54e2c13",
+    "js/vehicle-suspension.js": "c06acc59e1035a40a499ff7e9668f225cdef802cc8de19a6f0bc19586b21703c",
+    "assets/lighting/static-ao.json": "fd3c84ab75d2f95884645c1e695ba41b964cf4f4001d9b67697ba1a259d2cf36"
+  },
+  "checks": {
+    "hydrology": "통과",
+    "mapAndDrive": "통과",
+    "fallback": "통과",
+    "allGunTires120": "통과",
+    "trainingSlopes24AndLifecycle": "통과",
+    "startupAndAssetFallback": "통과",
+    "vehicleLifecycleAndThrowableVFX": "통과",
+    "capture5Seconds": "통과",
+    "benchmark12Conditions": "통과",
+    "comparisonUI": "통과"
+  },
+  "notes": "하드웨어 GPU FPS와 하드웨어 레이트레이싱은 측정하지 않음. 상세 실행 조건과 수치는 v87-map-drive.md 참조."
+}

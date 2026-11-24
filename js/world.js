@@ -111,6 +111,7 @@ const W = G.World = {
     this.decorRnd = U.mulberry32(781245);
     this.noise = G.Noise.make(1337);
     this.grid = new Array(GN * GN);
+    this.footprintIndex = null;
     for (let i = 0; i < this.grid.length; i++) this.grid[i] = [];
     this.hit = { t: 0, point: new THREE.Vector3(), normal: new THREE.Vector3(), mat: 'hard', box: null };
 
@@ -226,19 +227,24 @@ const W = G.World = {
     // 도로 (호수·바다·높은 산을 지나지 않는 마을 연결망)
     this.genRoadNet();
     // 도로를 따라 살짝 매끄럽게
+    const clearance=new Uint8Array(N*N);
     for (let iz = 0; iz < N; iz++) for (let ix = 0; ix < N; ix++) {
       const x = ix * CELL - HALF, z = iz * CELL - HALF;
-      const d = this.roadDist(x, z);
+      const d = this.roadDist(x, z, 16);
+      clearance[iz*N+ix]=Math.min(255,Math.floor(Math.max(0,d)*16));
       if (d < 10) {
         const i = iz * N + ix;
         const avg = (H[i] + H[Math.max(0, i - 1)] + H[Math.min(N * N - 1, i + 1)] + H[Math.max(0, i - N)] + H[Math.min(N * N - 1, i + N)]) / 5;
         H[i] = U.lerp(H[i], Math.max(avg, H[i] > 0.5 ? 0.6 : H[i]), U.smoothstep(10, 3, d) * 0.8);
       }
     }
+    this.roadClearance=clearance;
     // 강 경로와 수위
     this.rivers = RIVER_DEFS.map(R => this.makeRiver(R));
     // 물 높이 격자 (바다 0, 호수·강은 각자의 수면)
     this.waterH = new Float32Array(N * N);
+    this.waterEdge = new Float32Array(N * N).fill(-1000);
+    this.lakeMask = new Uint8Array(Math.ceil(N*N/8));
     for (const L of this.lakes) this.carveLake(L);
     for (const R of this.rivers) this.carveRiver(R);
     // 강을 건너는 다리 (다리 앞뒤 도로를 다리 높이에 맞춘다)
@@ -279,13 +285,14 @@ const W = G.World = {
       const sd = this.lakeSD(L, x, z);
       if (sd > 70) continue;
       let h = H[k];
-      if (sd < 0) h = Math.min(h, L.level - 0.4 - L.depth * U.smoothstep(0, 28, -sd));
+      if (sd < 0) {h = Math.min(h, L.level + sd*.20 - L.depth * U.smoothstep(0, 32, -sd));this.lakeMask[k>>3]|=1<<(k&7)}
       else {
-        const bank = L.level + 0.35 + sd * (0.3 + 0.12 * this.noise.noise2(x * 0.02, z * 0.02));
+        const bank = L.level + sd * (0.20 + 0.07 * this.noise.noise2(x * 0.02, z * 0.02));
         h = U.lerp(Math.min(h, bank), h, U.smoothstep(40, 70, sd));      // 멀어질수록 원래 지형으로
-        if (sd < 9) h = Math.max(h, L.level + 0.3 + sd * 0.05);   // 낮은 쪽은 둑을 쌓아 물이 넘치지 않게
+        if (sd < 12) h = Math.max(h, L.level + sd * 0.08);
       }
       H[k] = h;
+      this.waterEdge[k]=Math.max(this.waterEdge[k],-sd);
       if (sd < 14) this.waterH[k] = Math.max(this.waterH[k], L.level);
     }
   },
@@ -314,49 +321,45 @@ const W = G.World = {
       for (const k of [-1, 1]) m = Math.min(m, this.heightAt(p.x + k * p.w, p.z), this.heightAt(p.x, p.z + k * p.w));
       p.h0 = m;
     }
-    // 수위: 상류에서 하류로 단조 감소, 항상 주변 지형보다 2.5m 아래
+    // 수위는 호수 입출구에 맞춘 연속 종단면을 쓴다. 지역 최솟값에 갑자기 떨어지는 계단을 없앤다.
     const src = def.from !== undefined ? this.lakes[def.from].level : pts[0].h0 - 2.5;
-    let lv = src;
-    for (let i = 0; i < pts.length; i++) {
-      const p = pts[i];
-      const inSrc = def.from !== undefined && this.lakeSD(this.lakes[def.from], p.x, p.z) < 0;
-      lv = inSrc ? src : Math.min(lv - 0.004 * 4, p.h0 - 2.5);
-      p.level = Math.max(0, lv);
-    }
-    if (def.to !== undefined) {
-      const L = this.lakes[def.to];
-      for (const p of pts) if (this.lakeSD(L, p.x, p.z) < 0) p.level = Math.min(p.level, L.level);
-      // 하류 호수가 강보다 높으면 호수 수위를 낮춘다
-      const last = pts.find(p => this.lakeSD(L, p.x, p.z) < 6);
-      if (last && last.level < L.level) L.level = last.level;
-    }
+    const dest=def.to!==undefined?this.lakes[def.to]:null;
+    if(dest&&dest.level>=src)dest.level=Math.max(0,src-1);
+    const end=dest?dest.level:0;let first=0,last=pts.length-1;
+    if(def.from!==undefined)while(first<last&&this.lakeSD(this.lakes[def.from],pts[first].x,pts[first].z)<16)first++;
+    if(dest)while(last>first&&this.lakeSD(dest,pts[last].x,pts[last].z)<16)last--;
+    const length=[0];for(let i=1;i<pts.length;i++)length[i]=length[i-1]+Math.hypot(pts[i].x-pts[i-1].x,pts[i].z-pts[i-1].z);
+    for(let i=0;i<pts.length;i++){const t=U.clamp((length[i]-length[first])/Math.max(1,length[last]-length[first]),0,1);pts[i].level=U.lerp(src,end,t*t*(3-2*t))}
     this.labels.push({ name: def.name, x: pts[Math.floor(pts.length * 0.45)].x, z: pts[Math.floor(pts.length * 0.45)].z, water: true });
     return R;
   },
   carveRiver(R) {
     const H = this.heights, n = H.length;
-    const best = new Float32Array(n).fill(1e9), bi = new Int32Array(n).fill(-1);
-    // 각 정점에서 가장 가까운 강 표본
-    R.pts.forEach((p, idx) => {
-      const rad = p.w + 70;
-      const i0 = Math.max(0, Math.floor((p.x - rad + HALF) / CELL)), i1 = Math.min(RES, Math.ceil((p.x + rad + HALF) / CELL));
-      const j0 = Math.max(0, Math.floor((p.z - rad + HALF) / CELL)), j1 = Math.min(RES, Math.ceil((p.z + rad + HALF) / CELL));
+    const best = new Float32Array(n).fill(1e9), bi = new Int32Array(n).fill(-1), along=new Float32Array(n);
+    // 점 사이 선분까지의 거리로 강바닥·수면을 함께 만든다. 4m 표본 사이의 톱니 모양을 피한다.
+    R.pts.slice(0,-1).forEach((p, idx) => {
+      const q=R.pts[idx+1],dx=q.x-p.x,dz=q.z-p.z,l2=dx*dx+dz*dz||1,rad=Math.max(p.w,q.w)+38;
+      const i0 = Math.max(0, Math.floor((Math.min(p.x,q.x) - rad + HALF) / CELL)), i1 = Math.min(RES, Math.ceil((Math.max(p.x,q.x) + rad + HALF) / CELL));
+      const j0 = Math.max(0, Math.floor((Math.min(p.z,q.z) - rad + HALF) / CELL)), j1 = Math.min(RES, Math.ceil((Math.max(p.z,q.z) + rad + HALF) / CELL));
       for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) {
-        const x = i * CELL - HALF, z = j * CELL - HALF, d = Math.hypot(x - p.x, z - p.z), k = j * N + i;
-        if (d < best[k]) { best[k] = d; bi[k] = idx; }
+        const x = i * CELL - HALF, z = j * CELL - HALF,t=U.clamp(((x-p.x)*dx+(z-p.z)*dz)/l2,0,1),d=Math.hypot(x-p.x-dx*t,z-p.z-dz*t),k=j*N+i;
+        if (d < best[k]) { best[k] = d; bi[k] = idx;along[k]=t; }
       }
     });
     for (let k = 0; k < n; k++) {
       if (bi[k] < 0) continue;
-      const p = R.pts[bi[k]], d = best[k];
+      // 호수 안쪽은 이미 깎은 호수 바닥을 유지한다. 강둑이 호수를 가로지르는 띠를 만들지 않게 한다.
+      if(this.lakeMask[k>>3]&(1<<(k&7)))continue;
+      const a=R.pts[bi[k]],b=R.pts[bi[k]+1],t=along[k],p={w:U.lerp(a.w,b.w,t),level:U.lerp(a.level,b.level,t),bank:U.lerp(a.bank,b.bank,t)},d=best[k];
       if (p.level <= 0.05 && H[k] < 0) continue;   // 바다
       let h = H[k];
-      if (d < p.w) h = Math.min(h, p.level - 0.5 - (p.level > 0.3 ? 1.8 : 1.2) * (1 - (d / p.w) * (d / p.w)));
+      if (d < p.w) h = Math.min(h, p.level - (p.level > 0.3 ? 2.2 : 1.5) * (1 - (d / p.w) * (d / p.w)));
       else {
-        h = U.lerp(Math.min(h, p.level + 0.4 + (d - p.w) * p.bank), h, U.smoothstep(p.w + 45, p.w + 70, d));
-        if (d < p.w + 6 && p.level > 0.3) h = Math.max(h, p.level + 0.3 + (d - p.w) * 0.04);
+        h = U.lerp(Math.min(h, p.level + (d - p.w) * Math.min(.5,p.bank)), h, U.smoothstep(p.w + 22, p.w + 38, d));
+        if (d < p.w + 8 && p.level > 0.3) h = Math.max(h, p.level + (d - p.w) * 0.08);
       }
       H[k] = h;
+      this.waterEdge[k]=Math.max(this.waterEdge[k],p.w-d);
       if (d < p.w + 10 && p.level > 0.05) this.waterH[k] = Math.max(this.waterH[k], p.level);
     }
   },
@@ -391,13 +394,9 @@ const W = G.World = {
       for (const b of near) if (ok(a, b)) add(a, b);
     }
     this.roads = edges.map(([a, b]) => ({ ax: T[a].x, az: T[a].z, bx: T[b].x, bz: T[b].z, w: 7 }));
-    // 큰 마을 안 십자 도로
-    for (const t of T) {
-      if (t.type !== 'city' && t.type !== 'town') continue;
-      this.roads.push({ ax: t.x - t.r - 10, az: t.z + 4, bx: t.x + t.r + 10, bz: t.z + 4, w: 6 });
-      this.roads.push({ ax: t.x - 2, az: t.z - t.r - 10, bx: t.x - 2, bz: t.z + t.r + 10, w: 6 });
-    }
+    G.MapLayout.streets(this);
     this.courseRoads();
+    G.MapLayout.roads(this);
   },
   // 운전 연습 코스 도로: 사격장 뒤 진입로 → 모서리를 깎은 사각형 한 바퀴
   courseRoads() {
@@ -437,14 +436,21 @@ const W = G.World = {
       const x = i * CELL - HALF, z = j * CELL - HALF, k = j * N + i;
       const along = (x - b.x) * b.ux + (z - b.z) * b.uz, side = Math.abs((x - b.x) * -b.uz + (z - b.z) * b.ux);
       const da = Math.abs(along) - (b.half - 1);
-      if (da < 0 || side > b.w * 0.5 + 8) continue;
+      if (side > b.w * 0.5 + 8) continue;
+      if(da<0){
+        // 상판 밑에 원래 산비탈이 남아 다리가 땅에 묻히는 것을 막는다.
+        const weight=U.smoothstep(b.w*.5+8,b.w*.5+CELL,side);H[k]=U.lerp(H[k],Math.min(H[k],b.y-.55),weight);continue;
+      }
       const target = b.y - 0.05, grade = 0.2;
       const wgt = U.smoothstep(b.w * 0.5 + 8, b.w * 0.5 + 1, side) * U.smoothstep(36, 20, da);
       const lo = target - da * grade, hi = target + da * grade;
       H[k] = U.lerp(H[k], U.clamp(H[k], lo, hi), wgt);
     }
   },
-  roadDist(x, z) {
+  roadDist(x, z, limit) {
+    // 격자 거리의 보수적인 하한만으로 먼 도로를 제외한다. 가까운 곳은 정확한 선분 거리를 사용한다.
+    if(this.roadClearance&&Number.isFinite(limit)&&Math.abs(x)<=HALF&&Math.abs(z)<=HALF){const ix=Math.round((x+HALF)/CELL),iz=Math.round((z+HALF)/CELL);if(this.roadClearance[iz*N+ix]/16-CELL*Math.SQRT1_2-.001>=limit)return limit}
+    if(this.roadIndex&&Number.isFinite(limit))return G.MapLayout.roadDist(this,x,z,limit);
     let m = 1e9;
     for (const r of this.roads) { const d = U.segDist2D(x, z, r.ax, r.az, r.bx, r.bz) - (r.w - 7) * 0.5; if (d < m) m = d; }
     return m;
@@ -459,7 +465,7 @@ const W = G.World = {
     if (u + v <= 1) return ha + (hd - ha) * u + (hb - ha) * v;
     return hc + (hb - hc) * (1 - u) + (hd - hc) * (1 - v);
   },
-  // 물 높이 (바다 0, 호수·강은 각자의 수면) — 물이 없는 곳은 0
+  // 실제 수면과 마른 물가의 지하 참고 수위. 수역 밖 저지대에 가짜 웅덩이를 만들지 않는다.
   waterAt(x, z) {
     const Wh = this.waterH;
     if (!Wh) return this.WATER;
@@ -467,8 +473,11 @@ const W = G.World = {
     if (fx < 0) fx = 0; else if (fx > RES - 0.0001) fx = RES - 0.0001;
     if (fz < 0) fz = 0; else if (fz > RES - 0.0001) fz = RES - 0.0001;
     const ix = fx | 0, iz = fz | 0, u = fx - ix, v = fz - iz, i = iz * N + ix;
-    const a = Wh[i], b = Wh[i + 1], c = Wh[i + N], d = Wh[i + N + 1];
-    return (a * (1 - u) + b * u) * (1 - v) + (c * (1 - u) + d * u) * v;
+    const a=Wh[i],b=Wh[i+N],c=Wh[i+N+1],d=Wh[i+1];
+    if(!(a||b||c||d))return this.WATER;
+    const level=u+v<=1?a+(d-a)*u+(b-a)*v:c+(b-c)*(1-u)+(d-c)*(1-v),edge=this.waterEdge;
+    if(edge){const a=edge[i],b=edge[i+N],c=edge[i+N+1],d=edge[i+1],inside=u+v<=1?a+(d-a)*u+(b-a)*v:c+(b-c)*(1-u)+(d-c)*(1-v);if(inside<-.001&&this.heightAt(x,z)<level-.001)return this.WATER}
+    return level;
   },
   normalAt(x, z, out) {
     const e = 1.0;
@@ -1238,11 +1247,11 @@ const W = G.World = {
       for (let z = -L / 2; z < L / 2; z += step) {
         for (let x = -Wd / 2 + 0.5; x < Wd / 2; x += 1.0) {
           const cx = br.x + br.uz * x + br.ux * (z + step / 2), cz = br.z - br.ux * x + br.uz * (z + step / 2);
-          this.addCollider(cx - 0.6, br.y - t, cz - 0.6, cx + 0.6, br.y, cz + 0.6, 'hard');
+          const collider=this.addCollider(cx - 0.6, br.y - t, cz - 0.6, cx + 0.6, br.y, cz + 0.6, 'hard');collider.bridgeDeck=true;collider.bridge=br;
         }
         for (const sx of [-1, 1]) {
           const x = sx * (Wd / 2 - 0.15), cx = br.x + br.uz * x + br.ux * (z + step / 2), cz = br.z - br.ux * x + br.uz * (z + step / 2);
-          this.addCollider(cx - 0.3, br.y, cz - 0.3, cx + 0.3, br.y + 0.95, cz + 0.3, 'hard');
+          const collider=this.addCollider(cx - 0.3, br.y, cz - 0.3, cx + 0.3, br.y + 0.95, cz + 0.3, 'hard');collider.bridge=br;
         }
       }
     }
@@ -1268,8 +1277,7 @@ const W = G.World = {
   /* 배치                                                            */
   /* -------------------------------------------------------------- */
   overlapsFoot(x0, z0, x1, z1) {
-    for (const f of this.footprints) if (x0 < f.maxX && x1 > f.minX && z0 < f.maxZ && z1 > f.minZ) return true;
-    return false;
+    return G.MapLayout.blocked(this,x0,z0,x1,z1);
   },
   place(kind, x, z, rot, opts) {
     const fp = FOOT[kind];
@@ -1281,7 +1289,7 @@ const W = G.World = {
     const m = (opts && opts.margin !== undefined) ? opts.margin : 3;
     if (cx - hw < -HALF + 20 || cx + hw > HALF - 20 || cz - hd < -HALF + 20 || cz + hd > HALF - 20) return false;
     if (this.overlapsFoot(cx - hw - m, cz - hd - m, cx + hw + m, cz + hd + m)) return false;
-    if (kind !== 'car' && this.roadDist(cx, cz) < Math.max(hw, hd) + 4.5) return false;
+    if (kind !== 'car' && this.roadDist(cx, cz, 32) < Math.max(hw, hd) + 4.5) return false;
     // 지면 높이
     let mn = 1e9, mx = -1e9;
     for (let i = 0; i <= 4; i++) for (let j = 0; j <= 4; j++) {
@@ -1296,7 +1304,7 @@ const W = G.World = {
     }
     if (this.bridges && this.bridges.some(br => Math.hypot(cx - br.x, cz - br.z) < br.half + Math.max(hw, hd) + 4)) return false;
     if (opts && opts.maxSlope !== undefined && mx - mn > opts.maxSlope) return false;
-    this.footprints.push({ minX: cx - hw, maxX: cx + hw, minZ: cz - hd, maxZ: cz + hd, kind });
+    this.footprints.push({ minX: cx - hw, maxX: cx + hw, minZ: cz - hd, maxZ: cz + hd, kind,rot,foundation:mx-mn,town:opts?.town||null,street:!!opts?.street });
     this.cur = LOD_KIND[kind] ? { x: cx, y: mx + .12, z: cz, tag: LOD_KIND[kind], geos: [] } : null;
     let fy = mx + 0.12;
     const noFound = ['car', 'sandbags', 'hay', 'ruins', 'containers', 'tower'];
@@ -1374,7 +1382,10 @@ const W = G.World = {
           let rr = Math.sqrt(r()) * (t.r - 6);
           let x = t.x + Math.cos(ang) * rr, z = t.z + Math.sin(ang) * rr;
           let rot;
-          if (kind === 'car') {
+          const street=kind==='car'||t.plots.length>0;
+          if(street){
+            const lot=G.MapLayout.lot(this,t,kind,FOOT[kind],r);x=lot.x;z=lot.z;rot=lot.rot;
+          }else if (kind === 'car') {
             // 도로 옆에 주차
             const road = this.pick(this.roads);
             const tt = r();
@@ -1390,7 +1401,7 @@ const W = G.World = {
             rot = Math.abs(dx) > Math.abs(dz) ? (dx > 0 ? 1 : 3) : (dz > 0 ? 0 : 2);
             if (r() < 0.25) rot = Math.floor(r() * 4);
           }
-          if (this.place(kind, x, z, rot, { margin: kind === 'car' ? 1 : 3.5 })) placed++;
+          if (this.place(kind, x, z, rot, { margin: kind === 'car' ? 1 : 3.5,maxSlope:kind==='car'?1.1:1.6,town:t.name,street })) {placed++;this.layoutStats[street?'streetLots':'randomLots']++}
         }
       }
       // 농장 울타리
@@ -1554,16 +1565,23 @@ const W = G.World = {
   },
   genWild() {
     const r = this.rnd;
+    const accessRoads=this.roads.filter(a=>!a.course&&!a.local);
     const inTown = (x, z, pad) => this.towns.some(t => Math.hypot(x - t.x, z - t.z) < t.r + pad);
     this.wildHouses = [];
     const tryWild = (kind, count, slope, pad, minH, maxH) => {
       let placed = 0;
       for (let i = 0; i < count * 60 && placed < count; i++) {
-        const x = (r() - 0.5) * 820 * MK, z = (r() - 0.5) * 820 * MK;
+        let x = (r() - 0.5) * 820 * MK, z = (r() - 0.5) * 820 * MK;
+        let rot=Math.floor(r()*4);
+        if(['house1','house2','shed','cabin'].includes(kind)&&r()<.78){
+          const rd=this.pick(accessRoads),t=.1+r()*.8,dx=rd.bx-rd.ax,dz=rd.bz-rd.az,L=Math.hypot(dx,dz)||1,side=r()<.5?-1:1,d=20+r()*(kind==='cabin'?75:45);
+          x=U.lerp(rd.ax,rd.bx,t)-dz/L*d*side;z=U.lerp(rd.az,rd.bz,t)+dx/L*d*side;
+          const faceX=dz*side,faceZ=-dx*side;rot=Math.abs(faceX)>Math.abs(faceZ)?(faceX>0?1:3):(faceZ>0?0:2);
+        }
         if (Math.hypot(x, z) > 420 * MK || inTown(x, z, pad)) continue;
         const h = this.heightAt(x, z);
         if (h < (minH || 2.5) || h > (maxH || 200)) continue;
-        if (this.place(kind, x, z, Math.floor(r() * 4), { maxSlope: slope, margin: 6 })) { placed++; this.wildHouses.push({ x, z, kind }); }
+        if (this.place(kind, x, z, rot, { maxSlope: slope, margin: 6 })) { placed++; this.wildHouses.push({ x, z, kind }); }
       }
     };
     // 외딴 농가 무리 (집 + 헛간 + 창고)
@@ -1715,9 +1733,9 @@ const W = G.World = {
         }
         md[i + 3] = 255;
         // 풀 마스크
-        if ((px & 1) === 0 && (py & 1) === 0) {
+        if (px % 3 === 0 && py % 3 === 0) {
           const g = (1 - sandW) * (1 - rockW) * (1 - dirtW * 0.9) * (1 - forest * 0.45) * (hw > 0.8 ? 1 : 0);
-          const k = ((py >> 1) * MS + (px >> 1)) * 4;
+          const k = ((py / 3) * MS + px / 3) * 4;
           kd[k] = kd[k + 1] = kd[k + 2] = U.clamp(g * 255, 0, 255); kd[k + 3] = 255;
         }
       }
@@ -1974,7 +1992,7 @@ const W = G.World = {
     const wn = this.waterNormal = G.Tex.normalMap(wh, 256, 5);
     wn.repeat.set(500, 500);
     const water = this.water = new THREE.Mesh(new THREE.PlaneGeometry(6000, 6000).rotateX(-Math.PI / 2),
-      new THREE.MeshStandardMaterial({ color: 0x1d5a70, roughness: 0.06, metalness: 0.1, normalMap: wn, normalScale: new THREE.Vector2(0.3, 0.3), transparent: true, opacity: 0.84 }));
+      new THREE.MeshStandardMaterial({ color: 0x1d5a70, roughness: 0.12, metalness: 0.06, normalMap: wn, normalScale: new THREE.Vector2(0.24, 0.24), transparent: true, opacity: 0.86,depthWrite:false }));
     water.position.y = this.WATER;
     water.matrixAutoUpdate = false; water.updateMatrix();
     water.renderOrder = 1;
@@ -2001,39 +2019,19 @@ const W = G.World = {
   },
   // 호수·강 수면 (바다와 같은 재질, 바다와 같은 UV 배율)
   buildInlandWater(mat) {
-    const uvOf = (x, z) => [(x + 3000) / 6000, 1 - (z + 3000) / 6000];
-    const add = (pos, uv, idx) => {
-      const g = new THREE.BufferGeometry();
-      g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-      g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
-      const nrm = new Float32Array(pos.length); for (let i = 1; i < nrm.length; i += 3) nrm[i] = 1;
-      g.setAttribute('normal', new THREE.BufferAttribute(nrm, 3));
-      g.setIndex(idx); g.computeBoundingSphere();
-      const m = new THREE.Mesh(g, mat); m.renderOrder = 1; m.matrixAutoUpdate = false; m.receiveShadow = true;
-      this.scene.add(m);
+    const geo=G.MapLayout.waterGeometry(this,THREE),material=mat.clone();
+    this.waterTime={value:0};
+    material.onBeforeCompile=sh=>{
+      sh.uniforms.uWaterTime=this.waterTime;
+      sh.vertexShader='attribute float waterDepth; varying float vWaterDepth; varying vec2 vWaterXZ;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvWaterDepth=waterDepth;vWaterXZ=position.xz;');
+      sh.fragmentShader='varying float vWaterDepth; varying vec2 vWaterXZ; uniform float uWaterTime;\n'+sh.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
+        float shallow=1.0-smoothstep(0.0,3.5,vWaterDepth);
+        diffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.22,0.39,0.32),shallow*0.55);
+        float foam=(1.0-smoothstep(0.025,0.32,vWaterDepth))*(0.65+0.20*sin(uWaterTime*1.6+vWaterXZ.x*.7+vWaterXZ.y*.5));
+        diffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.63,0.71,0.65),foam*0.5);`);
     };
-    for (const L of this.lakes) {
-      const pos = [L.cx, L.level, L.cz], uv = uvOf(L.cx, L.cz), idx = [], seg = 64, R = L.ext + 12;
-      for (let i = 0; i <= seg; i++) { const a = i / seg * Math.PI * 2, x = L.cx + Math.cos(a) * R, z = L.cz + Math.sin(a) * R; pos.push(x, L.level, z); uv.push(...uvOf(x, z)); if (i) idx.push(0, i + 1, i); }
-      add(pos, uv, idx);
-    }
-    for (const R of this.rivers) {
-      let pos = [], uv = [], idx = [], n = 0;
-      const flush = () => { if (n > 1) add(pos, uv, idx); pos = []; uv = []; idx = []; n = 0; };
-      const P = R.pts;
-      for (let i = 0; i < P.length; i++) {
-        const p = P[i];
-        if (p.level <= 0.12) { flush(); continue; }
-        const q = P[Math.min(P.length - 1, i + 1)], o = P[Math.max(0, i - 1)];
-        let dx = q.x - o.x, dz = q.z - o.z; const dl = Math.hypot(dx, dz) || 1; dx /= dl; dz /= dl;
-        const w = p.w + 4;
-        const lx = p.x - dz * w, lz = p.z + dx * w, rx = p.x + dz * w, rz = p.z - dx * w;
-        pos.push(lx, p.level, lz, rx, p.level, rz); uv.push(...uvOf(lx, lz), ...uvOf(rx, rz));
-        if (n) { const b = (n - 1) * 2; idx.push(b, b + 2, b + 1, b + 1, b + 2, b + 3); }   // 위를 향하는 면
-        n++;
-      }
-      flush();
-    }
+    material.customProgramCacheKey=()=>'inland-water87';
+    const mesh=new THREE.Mesh(geo,material);mesh.name='호수·강 통합 수면';mesh.renderOrder=1;mesh.matrixAutoUpdate=false;mesh.receiveShadow=true;this.scene.add(mesh);this.inlandWater=mesh;
   },
   setTimeOfDay(tod) {
     if (tod === 'random') tod = U.pick(['day', 'day', 'sunset', 'night', 'fog', 'rain']);
@@ -2178,36 +2176,38 @@ const W = G.World = {
     // 배치
     const r = this.rnd, nz = this.noise, nrm = new THREE.Vector3();
     const list = { pine: [], oak: [], rock: [], bush: [] };
-    const blocked = (x, z, pad) => {
-      for (const f of this.footprints) if (x > f.minX - pad && x < f.maxX + pad && z > f.minZ - pad && z < f.maxZ + pad) return true;
-      return false;
-    };
+    const blocked = (x, z, pad) => this.overlapsFoot(x-pad,z-pad,x+pad,z+pad);
     const inTown = (x, z, pad) => this.towns.some(t => Math.hypot(x - t.x, z - t.z) < t.r + pad);
     const onBridge = (x, z) => this.bridges.some(b => Math.hypot(x - b.x, z - b.z) < b.half + 6);
     const MAXT = Math.round(2600 * MK * MK * 2.1), MAXR = Math.round(900 * MK * MK), MAXB = Math.round(2200 * MK * MK * 1.9);
+    const treeSpace=G.MapLayout.spacing(8),bushSpace=G.MapLayout.spacing(5),rockSpace=G.MapLayout.spacing(6);
     for (let i = 0; i < 52000 * MK * MK; i++) {
       const x = (r() - 0.5) * (SIZE - 40), z = (r() - 0.5) * (SIZE - 40);
       const h = this.heightAt(x, z), wl = this.waterAt(x, z), hw = h - wl;
       if (hw < 1.5) continue;
+      // 도로·건물 위 후보는 비싼 숲 노이즈·법선 계산 전에 제외한다.
+      if(this.roadDist(x,z,9)<4.5||blocked(x,z,1.5))continue;
       const riv = wl > 0.05 && hw < 9 ? 0.3 : 0;                    // 강·호숫가 숲
       const forest = nz.fbm(x * 0.006 + 300, z * 0.006 - 120, 3) * 0.5 + 0.5 + riv;
       this.normalAt(x, z, nrm);
       const kind = r();
       if (kind < 0.5) {
         if (hw < 2.6 || nrm.y < 0.78 || r() > U.smoothstep(0.38, 0.64, forest) * 0.94 + 0.03) continue;
-        if (inTown(x, z, 6) || this.roadDist(x, z) < 6 || blocked(x, z, 3) || onBridge(x, z)) continue;
+        if (inTown(x, z, 3) || this.roadDist(x, z, 10) < 8.5 || blocked(x, z, 5) || onBridge(x, z)) continue;
         if (list.pine.length + list.oak.length > MAXT) continue;
+        if(!treeSpace(x,z,4.2)){this.layoutStats.treesRejectedSpacing++;continue}
         (h > 32 || r() < 0.5 ? list.pine : list.oak).push([x, h, z]);
       } else if (kind < 0.62) {
         if (list.rock.length > MAXR || r() > 0.35 + (1 - nrm.y) * 2) continue;
-        if (this.roadDist(x, z) < 5 || blocked(x, z, 2) || inTown(x, z, 0)) continue;
+        if (this.roadDist(x, z, 8) < 5 || blocked(x, z, 2) || inTown(x, z, 0)||!rockSpace(x,z,2.8)) continue;
         list.rock.push([x, h, z]);
       } else {
         if (hw < 2.0 || list.bush.length > MAXB || r() > U.smoothstep(0.28, 0.58, forest) + 0.14) continue;
-        if (this.roadDist(x, z) < 4.5 || blocked(x, z, 1.5)) continue;
+        if (this.roadDist(x, z, 8) < 4.5 || blocked(x, z, 1.5)||!bushSpace(x,z,1.6)) continue;
         list.bush.push([x, h, z]);
       }
     }
+    this.vegetationList=list;
     // 청크별 인스턴스 메시
     const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(), ps = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0), tint = new THREE.Color();
     const build = (items, geo, mat, cast, perItem) => {
@@ -2595,6 +2595,7 @@ const W = G.World = {
       } else u.uCamCos.value = -2;
       this.grass.visible = camPos.y - this.heightAt(camPos.x, camPos.z) < 60;
     }
+    if(this.waterTime)this.waterTime.value=this.time;
     this.waterNormal.offset.x += dt * 0.004; this.waterNormal.offset.y += dt * 0.0025;
     // 그림자 카메라 추적 (텍셀 스냅)
     const s = this.sun, snap = 150 / s.shadow.mapSize.x;
