@@ -261,7 +261,8 @@ const TIER_NAME = { potato: '최저', low: '낮음', medium: '중간', high: '�
 // '자동' 품질: 그래픽 카드로 시작 단계를 고르고, 게임 중 60fps 아래로 떨어지면 한 단계씩 낮춘다
 const Auto = { downN: 0, upT: 0, lastChange: -1e9, lastUp: -1e9, failed: {}, max: 3, start: 'high' };
 function guessTier() {
-  try { const s = localStorage.getItem('lz_auto_tier'); if (s && QUALITY[s]) return s; } catch (e) { /* 무시 */ }
+  const mobile=document.documentElement.classList.contains('mobile');
+  try { const s = localStorage.getItem('lz_auto_tier'); if (s && QUALITY[s]) return mobile&&TIERS.indexOf(s)>1?'low':s; } catch (e) { /* 무시 */ }
   let s = '';
   try {
     const gl = renderer.getContext(), ext = gl.getExtension('WEBGL_debug_renderer_info');
@@ -269,7 +270,7 @@ function guessTier() {
   } catch (e) { /* 무시 */ }
   G.gpuName = s;
   if (/swiftshader|llvmpipe|software|basic render|microsoft basic/i.test(s)) return 'potato';
-  if (document.documentElement.classList.contains('mobile')) return 'low';
+  if (mobile) return 'low';
   if (/iris xe|arc\b|radeon\(tm\) graphics|vega \d|apple m\d|apple gpu/i.test(s)) return 'medium';
   if (/intel|mali|adreno|powervr|vivante|videocore|hd graphics|uhd graphics/i.test(s)) return 'low';
   return 'high';
@@ -399,7 +400,8 @@ const DRS = {
     const rt = !!(G.RT && G.RT.active());
     if (rt !== !!this.rtWas) { this.rtWas = rt; this.apply(true); }
     if (rt) { this.acc = 0; this.cnt = 0; return; }
-    if (ms > 100) return; // 백그라운드 탭 / 일시적 멈춤은 무시
+    // 실제 10FPS 이하도 자동 품질 조절 대상이다. 숨긴 탭·긴 중단만 제외한다.
+    if (document.hidden || ms > 1000) return;
     this.acc += ms; this.cnt++;
     if (now - this.checkT < 500) return;
     this.checkT = now;

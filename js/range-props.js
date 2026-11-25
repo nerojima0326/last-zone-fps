@@ -104,6 +104,7 @@ const P = G.RangeProps = {
       m.setPosition(p.x, p.y || 0, p.z);
       return m.multiply(normal);
     });
+    const mobile=document.documentElement.classList.contains('mobile'),detail=mobile?new THREE.Group():group;
     source.traverse(mesh => {
       if (!mesh.isMesh) return;
       const material = mesh.material.clone();
@@ -118,8 +119,16 @@ const P = G.RangeProps = {
       inst.name = 'range-' + key;
       transforms.forEach((m, i) => inst.setMatrixAt(i, new THREE.Matrix4().multiplyMatrices(m, mesh.matrixWorld)));
       inst.instanceMatrix.needsUpdate = true; inst.castShadow = true; inst.receiveShadow = true;
-      inst.computeBoundingSphere(); group.add(inst);
+      inst.computeBoundingSphere(); detail.add(inst);
     });
+    if(mobile){
+      // 0.66m 상자에 1.8만 삼각형을 먼 섬에서도 그리지 않도록 실루엣 단계로 전환한다.
+      const proxyGeo=new THREE.BoxGeometry(size.x,size.y,size.z).translate(center.x,center.y,center.z),proxy=new THREE.InstancedMesh(proxyGeo,new THREE.MeshLambertMaterial({color:key==='crate'?0x35432f:0x797449}),placements.length);
+      transforms.forEach((m,i)=>proxy.setMatrixAt(i,m));proxy.instanceMatrix.needsUpdate=true;proxy.castShadow=proxy.receiveShadow=true;proxy.computeBoundingSphere();proxy.name='range-'+key+'-far';
+      const lod=new THREE.LOD(),localBox=new THREE.Box3();transforms.forEach(m=>localBox.union(bounds.clone().applyMatrix4(m)));lod.name='range-'+key+'-lod';lod.addLevel(detail,0);lod.addLevel(proxy,key==='crate'?45:110);
+      const eye=new THREE.Vector3();lod.update=function(camera){this.updateWorldMatrix(true,false);eye.setFromMatrixPosition(camera.matrixWorld);this.worldToLocal(eye);const distance=localBox.distanceToPoint(eye)/Math.max(1,G.lodZoom||1),limit=this.levels[1].distance,near=distance<limit*(this._currentLevel? .9:1.1);this._currentLevel=near?0:1;detail.visible=near;proxy.visible=!near;};
+      group.add(lod);
+    }
     return transforms.map(m => {
       const box = bounds.clone().applyMatrix4(m).translate(group.position);
       return W.addCollider(box.min.x + 0.025, box.min.y, box.min.z + 0.025,

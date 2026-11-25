@@ -27,6 +27,8 @@ const VARIANTS = {
 // budget: 실제 메시로 그릴 최대 그루 수 (숲 한가운데서는 반경을 줄여 성능 유지)
 // minT/minB: 숲 한가운데서 예산을 넘을 때 줄일 수 있는 최소 반경
 const RANGE = { potato: { tree: 40, bush: 16, tb: 45, bb: 40, minT: 18, minB: 8 }, low: { tree: 58, bush: 24, tb: 90, bb: 90, minT: 26, minB: 10 }, medium: { tree: 95, bush: 45, tb: 280, bb: 320, minT: 45, minB: 25 }, high: { tree: 125, bush: 62, tb: 400, bb: 500, minT: 45, minB: 25 } };
+// 모바일은 가까운 나무의 입체 모델을 유지하고, 그 밖은 같은 수관 사진판으로 전환한다.
+const MOBILE_RANGE = { potato:{tree:28,bush:12,tb:28,bb:28,minT:16,minB:8},low:{tree:40,bush:18,tb:50,bb:50,minT:22,minB:9},medium:{tree:65,bush:28,tb:110,bb:130,minT:30,minB:14},high:{tree:85,bush:40,tb:180,bb:220,minT:36,minB:20} };
 
 const _v = new THREE.Vector3(), _box = new THREE.Box3();
 
@@ -63,15 +65,22 @@ function waitTextures(texs, ms) {
 }
 
 const _fwd = new THREE.Vector3();
+const _farFrustum=new THREE.Frustum(),_farMatrix=new THREE.Matrix4(),_cellPoint=new THREE.Vector3();
 const Veg = G.Veg = {
   variants: [], lastFx: 0, lastFz: 0, lastCos: -2, range: RANGE.high, last: new THREE.Vector3(1e9, 0, 0), lastT: -1e9, time: { value: 0 }, cam: { value: new THREE.Vector3() }, uR: { value: 130 }, uRB: { value: 65 },
   available() { return !!(window.EZTree && window.EZTree.Tree); },
+  mobileBranches:{},
+  async loadMobile(){
+    if(!document.documentElement.classList.contains('mobile')||!THREE.GLTFLoader)return;
+    try{const loader=new THREE.GLTFLoader();if(THREE.MeshoptDecoder)loader.setMeshoptDecoder(THREE.MeshoptDecoder);const gltf=await loader.loadAsync('assets/models/mobile/tree-branches.glb?v='+(window.LZ_BUILD||''));gltf.scene.updateMatrixWorld(true);gltf.scene.traverse(o=>{if(!o.isMesh)return;const g=o.geometry.clone();for(const key of ['position','normal','uv']){const a=g.attributes[key];if(!a)continue;const array=new Float32Array(a.count*a.itemSize);for(let i=0;i<a.count;i++)for(let k=0;k<a.itemSize;k++)array[i*a.itemSize+k]=a[['getX','getY','getZ','getW'][k]](i);g.setAttribute(key,new THREE.BufferAttribute(array,a.itemSize));}g.applyMatrix4(o.matrixWorld);g.computeBoundingSphere();this.mobileBranches[o.name]=g;});}
+    catch(e){console.info('[식생] 모바일 가지 모델 없음 · 기존 입체 모델 사용',e.message);}
+  },
 
   // 한 변형의 지오메트리·재질·임포스터를 만든다
   async makeVariant(kind, def, renderer) {
     const EZ = window.EZTree;
     const t = generate(EZ, def);
-    const gB = t.branchesMesh.geometry, gL = t.leavesMesh.geometry;
+    let gB = t.branchesMesh.geometry;const gL = t.leavesMesh.geometry;
     const pB = t.branchesMesh.material, pL = t.leavesMesh.material;
     await waitTextures([pB.map, pB.normalMap, pB.aoMap, pL.map], 4000);
     // 높이 맞추기
@@ -99,6 +108,7 @@ const Veg = G.Veg = {
     const w = Math.max(_box.max.x - _box.min.x, _box.max.z - _box.min.z) * 1.02, h = _box.max.y * 1.02;
     const imp = this.makeImpostor(renderer, gB, gL, bark, leaf, w, h, kind === 'bush' ? 128 : 256);
     t.branchesMesh.geometry = new THREE.BufferGeometry(); t.leavesMesh.geometry = new THREE.BufferGeometry();
+    const mobile=this.mobileBranches[kind+'_'+def.seed];if(mobile){gB.dispose();gB=mobile;}
     return { kind, def, gB, gL, bark, leaf, imp, w, h, crownR, tris: triCount(gB) + triCount(gL), items: [], mats: null };
   },
 
@@ -208,7 +218,8 @@ const Veg = G.Veg = {
           }
         });
         v.cells=new Map();v.candidates=[];
-        v.items.forEach((it,i)=>{const x=Math.floor(it[0]/64),z=Math.floor(it[2]/64),key=G.MapLayout.key(x,z);let cell=v.cells.get(key);if(!cell)v.cells.set(key,cell={x:(x+.5)*64,z:(z+.5)*64,ids:[]});cell.ids.push(i)});
+        v.items.forEach((it,i)=>{const x=Math.floor(it[0]/64),z=Math.floor(it[2]/64),key=G.MapLayout.key(x,z);let cell=v.cells.get(key);if(!cell)v.cells.set(key,cell={x:(x+.5)*64,z:(z+.5)*64,ids:[],box:new THREE.Box3()});cell.ids.push(i);const radius=v.w+2;cell.box.expandByPoint(_cellPoint.set(it[0]-radius,it[1]-.5,it[2]-radius));cell.box.expandByPoint(_cellPoint.set(it[0]+radius,it[1]+v.h*1.4+2,it[2]+radius));});
+        if(document.documentElement.classList.contains('mobile'))for(const cell of v.cells.values())cell.box.expandByScalar(30);
         if (!n) { this.variants.push(v); continue; }
         // 가까운 거리: 실제 메시 (인스턴스 목록은 카메라 이동에 따라 갱신)
         const nb = v.near = new THREE.InstancedMesh(v.gB, v.bark, n);
@@ -290,7 +301,7 @@ const Veg = G.Veg = {
     for (const v of this.variants) for (const mat of [v.leaf, v.imp.mat, v.lam?.l, v.lam?.f]) if (mat && mat.alphaToCoverage !== (this.leafAA.value > 0)) {
       mat.alphaToCoverage = this.leafAA.value > 0; mat.needsUpdate = true;
     }
-    this.range = RANGE[q] || RANGE.high;
+    this.range = (document.documentElement.classList.contains('mobile')?MOBILE_RANGE:RANGE)[q] || RANGE.high;
     // 낮음·최저: 나무 그림자 생략 (그림자 패스에서 나무를 다시 그리는 비용이 크다)
     this.treeShadow = q === 'medium' || q === 'high';
     for (const v of this.variants) if (v.near) v.near.castShadow = v.nearLeaf.castShadow = v.kind !== 'bush' && this.treeShadow;
@@ -310,6 +321,7 @@ const Veg = G.Veg = {
 
   update(dt, camPos, cam) {
     if (!this.variants.length) return;
+    const mobile=document.documentElement.classList.contains('mobile');
     this.time.value += dt;
     if (Number.isFinite(this.targetR)) {
       this.uR.value = U.damp(this.uR.value, this.targetR, 3, dt);
@@ -328,10 +340,10 @@ const Veg = G.Veg = {
         cosL = Math.cos(Math.min(Math.PI, half + 0.45));
       }
     }
-    const turned = cosL > -2 ? (this.lastCos < -1.5 || fx * this.lastFx + fz * this.lastFz < 0.985 || cosL < this.lastCos - 0.01) : this.lastCos > -1.5;   // 돌거나 시야가 넓어지면 (조준 해제) 다시
+    const turned = (cosL > -2 ? (this.lastCos < -1.5 || fx * this.lastFx + fz * this.lastFz < (mobile?.9999875:.985) || cosL < this.lastCos - 0.01) : this.lastCos > -1.5)||mobile&&cam&&Math.abs(_fwd.y-(this.lastFy||0))>.005;   // 돌거나 시야가 넓어지면 (조준 해제) 다시
     const dx = camPos.x - this.last.x, dz = camPos.z - this.last.z;
     if (dx * dx + dz * dz < 9 && this.lastT < 1 && !turned) return;
-    this.last.copy(camPos); this.lastT = 0; this.lastFx = fx; this.lastFz = fz; this.lastCos = cosL;
+    this.last.copy(camPos); this.lastT = 0; this.lastFx = fx; this.lastFz = fz; this.lastFy=_fwd.y; this.lastCos = cosL;
     // 해 반대쪽으로 떨어지는 그림자 (나무 높이 ~14 m 기준, 30 m 까지)
     const W = G.World, sd = W && W.sunDir, sh = this.treeShadow && sd && sd.y > 0.05 ? Math.min(30, 14 * Math.hypot(sd.x, sd.z) / sd.y) : 0;
     const sx = sd ? -sd.x / Math.max(1e-3, Math.hypot(sd.x, sd.z)) * sh : 0, sz = sd ? -sd.z / Math.max(1e-3, Math.hypot(sd.x, sd.z)) * sh : 0;
@@ -375,12 +387,16 @@ const Veg = G.Veg = {
       if (im.addUpdateRange) { im.clearUpdateRanges(); im.addUpdateRange(0, Math.max(16, c * 16)); }   // 쓴 만큼만 GPU 로
       im.needsUpdate = true;
     }
-    const fl=this.farLast,farTurn=!fl||cosL!==fl.cos||(cosL>-1.5&&fx*fl.fx+fz*fl.fz<.985);
+    const fy=cam?_fwd.y:0;
+    const fl=this.farLast,farTurn=!fl||cosL!==fl.cos||(cosL>-1.5&&fx*fl.fx+fz*fl.fz<(mobile?.9999875:.985))||mobile&&Math.abs(fy-(fl.fy||0))>.005;
     if(this.farDirty||farTurn||!fl||(camPos.x-fl.x)**2+(camPos.z-fl.z)**2>144){
-      this.farDirty=false;this.farLast={x:camPos.x,z:camPos.z,fx,fz,cos:cosL};
+      this.farDirty=false;this.farLast={x:camPos.x,z:camPos.z,fx,fz,fy,cos:cosL};
+      if(mobile&&cam){cam.updateMatrixWorld(true);_farFrustum.setFromProjectionMatrix(_farMatrix.multiplyMatrices(cam.projectionMatrix,cam.matrixWorldInverse));}
       for(const v of this.variants){
         if(!v.far)continue;const arr=v.far.instanceMatrix.array,M=v.mats,pad=Math.max(7,v.w*.5+2);let count=0;
         for(const cell of v.cells.values()){
+          // 수관 높이와 회전 폭을 포함한 셀 경계로 화면 밖 사진판 제출을 줄인다.
+          if(mobile&&cam&&!G.noCull&&!_farFrustum.intersectsBox(cell.box))continue;
           if(!inView(cell.x-camPos.x,cell.z-camPos.z,92+pad))continue;
           for(const i of cell.ids){this.candidatesVisited++;const ex=M[i*16+12]-camPos.x,ez=M[i*16+14]-camPos.z;if(inView(ex,ez,pad)){arr.set(M.subarray(i*16,i*16+16),count*16);count++}}
         }

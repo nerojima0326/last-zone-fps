@@ -1,0 +1,124 @@
+{
+  "models": [
+    {
+      "source": "assets/char/swat/swat.glb",
+      "target": "assets/char/swat/swat-mobile.glb",
+      "bones": 66,
+      "matrixError": 0,
+      "weightError": 2.220446049250313e-16,
+      "sizeError": 0,
+      "before": 20698,
+      "after": 12770
+    }
+  ],
+  "trees": [
+    {
+      "name": "pine_1101",
+      "preset": "Pine Medium",
+      "seed": 1101,
+      "before": 2732,
+      "after": 1505,
+      "attributes": [
+        "POSITION",
+        "NORMAL",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "name": "pine_2202",
+      "preset": "Pine Large",
+      "seed": 2202,
+      "before": 3692,
+      "after": 1850,
+      "attributes": [
+        "POSITION",
+        "NORMAL",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "name": "pine_3303",
+      "preset": "Pine Small",
+      "seed": 3303,
+      "before": 2604,
+      "after": 1406,
+      "attributes": [
+        "POSITION",
+        "NORMAL",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "name": "oak_41",
+      "preset": "Oak Medium",
+      "seed": 41,
+      "before": 2436,
+      "after": 1903,
+      "attributes": [
+        "POSITION",
+        "NORMAL",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "name": "oak_52",
+      "preset": "Ash Medium",
+      "seed": 52,
+      "before": 3288,
+      "after": 2045,
+      "attributes": [
+        "POSITION",
+        "NORMAL",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "name": "oak_63",
+      "preset": "Aspen Medium",
+      "seed": 63,
+      "before": 3606,
+      "after": 2336,
+      "attributes": [
+        "POSITION",
+        "NORMAL",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "name": "bush_71",
+      "preset": "Bush 1",
+      "seed": 71,
+      "before": 2370,
+      "after": 1607,
+      "attributes": [
+        "POSITION",
+        "NORMAL",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "name": "bush_82",
+      "preset": "Bush 2",
+      "seed": 82,
+      "before": 942,
+      "after": 839,
+      "attributes": [
+        "POSITION",
+        "NORMAL",
+        "TEXCOORD_0"
+      ]
+    },
+    {
+      "name": "bush_93",
+      "preset": "Bush 3",
+      "seed": 93,
+      "before": 2418,
+      "after": 1195,
+      "attributes": [
+        "POSITION",
+        "NORMAL",
+        "TEXCOORD_0"
+      ]
+    }
+  ]
+}

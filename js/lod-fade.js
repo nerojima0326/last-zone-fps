@@ -19,13 +19,15 @@ const F=G.LODFade={enabled:{value:1},eye:{value:new T.Vector3()},zoom:{value:1},
         vLzDistance = ${horizontal?'length((lzCenter-lzFadeEye).xz)':'distance(lzCenter,lzFadeEye) / lzFadeZoom'};`);
     const entry=radius?(level===0?'1.0':'smoothstep(lzFadeRadius-6.0,lzFadeRadius+6.0,vLzDistance)'):(level===0?'1.0':level===1?'smoothstep(11.0,13.0,vLzDistance)':'smoothstep(26.0,30.0,vLzDistance)');
     const exit=radius?(level===0?'smoothstep(lzFadeRadius-6.0,lzFadeRadius+6.0,vLzDistance)':'0.0'):(level===0?'smoothstep(11.0,13.0,vLzDistance)':level===1?'smoothstep(26.0,30.0,vLzDistance)':'0.0');
+    // 밉·노멀의 미분을 계산한 뒤, 조명 계산 전에 숨길 화소를 버린다.
+    const cut=sh.fragmentShader.includes('#include <lights_fragment_begin>')?'#include <lights_fragment_begin>':'#include <opaque_fragment>';
     sh.fragmentShader=sh.fragmentShader.replace('#include <common>',`#include <common>\nuniform float lzFadeEnabled; ${radius?'uniform float lzFadeRadius;':''} varying float vLzDistance;`)
-      .replace('#include <opaque_fragment>',`
+      .replace(cut,`
         if(lzFadeEnabled>0.5){
           float lzNoise = fract(52.9829189 * fract(dot(floor(gl_FragCoord.xy),vec2(0.06711056,0.00583715))));
           if(lzNoise >= ${entry} || lzNoise < ${exit}) discard;
         }
-        #include <opaque_fragment>`);
+        ${cut}`);
   },
   level(base,level){
     if(Array.isArray(base))return base.map(m=>this.level(m,level));
@@ -33,13 +35,13 @@ const F=G.LODFade={enabled:{value:1},eye:{value:new T.Vector3()},zoom:{value:1},
     if(variants.has(level))return variants.get(level);
     const mat=base.clone(),hook=base.onBeforeCompile.bind(base),key=base.customProgramCacheKey();
     mat.onBeforeCompile=(sh,r)=>{hook(sh,r);this.shader(sh,level,null,false)};
-    mat.customProgramCacheKey=()=>key+'|lod-fade-v79-'+level;
+    mat.customProgramCacheKey=()=>key+'|lod-fade-v97-'+level;
     mat.userData.fadeLevel=level;variants.set(level,mat);this.clones++;return mat;
   },
   foliage(mat,radius,near){
     const hook=mat.onBeforeCompile.bind(mat),key=mat.customProgramCacheKey();
     mat.onBeforeCompile=(sh,r)=>{hook(sh,r);this.shader(sh,near?0:1,radius,true)};
-    mat.customProgramCacheKey=()=>key+'|foliage-fade-v79-'+(near?0:1);
+    mat.customProgramCacheKey=()=>key+'|foliage-fade-v97-'+(near?0:1);
   },
   coverage(d,level){const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t)};const a=smooth(11,13,d),b=smooth(26,30,d);return level===0?1-a:level===1?a-b:b}
 };
