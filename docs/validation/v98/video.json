@@ -1,0 +1,29 @@
+{
+  "file": "/workspace/artifacts/v98-throwable-comparison.mp4",
+  "duration": "20.000000",
+  "streams": [
+    {
+      "codec": "h264",
+      "width": 720,
+      "height": 900,
+      "rate": "30/1",
+      "frames": "600"
+    }
+  ],
+  "before": {
+    "first": {
+      "time": 1.6166666666666645,
+      "height": 16.088333333333306
+    },
+    "canister": 0.05991627193192173,
+    "cloud": 16.088333333333306
+  },
+  "after": {
+    "first": {
+      "time": 3.383333333333325,
+      "height": 0.0933150364582902
+    },
+    "canister": 0.05991627193192173,
+    "cloud": 0.05991627193192173
+  }
+}

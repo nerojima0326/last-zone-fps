@@ -591,13 +591,13 @@ function forearmTwist(r,axis,handNormal,dt) {
 }
 function handShape(r) {
   for(let i=0;i<4;i++) {
-    const c=U.clamp(i===0?r.trig:r.curl*(1+i*0.025),0,1),ch=r.fing[i];
-    ch[0].rotation.set(c*1.05,0,(1.5-i)*0.045*r.side*(1-c*0.8));
-    ch[1].rotation.x=c*1.24;ch[2].rotation.x=c*0.72;
+    const c=U.clamp(i===0?r.trig:r.curl*(1+i*0.025),0,1),ch=r.fing[i],joint=r.throwJoint?.[i+1],open=1-(r.throwOpen||0);
+    ch[0].rotation.set((joint?joint[0]*open:c)*1.05,0,(1.5-i)*0.045*r.side*(1-c*0.8));
+    ch[1].rotation.x=(joint?joint[1]*open:c)*1.24;ch[2].rotation.x=(joint?joint[2]*open:c)*.72;
   }
   const t=U.clamp(r.thumb,0,1),T=r.thumbB;
   T[0].quaternion.copy(r.thumbRest).multiply(_bendQ.setFromAxisAngle(HAND_X,t*0.52));
-  T[1].rotation.x=t*0.68;T[2].rotation.x=t*0.48;
+  if(r.throwJoint){const f=r.throwJoint[0],o=1-(r.throwOpen||0);T[0].quaternion.copy(r.thumbRest).multiply(_bendQ.setFromAxisAngle(HAND_X,f[0]*o*.52));T[1].rotation.x=f[1]*o*.68;T[2].rotation.x=f[2]*o*.48;}else{T[1].rotation.x=t*0.68;T[2].rotation.x=t*0.48;}
   // 손목 좌표계에서 실제 엄지·검지 끝 사이를 구한다. 산탄과 슬라이드 집기는 이 점으로 맞춘다.
   _pinchRef.set(0,FINGERS[0][1][2],0);_thumbTip.set(0,0.021,0);
   for(let i=2;i>=0;i--){
@@ -1001,6 +1001,7 @@ const Guns = G.Guns = {
       const pfree = o.items.frag?.userData.pin; if (pfree) { o.pinFree = pfree.clone(); o.pinFree.visible = false; o.pinFree.userData.keep = true; root.add(o.pinFree); o.pinFree.scale.copy(pfree.getWorldScale(new V3())); }
       o.hip = new V3(0, 0, 0); o.muzzle = new V3(0.15, -0.1, -0.35);
     }
+    if(type==='throw')G.ThrowMotion.setup(o);
     o.iron = { sight: new V3(), ads: new V3(0, 0, -0.3) };
     mergeStatic(root);
     root.traverse(m => { if (m.isMesh) m.frustumCulled = false; });
@@ -1242,7 +1243,7 @@ const Guns = G.Guns = {
       const b = new THREE.Mesh(new THREE.SphereGeometry(0.034, 14, 10), M.olive); b.scale.set(1, 1.15, 1); g.add(b);
       mb(g, 0.014, 0.05, 0.012, 0.03, 0.02, 0, M.gray, 0, 0, -0.2);
       mc(g, 0.012, 0.02, 0, 0.042, 0, M.gray, 8, 'y');
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.012, 0.0025, 6, 14), M.gray); ring.position.set(-0.016, 0.05, 0); ring.rotation.y = Math.PI / 2; g.add(ring);
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.012, 0.0025, 6, 14), M.gray); ring.position.set(-0.016, 0.05, 0); ring.rotation.y = Math.PI / 2;ring.name='pin';ring.visible=!!vm;ring.userData.keep=true;g.userData.pin=ring;g.add(ring);
     } else if (k === 'smoke') {
       mc(g, 0.029, 0.11, 0, 0, 0, M.gray, 14, 'y');
       mc(g, 0.0295, 0.025, 0, 0.02, 0, new THREE.MeshStandardMaterial({ color: 0xd8d8d8, roughness: 0.6 }), 14, 'y');
@@ -1259,6 +1260,8 @@ const Guns = G.Guns = {
       mc(g, 0.016, 0.02, 0, 0.06, 0, M.gray, 8, 'y');
       mb(g, 0.012, 0.055, 0.01, 0.027, 0.025, 0, M.gray);
     }
+    if((k==='smoke'||k==='flash')&&!g.userData.pin){const pin=new THREE.Mesh(new THREE.TorusGeometry(.009,.0015,6,14),M.gray);pin.name='pin';pin.position.set(-.014,k==='smoke'?.077:.073,0);pin.rotation.y=Math.PI/2;pin.visible=!!vm;pin.userData.keep=true;g.add(pin);g.userData.pin=pin;}
+    g.userData.keep=true;
     return g;
   },
   // 3인칭 / 아이템용 병합 지오메트리 (vertex color)
@@ -1566,7 +1569,7 @@ const VM = G.VM = {
   },
   setThrowKind(kind) {
     const m = this.models.throw;
-    for (const k in m.items) m.items[k].visible = k === kind;
+    G.ThrowMotion.select(m,kind);
   },
   fireKick(amount, suppressed = false) {
     this.kickV += amount * 3.6;
@@ -1684,42 +1687,7 @@ const VM = G.VM = {
       if (m.shell && m.shell.visible) { m.shell.position.copy(m.armL.pinch); if (m.shellOff1) m.shell.position.add(m.shellOff1); }
       if (m.shell2 && m.shell2.visible) m.shell2.position.copy(m.shell.position).add(m.shellOff2);
     }
-    // 투척
-    if (this.cur === 'throw') {
-      const hand = m.parts.hand, q = s.throwP;
-      hand.position.set(0.18, -0.2, -0.46); hand.rotation.set(0, 0, 0);
-      if (q >= 0) {
-        if (q < 0.45) { const k = q / 0.45; hand.position.add(_a.set(0.04 * k, 0.1 * k, 0.12 * k)); hand.rotation.x = 0.9 * k; }
-        else if (q < 0.65) { const k = (q - 0.45) / 0.2; hand.position.add(_a.set(0.04 - 0.08 * k, 0.1 - 0.08 * k, 0.12 - 0.35 * k)); hand.rotation.x = 0.9 - 1.8 * k; }
-        else { const k = (q - 0.65) / 0.35; hand.position.add(_a.set(-0.04, 0.02 - 0.25 * k, -0.23 + 0.1 * k)); hand.rotation.x = -0.9; }
-        for (const k in m.items) if (m.items[k].visible && q > 0.55) m.items[k].visible = false;
-      }
-      // v65 안전핀: R 로 뽑는다 (pinP: 0 → 1). 안 뽑고 던지면 손을 놓는 순간 빠진다
-      const pp = s.pinP || 0;
-      for (const k in m.items) { const pin = m.items[k].userData.pin; if (pin) pin.visible = pp < 0.6; }
-      const L = m.parts.left, LA = m.staticArms && m.staticArms.L;
-      if (L) {
-        // 내밀기: 들어 올리는 동안 앞으로, 던지는 순간 내린다
-        const up = q < 0 ? 0 : q <= 0.37 ? q / 0.37 : U.clamp(1 - (q - 0.45) / 0.2, 0, 1), e = up * up * (3 - 2 * up);
-        L.position.set(-0.26, -0.5, -0.3).lerp(_a.set(-0.15, -0.21, -0.43), e); L.rotation.set(0.25 * e, 0, -0.2 * e);
-        let curl = 0.35;
-        const kind = Object.keys(m.items).find(k => m.items[k].visible), pl = kind && m.items[kind].userData.pinLocal;
-        if (pl && pp > 0 && pp < 1 && q <= 0.37) {
-          hand.updateMatrix();
-          const ring = _b.copy(pl).applyMatrix4(hand.matrix), sm = x => x * x * (3 - 2 * x);
-          const pull = _c.copy(ring).add(_d.set(-0.15, 0.03, 0.07));
-          if (pp < 0.45) L.position.lerp(_d.copy(ring).add(_tE.set(-0.02, -0.01, 0.02)), sm(pp / 0.45));
-          else if (pp < 0.6) L.position.copy(ring).add(_tE.set(-0.02, -0.01, 0.02));
-          else if (pp < 0.85) L.position.copy(ring).add(_tE.set(-0.02, -0.01, 0.02)).lerp(pull, sm((pp - 0.6) / 0.25));
-          else L.position.lerp(pull, 1 - sm((pp - 0.85) / 0.15));
-          curl = pp > 0.38 && pp < 0.88 ? 0.85 : 0.5;
-          if (m.pinFree) { m.pinFree.visible = pp >= 0.6 && pp < 0.9; if (m.pinFree.visible) m.pinFree.position.copy(L.position).add(_tE.set(0.02, 0.01, -0.02)); }
-        } else if (m.pinFree) m.pinFree.visible = false;
-        if (LA) { LA.curl = curl; LA.thumb = curl > 0.6 ? 0.8 : 0.4; LA.trig = curl; }
-      }
-      const it = m.items.molotov;
-      if (it && it.userData.flame) { const f = it.userData.flame; f.scale.set(1 + Math.random() * 0.3, 1.5 + Math.random() * 0.6, 1); }
-    }
+    if(this.cur==='throw'){G.ThrowMotion.poseVM(this,m,dt,s);return;}
     if (this.cur === 'fists') {
       const q = s.punchP;
       const rp = m.parts.right, lp = m.parts.left;
