@@ -117,7 +117,7 @@ const W = G.World = {
 
     // 맵 생성 전에 필요한 에셋을 함께 준비한다. 서로의 모델이나 텍스처를 참조하지 않는다.
     await Promise.all([
-      G.StaticAO?.load(), G.Assets?.load(renderer, progress), G.RangeProps?.load(renderer),
+      G.StaticAO?.load(), G.Assets?.load(renderer, progress), G.RangeProps?.load(renderer), G.Veg?.loadMobile(),
       G.Soldiers?.load(renderer), G.GunModels?.load(renderer), G.WorldWeapons?.load(), G.Attachments?.load()
     ]);
     for (const template of G.Soldiers?.templates || []) G.HitResponse?.prepare(template.root);
@@ -704,6 +704,7 @@ const W = G.World = {
       mesh.name = 'World ' + key; mesh.userData.staticChunk = key;
       mesh.castShadow = true; mesh.receiveShadow = true;
       mesh.matrixAutoUpdate = false;
+      G.MobileWorld?.add(mesh);
       this.scene.add(mesh);
       if (ks[2] === 'd') {
         const [ix, iz] = ks[0].split(',').map(Number);
@@ -738,7 +739,9 @@ const W = G.World = {
     if (pg) {
       G.StaticAO?.apply(pg, 'proxy');
       const mesh = new THREE.Mesh(pg, this.mats.proxy);
+      mesh.name = 'World proxy';
       mesh.matrixAutoUpdate = false; mesh.receiveShadow = true;
+      G.MobileWorld?.add(mesh);
       this.scene.add(mesh);
     }
     // 청크 목록 (상태는 lodTex 에 기록)
@@ -783,8 +786,9 @@ const W = G.World = {
     for (const c of this.bChunks || []) {
       const dx = Math.max(c.x0 - camPos.x, 0, camPos.x - c.x1), dz = Math.max(c.z0 - camPos.z, 0, camPos.z - c.z1);
       const vis = Math.sqrt(dx * dx + dz * dz + hy * hy) < far;
-      if (vis !== c.vis) { c.vis = vis; for (const m of c.meshes) m.visible = vis; }
+      if (vis !== c.vis) { c.vis = vis; for (const m of c.meshes) { const batch=G.MobileWorld?.records.get(m);if(batch)batch.distanceVisible=vis;else m.visible=vis; } }
     }
+    G.MobileWorld?.invalidate();
   },
   boxGeom(w, h, d, tile) {
     const g = new THREE.BoxGeometry(w, h, d).toNonIndexed();
@@ -1896,6 +1900,7 @@ const W = G.World = {
     this.scene.add(grp);
     this.terrain = grp;
     this.terrainMat = mat;
+    G.MobileWorld?.prepareTerrain(this);
     // 단계 경계 거리 (품질에 따라 배율)
     this.terrainLodDist = [140, 330, 650, 1000];
     const sea = new THREE.Mesh(new THREE.PlaneGeometry(8000, 8000).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x3a4a44, roughness: 1 }));
@@ -1970,6 +1975,7 @@ const W = G.World = {
         vec3 mapN = terrainN;
         mapN.xy *= normalScale;
         normal = normalize( tbn * mapN );`);
+      G.MobileWorld?.terrainShader(sh);
     };
     return mat;
   },
@@ -2604,6 +2610,7 @@ const W = G.World = {
     s.target.position.set(cx, cy, cz);
     s.position.set(cx + this.sunDir.x * 400, cy + this.sunDir.y * 400, cz + this.sunDir.z * 400);
     s.target.updateMatrixWorld();
+    G.MobileWorld?.update(cam,this);
     for (const c of this.clouds) { c.position.x += dt * 3; if (c.position.x > 1700) c.position.x = -1700; }
   }
 };

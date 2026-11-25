@@ -144,6 +144,7 @@ const RT = G.RT = {
     root.traverse(o => { if (o.isMesh && o.userData.__rtEx === undefined) { o.userData.__rtEx = o.userData.rtExclude; o.userData.rtExclude = true; this.excluded.add(o); } });
   },
   compile(scene) {
+    G.MobileWorld?.restore();
     const Game = G.Game;
     this.tag(scene);
     // 사람 · 전리품: BVH 에서 뺀다

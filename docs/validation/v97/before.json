@@ -1,0 +1,1001 @@
+{
+  "source": "801c393",
+  "environment": "Chromium / SwiftShader · 모바일 화면 에뮬레이션",
+  "frames": 3,
+  "runs": [
+    {
+      "tier": "potato",
+      "scene": "forest",
+      "ms": 3758.1666666666665,
+      "worldUpdateMs": 1.366666667163372,
+      "segments": {
+        "viewmodel": 359.83333333333337,
+        "scene": 3152.166666664183,
+        "shadow": 2.33333333209157,
+        "grade": 42.066666666418314,
+        "fxaa": 62.60000000024834,
+        "upscale+sharpen": 165.3000000019868
+      },
+      "calls": 142,
+      "tris": 439052,
+      "world": [
+        1404,
+        648
+      ],
+      "output": [
+        2341,
+        1081
+      ],
+      "viewmodel": [
+        2341,
+        1081
+      ],
+      "samples": 0,
+      "nearTrees": 52,
+      "resources": {
+        "geometries": 142,
+        "textures": 206,
+        "programs": 192
+      },
+      "topBufferCapacity": [
+        [
+          "식생 oak/nearLeaf",
+          {
+            "calls": 3,
+            "tris": 79744
+          }
+        ],
+        [
+          "식생 oak/near",
+          {
+            "calls": 3,
+            "tris": 74952
+          }
+        ],
+        [
+          "식생 pine/near",
+          {
+            "calls": 3,
+            "tris": 36240
+          }
+        ],
+        [
+          "지형",
+          {
+            "calls": 23,
+            "tris": 32000
+          }
+        ],
+        [
+          "식생 bush/near",
+          {
+            "calls": 3,
+            "tris": 31554
+          }
+        ],
+        [
+          "식생 pine/nearLeaf",
+          {
+            "calls": 3,
+            "tris": 25472
+          }
+        ],
+        [
+          "Mesh",
+          {
+            "calls": 19,
+            "tris": 17653
+          }
+        ],
+        [
+          "식생 bush/nearLeaf",
+          {
+            "calls": 3,
+            "tris": 16764
+          }
+        ],
+        [
+          "호수·강 통합 수면",
+          {
+            "calls": 1,
+            "tris": 16538
+          }
+        ],
+        [
+          "식생 bush/far",
+          {
+            "calls": 3,
+            "tris": 14404
+          }
+        ],
+        [
+          "World 3,3|concrete|d",
+          {
+            "calls": 1,
+            "tris": 10824
+          }
+        ],
+        [
+          "World 3,3|plaster|d",
+          {
+            "calls": 1,
+            "tris": 9120
+          }
+        ],
+        [
+          "Main",
+          {
+            "calls": 1,
+            "tris": 7269
+          }
+        ],
+        [
+          "식생 pine/far",
+          {
+            "calls": 3,
+            "tris": 5568
+          }
+        ],
+        [
+          "World 4,2|wood|d",
+          {
+            "calls": 1,
+            "tris": 4908
+          }
+        ],
+        [
+          "식생 oak/far",
+          {
+            "calls": 3,
+            "tris": 4608
+          }
+        ]
+      ]
+    },
+    {
+      "tier": "potato",
+      "scene": "city",
+      "ms": 2615.0666666664183,
+      "worldUpdateMs": 1,
+      "segments": {
+        "viewmodel": 368.56666666890186,
+        "scene": 1956.0666666651764,
+        "shadow": 3.4333333373069763,
+        "grade": 46.23333333308498,
+        "fxaa": 56.36666666467984,
+        "upscale+sharpen": 203.6999999967714
+      },
+      "calls": 396,
+      "tris": 383291,
+      "world": [
+        1404,
+        648
+      ],
+      "output": [
+        2341,
+        1081
+      ],
+      "viewmodel": [
+        2341,
+        1081
+      ],
+      "samples": 0,
+      "nearTrees": 7,
+      "resources": {
+        "geometries": 445,
+        "textures": 280,
+        "programs": 213
+      },
+      "topBufferCapacity": [
+        [
+          "range-crate",
+          {
+            "calls": 1,
+            "tris": 73280
+          }
+        ],
+        [
+          "지형",
+          {
+            "calls": 31,
+            "tris": 44608
+          }
+        ],
+        [
+          "차량 ",
+          {
+            "calls": 33,
+            "tris": 30251
+          }
+        ],
+        [
+          "식생 bush/far",
+          {
+            "calls": 3,
+            "tris": 22036
+          }
+        ],
+        [
+          "호수·강 통합 수면",
+          {
+            "calls": 1,
+            "tris": 16538
+          }
+        ],
+        [
+          "Mesh",
+          {
+            "calls": 175,
+            "tris": 16421
+          }
+        ],
+        [
+          "식생 bush/near",
+          {
+            "calls": 3,
+            "tris": 13878
+          }
+        ],
+        [
+          "World 3,3|concrete|d",
+          {
+            "calls": 1,
+            "tris": 10824
+          }
+        ],
+        [
+          "range-sandbag",
+          {
+            "calls": 1,
+            "tris": 10400
+          }
+        ],
+        [
+          "World 3,3|plaster|d",
+          {
+            "calls": 1,
+            "tris": 9120
+          }
+        ],
+        [
+          "World 2,3|plaster|d",
+          {
+            "calls": 1,
+            "tris": 9036
+          }
+        ],
+        [
+          "World 2,3|concrete|d",
+          {
+            "calls": 1,
+            "tris": 8880
+          }
+        ],
+        [
+          "식생 pine/far",
+          {
+            "calls": 3,
+            "tris": 8876
+          }
+        ],
+        [
+          "식생 bush/nearLeaf",
+          {
+            "calls": 3,
+            "tris": 7272
+          }
+        ],
+        [
+          "Main",
+          {
+            "calls": 1,
+            "tris": 7269
+          }
+        ],
+        [
+          "식생 oak/far",
+          {
+            "calls": 3,
+            "tris": 6420
+          }
+        ]
+      ]
+    },
+    {
+      "tier": "potato",
+      "scene": "vista",
+      "ms": 2067.833333334575,
+      "worldUpdateMs": 0.36666666716337204,
+      "segments": {
+        "viewmodel": 422.69999999925494,
+        "scene": 1396.4000000022352,
+        "shadow": 2.2000000004967055,
+        "grade": 39.5,
+        "fxaa": 50.89999999975164,
+        "upscale+sharpen": 176.16666666542488
+      },
+      "calls": 166,
+      "tris": 450620,
+      "world": [
+        1404,
+        648
+      ],
+      "output": [
+        2341,
+        1081
+      ],
+      "viewmodel": [
+        2341,
+        1081
+      ],
+      "samples": 0,
+      "nearTrees": 48,
+      "resources": {
+        "geometries": 498,
+        "textures": 286,
+        "programs": 213
+      },
+      "topBufferCapacity": [
+        [
+          "식생 oak/near",
+          {
+            "calls": 3,
+            "tris": 53442
+          }
+        ],
+        [
+          "식생 oak/nearLeaf",
+          {
+            "calls": 3,
+            "tris": 50736
+          }
+        ],
+        [
+          "식생 pine/near",
+          {
+            "calls": 3,
+            "tris": 44884
+          }
+        ],
+        [
+          "지형",
+          {
+            "calls": 33,
+            "tris": 38432
+          }
+        ],
+        [
+          "식생 bush/near",
+          {
+            "calls": 3,
+            "tris": 35400
+          }
+        ],
+        [
+          "식생 bush/far",
+          {
+            "calls": 3,
+            "tris": 31304
+          }
+        ],
+        [
+          "식생 pine/nearLeaf",
+          {
+            "calls": 3,
+            "tris": 28408
+          }
+        ],
+        [
+          "식생 bush/nearLeaf",
+          {
+            "calls": 3,
+            "tris": 18568
+          }
+        ],
+        [
+          "Mesh",
+          {
+            "calls": 19,
+            "tris": 17173
+          }
+        ],
+        [
+          "호수·강 통합 수면",
+          {
+            "calls": 1,
+            "tris": 16538
+          }
+        ],
+        [
+          "식생 pine/far",
+          {
+            "calls": 3,
+            "tris": 12900
+          }
+        ],
+        [
+          "World 3,3|concrete|d",
+          {
+            "calls": 1,
+            "tris": 10824
+          }
+        ],
+        [
+          "World 3,3|plaster|d",
+          {
+            "calls": 1,
+            "tris": 9120
+          }
+        ],
+        [
+          "식생 oak/far",
+          {
+            "calls": 3,
+            "tris": 8572
+          }
+        ],
+        [
+          "Main",
+          {
+            "calls": 1,
+            "tris": 7269
+          }
+        ],
+        [
+          "World 3,3|brick|d",
+          {
+            "calls": 1,
+            "tris": 4884
+          }
+        ]
+      ]
+    },
+    {
+      "tier": "low",
+      "scene": "forest",
+      "ms": 8475.199999999255,
+      "worldUpdateMs": 0.5333333325882753,
+      "segments": {
+        "viewmodel": 642.1666666666666,
+        "scene": 7512.8333333345745,
+        "shadow": 13.733333330601454,
+        "grade": 52.366666668405145,
+        "upscale+sharpen": 272.40000000099343
+      },
+      "calls": 150,
+      "tris": 700054.3333333334,
+      "world": [
+        1756,
+        811
+      ],
+      "output": [
+        2341,
+        1081
+      ],
+      "viewmodel": [
+        2341,
+        1081
+      ],
+      "samples": 2,
+      "nearTrees": 98,
+      "resources": {
+        "geometries": 510,
+        "textures": 294,
+        "programs": 218
+      },
+      "topBufferCapacity": [
+        [
+          "식생 oak/nearLeaf",
+          {
+            "calls": 3,
+            "tris": 133408
+          }
+        ],
+        [
+          "식생 oak/near",
+          {
+            "calls": 3,
+            "tris": 125088
+          }
+        ],
+        [
+          "식생 pine/near",
+          {
+            "calls": 3,
+            "tris": 82896
+          }
+        ],
+        [
+          "식생 bush/near",
+          {
+            "calls": 3,
+            "tris": 59796
+          }
+        ],
+        [
+          "식생 pine/nearLeaf",
+          {
+            "calls": 3,
+            "tris": 56560
+          }
+        ],
+        [
+          "지형",
+          {
+            "calls": 23,
+            "tris": 50624
+          }
+        ],
+        [
+          "식생 bush/nearLeaf",
+          {
+            "calls": 3,
+            "tris": 31428
+          }
+        ],
+        [
+          "Mesh",
+          {
+            "calls": 18,
+            "tris": 21332
+          }
+        ],
+        [
+          "호수·강 통합 수면",
+          {
+            "calls": 1,
+            "tris": 16538
+          }
+        ],
+        [
+          "식생 bush/far",
+          {
+            "calls": 3,
+            "tris": 14404
+          }
+        ],
+        [
+          "World 3,3|concrete|d",
+          {
+            "calls": 1,
+            "tris": 10824
+          }
+        ],
+        [
+          "World 3,3|plaster|d",
+          {
+            "calls": 1,
+            "tris": 9120
+          }
+        ],
+        [
+          "Main",
+          {
+            "calls": 1,
+            "tris": 7269
+          }
+        ],
+        [
+          "식생 pine/far",
+          {
+            "calls": 3,
+            "tris": 5568
+          }
+        ],
+        [
+          "World 4,2|wood|d",
+          {
+            "calls": 1,
+            "tris": 4908
+          }
+        ],
+        [
+          "식생 oak/far",
+          {
+            "calls": 3,
+            "tris": 4608
+          }
+        ]
+      ]
+    },
+    {
+      "tier": "low",
+      "scene": "city",
+      "ms": 5872.533333332588,
+      "worldUpdateMs": 1.3333333333333333,
+      "segments": {
+        "viewmodel": 670.0666666701436,
+        "scene": 4896.666666666667,
+        "shadow": 5.599999996523062,
+        "grade": 51.2333333355685,
+        "upscale+sharpen": 266.49999999751645
+      },
+      "calls": 406.3333333333333,
+      "tris": 437006,
+      "world": [
+        1756,
+        811
+      ],
+      "output": [
+        2341,
+        1081
+      ],
+      "viewmodel": [
+        2341,
+        1081
+      ],
+      "samples": 2,
+      "nearTrees": 9,
+      "resources": {
+        "geometries": 526,
+        "textures": 303,
+        "programs": 218
+      },
+      "topBufferCapacity": [
+        [
+          "range-crate",
+          {
+            "calls": 1,
+            "tris": 73280
+          }
+        ],
+        [
+          "지형",
+          {
+            "calls": 31,
+            "tris": 55616
+          }
+        ],
+        [
+          "차량 ",
+          {
+            "calls": 33,
+            "tris": 30251
+          }
+        ],
+        [
+          "식생 bush/far",
+          {
+            "calls": 3,
+            "tris": 22036
+          }
+        ],
+        [
+          "Mesh",
+          {
+            "calls": 174,
+            "tris": 20340
+          }
+        ],
+        [
+          "식생 bush/near",
+          {
+            "calls": 3,
+            "tris": 18666
+          }
+        ],
+        [
+          "호수·강 통합 수면",
+          {
+            "calls": 1,
+            "tris": 16538
+          }
+        ],
+        [
+          "World 3,3|concrete|d",
+          {
+            "calls": 1,
+            "tris": 10824
+          }
+        ],
+        [
+          "range-sandbag",
+          {
+            "calls": 1,
+            "tris": 10400
+          }
+        ],
+        [
+          "식생 bush/nearLeaf",
+          {
+            "calls": 3,
+            "tris": 9736
+          }
+        ],
+        [
+          "World 3,3|plaster|d",
+          {
+            "calls": 1,
+            "tris": 9120
+          }
+        ],
+        [
+          "World 2,3|plaster|d",
+          {
+            "calls": 1,
+            "tris": 9036
+          }
+        ],
+        [
+          "World 2,3|concrete|d",
+          {
+            "calls": 1,
+            "tris": 8880
+          }
+        ],
+        [
+          "식생 pine/far",
+          {
+            "calls": 3,
+            "tris": 8876
+          }
+        ],
+        [
+          "Main",
+          {
+            "calls": 1,
+            "tris": 7269
+          }
+        ],
+        [
+          "식생 oak/far",
+          {
+            "calls": 3,
+            "tris": 6420
+          }
+        ]
+      ]
+    },
+    {
+      "tier": "low",
+      "scene": "vista",
+      "ms": 4544.200000000496,
+      "worldUpdateMs": 0.6666666666666666,
+      "segments": {
+        "viewmodel": 648.8666666646799,
+        "scene": 3564.5999999990067,
+        "shadow": 4.933333333581686,
+        "grade": 51.266666669398546,
+        "upscale+sharpen": 295.1333333328366
+      },
+      "calls": 185.33333333333334,
+      "tris": 647773.6666666666,
+      "world": [
+        1756,
+        811
+      ],
+      "output": [
+        2341,
+        1081
+      ],
+      "viewmodel": [
+        2341,
+        1081
+      ],
+      "samples": 2,
+      "nearTrees": 80,
+      "resources": {
+        "geometries": 535,
+        "textures": 304,
+        "programs": 223
+      },
+      "topBufferCapacity": [
+        [
+          "식생 oak/near",
+          {
+            "calls": 3,
+            "tris": 95850
+          }
+        ],
+        [
+          "식생 oak/nearLeaf",
+          {
+            "calls": 3,
+            "tris": 94928
+          }
+        ],
+        [
+          "식생 pine/near",
+          {
+            "calls": 3,
+            "tris": 78948
+          }
+        ],
+        [
+          "식생 pine/nearLeaf",
+          {
+            "calls": 3,
+            "tris": 52208
+          }
+        ],
+        [
+          "지형",
+          {
+            "calls": 39,
+            "tris": 49216
+          }
+        ],
+        [
+          "식생 bush/near",
+          {
+            "calls": 3,
+            "tris": 46860
+          }
+        ],
+        [
+          "식생 bush/far",
+          {
+            "calls": 3,
+            "tris": 31304
+          }
+        ],
+        [
+          "식생 bush/nearLeaf",
+          {
+            "calls": 3,
+            "tris": 24816
+          }
+        ],
+        [
+          "Mesh",
+          {
+            "calls": 18,
+            "tris": 19012
+          }
+        ],
+        [
+          "호수·강 통합 수면",
+          {
+            "calls": 1,
+            "tris": 16538
+          }
+        ],
+        [
+          "식생 pine/far",
+          {
+            "calls": 3,
+            "tris": 12900
+          }
+        ],
+        [
+          "World 3,3|concrete|d",
+          {
+            "calls": 1,
+            "tris": 10824
+          }
+        ],
+        [
+          "World 3,3|plaster|d",
+          {
+            "calls": 1,
+            "tris": 9120
+          }
+        ],
+        [
+          "식생 oak/far",
+          {
+            "calls": 3,
+            "tris": 8572
+          }
+        ],
+        [
+          "Main",
+          {
+            "calls": 1,
+            "tris": 7269
+          }
+        ],
+        [
+          "World 3,3|brick|d",
+          {
+            "calls": 1,
+            "tris": 4884
+          }
+        ]
+      ]
+    }
+  ],
+  "errors": [],
+  "device": {
+    "build": "95",
+    "mobile": true,
+    "dpr": 2.625,
+    "stage": [
+      1559,
+      720
+    ],
+    "stageScale": 0.5721616420782553,
+    "scenes": {
+      "forest": {
+        "pos": [
+          194.43756103515625,
+          24.736050214525296,
+          -96.16573333740234
+        ],
+        "look": [
+          229.43756103515625,
+          28.000963561772362,
+          -81.16573333740234
+        ]
+      },
+      "city": {
+        "pos": [
+          8,
+          26.587224197387695,
+          24
+        ],
+        "look": [
+          -32,
+          26.887224197387695,
+          12
+        ]
+      },
+      "vista": {
+        "pos": [
+          150,
+          80.3905429840088,
+          170
+        ],
+        "look": [
+          0,
+          29.887224197387695,
+          20
+        ]
+      }
+    },
+    "colliders": 29188,
+    "buildings": 860,
+    "staticAO": {
+      "applied": 406,
+      "rejected": 0
+    },
+    "soldierTriangles": 20698,
+    "treeTriangles": [
+      {
+        "kind": "pine",
+        "seed": 1101,
+        "tris": 5192
+      },
+      {
+        "kind": "pine",
+        "seed": 2202,
+        "tris": 5932
+      },
+      {
+        "kind": "pine",
+        "seed": 3303,
+        "tris": 4008
+      },
+      {
+        "kind": "oak",
+        "seed": 41,
+        "tris": 6468
+      },
+      {
+        "kind": "oak",
+        "seed": 52,
+        "tris": 6168
+      },
+      {
+        "kind": "oak",
+        "seed": 63,
+        "tris": 5542
+      },
+      {
+        "kind": "bush",
+        "seed": 71,
+        "tris": 3810
+      },
+      {
+        "kind": "bush",
+        "seed": 82,
+        "tris": 1602
+      },
+      {
+        "kind": "bush",
+        "seed": 93,
+        "tris": 3442
+      }
+    ]
+  }
+}

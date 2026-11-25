@@ -1,0 +1,179 @@
+{
+  "models": {
+    "batches": 407,
+    "ao": {
+      "applied": 406,
+      "rejected": 0
+    },
+    "soldiers": [
+      12770,
+      12770,
+      12770,
+      12770
+    ],
+    "branches": 9,
+    "terrain": {
+      "vertices": 397120,
+      "reduced": 329983
+    },
+    "colliders": 29188,
+    "footprints": 860
+  },
+  "pixels": [
+    {
+      "guardChanged": 0,
+      "guardFraction": 0,
+      "pose": {
+        "x": 8,
+        "z": 24,
+        "y": 1.7,
+        "dx": -40,
+        "dz": -12
+      },
+      "changedPixels": 0,
+      "pixels": 2530621,
+      "fraction": 0,
+      "meanMaxChannel": 0,
+      "max": 0,
+      "terrainChanged": 0,
+      "terrainFraction": 0,
+      "fullTerrainMs": 2085.699999999255,
+      "sparseTerrainMs": 1993.5999999977648,
+      "stats": {
+        "sourceTriangles": 373982,
+        "submittedTriangles": 61162,
+        "visibleBatches": 87,
+        "uploads": 326
+      }
+    },
+    {
+      "guardChanged": 0,
+      "guardFraction": 0,
+      "pose": {
+        "x": 100,
+        "z": 90,
+        "y": 40,
+        "dx": -100,
+        "dz": -70
+      },
+      "changedPixels": 0,
+      "pixels": 2530621,
+      "fraction": 0,
+      "meanMaxChannel": 0,
+      "max": 0,
+      "terrainChanged": 0,
+      "terrainFraction": 0,
+      "fullTerrainMs": 2093.60000000149,
+      "sparseTerrainMs": 1720,
+      "stats": {
+        "sourceTriangles": 373982,
+        "submittedTriangles": 51244,
+        "visibleBatches": 54,
+        "uploads": 554
+      }
+    },
+    {
+      "guardChanged": 0,
+      "guardFraction": 0,
+      "pose": {
+        "x": 194,
+        "z": -96,
+        "y": 1.7,
+        "dx": 35,
+        "dz": 15
+      },
+      "changedPixels": 0,
+      "pixels": 2530621,
+      "fraction": 0,
+      "meanMaxChannel": 0,
+      "max": 0,
+      "terrainChanged": 0,
+      "terrainFraction": 0,
+      "fullTerrainMs": 3518.5,
+      "sparseTerrainMs": 3447.10000000149,
+      "stats": {
+        "sourceTriangles": 373982,
+        "submittedTriangles": 17932,
+        "visibleBatches": 49,
+        "uploads": 807
+      }
+    },
+    {
+      "guardChanged": 0,
+      "guardFraction": 0,
+      "pose": {
+        "x": 400,
+        "z": 230,
+        "y": 20,
+        "dx": 0,
+        "dz": -100
+      },
+      "changedPixels": 0,
+      "pixels": 2530621,
+      "fraction": 0,
+      "meanMaxChannel": 0,
+      "max": 0,
+      "terrainChanged": 0,
+      "terrainFraction": 0,
+      "fullTerrainMs": 2516.89999999851,
+      "sparseTerrainMs": 2212.699999999255,
+      "stats": {
+        "sourceTriangles": 373982,
+        "submittedTriangles": 37354,
+        "visibleBatches": 62,
+        "uploads": 1090
+      }
+    }
+  ],
+  "shadows": [
+    {
+      "tier": "low",
+      "changed": 0,
+      "pixels": 2530621,
+      "fraction": 0
+    },
+    {
+      "tier": "medium",
+      "changed": 0,
+      "pixels": 2530621,
+      "fraction": 0
+    }
+  ],
+  "lods": [
+    {
+      "key": "crate",
+      "near": 0,
+      "far": 1,
+      "zoom": 0
+    },
+    {
+      "key": "sandbag",
+      "near": 0,
+      "far": 1,
+      "zoom": 0
+    }
+  ],
+  "slowFrames": {
+    "tier": "potato",
+    "scale": 0.35,
+    "fps": 6.666666666666667
+  },
+  "restore": {
+    "full": true,
+    "compact": true
+  },
+  "errors": [],
+  "fallback": {
+    "soldier": 20698,
+    "branches": 0,
+    "batches": 407,
+    "ready": true
+  },
+  "desktop": {
+    "map": false,
+    "batches": 0,
+    "soldier": 20698,
+    "branches": 0,
+    "props": false
+  }
+}

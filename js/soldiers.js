@@ -130,7 +130,8 @@ const Soldiers = G.Soldiers = {
       const tl = new THREE.TextureLoader(), aniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
       const tex = (u, srgb) => new Promise(res => tl.load(u + v, t => { t.flipY = false; t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace; t.anisotropy = aniso; res(t); }, undefined, () => res(null)));
       const base = 'assets/char/swat/';
-      const [g, nor, ...maps] = await Promise.all([gl.loadAsync(SWAT.file + v), tex(base + 'atlas_nor.webp', false), ...SWAT.variants.map(k => tex(base + 'atlas_' + k + '.webp', true))]);
+      const model=document.documentElement.classList.contains('mobile')?gl.loadAsync(base+'swat-mobile.glb'+v).catch(()=>gl.loadAsync(SWAT.file+v)):gl.loadAsync(SWAT.file+v);
+      const [g, nor, ...maps] = await Promise.all([model, tex(base + 'atlas_nor.webp', false), ...SWAT.variants.map(k => tex(base + 'atlas_' + k + '.webp', true))]);
       SWAT.variants.forEach((k, i) => { if (maps[i]) this.templates.push(this.makeTemplateGLB('swat_' + k, g.scene, maps[i], nor)); });
     } catch (e) { console.info('[soldiers] 특수부대 모델 없음 — Rocketbox 군인 사용', e && e.message); this.templates = []; }
     this.ready = this.templates.length > 0;
