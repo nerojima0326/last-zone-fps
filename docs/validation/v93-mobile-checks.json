@@ -1,0 +1,71 @@
+{
+  "scopes": [
+    {
+      "scope": "reddot",
+      "estimatedBytes": 460307497,
+      "textures": 248
+    },
+    {
+      "scope": "holo",
+      "estimatedBytes": 464501793,
+      "textures": 254
+    },
+    {
+      "scope": "x2",
+      "estimatedBytes": 466598941,
+      "textures": 257
+    },
+    {
+      "scope": "x4",
+      "estimatedBytes": 468696089,
+      "textures": 260
+    },
+    {
+      "scope": "x8",
+      "estimatedBytes": 470793237,
+      "textures": 263
+    },
+    {
+      "scope": "micro",
+      "estimatedBytes": 471120917,
+      "textures": 268
+    }
+  ],
+  "controls": {
+    "fired": true,
+    "reloading": true,
+    "reloaded": true,
+    "knife": true,
+    "inspect": true,
+    "scope": [
+      2341,
+      1081
+    ]
+  },
+  "textures": {
+    "image": [
+      512,
+      256
+    ],
+    "shared": true,
+    "compressed": [
+      512,
+      512,
+      2
+    ],
+    "data": [
+      1024,
+      1024
+    ]
+  },
+  "recovery": {
+    "paused": true,
+    "pauseMenu": true,
+    "loading": false,
+    "recoveries": 1,
+    "error": 0
+  },
+  "crashes": [],
+  "errors": [],
+  "note": "Chromium/SwiftShader의 S24 FE 화면 조건. 저장소 추정치는 실기기 VRAM 또는 FPS가 아님"
+}

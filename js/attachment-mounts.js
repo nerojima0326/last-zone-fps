@@ -3,17 +3,18 @@
 'use strict';
 const G=window.G,T=window.THREE,V=T.Vector3,M=T.Matrix4;
 const metal=new T.MeshStandardMaterial({name:'부착 레일',color:0x333c3f,metalness:.6,roughness:.46});
+const opticMetal=new T.MeshStandardMaterial({name:'스코프 체결부',color:0x151b1e,metalness:.6,roughness:.5});
 const rayMat=new T.MeshBasicMaterial({side:T.DoubleSide}),reticleMat=new T.MeshBasicMaterial({color:0xff3423,depthWrite:false,toneMapped:false});
 const dotGeo=new T.CircleGeometry(.00065,16),ringGeo=new T.RingGeometry(.0037,.00395,32),railCache=new Map();
 const vec=p=>p?.isVector3?p.clone():new V(...(p||[0,0,0]));
 function median(a,fallback){a.sort((a,b)=>a-b);return a.length?a[Math.floor(a.length/2)]:fallback}
-function rail(w,h,l){
+function rail(w,h,l,material=metal){
  const key=[w,h,l].map(v=>v.toFixed(4)).join(',');if(!railCache.has(key)){
   const gs=[new T.BoxGeometry(w,h,l).translate(0,h/2,0)];
   for(let z=-l/2+.004;z<l/2;z+=.01)gs.push(new T.BoxGeometry(w+.003,.0015,.003).translate(0,h-.0005,z));
   const g=T.mergeGeometries(gs,false);for(const x of gs)x.dispose();railCache.set(key,g);
  }
- return new T.Mesh(railCache.get(key),metal);
+ return new T.Mesh(railCache.get(key),material);
 }
 function place(obj,matrix){obj.applyMatrix4(matrix);return obj}
 function visible(mesh,root){for(let p=mesh;p;p=p.parent){if(!p.visible)return false;if(p===root)break}return true}
@@ -41,7 +42,7 @@ const F=G.AttachmentMounts={
   const opticFits={};for(const [id,spec]of Object.entries(G.AttachmentModels.specs))if(spec.kind==='optic'){
    const l=Math.min(spec.foot[1],Math.max(.03,railSpan[1]-railSpan[0])),z=T.MathUtils.clamp(railPoint.z,railSpan[0]+l/2,Math.max(railSpan[0]+l/2,railSpan[1]-l/2)),contacts=[];
    for(const dz of [-l*.34,l*.34]){
-    const hits=[center,center-spec.foot[0]*.32,center+spec.foot[0]*.32].map(x=>topAt(z+dz,x)).filter(Boolean).sort((a,b)=>b.y-a.y);
+    const half=Math.min(.010,spec.foot[0]*.32),hits=[center,center-half,center+half].map(x=>topAt(z+dz,x)).filter(Boolean).sort((a,b)=>b.y-a.y);
     contacts.push(hits[0]?.clone()||new V(center,railPoint.y,z+dz));
    }
    // 레일 홈의 중앙은 비어 있을 수 있다. 클램프 폭 안의 양쪽 접점을 실제 삼각형에서 읽는다.
@@ -91,10 +92,10 @@ const F=G.AttachmentMounts={
   const heights=profile.railHeights||[],height=z=>heights.reduce((best,p)=>Math.abs(p.z-z)<Math.abs(best.z-z)?p:best,{z:Infinity,y:profile.rail.y}).y;
   if(fit)base.z=fit.z;
   const top=fit?.top??Math.max(profile.rail.y,...heights.filter(p=>Math.abs(p.z-base.z)<=l/2).map(p=>p.y));base.y=top+.003;
-  const saddle=rail(foot[0]-.003,.004,l);saddle.position.copy(base).add(new V(0,-.004,0));root.add(saddle);
+  const saddle=rail(foot[0]-.003,.004,l,opticMetal);saddle.position.copy(base).add(new V(0,-.004,0));root.add(saddle);
   const contacts=fit?.contacts||[-l*.34,l*.34].map(dz=>[base.x,height(base.z+dz),base.z+dz]);for(const [,y,z] of contacts){
    const h=Math.max(.001,top-y),p=new V(base.x,y-.001,z);
-   if(h>.002){const leg=rail(foot[0]-.005,h,.009);leg.position.copy(p);root.add(leg)}
+   if(h>.002){const leg=rail(foot[0]-.005,h,.009,opticMetal);leg.position.copy(p);root.add(leg)}
   }
   asset.position.copy(base);root.add(asset);
   const eye=vec(specs.eye).add(base),dot=new T.Mesh(dotGeo,reticleMat);dot.name='조준경_광축';dot.userData.lzReticle=true;dot.position.copy(eye);dot.renderOrder=20;

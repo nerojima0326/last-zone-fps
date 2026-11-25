@@ -1,11 +1,12 @@
 (function(){
 'use strict';
 const G=window.G,T=window.THREE;
-// v92 직접 만든 경량 부품: 동일한 단위·광축·접면을 모든 뷰모델에서 사용한다.
+// 실사 스코프와 경량 부품은 같은 단위·광축·접면을 모든 뷰모델에서 사용한다.
 const A=G.Attachments={models:{},open:false,
  async load(){await Promise.all(G.AttachmentModels.ids.map(async id=>{
-  try{const L=new T.GLTFLoader();if(T.MeshoptDecoder)L.setMeshoptDecoder(T.MeshoptDecoder);const m=await L.loadAsync('assets/models/attachments/v92/'+id+'.glb?v='+(window.LZ_BUILD||'92'));this.models[id]=m.scene}
+  try{const L=new T.GLTFLoader();if(T.MeshoptDecoder)L.setMeshoptDecoder(T.MeshoptDecoder);const m=await L.loadAsync('assets/models/attachments/'+(G.ScopeProfiles?.[id]?'v93/':'v92/')+id+'.glb?v='+(window.LZ_BUILD||'93'));this.models[id]=m.scene}
   catch(e){this.models[id]=G.AttachmentModels.build(id)}
+  if(G.ScopeProfiles?.[id])G.WeaponFinish?.root(this.models[id]);
   Object.assign(this.models[id].userData,G.AttachmentModels.specs[id]);
  }));this.models.brake=this.models.compensator},
  options(def){
@@ -51,7 +52,7 @@ const A=G.Attachments={models:{},open:false,
   if(p.magazine==='quick'||p.magazine==='extendedQuick')reload*=.8;
   return {v,h,hip,spread,ads,reload};
  },
- optic(inst,def){return inst.iron?null:(inst.scope||def.baseSight||null)},
+ optic(inst,def){if(inst.iron)return null;return def.scopes.includes(inst.scope)?inst.scope:(def.scopes.includes(def.baseSight)?def.baseSight:null)},
  make(id,scale=1){const source=this.models[id]||G.AttachmentModels.build(id);if(!source)return null;const obj=source.clone(true);obj.scale.setScalar(scale);obj.userData.keep=true;obj.userData.lzAttachment=true;return obj},
  eyeOf(obj,fallback,k=1){return (obj?.userData?.eye?.[1]??obj?.userData?.eyePoint?.[1])?((obj.userData.eye?.[1]??obj.userData.eyePoint[1])*obj.scale.y*k):fallback},
  install(m,def,D,P){
@@ -116,7 +117,8 @@ const A=G.Attachments={models:{},open:false,
   G.TextureQuality?.scan(this.previewScene,true);this.previewRenderer.render(this.previewScene,this.previewCam);
  },
  render(){
-  const a=G.Game.player,inst=a.weapons[this.viewSlot],d=G.WEAPONS[inst.id],parts=inst.attachments||{},scope=this.optic(inst,d),opts=this.options(d),mod=this.modifiers(inst);
+  const a=G.Game.player,inst=a.weapons[this.viewSlot];a.detachUnsupportedScope(inst);
+  const d=G.WEAPONS[inst.id],parts=inst.attachments||{},scope=this.optic(inst,d),opts=this.options(d),mod=this.modifiers(inst);
   const names={optic:'조준경',muzzle:'총구',under:'하부',magazine:'탄창',stock:'개머리판',side:'측면'};
   this.update(G.VM.models[inst.id],inst);this.preview(G.VM.models[inst.id],scope);
   const pct=x=>Math.round((1-x)*100);const label=(n)=>n>0?'−'+n+'%':n<0?'+'+(-n)+'%':'기본';

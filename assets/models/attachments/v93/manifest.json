@@ -1,0 +1,148 @@
+{
+  "version": 93,
+  "coordinates": {
+    "unit": "m",
+    "forward": "-Z",
+    "seat": "Y=0"
+  },
+  "files": [
+    {
+      "id": "micro",
+      "file": "micro.glb",
+      "source": "rmr.glb",
+      "bytes": 16540,
+      "sha256": "8ee05d9716060c7027913da9616440dcb2f1c343e8b1a65c213b913f69343514",
+      "triangles": 526,
+      "transparentFaces": 0,
+      "profile": {
+        "kind": "optic",
+        "label": "소형 개방형 도트",
+        "eye": [
+          0,
+          0.023,
+          0.014
+        ],
+        "foot": [
+          0.026,
+          0.0478003
+        ],
+        "revision": 93
+      }
+    },
+    {
+      "id": "reddot",
+      "file": "reddot.glb",
+      "source": "rd-aimpoint.glb",
+      "bytes": 98348,
+      "sha256": "580a755725ba9b2bb61f016db6dd86b7e28896d33c7faa6a2ad607c512dd5f8f",
+      "triangles": 4804,
+      "transparentFaces": 0,
+      "profile": {
+        "kind": "optic",
+        "label": "밀폐형 레드닷",
+        "eye": [
+          0,
+          0.04,
+          0.0356691
+        ],
+        "foot": [
+          0.029,
+          0.0380424
+        ],
+        "revision": 93
+      }
+    },
+    {
+      "id": "holo",
+      "file": "holo.glb",
+      "source": "holo-eotech.glb",
+      "bytes": 169052,
+      "sha256": "410fcc5bd40be4da92286bdcdf90cbb94f948226d071811734027fe62cb70349",
+      "triangles": 7071,
+      "transparentFaces": 0,
+      "profile": {
+        "kind": "optic",
+        "label": "홀로그램 조준경",
+        "eye": [
+          0,
+          0.0484567,
+          0.0107766
+        ],
+        "foot": [
+          0.029,
+          0.0612038
+        ],
+        "revision": 93
+      }
+    },
+    {
+      "id": "x2",
+      "file": "x2.glb",
+      "source": "scope-acog.glb",
+      "bytes": 152104,
+      "sha256": "8b0fd919694846b1fc796bba66a10b272611d39da4cc73ac1b4c45d9e590293c",
+      "triangles": 7596,
+      "transparentFaces": 55,
+      "profile": {
+        "kind": "optic",
+        "label": "2배율 소형 프리즘",
+        "eye": [
+          0,
+          0.042,
+          0.0902373
+        ],
+        "foot": [
+          0.029,
+          0.0732947
+        ],
+        "revision": 93
+      }
+    },
+    {
+      "id": "x4",
+      "file": "x4.glb",
+      "source": "scope-acog.glb",
+      "bytes": 152096,
+      "sha256": "eeda75dec02051f6ebc560e6f34d23aa6085422a069dbdfbcbb91cc61328b9c3",
+      "triangles": 7596,
+      "transparentFaces": 55,
+      "profile": {
+        "kind": "optic",
+        "label": "4배율 ACOG형 조준경",
+        "eye": [
+          0,
+          0.046,
+          0.1072349
+        ],
+        "foot": [
+          0.029,
+          0.0872556
+        ],
+        "revision": 93
+      }
+    },
+    {
+      "id": "x8",
+      "file": "x8.glb",
+      "source": "scope-sniper.glb",
+      "bytes": 71792,
+      "sha256": "827770c077adbf6eeda7f64c1bdb9e2c03f8e303d8ffbf54c2e6ecb4f5f7c6ba",
+      "triangles": 2074,
+      "transparentFaces": 23,
+      "profile": {
+        "kind": "optic",
+        "label": "8배율 장거리 조준경",
+        "eye": [
+          0,
+          0.061,
+          0.1232793
+        ],
+        "foot": [
+          0.029,
+          0.108
+        ],
+        "revision": 93
+      }
+    }
+  ]
+}

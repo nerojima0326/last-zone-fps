@@ -17,6 +17,8 @@ const RELOAD_SPEED = G.RELOAD_SPEED = 1.25;
 const RECOIL_V = 1.45, RECOIL_H = 1.35, KICK_K = 1.35;
 const W = o => {
   const d = Object.assign({}, BASE, o);
+  // 1번 슬롯의 모든 총기는 8배율을 장착하지 않는다.
+  if(d.cls==='rifle')d.scopes=d.scopes.filter(t=>t!=='x8');
   d.reload = +(d.reload / RELOAD_SPEED).toFixed(3);
   d.recoilV *= RECOIL_V; d.recoilH *= RECOIL_H; d.kick *= KICK_K;
   return d;

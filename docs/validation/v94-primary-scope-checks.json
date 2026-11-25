@@ -1,0 +1,178 @@
+{
+  "primary": [
+    {
+      "id": "ar7",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2",
+        "x4"
+      ]
+    },
+    {
+      "id": "ka47",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2",
+        "x4"
+      ]
+    },
+    {
+      "id": "sc17",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2",
+        "x4"
+      ]
+    },
+    {
+      "id": "mk14",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2",
+        "x4"
+      ]
+    },
+    {
+      "id": "kr98",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2",
+        "x4"
+      ]
+    },
+    {
+      "id": "mp9",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2"
+      ]
+    },
+    {
+      "id": "v45",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2"
+      ]
+    },
+    {
+      "id": "cx9",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2"
+      ]
+    },
+    {
+      "id": "sm45",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2"
+      ]
+    },
+    {
+      "id": "ar416",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2",
+        "x4"
+      ]
+    },
+    {
+      "id": "sg56",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2",
+        "x4"
+      ]
+    },
+    {
+      "id": "ms56",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2",
+        "x4"
+      ]
+    },
+    {
+      "id": "lm86",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2",
+        "x4"
+      ]
+    },
+    {
+      "id": "rk762",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2",
+        "x4"
+      ]
+    },
+    {
+      "id": "mg60",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2",
+        "x4"
+      ]
+    },
+    {
+      "id": "sr25",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2",
+        "x4"
+      ]
+    },
+    {
+      "id": "dm56",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2",
+        "x4"
+      ]
+    },
+    {
+      "id": "m24",
+      "allowed": [
+        "reddot",
+        "holo",
+        "x2",
+        "x4"
+      ]
+    }
+  ],
+  "cycled": [
+    "holo",
+    "x2",
+    "x4",
+    null,
+    "reddot",
+    "holo",
+    "x2",
+    "x4",
+    null,
+    "reddot",
+    "holo",
+    "x2"
+  ],
+  "recovered": 3,
+  "failures": []
+}
