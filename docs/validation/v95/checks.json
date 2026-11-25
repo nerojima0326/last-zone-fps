@@ -1,0 +1,1071 @@
+{
+  "version": 95,
+  "baselineCommit": "c503e39bd12b1dff640715557aaa18091cd86ba0",
+  "viewport": [
+    960,
+    600
+  ],
+  "quality": "medium",
+  "surfaceThresholdMm": 0.5,
+  "allowedContactDepthMm": 2,
+  "before": {
+    "knife_butterfly": {
+      "cases": 33,
+      "maxCrossingDepthMm": 12.710917558718611,
+      "crossings": 2677,
+      "worst": {
+        "kind": "draw",
+        "phase": 0.1,
+        "triangles": [
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.012710917558718612,
+            "span": 0.0020763794482130302,
+            "gun": "Right_Handle",
+            "point": [
+              0.2176716944302461,
+              -0.1303520082816822,
+              -0.46523028344101486
+            ]
+          }
+        ]
+      }
+    },
+    "knife_dagger": {
+      "cases": 33,
+      "maxCrossingDepthMm": 9.57778575653143,
+      "crossings": 1749,
+      "worst": {
+        "kind": "draw",
+        "phase": 0.1,
+        "triangles": [
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.00957778575653143,
+            "span": 0.0015031856384111106,
+            "gun": "body",
+            "point": [
+              0.18836944196123517,
+              -0.08600684681818944,
+              -0.4875074388560252
+            ]
+          }
+        ]
+      }
+    },
+    "knife_combat": {
+      "cases": 33,
+      "maxCrossingDepthMm": 8.858009144926903,
+      "crossings": 1848,
+      "worst": {
+        "kind": "inspect",
+        "phase": 0.4,
+        "triangles": [
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.008858009144926904,
+            "span": 0.0033935265251382346,
+            "gun": "body",
+            "point": [
+              0.0627608096163119,
+              -0.057018504948905424,
+              -0.5240302505030863
+            ]
+          }
+        ]
+      }
+    },
+    "knife_karambit": {
+      "cases": 33,
+      "maxCrossingDepthMm": 5.8612207629324145,
+      "crossings": 461,
+      "worst": {
+        "kind": "draw",
+        "phase": 0.1,
+        "triangles": [
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.005861220762932415,
+            "span": 0.005634149402393257,
+            "gun": "body",
+            "point": [
+              0.22151634031499656,
+              -0.1339869853819617,
+              -0.46466968359089933
+            ]
+          }
+        ]
+      }
+    },
+    "knife_kunai": {
+      "cases": 33,
+      "maxCrossingDepthMm": 5.251960781715271,
+      "crossings": 759,
+      "worst": {
+        "kind": "inspect",
+        "phase": 0.5,
+        "triangles": [
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.005251960781715271,
+            "span": 0.0012310127931474443,
+            "gun": "body",
+            "point": [
+              0.02597618589653604,
+              -0.025974635821754778,
+              -0.5236574208410846
+            ]
+          }
+        ]
+      }
+    },
+    "knife_machete": {
+      "cases": 33,
+      "maxCrossingDepthMm": 5.189376286645113,
+      "crossings": 1452,
+      "worst": {
+        "kind": "inspect",
+        "phase": 0.2,
+        "triangles": [
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.005189376286645113,
+            "span": 0.0021805980501001807,
+            "gun": "body",
+            "point": [
+              0.10490496989172235,
+              -0.09491644316510009,
+              -0.5218104641944165
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "after": {
+    "knife_butterfly": {
+      "cases": 204,
+      "maxCrossingDepthMm": 0,
+      "crossings": 0,
+      "worst": null
+    },
+    "knife_dagger": {
+      "cases": 124,
+      "maxCrossingDepthMm": 0,
+      "crossings": 0,
+      "worst": null
+    },
+    "knife_combat": {
+      "cases": 124,
+      "maxCrossingDepthMm": 0,
+      "crossings": 0,
+      "worst": null
+    },
+    "knife_karambit": {
+      "cases": 124,
+      "maxCrossingDepthMm": 0.7118070572798076,
+      "crossings": 124,
+      "worst": {
+        "kind": "idle",
+        "phase": 0,
+        "triangles": [
+          {
+            "region": "R:finger",
+            "bone": "RightHandIndex2",
+            "depth": 0.0007118070572798077,
+            "span": 0.0012244415789135186,
+            "gun": "body",
+            "point": [
+              0.03288797834871393,
+              0.03567013640170956,
+              0.006123978518202162
+            ]
+          }
+        ]
+      }
+    },
+    "knife_kunai": {
+      "cases": 124,
+      "maxCrossingDepthMm": 0,
+      "crossings": 0,
+      "worst": null
+    },
+    "knife_machete": {
+      "cases": 124,
+      "maxCrossingDepthMm": 0,
+      "crossings": 0,
+      "worst": null
+    }
+  },
+  "fallback": {
+    "knife_butterfly": {
+      "cases": 204,
+      "maxCrossingDepthMm": 0,
+      "crossings": 0,
+      "worst": null
+    },
+    "knife_dagger": {
+      "cases": 124,
+      "maxCrossingDepthMm": 0,
+      "crossings": 0,
+      "worst": null
+    },
+    "knife_combat": {
+      "cases": 124,
+      "maxCrossingDepthMm": 0,
+      "crossings": 0,
+      "worst": null
+    },
+    "knife_karambit": {
+      "cases": 124,
+      "maxCrossingDepthMm": 0,
+      "crossings": 0,
+      "worst": null
+    },
+    "knife_kunai": {
+      "cases": 124,
+      "maxCrossingDepthMm": 0,
+      "crossings": 0,
+      "worst": null
+    },
+    "knife_machete": {
+      "cases": 124,
+      "maxCrossingDepthMm": 0,
+      "crossings": 0,
+      "worst": null
+    }
+  },
+  "motion": {
+    "rates": [
+      30,
+      60,
+      144
+    ],
+    "cases": [
+      {
+        "id": "knife_butterfly",
+        "kind": "draw",
+        "hz": 30,
+        "maxStep": 0.06645613374267043,
+        "endStep": 0.00046745605159042555
+      },
+      {
+        "id": "knife_butterfly",
+        "kind": "slash",
+        "hz": 30,
+        "maxStep": 0.052656951070055046,
+        "endStep": 0.006482227301043064
+      },
+      {
+        "id": "knife_butterfly",
+        "kind": "inspect",
+        "hz": 30,
+        "maxStep": 0.014976177813423171,
+        "endStep": 0.0005930679386446019
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "draw",
+        "hz": 30,
+        "maxStep": 0.11129631482725226,
+        "endStep": 0.001412808583257849
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "slash",
+        "hz": 30,
+        "maxStep": 0.06833754943871138,
+        "endStep": 0.003906627582423444
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "inspect",
+        "hz": 30,
+        "maxStep": 0.018523165782562065,
+        "endStep": 0.0006034213923338284
+      },
+      {
+        "id": "knife_combat",
+        "kind": "draw",
+        "hz": 30,
+        "maxStep": 0.12622626725717706,
+        "endStep": 0.0010859378176455163
+      },
+      {
+        "id": "knife_combat",
+        "kind": "slash",
+        "hz": 30,
+        "maxStep": 0.04694740054156033,
+        "endStep": 0.008408722531182232
+      },
+      {
+        "id": "knife_combat",
+        "kind": "inspect",
+        "hz": 30,
+        "maxStep": 0.020108633372843212,
+        "endStep": 0.0008096913840214023
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "draw",
+        "hz": 30,
+        "maxStep": 0.1049777165942848,
+        "endStep": 0.0009790431713571429
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "slash",
+        "hz": 30,
+        "maxStep": 0.048007209264963144,
+        "endStep": 0.008758021865137931
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "inspect",
+        "hz": 30,
+        "maxStep": 0.017727358558232462,
+        "endStep": 0.0006393942028503306
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "draw",
+        "hz": 30,
+        "maxStep": 0.1134689950289817,
+        "endStep": 0.0010086609907328937
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "slash",
+        "hz": 30,
+        "maxStep": 0.07405575720820476,
+        "endStep": 0.003944495342751761
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "inspect",
+        "hz": 30,
+        "maxStep": 0.017751211130946905,
+        "endStep": 0.0006023035813263063
+      },
+      {
+        "id": "knife_machete",
+        "kind": "draw",
+        "hz": 30,
+        "maxStep": 0.14965950298318706,
+        "endStep": 0.0014542475773085864
+      },
+      {
+        "id": "knife_machete",
+        "kind": "slash",
+        "hz": 30,
+        "maxStep": 0.07154197459298077,
+        "endStep": 0.011542885985821132
+      },
+      {
+        "id": "knife_machete",
+        "kind": "inspect",
+        "hz": 30,
+        "maxStep": 0.024420252935458506,
+        "endStep": 0.0009581538003974275
+      },
+      {
+        "id": "knife_butterfly",
+        "kind": "draw",
+        "hz": 60,
+        "maxStep": 0.07166917670389236,
+        "endStep": 0.00041511387702981145
+      },
+      {
+        "id": "knife_butterfly",
+        "kind": "slash",
+        "hz": 60,
+        "maxStep": 0.026298042302065065,
+        "endStep": 0.0039844845064762975
+      },
+      {
+        "id": "knife_butterfly",
+        "kind": "inspect",
+        "hz": 60,
+        "maxStep": 0.0073989444658077025,
+        "endStep": 0.00047171501607632543
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "draw",
+        "hz": 60,
+        "maxStep": 0.09294820235587463,
+        "endStep": 0.0016692539309031407
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "slash",
+        "hz": 60,
+        "maxStep": 0.03467994471350423,
+        "endStep": 0.0028031437887106746
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "inspect",
+        "hz": 60,
+        "maxStep": 0.009201114413896701,
+        "endStep": 0.0007779384677946792
+      },
+      {
+        "id": "knife_combat",
+        "kind": "draw",
+        "hz": 60,
+        "maxStep": 0.09591800131846621,
+        "endStep": 0.0014135405169354443
+      },
+      {
+        "id": "knife_combat",
+        "kind": "slash",
+        "hz": 60,
+        "maxStep": 0.027160211320701653,
+        "endStep": 0.006045396752025914
+      },
+      {
+        "id": "knife_combat",
+        "kind": "inspect",
+        "hz": 60,
+        "maxStep": 0.009998447454763111,
+        "endStep": 0.0008992869792852344
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "draw",
+        "hz": 60,
+        "maxStep": 0.08789930208838692,
+        "endStep": 0.0011801969739733602
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "slash",
+        "hz": 60,
+        "maxStep": 0.02814928391806942,
+        "endStep": 0.005119710299730253
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "inspect",
+        "hz": 60,
+        "maxStep": 0.008851565301975136,
+        "endStep": 0.0008321929365286871
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "draw",
+        "hz": 60,
+        "maxStep": 0.09039473202790332,
+        "endStep": 0.0012409219293829329
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "slash",
+        "hz": 60,
+        "maxStep": 0.04382593173669136,
+        "endStep": 0.004488162482892743
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "inspect",
+        "hz": 60,
+        "maxStep": 0.008828523483125576,
+        "endStep": 0.0007556417189657248
+      },
+      {
+        "id": "knife_machete",
+        "kind": "draw",
+        "hz": 60,
+        "maxStep": 0.10555136508486578,
+        "endStep": 0.0017744058781274765
+      },
+      {
+        "id": "knife_machete",
+        "kind": "slash",
+        "hz": 60,
+        "maxStep": 0.037482122433507375,
+        "endStep": 0.00901871625333375
+      },
+      {
+        "id": "knife_machete",
+        "kind": "inspect",
+        "hz": 60,
+        "maxStep": 0.012115950648720458,
+        "endStep": 0.0010932140411451176
+      },
+      {
+        "id": "knife_butterfly",
+        "kind": "draw",
+        "hz": 144,
+        "maxStep": 0.04390786507803355,
+        "endStep": 0.00026396463218214506
+      },
+      {
+        "id": "knife_butterfly",
+        "kind": "slash",
+        "hz": 144,
+        "maxStep": 0.011123544700315693,
+        "endStep": 0.001671670438980098
+      },
+      {
+        "id": "knife_butterfly",
+        "kind": "inspect",
+        "hz": 144,
+        "maxStep": 0.0030693231657330194,
+        "endStep": 0.00023134140981973303
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "draw",
+        "hz": 144,
+        "maxStep": 0.05307180841962411,
+        "endStep": 0.000907428682374172
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "slash",
+        "hz": 144,
+        "maxStep": 0.015006881129319588,
+        "endStep": 0.0013547398773460246
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "inspect",
+        "hz": 144,
+        "maxStep": 0.003796875558454292,
+        "endStep": 0.00037732984248447013
+      },
+      {
+        "id": "knife_combat",
+        "kind": "draw",
+        "hz": 144,
+        "maxStep": 0.05366111189309893,
+        "endStep": 0.0007494005614959091
+      },
+      {
+        "id": "knife_combat",
+        "kind": "slash",
+        "hz": 144,
+        "maxStep": 0.011455097727075004,
+        "endStep": 0.0028554518164330147
+      },
+      {
+        "id": "knife_combat",
+        "kind": "inspect",
+        "hz": 144,
+        "maxStep": 0.00414550630744922,
+        "endStep": 0.0004555698742754001
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "draw",
+        "hz": 144,
+        "maxStep": 0.05089239317807015,
+        "endStep": 0.0008100563829180225
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "slash",
+        "hz": 144,
+        "maxStep": 0.011759429219846816,
+        "endStep": 0.0024769780136565684
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "inspect",
+        "hz": 144,
+        "maxStep": 0.003699020765704978,
+        "endStep": 0.0004307207523105154
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "draw",
+        "hz": 144,
+        "maxStep": 0.051858504935375686,
+        "endStep": 0.0006857132726669275
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "slash",
+        "hz": 144,
+        "maxStep": 0.018949577812854213,
+        "endStep": 0.003033447507213086
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "inspect",
+        "hz": 144,
+        "maxStep": 0.0036645824862097747,
+        "endStep": 0.00036795716907048984
+      },
+      {
+        "id": "knife_machete",
+        "kind": "draw",
+        "hz": 144,
+        "maxStep": 0.05676660439466934,
+        "endStep": 0.0009516330221984939
+      },
+      {
+        "id": "knife_machete",
+        "kind": "slash",
+        "hz": 144,
+        "maxStep": 0.01614226871616577,
+        "endStep": 0.004309800761015174
+      },
+      {
+        "id": "knife_machete",
+        "kind": "inspect",
+        "hz": 144,
+        "maxStep": 0.005014068165558485,
+        "endStep": 0.0005388610892386179
+      }
+    ],
+    "inspectToSlash": [
+      {
+        "id": "knife_butterfly",
+        "jump": 2.2004073820927617e-05
+      },
+      {
+        "id": "knife_dagger",
+        "jump": 9.27665004406275e-06
+      },
+      {
+        "id": "knife_combat",
+        "jump": 3.769124727032169e-05
+      },
+      {
+        "id": "knife_karambit",
+        "jump": 5.4460704566425266e-05
+      },
+      {
+        "id": "knife_kunai",
+        "jump": 5.440390719307908e-05
+      },
+      {
+        "id": "knife_machete",
+        "jump": 3.753840334536074e-05
+      }
+    ]
+  },
+  "fallbackMotion": {
+    "rates": [
+      30,
+      60,
+      144
+    ],
+    "cases": [
+      {
+        "id": "knife_butterfly",
+        "kind": "draw",
+        "hz": 30,
+        "maxStep": 0.06537105342869844,
+        "endStep": 0.0004504811068943722
+      },
+      {
+        "id": "knife_butterfly",
+        "kind": "slash",
+        "hz": 30,
+        "maxStep": 0.05588471882711027,
+        "endStep": 0.006085119345433395
+      },
+      {
+        "id": "knife_butterfly",
+        "kind": "inspect",
+        "hz": 30,
+        "maxStep": 0.014521452081147987,
+        "endStep": 0.0005759787495375868
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "draw",
+        "hz": 30,
+        "maxStep": 0.10891285403021042,
+        "endStep": 0.0013717423465522366
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "slash",
+        "hz": 30,
+        "maxStep": 0.06720280676237973,
+        "endStep": 0.0038035742761021105
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "inspect",
+        "hz": 30,
+        "maxStep": 0.01802211822635329,
+        "endStep": 0.000587303645650153
+      },
+      {
+        "id": "knife_combat",
+        "kind": "draw",
+        "hz": 30,
+        "maxStep": 0.10871390641980606,
+        "endStep": 0.0012912088518701203
+      },
+      {
+        "id": "knife_combat",
+        "kind": "slash",
+        "hz": 30,
+        "maxStep": 0.04985373874709592,
+        "endStep": 0.00677149467270682
+      },
+      {
+        "id": "knife_combat",
+        "kind": "inspect",
+        "hz": 30,
+        "maxStep": 0.018170265461575606,
+        "endStep": 0.0006825746169951926
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "draw",
+        "hz": 30,
+        "maxStep": 0.11352917545222618,
+        "endStep": 0.001566376061755766
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "slash",
+        "hz": 30,
+        "maxStep": 0.056392905265271,
+        "endStep": 0.009381146336197969
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "inspect",
+        "hz": 30,
+        "maxStep": 0.018990119140336863,
+        "endStep": 0.0005519846142444209
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "draw",
+        "hz": 30,
+        "maxStep": 0.10891338648580305,
+        "endStep": 0.0013726844186432222
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "slash",
+        "hz": 30,
+        "maxStep": 0.06861527501620979,
+        "endStep": 0.0034153334087311297
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "inspect",
+        "hz": 30,
+        "maxStep": 0.018009227560888037,
+        "endStep": 0.0005556893831078966
+      },
+      {
+        "id": "knife_machete",
+        "kind": "draw",
+        "hz": 30,
+        "maxStep": 0.13844103886619327,
+        "endStep": 0.001781780055398319
+      },
+      {
+        "id": "knife_machete",
+        "kind": "slash",
+        "hz": 30,
+        "maxStep": 0.08151430855443731,
+        "endStep": 0.012194556828933502
+      },
+      {
+        "id": "knife_machete",
+        "kind": "inspect",
+        "hz": 30,
+        "maxStep": 0.027183837706222753,
+        "endStep": 0.0008872242923101749
+      },
+      {
+        "id": "knife_butterfly",
+        "kind": "draw",
+        "hz": 60,
+        "maxStep": 0.0713843673645784,
+        "endStep": 0.00041986499127853006
+      },
+      {
+        "id": "knife_butterfly",
+        "kind": "slash",
+        "hz": 60,
+        "maxStep": 0.027970964136936356,
+        "endStep": 0.0036215995324432666
+      },
+      {
+        "id": "knife_butterfly",
+        "kind": "inspect",
+        "hz": 60,
+        "maxStep": 0.0071764765841331474,
+        "endStep": 0.0004598821658846664
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "draw",
+        "hz": 60,
+        "maxStep": 0.09179506672894025,
+        "endStep": 0.0016224999731272996
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "slash",
+        "hz": 60,
+        "maxStep": 0.03410538264356029,
+        "endStep": 0.002747404260321965
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "inspect",
+        "hz": 60,
+        "maxStep": 0.008954228418054589,
+        "endStep": 0.0007601077436065784
+      },
+      {
+        "id": "knife_combat",
+        "kind": "draw",
+        "hz": 60,
+        "maxStep": 0.0917334938021839,
+        "endStep": 0.0016453082652203854
+      },
+      {
+        "id": "knife_combat",
+        "kind": "slash",
+        "hz": 60,
+        "maxStep": 0.025218439776382155,
+        "endStep": 0.004438340745402271
+      },
+      {
+        "id": "knife_combat",
+        "kind": "inspect",
+        "hz": 60,
+        "maxStep": 0.009003952094935937,
+        "endStep": 0.0007574888753282373
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "draw",
+        "hz": 60,
+        "maxStep": 0.0912601396132982,
+        "endStep": 0.0017702296570150753
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "slash",
+        "hz": 60,
+        "maxStep": 0.02929338416020866,
+        "endStep": 0.005591042310159738
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "inspect",
+        "hz": 60,
+        "maxStep": 0.009399527261884462,
+        "endStep": 0.0007107596602687818
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "draw",
+        "hz": 60,
+        "maxStep": 0.09182853261006284,
+        "endStep": 0.0016554018898035877
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "slash",
+        "hz": 60,
+        "maxStep": 0.04092782617624263,
+        "endStep": 0.0034889473990531894
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "inspect",
+        "hz": 60,
+        "maxStep": 0.008920673674209817,
+        "endStep": 0.0007071631282996659
+      },
+      {
+        "id": "knife_machete",
+        "kind": "draw",
+        "hz": 60,
+        "maxStep": 0.10623819156647286,
+        "endStep": 0.002195153076707112
+      },
+      {
+        "id": "knife_machete",
+        "kind": "slash",
+        "hz": 60,
+        "maxStep": 0.04036420261272817,
+        "endStep": 0.009348294451302072
+      },
+      {
+        "id": "knife_machete",
+        "kind": "inspect",
+        "hz": 60,
+        "maxStep": 0.013466235695322777,
+        "endStep": 0.001016716989790129
+      },
+      {
+        "id": "knife_butterfly",
+        "kind": "draw",
+        "hz": 144,
+        "maxStep": 0.04389768106884334,
+        "endStep": 0.0002693214240578435
+      },
+      {
+        "id": "knife_butterfly",
+        "kind": "slash",
+        "hz": 144,
+        "maxStep": 0.011701080051340592,
+        "endStep": 0.0014700779373217517
+      },
+      {
+        "id": "knife_butterfly",
+        "kind": "inspect",
+        "hz": 144,
+        "maxStep": 0.002978483331381467,
+        "endStep": 0.00022585703855042293
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "draw",
+        "hz": 144,
+        "maxStep": 0.05268206223372023,
+        "endStep": 0.0008829332013560945
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "slash",
+        "hz": 144,
+        "maxStep": 0.01475142373553521,
+        "endStep": 0.001332351662239707
+      },
+      {
+        "id": "knife_dagger",
+        "kind": "inspect",
+        "hz": 144,
+        "maxStep": 0.003695178987523352,
+        "endStep": 0.00036855690237505806
+      },
+      {
+        "id": "knife_combat",
+        "kind": "draw",
+        "hz": 144,
+        "maxStep": 0.0526475475850407,
+        "endStep": 0.0008742493302844577
+      },
+      {
+        "id": "knife_combat",
+        "kind": "slash",
+        "hz": 144,
+        "maxStep": 0.010455516269722619,
+        "endStep": 0.0019561044665234863
+      },
+      {
+        "id": "knife_combat",
+        "kind": "inspect",
+        "hz": 144,
+        "maxStep": 0.003722520682014713,
+        "endStep": 0.0003864343358824873
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "draw",
+        "hz": 144,
+        "maxStep": 0.05217048213985816,
+        "endStep": 0.000930393166914169
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "slash",
+        "hz": 144,
+        "maxStep": 0.012223426738940352,
+        "endStep": 0.002733991994699908
+      },
+      {
+        "id": "knife_karambit",
+        "kind": "inspect",
+        "hz": 144,
+        "maxStep": 0.003900499691294044,
+        "endStep": 0.0003692856294736769
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "draw",
+        "hz": 144,
+        "maxStep": 0.0526914197793858,
+        "endStep": 0.0009040473117057821
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "slash",
+        "hz": 144,
+        "maxStep": 0.017757203455456356,
+        "endStep": 0.002318887649711409
+      },
+      {
+        "id": "knife_kunai",
+        "kind": "inspect",
+        "hz": 144,
+        "maxStep": 0.0036897480402706766,
+        "endStep": 0.00034414358127283703
+      },
+      {
+        "id": "knife_machete",
+        "kind": "draw",
+        "hz": 144,
+        "maxStep": 0.05752538909071484,
+        "endStep": 0.0011804428727689147
+      },
+      {
+        "id": "knife_machete",
+        "kind": "slash",
+        "hz": 144,
+        "maxStep": 0.01782515197885315,
+        "endStep": 0.004432784886997153
+      },
+      {
+        "id": "knife_machete",
+        "kind": "inspect",
+        "hz": 144,
+        "maxStep": 0.005585468330383018,
+        "endStep": 0.0005018851811880339
+      }
+    ],
+    "inspectToSlash": [
+      {
+        "id": "knife_butterfly",
+        "jump": 2.2004073820927617e-05
+      },
+      {
+        "id": "knife_dagger",
+        "jump": 9.27665004406275e-06
+      },
+      {
+        "id": "knife_combat",
+        "jump": 3.7691247270377204e-05
+      },
+      {
+        "id": "knife_karambit",
+        "jump": 5.4460704566432205e-05
+      },
+      {
+        "id": "knife_kunai",
+        "jump": 5.440390719316235e-05
+      },
+      {
+        "id": "knife_machete",
+        "jump": 3.753840334561054e-05
+      }
+    ]
+  },
+  "errors": []
+}

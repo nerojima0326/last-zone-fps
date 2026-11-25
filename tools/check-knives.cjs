@@ -48,7 +48,7 @@ for(const asset of manifest.files)assert.equal(crypto.createHash('sha256').updat
     for(const id of G.Knives.ids){
      const d=G.Knives.catalog[id];for(let i=0;i<=20;i++)m.update(1/60,{...pose,gun:id,melee:{id,kind:'inspect',t:i/20*d.inspect,duration:d.inspect}});
      m.root.updateMatrixWorld(true);const hand=m.knifeHand;if(!hand?.active)throw Error('3인칭 손 그립 없음');
-     const expected=hand.palm.clone().applyMatrix4(hand.wrist.matrixWorld),actual=m.guns[id].getWorldPosition(new THREE.Vector3()),gap=expected.distanceTo(actual);
+     const expected=hand.palm.clone().applyMatrix4(hand.wrist.matrixWorld),actual=m.guns[id].localToWorld(new THREE.Vector3(id==='knife_butterfly'?-.011:0,-.02,0)),gap=expected.distanceTo(actual);
      if(gap>.0001)throw Error('3인칭 손바닥과 칼이 분리됨');if(!hand.fingers.some(f=>f.bone.quaternion.angleTo(f.bind)>.5))throw Error('3인칭 손가락이 손잡이를 쥐지 않음');
      rows.push({id,palmGap:gap,fingers:hand.fingers.length});
     }
@@ -79,7 +79,7 @@ for(const asset of manifest.files)assert.equal(crypto.createHash('sha256').updat
     const P=G.Player;G.Input.reset();G.Knives.equip(P,id);for(let i=0;i<90;i++){P.update(1/60);G.Game.syncModels(1/60);G.UI.update(1/60)}
     const m=G.VM.models[id],metrics={id,imported:!!m.knife.userData.imported,maxGripError:0,maxWrist:0,maxScreenX:0,maxScreenY:0,source:m.knife.userData.imported?'가져온 모델':'대체 모델'};
     for(const kind of ['draw','slash','inspect'])for(let i=0;i<=30;i++){
-     const d=kind==='inspect'?G.Knives.catalog[id].inspect:kind==='draw'?.58:G.Knives.catalog[id].duration;
+     const d=kind==='inspect'?G.Knives.catalog[id].inspect:kind==='draw'?(G.Knives.catalog[id].draw||.58):G.Knives.catalog[id].duration;
      P.melee={id,kind,t:i/30*d,duration:d,hit:true};P.updateCamera(1/60);
      const r=m.staticArms.R;metrics.maxGripError=Math.max(metrics.maxGripError,r.contactError);metrics.maxWrist=Math.max(metrics.maxWrist,r.wristAngle);
      m.root.updateMatrixWorld(true);m.root.traverse(o=>{if(!o.matrixWorld.elements.every(Number.isFinite))throw Error('모션의 비정상 행렬')});
@@ -108,7 +108,7 @@ for(const asset of manifest.files)assert.equal(crypto.createHash('sha256').updat
   for(const [name,kind,phase]of [['butterfly-draw','draw',.4],['butterfly-inspect','inspect',.45],['butterfly-slash','slash',.43]]){
    await page.evaluate(({kind,phase})=>{
     const id='knife_butterfly',P=G.Player;G.Knives.equip(P,id);for(let i=0;i<70;i++){P.update(1/60);G.Input.endFrame()}
-    const duration=kind==='draw'?.58:kind==='inspect'?3.1:.61;
+    const duration=kind==='draw'?G.Knives.catalog[id].draw:kind==='inspect'?3.1:.61;
     for(let i=0;i<=Math.ceil(phase*60);i++){P.melee={id,kind,t:i/60*duration,duration,hit:true};P.updateCamera(1/60)}
     G.UI.update(.016);G.renderNow();G.Perf.gpuWait();
    },{kind,phase});

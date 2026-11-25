@@ -14,6 +14,7 @@ const SIDES = [{ key: 'R', name: 'Right', side: 1 }, { key: 'L', name: 'Left', s
 const REF = { R: { curl: 0.9, thumb: 0.65, trig: 0.7 }, L: { curl: 0.76, thumb: 0.45, trig: 0.7 } };
 const _m = new T.Matrix4(), _m2 = new T.Matrix4(), _s = new V3(), _a = new V3(), _b = new V3(), _c = new V3(), _d = new V3();
 const _q = new Q(), _q2 = new Q(), _w = new V3(), _e = new V3(), _sh = new V3(), _bend = new V3(), _pz = new V3();
+const _fingerEuler = new T.Euler();
 // Y 축 = y, Z 축 = z 를 y에 직교화한 회전
 const _fy = new V3(), _fz = new V3(), _fx = new V3(), _fm = new T.Matrix4();
 function frame(y, z, out) {
@@ -79,6 +80,17 @@ const R = G.RealArms = {
     for (const f of FING) out[f] = b.fingers[f].map(x => x.quaternion.clone());
     return out;
   },
+  // 복제 시점의 Idle 자세를 편 손으로 쓰면 손가락을 펴도 계속 주먹이 된다.
+  // 칼은 원본 스킨의 역바인드 행렬에서 실제 편 손의 로컬 회전을 복구한다.
+  knifeBind(mesh, b) {
+    const bones=mesh.skeleton.bones, inv=mesh.skeleton.boneInverses, out={};
+    for(const f of FING)out[f]=b.fingers[f].map(bone=>{
+      const i=bones.indexOf(bone),p=bones.indexOf(bone.parent);
+      if(i<0||p<0)return bone.quaternion.clone();
+      const local=inv[p].clone().multiply(inv[i].clone().invert()),q=new Q();local.decompose(new V3(),q,new V3());return q.normalize();
+    });
+    return out;
+  },
   build() {
     this.dispose();
     const M = G.M4Viewmodel, SU = T.SkeletonUtils;
@@ -98,7 +110,7 @@ const R = G.RealArms = {
       for (const sd of SIDES) {
         const b = this.bonesOf(copy, sd);
         if (!b.arm || !b.fore || !b.hand || !b.fingers.Middle.length || !b.fingers.Index.length || !b.fingers.Pinky.length) throw Error(sd.name + ' 팔 뼈대가 없습니다');
-        S[sd.key] = { b, sd, open: this.fingerQuats(b) };
+        S[sd.key] = { b, sd, open: this.fingerQuats(b), openKnife: this.knifeBind(mesh,b) };
       }
       // M4 대기 자세: 소총·산탄총의 쥔 손 + 팔 축 보정
       const mix = this.pose(copy, 'Idle');
@@ -106,6 +118,8 @@ const R = G.RealArms = {
       for (const sd of SIDES) {
         const s = S[sd.key], b = s.b;
         s.gripRifle = this.fingerQuats(b);
+        // 칼에는 방아쇠가 없다. 검지도 가운뎃손가락과 같은 굽힘으로 손잡이를 감싼다.
+        s.gripKnife = { ...s.gripRifle, Index: s.openKnife.Index.map((q,i) => q.clone().multiply(s.openKnife.Middle[i].clone().invert()).multiply(s.gripRifle.Middle[i])) };
         const P = o => o.getWorldPosition(new V3()), Qw = o => o.getWorldQuaternion(new Q());
         const sp = P(b.arm), ep = P(b.fore), wp = P(b.hand);
         const axis = _d.subVectors(wp, sp).normalize(), bend = new V3().subVectors(ep, sp);
@@ -184,6 +198,7 @@ const R = G.RealArms = {
     G.HandContact?.apply(vm.cur, this.copy, m.gun.matrixWorld, {
       L: A.L?.contactMode === 'support' ? 1 : 0, R: A.R?.contactMode === 'grip' ? 1 : 0
     }, { reload: s.reload, proceduralArms: A, recoveryGap: s.recoveryGap });
+    if(m.type==='knife')G.Knives.fitRealGrip(m,A.R,this.S.R,.01*(this.scale||1));
   },
   tuck(S) {
     const b = S.b; b.arm.scale.setScalar(1e-4); b.arm.updateMatrixWorld(true);
@@ -237,14 +252,18 @@ const R = G.RealArms = {
     // 손
     this.place(b.hand, _w, handQ, unit, rootW);
     // 손가락: 편 손 ↔ 쥔 손
-    const key = r.side > 0 ? 'R' : 'L', ref = REF[key], grip = pistol ? S.gripPistol : S.gripRifle;
-    // 주먹과 칼을 쥔 오른손은 소총의 방아쇠 자세보다 손가락을 더 감는다.
-    const closed = m.type === 'fists' || (m.type === 'knife' && r.side > 0);
+    const key = r.side > 0 ? 'R' : 'L', ref = REF[key], knife = m.type === 'knife' && r.side > 0, grip = knife ? S.gripKnife : pistol ? S.gripPistol : S.gripRifle, open = knife ? S.openKnife : S.open;
+    // 칼 손잡이는 주먹과 달리 손 안에 공간이 필요하다. 주먹의 과도한 추가 굽힘을 적용하지 않는다.
+    const closed = m.type === 'fists';
     const fist = closed ? 1.55 : 1, lim = closed ? 1.7 : 1.15;
     const tCurl = U.clamp(r.curl / ref.curl * fist, 0, lim), tThumb = U.clamp(r.thumb / ref.thumb, 0, 1.1), tTrig = U.clamp(r.trig / ref.trig * fist, 0, lim);
     for (const f of FING) {
-      const t = f === 'Thumb' ? tThumb : f === 'Index' ? tTrig : tCurl, bones = b.fingers[f];
-      for (let i = 0; i < bones.length; i++) bend(S.open[f][i], grip[f][i], t, bones[i].quaternion);
+      const t = f === 'Thumb' ? tThumb : f === 'Index' ? tTrig : tCurl, bones = b.fingers[f], digit=FING.indexOf(f), fit=knife?m.knifeProfile:null;
+      for (let i = 0; i < bones.length; i++) {
+        const curl = knife ? fit.fingers[digit][i] * (f === 'Thumb' ? r.thumb / .72 : f === 'Index' ? r.trig / .9 : r.curl / .9) : t;
+        bend(open[f][i], grip[f][i], curl, bones[i].quaternion);
+      }
+      if(fit?.turns?.[digit])bones[0].quaternion.multiply(_q2.setFromEuler(_fingerEuler.set(...fit.turns[digit])));
     }
     b.hand.updateMatrixWorld(true);
   }
