@@ -412,14 +412,14 @@ const UI = G.UI = {
   drawCook(a, P) {
     const c = this.cookEl || (this.cookEl = document.getElementById('cookTimer'));
     if (!c) return;
-    const T = P.throwSt, show = !!(T && T.phase === 'hold' && a.alive && P.cookable(T.kind));
+    const T = P.throwSt, show = !!(T && T.phase === 'hold' && a.alive && P.hasPin(T.kind));
     if (!show) { if (c.style.display !== 'none') c.style.display = 'none'; return; }
     if (!this.cookParts) this.cookParts = { fg: c.querySelector('.fg'), b: c.querySelector('b'), sp: c.querySelector('span') };
     const k = this.cookParts, full = P.fuseOf(T.kind), left = Math.max(0, P.fuseLeft(T)), pulled = T.pinT >= 0;
     c.style.display = 'block';
-    c.classList.toggle('idle', !pulled); c.classList.toggle('hot', pulled && left < 1.2);
+    c.classList.toggle('idle', !pulled); c.classList.toggle('hot', pulled && P.cookable(T.kind) && left < 1.2);
     k.fg.style.strokeDashoffset = (113.1 * (1 - left / full)).toFixed(1);
-    const txt = pulled ? left.toFixed(1) : '핀', hint = pulled ? '놓으면 던지기' : (document.documentElement.classList.contains('mobile') ? '장전 버튼: 핀 뽑기' : G.Settings.label('KeyR') + ' 핀 뽑기 · 놓으면 던지기');
+    const smoke=T.kind==='smoke',txt = pulled ? smoke?'준비':left.toFixed(1) : '핀', hint = pulled ? smoke?'놓으면 던지기 · 착지 후 연막 분사':'놓으면 던지기' : (document.documentElement.classList.contains('mobile') ? '장전 버튼: 핀 뽑기' : G.Settings.label('KeyR') + ' 핀 뽑기 · 놓으면 던지기');
     if (k.b.textContent !== txt) k.b.textContent = txt;
     if (k.sp.textContent !== hint) k.sp.textContent = hint;
   },

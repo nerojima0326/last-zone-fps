@@ -1,5 +1,7 @@
 # 1인칭 총기 모델 출처
 
+v98 투척 화면은 아래 BarcodeGames의 팔·장갑을 게임 내에서 복제해 사용합니다. 투척 복제 메시의 손·손가락에 남은 팔뚝 영향을 손목으로 옮기고, 종류별 그립·손가락 자세·안전핀 접촉·팔 IK를 조정했습니다. 원본 GLB·텍스처와 다른 무기의 메시에는 이 보정을 저장하지 않습니다. 구현은 [throwable-motion.js](../../../js/throwable-motion.js)에 있습니다.
+
 | 파일 | 게임 내 사용 | 에셋 | 제작자 | 출처 | 라이선스 |
 |---|---|---|---|---|---|
 | `m4_animations.zip` | AR-7 1인칭 총·팔·손, 꺼내기·사격·장전 애니메이션. 팔·손 메시는 v41부터 나머지 총기(AR-7·G-18 제외)와 맨손·투척 화면에도 쓰입니다(`js/real-arms.js`) | M4 - FPS Weapon Animations Pack FREE (v.1) | BarcodeGames | [Fab](https://www.fab.com/listings/38da8f1e-cb54-4cda-beb1-6e55642a55a9) | Fab Standard License |

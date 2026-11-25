@@ -528,19 +528,20 @@ const P = G.Player = {
     G.VM.set('throw'); G.VM.setThrowKind(this.throwKind);
   },
   fuseOf(kind) { return G.Throwables.FUSE[kind] || 3; },
-  cookable(kind) { return kind !== 'molotov'; },
+  hasPin(kind) { return kind === 'frag' || kind === 'smoke' || kind === 'flash'; },
+  cookable(kind) { return kind === 'frag' || kind === 'flash'; },
   pullPin() {
     const T = this.throwSt;
-    if (!T || T.phase !== 'hold' || T.pinT >= 0 || !this.cookable(T.kind)) return;
-    T.pinT = 0;
+    if (!T || T.phase !== 'hold' || T.pinT >= 0 || !this.hasPin(T.kind)) return;
+    T.pinT = 0;T.cooked=true;
     G.Audio.click('pin');
   },
   // 남은 시간 (핀을 안 뽑았으면 전체)
-  fuseLeft(T) { return this.fuseOf(T.kind) - Math.max(0, T.pinT); },
+  fuseLeft(T) { return this.fuseOf(T.kind) - (this.cookable(T.kind)&&T.cooked!==false?Math.max(0,T.pinT):0); },
   // 들고 있던 투척물을 놓친다 (기절·사망·탑승): 핀을 뽑았으면 발밑에 떨어뜨린다
   abortThrow() {
     const T = this.throwSt, a = this.a;
-    if (T && T.phase === 'hold' && T.pinT >= 0 && this.cookable(T.kind) && a && a.throwables[T.kind] > 0) {
+    if (T && !T.released && T.pinT >= 0 && this.hasPin(T.kind) && a && a.throwables[T.kind] > 0) {
       a.throwables[T.kind]--;
       _q.copy(a.pos); _q.y += 0.3;
       G.Throwables.throw(a, T.kind, _q, _d.set(0, 0.5, 0).addScaledVector(a.vel, 0.5), Math.max(0.05, this.fuseLeft(T)));
@@ -548,47 +549,37 @@ const P = G.Player = {
     this.throwSt = null;
   },
   throwLogic(dt) {
-    const a = this.a, T = this.throwSt, cam = G.camera, I = G.Input;
-    if (T.phase === 'hold') {
-      T.holdT += dt;
-      if (T.pinT >= 0) T.pinT += dt;
-      // 손에서 터진다
-      if (T.pinT >= 0 && this.cookable(T.kind) && this.fuseLeft(T) <= 0) {
-        if (a.throwables[T.kind] > 0) {
-          a.throwables[T.kind]--;
-          cam.getWorldDirection(_f); _q.copy(cam.position).addScaledVector(_f, 0.35); _q.y -= 0.15;
-          G.Throwables.throw(a, T.kind, _q, _d.set(0, 0, 0), 0.01);
-        }
-        T.phase = 'throw'; T.released = true; T.t = 0.33;
-        return;
-      }
-      const held = T.btn === 'lmb' ? I.lmb : T.btn === 'rmb' ? I.rmb : T.btn ? I.down(T.btn) : false;
-      // 떼면 던진다 (들어 올리는 동작이 끝나기 전이면 끝날 때까지 기다렸다가)
-      if (!held && T.holdT >= 0.12) { T.phase = 'throw'; T.t = 0.25; }
-      else return;
+    const a=this.a,T=this.throwSt,cam=G.camera,I=G.Input;
+    if(T.phase==='hold')T.holdT+=dt;
+    if(T.pinT>=0)T.pinT+=dt;
+    // 수류탄·섬광탄의 수동 쿠킹은 유지한다. 연막은 안전핀을 뽑아도 손에서 터지지 않는다.
+    if(!T.released&&T.pinT>=0&&this.cookable(T.kind)&&this.fuseLeft(T)<=0){
+      if(a.throwables[T.kind]>0){a.throwables[T.kind]--;G.ThrowMotion.launchPoint(G.VM,cam,_q);G.Throwables.throw(a,T.kind,_q,_d.set(0,0,0),.01);}
+      Object.assign(T,{phase:'throw',released:true,prep:0,t:.011,releaseAt:.01,duration:.51});return;
     }
-    T.t += dt;
-    if (!T.released && T.t >= 0.33) {
-      T.released = true;
-      if (a.throwables[T.kind] > 0) {
-        a.throwables[T.kind]--;
-        if (T.pinT < 0 && this.cookable(T.kind)) G.Audio.click('pin');
-        cam.getWorldDirection(_f);
-        _r.set(1, 0, 0).applyQuaternion(cam.quaternion);
-        _q.copy(cam.position).addScaledVector(_f, 0.45).addScaledVector(_r, 0.15);
-        _q.y -= 0.05;
-        if (T.under) _d.copy(_f).multiplyScalar(9).add(_e.set(0, 2.2, 0));
-        else _d.copy(_f).multiplyScalar(21).add(_e.set(0, 2.6, 0));
-        _d.addScaledVector(a.vel, 0.6);
-        // 핀을 뽑은 뒤 흐른 시간만큼 짧게 (화염병은 그대로)
-        G.Throwables.throw(a, T.kind, _q, _d, this.cookable(T.kind) ? Math.max(0.05, this.fuseLeft(T)) : undefined);
-        if (a.model) a.model.throwT = 0.5;
+    if(T.phase==='hold'){
+      const held=T.btn==='lmb'?I.lmb:T.btn==='rmb'?I.rmb:T.btn?I.down(T.btn):false;
+      if(held||T.holdT<.12)return;
+      if(this.hasPin(T.kind)&&T.pinT<0){T.pinT=0;T.cooked=false;G.Audio.click('pin');}
+      const timing=G.ThrowMotion.timing(T.kind,T.under),prep=this.hasPin(T.kind)?Math.max(0,.4-T.pinT):0;
+      Object.assign(T,{phase:'throw',t:0,prep,releaseAt:prep+timing.release,duration:prep+timing.duration});
+    }
+    T.t+=dt;
+    if(!T.released&&T.t>=T.releaseAt){
+      T.released=true;
+      if(a.throwables[T.kind]>0){
+        a.throwables[T.kind]--;G.ThrowMotion.launchPoint(G.VM,cam,_q);
+        // 손에서 벽 너머로 생성하지 않고, 시야와 손 사이의 실제 표면 바깥에 놓는다.
+        _d.copy(_q).sub(cam.position);const distance=_d.length();_d.divideScalar(distance||1);
+        if(G.World.raycast(cam.position,_d,distance))_q.copy(G.World.hit.point).addScaledVector(G.World.hit.normal,.08);
+        cam.getWorldDirection(_f);if(T.under)_d.copy(_f).multiplyScalar(9).add(_e.set(0,2.2,0));else _d.copy(_f).multiplyScalar(21).add(_e.set(0,2.6,0));_d.addScaledVector(a.vel,.6);
+        G.Throwables.throw(a,T.kind,_q,_d,this.cookable(T.kind)?Math.max(.05,this.fuseLeft(T)):undefined);if(a.model)a.model.throwT=.5;
       }
     }
-    if (T.t >= 0.68) {
-      this.throwSt = null;
-      if (T.quick && T.prev && T.prev !== 'throw') { a.cur = T.prev; this.raise = 0; this.sw = { t: 0.2, to: T.prev }; }
-      else if (a.throwables[T.kind] <= 0) { if (!this.cycleThrow()) { a.cur = a.bestGun(); this.raise = 0; this.sw = { t: 0.2, to: a.cur }; } else G.VM.setThrowKind(this.throwKind); }
+    if(T.t>=T.duration){
+      this.throwSt=null;
+      if(T.quick&&T.prev&&T.prev!=='throw'){a.cur=T.prev;this.raise=0;this.sw={t:.2,to:T.prev};}
+      else if(a.throwables[T.kind]<=0){if(!this.cycleThrow()){a.cur=a.bestGun();this.raise=0;this.sw={t:.2,to:a.cur};}else G.VM.setThrowKind(this.throwKind);}
       else G.VM.setThrowKind(this.throwKind);
     }
   },
@@ -773,6 +764,7 @@ const P = G.Player = {
       reload: rl, pumpP: this.pumpT >= 0.08 ? (this.pumpT - 0.08) / 0.45 : -1,
       cycleP: this.cycleT >= 0 && def && def.cycle ? this.cycleT / def.cycle : -1,
       // v65 들고 있는 동안은 들어 올린 자세(0.37)에 멈춘다 · pinP: 왼손이 핀을 뽑는 진행 · cookP: 핀 뽑은 뒤 흐른 비율
+      throwState: this.throwSt,
       throwP: this.throwSt ? (this.throwSt.phase === 'hold' ? 0.37 * Math.min(1, this.throwSt.holdT / 0.18) : this.throwSt.t / 0.68) : -1,
       pinP: this.throwSt ? (this.throwSt.pinT >= 0 ? Math.min(1, this.throwSt.pinT / 0.4) : this.throwSt.released ? 1 : 0) : 0,
       punchP: this.punchT >= 0 ? this.punchT / 0.4 : -1,

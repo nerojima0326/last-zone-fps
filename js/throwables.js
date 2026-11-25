@@ -6,6 +6,7 @@ const V3 = THREE.Vector3;
 const GRAV = 18;
 const FUSE = { frag: 3.5, smoke: 1.6, flash: 1.8, molotov: 6 };
 const FLASH_R = 45;   // 섬광이 닿는 거리 (m, 시야가 트여 있을 때). v49: 멀수록 약하게
+const DOWN = new V3(0,-1,0);
 const _d = new V3(), _v = new V3(), _c = new V3(), _e = new V3(), _f = new V3();
 
 const T = G.Throwables = {
@@ -36,11 +37,17 @@ const T = G.Throwables = {
     if (s > maxSpeed) out.multiplyScalar(maxSpeed / s);
     return out;
   },
+  smokeSupported(o) {
+    const W=G.World,wl=W.waterAt(o.pos.x,o.pos.z);
+    if(W.heightAt(o.pos.x,o.pos.z)<wl-.3&&Math.abs(o.pos.y-wl)<.16)return true;
+    return !!W.raycast(o.pos,DOWN,.17)&&W.hit.normal.y>.35;
+  },
   update(dt) {
     const W = G.World;
     for (let i = 0; i < this.list.length; i++) {
       const o = this.list[i];
       o.t += dt;
+      if(o.kind==='smoke'&&o.rest&&!this.smokeSupported(o))o.rest=false;
       if (!o.rest) {
         o.vel.y -= GRAV * dt;
         const sp = o.vel.length(), L = sp * dt;
@@ -59,21 +66,23 @@ const T = G.Throwables = {
         }
         const wl = W.waterAt(o.pos.x, o.pos.z);
         if (o.pos.y < wl - 0.3 && W.heightAt(o.pos.x, o.pos.z) < wl - 0.3) { o.vel.multiplyScalar(0.8); o.vel.y = Math.max(o.vel.y, -1.5); }
+        if(o.kind==='smoke'&&o.pos.y<wl+.04&&W.heightAt(o.pos.x,o.pos.z)<wl-.3){o.pos.y=wl+.04;o.vel.set(0,0,0);o.rest=true;}
         o.mesh.rotation.x += o.spin.x * dt; o.mesh.rotation.y += o.spin.y * dt; o.mesh.rotation.z += o.spin.z * dt;
       }
       o.mesh.position.copy(o.pos);
       if (o.kind === 'molotov') G.FX.add.spawn({ x: o.pos.x, y: o.pos.y + 0.12, z: o.pos.z, vy: 0.8, life: 0.25, s0: 0.12, s1: 0.04, r: 6, g: 2.6, b: 0.7, a: 0.8 });
-      if (o.kind === 'smoke' && o.t > o.fuse) { /* 연막 분사 중 */ }
-      if (o.t >= o.fuse && !o.done) {
+      // 연막은 퓨즈가 끝나도 공중에서는 기다린다. 바닥·지붕·수면에서 분사한다.
+      const smokeReady=o.kind!=='smoke'||(o.rest||Math.abs(o.vel.y)<.9)&&this.smokeSupported(o);
+      if (o.t >= o.fuse && !o.done && smokeReady) {
         this.detonate(o);
         if (o.kind !== 'smoke') { G.scene.remove(o.mesh); this.list.splice(i--, 1); continue; }
       }
-      if (o.kind === 'smoke' && o.done && o.t > o.fuse + 20) { G.scene.remove(o.mesh); this.list.splice(i--, 1); continue; }
+      if (o.kind === 'smoke' && (o.done ? o.t > o.ignitedAt + 23 : o.t > Math.max(60,o.fuse+30))) { G.scene.remove(o.mesh); this.list.splice(i--, 1); continue; }
     }
     // 연막
     for (let i = 0; i < this.smokes.length; i++) {
       const s = this.smokes[i];
-      s.t += dt;
+      s.t += dt;s.pos.copy(s.src.pos);
       const t = s.t;
       s.r = t < 4 ? 7.5 * (1 - Math.pow(1 - t / 4, 2)) : t < 17 ? 7.5 : 7.5 * Math.max(0, 1 - (t - 17) / 5);
       if (t < 15) {
@@ -144,6 +153,7 @@ const T = G.Throwables = {
       Game.onNoise(p, 140, o.owner);
       if (G.Vehicles) G.Vehicles.blast(p, 8, 230, o.owner);
     } else if (o.kind === 'smoke') {
+      o.ignitedAt=o.t||0;
       G.Audio.smokePop(p);
       this.smokes.push({ pos: p.clone(), t: 0, r: 0, acc: 0, src: o });
     } else if (o.kind === 'molotov') {
@@ -197,7 +207,7 @@ const T = G.Throwables = {
     return false;
   },
   inSmoke(p) {
-    for (const s of this.smokes) { if (s.r > 2 && Math.hypot(p.x - s.pos.x, p.z - s.pos.z) < s.r * 0.8 && p.y - s.pos.y < 4.5) return true; }
+    for (const s of this.smokes) { if (s.r > 2 && Math.hypot(p.x - s.pos.x, p.z - s.pos.z) < s.r * 0.8 && p.y - s.pos.y >= -.6 && p.y - s.pos.y < 4.5) return true; }
     return false;
   },
   fireAt(p, margin) {

@@ -52,7 +52,7 @@ const R = G.RealArms = {
     M.install = function (model) { install.call(this, model); R.build(); };
     M.unload = function () { R.dispose(); unload.call(this); };
     const update = G.VM.update;
-    G.VM.update = function (dt, s) { update.call(this, dt, s); R.update(this, s); };
+    G.VM.update = function (dt, s) { update.call(this, dt, s); R.update(this, s, dt); };
     if (M.ready) this.build();
   },
   setEnabled(on) {
@@ -160,6 +160,7 @@ const R = G.RealArms = {
     }
   },
   dispose() {
+    G.ThrowMotion?.disposeSkin(this);
     this.hide();
     if (this.copy) this.copy.removeFromParent();
     Object.assign(this, { copy: null, mesh: null, S: null, ready: false, host: null });
@@ -176,11 +177,12 @@ const R = G.RealArms = {
     if (this.copy) this.copy.visible = false;
     if (this.lastM) { this.procVisible(this.lastM, true); this.lastM = null; }
   },
-  update(vm, s) {
+  update(vm, s, dt) {
     G.HandContact?.restore(this.copy);
     const m = vm.models[vm.cur];
     const own = (vm.cur === 'ar7' && G.M4Viewmodel?.ready) || (vm.cur === 'g18' && G.G17Pilot?.ready) || G.AssetVM?.owns(vm.cur);
     const A = m && this.armsOf(m);
+    if(this.ready&&this.copy)G.ThrowMotion.skin(this,m?.type==='throw');
     // v65 투척물·맨손은 설정과 상관없이 총과 같은 실사 팔 (절차적 팔과 섞이지 않게)
     const use = this.ready && (this.enabled || vm.cur === 'throw' || vm.cur === 'fists' || G.Knives?.is(vm.cur)) && A && (A.L || A.R) && !own && !s.hideVM;
     if (this.lastM && this.lastM !== m) this.procVisible(this.lastM, true);
@@ -192,7 +194,7 @@ const R = G.RealArms = {
     const pistol = m.cls === 'pistol';
     for (const sd of SIDES) {
       const r = A[sd.key], S = this.S[sd.key];
-      if (r) { S.b.arm.scale.setScalar(1); this.drive(m, r, S, pistol); }
+      if (r) { S.b.arm.scale.setScalar(1); this.drive(m, r, S, pistol);if(m.type==='throw'&&sd.key==='R'){G.ThrowMotion.fitRealGrip(m,r,S,.01*(this.scale||1));G.ThrowMotion.poseLeft(m,dt);m.root.updateMatrixWorld(true);}else if(m.type==='throw'&&sd.key==='L')G.ThrowMotion.fitRealPin(m,r,S,this); }
       else this.tuck(S);   // 한 팔만 쓰는 동작(투척): 다른 팔은 접어서 감춘다
     }
     G.HandContact?.apply(vm.cur, this.copy, m.gun.matrixWorld, {
@@ -252,7 +254,7 @@ const R = G.RealArms = {
     // 손
     this.place(b.hand, _w, handQ, unit, rootW);
     // 손가락: 편 손 ↔ 쥔 손
-    const key = r.side > 0 ? 'R' : 'L', ref = REF[key], knife = m.type === 'knife' && r.side > 0, grip = knife ? S.gripKnife : pistol ? S.gripPistol : S.gripRifle, open = knife ? S.openKnife : S.open;
+    const key = r.side > 0 ? 'R' : 'L', ref = REF[key], knife = m.type === 'knife' && r.side > 0, throwing=m.type==='throw',grip = knife||throwing ? S.gripKnife : pistol ? S.gripPistol : S.gripRifle, open = knife||throwing ? S.openKnife : S.open;
     // 칼 손잡이는 주먹과 달리 손 안에 공간이 필요하다. 주먹의 과도한 추가 굽힘을 적용하지 않는다.
     const closed = m.type === 'fists';
     const fist = closed ? 1.55 : 1, lim = closed ? 1.7 : 1.15;
@@ -260,7 +262,7 @@ const R = G.RealArms = {
     for (const f of FING) {
       const t = f === 'Thumb' ? tThumb : f === 'Index' ? tTrig : tCurl, bones = b.fingers[f], digit=FING.indexOf(f), fit=knife?m.knifeProfile:null;
       for (let i = 0; i < bones.length; i++) {
-        const curl = knife ? fit.fingers[digit][i] * (f === 'Thumb' ? r.thumb / .72 : f === 'Index' ? r.trig / .9 : r.curl / .9) : t;
+        const curl = knife ? fit.fingers[digit][i] * (f === 'Thumb' ? r.thumb / .72 : f === 'Index' ? r.trig / .9 : r.curl / .9) : throwing&&r.throwJoint ? r.throwJoint[digit][i]*(1-(r.throwOpen||0)) : t;
         bend(open[f][i], grip[f][i], curl, bones[i].quaternion);
       }
       if(fit?.turns?.[digit])bones[0].quaternion.multiply(_q2.setFromEuler(_fingerEuler.set(...fit.turns[digit])));

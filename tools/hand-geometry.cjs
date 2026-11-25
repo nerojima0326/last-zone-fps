@@ -14,6 +14,9 @@ module.exports = async function installHandGeometry() {
   return {roots,map};
  };
  const selected = id => {
+  if(id==='throw'){
+   const m=G.VM.models.throw,root=m.root,item=m.items[m.throwKind]||Object.values(m.items).find(o=>o.visible),gun=[],arms=[];root.traverse(o=>{if(!o.isMesh||!visible(o))return;let held=false;for(let p=o;p;p=p.parent)if(p===item)held=true;if(held)gun.push(o);else if(o.isSkinnedMesh)arms.push(o)});return {root,gun,arms};
+  }
   if(G.Knives?.is(id)) {
    const root=G.VM.models[id].root,knife=G.VM.models[id].knife,gun=[],arms=[];
    root.traverse(o=>{if(!o.isMesh||!visible(o))return;let under=false;for(let p=o;p;p=p.parent)if(p===knife)under=true;if(under)gun.push(o);else if(o.isSkinnedMesh)arms.push(o)});
@@ -35,7 +38,7 @@ module.exports = async function installHandGeometry() {
  // Cancel the shared rigid transform before float32 storage, so edge-contact
  // tolerances cannot change when the camera or recoil parent turns.
  const audit = id => {
-  G.vmScene.updateMatrixWorld(true);const S=selected(id),frame=G.Knives?.is(id)?G.VM.models[id].grip:S.root,space=new T.Matrix4().compose(frame.getWorldPosition(new V()),frame.getWorldQuaternion(new T.Quaternion()),new V(1,1,1)).invert(),solids=S.gun.map(mesh=>bake(mesh,space)),result={},worst=[];
+  G.vmScene.updateMatrixWorld(true);const S=selected(id),frame=G.Knives?.is(id)||id==='throw'?G.VM.models[id].grip:S.root,space=new T.Matrix4().compose(frame.getWorldPosition(new V()),frame.getWorldQuaternion(new T.Quaternion()),new V(1,1,1)).invert(),solids=S.gun.map(mesh=>bake(mesh,space)),result={},worst=[];
   const identity=new T.Matrix4(),line=new T.Line3(),plane=new T.Plane(),projection=new V();
   for(const mesh of S.arms){const {map}=hands(mesh),g=mesh.geometry,si=g.attributes.skinIndex,sw=g.attributes.skinWeight,pos=g.attributes.position;if(!si||!sw)continue;
    const labels=[];

@@ -21,9 +21,10 @@ function native(row){assert(row.mobile);assert(Math.abs(row.rendererPR-row.dpr*r
    const press=(id,n)=>{const el=document.querySelector('#touchUI [data-id="'+id+'"]'),r=el.getBoundingClientRect(),touch=new Touch({identifier:19,target:el,clientX:r.x+r.width/2,clientY:r.y+r.height/2});
     el.dispatchEvent(new TouchEvent('touchstart',{bubbles:true,cancelable:true,changedTouches:[touch],touches:[touch]}));for(let i=0;i<n;i++){P.update(1/60);I.endFrame()}el.dispatchEvent(new TouchEvent('touchend',{bubbles:true,cancelable:true,changedTouches:[touch],touches:[]}));};
    for(let i=0;i<90;i++){P.update(1/60);I.endFrame()}const shots=G.Training.stats.shots;press('fire',40);const fired=G.Training.stats.shots>shots;press('reload',1);const reloading=!!P.reload;let n=0;while(P.reload&&n++<600){P.update(1/60);I.endFrame()}const reloaded=!P.reload&&P.a.weapons.rifle.mag===G.WEAPONS[P.a.weapons.rifle.id].mag;
+   const throwActions=[];for(const kind of G.THROW_ORDER){P.abortThrow();G.Throwables.reset();P.sw=null;P.reload=null;P.throwKind=kind;P.a.cur='throw';P.raise=1;P.a.throwables[kind]=3;G.VM.set('throw');G.VM.setThrowKind(kind);press('fire',30);for(let i=0;i<120;i++){P.update(1/60);I.endFrame()}throwActions.push({kind,created:G.Throwables.list.length,ammo:P.a.throwables[kind],finished:!P.throwSt});}G.Throwables.reset();
    press('knife',90);const knife=P.a.cur==='melee';press('ads',1);const inspect=P.melee?.kind==='inspect';
-   G.UI.drawScope(1,'x4',P);const c=document.getElementById('scopeOverlay'),scope=[c.width,c.height];G.UI.drawScope(0,null,P);G.paused=true;I.reset();return{fired,reloading,reloaded,knife,inspect,scope};
-  });for(const key of ['fired','reloading','reloaded','knife','inspect'])assert(report.controls[key],key);assert.deepEqual(report.controls.scope,report.training.canvas);
+   G.UI.drawScope(1,'x4',P);const c=document.getElementById('scopeOverlay'),scope=[c.width,c.height];G.UI.drawScope(0,null,P);G.paused=true;I.reset();return{fired,reloading,reloaded,knife,inspect,scope,throwActions};
+  });for(const key of ['fired','reloading','reloaded','knife','inspect'])assert(report.controls[key],key);assert.deepEqual(report.controls.scope,report.training.canvas);for(const t of report.controls.throwActions){assert.equal(t.created,1,t.kind);assert.equal(t.ammo,2,t.kind);assert(t.finished,t.kind);}
   // 장착 가능한 실사 스코프를 실제로 업로드한 뒤 모바일 예산을 확인한다.
   report.scopes=[];
   const scopes=await page.evaluate(()=>G.WEAPONS.ar7.scopes);assert(!scopes.includes('x8'));
