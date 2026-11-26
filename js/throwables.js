@@ -8,13 +8,16 @@ const FUSE = { frag: 3.5, smoke: 1.6, flash: 1.8, molotov: 6 };
 const FLASH_R = 45;   // 섬광이 닿는 거리 (m, 시야가 트여 있을 때). v49: 멀수록 약하게
 const DOWN = new V3(0,-1,0);
 const _d = new V3(), _v = new V3(), _c = new V3(), _e = new V3(), _f = new V3();
+// 비행 꼬리: 입자 간격(m), 최소 초당 수, 전체 초당 예산. 기존 연기 풀을 공유한다.
+const SMOKE_TRAIL = { potato: [.42,12,96], low: [.32,16,128], medium: [.26,20,192], high: [.22,24,240] };
 
 const T = G.Throwables = {
   FUSE,
-  list: [], smokes: [], fires: [],
+  list: [], smokes: [], fires: [], trailCredit: 0,
   reset() {
     for (const o of this.list) G.scene.remove(o.mesh);
     this.list.length = 0; this.smokes.length = 0; this.fires.length = 0;
+    this.trailCredit = 0;
     if (G.Audio.ctx) G.Audio.setLoop('fire', 0);
   },
   // v65 fuse: 핀을 뽑고 손에 들고 있던 만큼 줄어든 남은 시간 (없으면 기본)
@@ -24,7 +27,7 @@ const T = G.Throwables = {
     mesh.traverse(m => { if (m.isMesh) m.castShadow = true; });
     G.scene.add(mesh);
     mesh.position.copy(pos);
-    this.list.push({ owner, team: owner.team, kind, pos: pos.clone(), vel: vel.clone(), mesh, t: 0, fuse: fuse ?? FUSE[kind], rest: false, contactNormal: new V3(0,1,0), spin: new V3(U.rand(-12, 12), U.rand(-6, 6), U.rand(-12, 12)), lastBounce: 0 });
+    this.list.push({ owner, team: owner.team, kind, pos: pos.clone(), vel: vel.clone(), mesh, t: 0, fuse: fuse ?? FUSE[kind], rest: false, contactNormal: new V3(0,1,0), spin: new V3(U.rand(-12, 12), U.rand(-6, 6), U.rand(-12, 12)), lastBounce: 0, trail: kind==='smoke'?{pos:pos.clone(),acc:0}:null });
     G.Audio.click('throw');
   },
   // 목표 지점까지의 투척 속도 계산
@@ -42,12 +45,33 @@ const T = G.Throwables = {
     if(W.heightAt(o.pos.x,o.pos.z)<wl-.3&&Math.abs(o.pos.y-wl)<.16)return true;
     return !!W.raycast(o.pos,DOWN,.17)&&W.hit.normal.y>.35;
   },
+  smokeTrail(o,dt) {
+    const trail=o.trail;if(!trail)return;
+    const from=trail.pos,distance=from.distanceTo(o.pos),limits=SMOKE_TRAIL[G.quality]||SMOKE_TRAIL.medium;
+    // 먼 거리·순간 이동 구간은 건너뛴다. 밀린 입자를 한꺼번에 만들지 않는다.
+    if(o.done||distance>8||G.camera.position.distanceToSquared(o.pos)>160*160){trail.acc=0;from.copy(o.pos);return;}
+    const amount=Math.max(distance/limits[0],dt*limits[1]),previous=trail.acc;
+    trail.acc+=amount;const count=Math.floor(trail.acc);trail.acc-=count;
+    for(let i=1;i<=count&&this.trailCredit>=1;i++){
+      // 낮은 프레임에서도 이전 위치와 현재 위치 사이를 채워 궤적이 점선처럼 끊기지 않게 한다.
+      const t=U.clamp((i-previous)/amount,0,1),p=G.FX.norm.spawn({
+        x:U.lerp(from.x,o.pos.x,t),y:U.lerp(from.y,o.pos.y,t)+.025,z:U.lerp(from.z,o.pos.z,t),
+        vx:o.vel.x*.015+U.rand(-.08,.08),vy:.13+U.rand(0,.12),vz:o.vel.z*.015+U.rand(-.08,.08),
+        life:U.rand(1.35,1.65),s0:.64,s1:1.08,r:.84,g:.85,b:.86,a:.44,fin:.015,fo:.9,drag:1.2,vr:U.rand(-.25,.25)
+      });
+      this.trailCredit--;if(!p)break;
+    }
+    from.copy(o.pos);
+  },
   update(dt) {
     const W = G.World;
+    const trailRate=(SMOKE_TRAIL[G.quality]||SMOKE_TRAIL.medium)[2];
+    this.trailCredit=Math.min(trailRate*.10,this.trailCredit+dt*trailRate);
     for (let i = 0; i < this.list.length; i++) {
       const o = this.list[i];
       o.t += dt;
       if(o.kind==='smoke'&&o.rest&&!this.smokeSupported(o))o.rest=false;
+      let smokeContact=o.kind==='smoke'&&o.rest;
       if (!o.rest) {
         o.vel.y -= GRAV * dt;
         const sp = o.vel.length(), L = sp * dt;
@@ -57,6 +81,7 @@ const T = G.Throwables = {
           if (o.kind === 'molotov') { o.contactNormal.copy(n);o.pos.copy(W.hit.point).addScaledVector(n, 0.1); this.detonate(o); this.list.splice(i--, 1); continue; }
           o.pos.copy(W.hit.point).addScaledVector(n, 0.06);
           const vn = o.vel.dot(n);
+          if(o.kind==='smoke'&&n.y>.35&&vn<0)smokeContact=true;
           o.vel.addScaledVector(n, -1.45 * vn).multiplyScalar(0.55);
           if (sp > 2.5 && o.t - o.lastBounce > 0.08) { G.Audio.bounce(o.pos); o.lastBounce = o.t; }
           o.spin.multiplyScalar(0.6);
@@ -66,14 +91,14 @@ const T = G.Throwables = {
         }
         const wl = W.waterAt(o.pos.x, o.pos.z);
         if (o.pos.y < wl - 0.3 && W.heightAt(o.pos.x, o.pos.z) < wl - 0.3) { o.vel.multiplyScalar(0.8); o.vel.y = Math.max(o.vel.y, -1.5); }
-        if(o.kind==='smoke'&&o.pos.y<wl+.04&&W.heightAt(o.pos.x,o.pos.z)<wl-.3){o.pos.y=wl+.04;o.vel.set(0,0,0);o.rest=true;}
+        if(o.kind==='smoke'&&o.pos.y<wl+.04&&W.heightAt(o.pos.x,o.pos.z)<wl-.3){o.pos.y=wl+.04;o.vel.set(0,0,0);o.rest=true;smokeContact=true;}
         o.mesh.rotation.x += o.spin.x * dt; o.mesh.rotation.y += o.spin.y * dt; o.mesh.rotation.z += o.spin.z * dt;
       }
       o.mesh.position.copy(o.pos);
+      if(o.kind==='smoke')this.smokeTrail(o,dt);
       if (o.kind === 'molotov') G.FX.add.spawn({ x: o.pos.x, y: o.pos.y + 0.12, z: o.pos.z, vy: 0.8, life: 0.25, s0: 0.12, s1: 0.04, r: 6, g: 2.6, b: 0.7, a: 0.8 });
-      // 연막은 퓨즈가 끝나도 공중에서는 기다린다. 바닥·지붕·수면에서 분사한다.
-      const smokeReady=o.kind!=='smoke'||(o.rest||Math.abs(o.vel.y)<.9)&&this.smokeSupported(o);
-      if (o.t >= o.fuse && !o.done && smokeReady) {
+      // 비행 중에는 옅은 꼬리만 남기고, 첫 착지에서 넓은 연막으로 전환한다. 벽·천장 접촉은 제외한다.
+      if (!o.done && (o.kind==='smoke'?smokeContact:o.t>=o.fuse)) {
         this.detonate(o);
         if (o.kind !== 'smoke') { G.scene.remove(o.mesh); this.list.splice(i--, 1); continue; }
       }
