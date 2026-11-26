@@ -1,4 +1,4 @@
-// Authored CC-BY-4.0 reload curves, retargeted to the game's existing contact rig.
+// 원본 장전 곡선을 기존 접촉 리그에 맞춘다. 신규 모션은 원본별 크레딧을 유지한다.
 (function () {
 'use strict';
 const G = window.G;
@@ -15,7 +15,7 @@ function sample(clip, t, out) {
 const R = G.ReloadAssets = {
   ready: false, data: null, expansion: null,
   async load() {
-    await Promise.all([this.loadBase(), this.loadExpansion()]);
+    await Promise.all([this.loadBase(), this.loadExpansion(), G.ExpandedMotion?.load()]);
   },
   async loadExpansion() {
     this.expansion = null;
@@ -51,9 +51,10 @@ const R = G.ReloadAssets = {
       console.info('[reloads] 기본 장전 모션 사용:', error.message);
     }
   },
-  has(id) { return !!this.expansion?.weapons[id] || (this.ready && IDS.has(id)); },
-  apply(m, reload, pose) {
+  has(id) { return !!(G.ExpandedMotion?.data&&G.ExpandedMotion.has(id)) || !!this.expansion?.weapons[id] || (this.ready && IDS.has(id)); },
+  apply(m, reload, pose, state) {
     m.reloadMotion = null;
+    if(G.ExpandedMotion?.apply(m,reload,pose,state))return;
     if (!this.has(m.id)) return;
     const magazine = reload.type === 'mag';
     const expanded = this.expansion?.weapons[m.id];

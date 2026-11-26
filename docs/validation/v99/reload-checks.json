@@ -1,0 +1,195 @@
+{
+  "weaponCases": 60,
+  "handRig": {
+    "frames": 20857,
+    "vertices": 624708,
+    "maxContactErrorMm": 12.710572481696085,
+    "maxWristDegrees": 86.3752761064156,
+    "maxForearmTurnDegrees": 36.43069354895565,
+    "maxElbowSpeed": 9.243238170542261
+  },
+  "ammoAndSoundCases": 720,
+  "expansion": [
+    {
+      "id": "mp9",
+      "mode": "empty",
+      "source": "allanims",
+      "handTravelMm": 75.45308862359002
+    },
+    {
+      "id": "mp9",
+      "mode": "tactical",
+      "source": "allanims",
+      "handTravelMm": 61.85336167737986
+    },
+    {
+      "id": "v45",
+      "mode": "empty",
+      "source": "Animation",
+      "handTravelMm": 173.3722652443531
+    },
+    {
+      "id": "v45",
+      "mode": "tactical",
+      "source": "Animation",
+      "handTravelMm": 225.1768796861132
+    },
+    {
+      "id": "cx9",
+      "mode": "empty",
+      "source": "allanims",
+      "handTravelMm": 83.97645908870525
+    },
+    {
+      "id": "cx9",
+      "mode": "tactical",
+      "source": "allanims",
+      "handTravelMm": 63.589880752480774
+    },
+    {
+      "id": "sm45",
+      "mode": "empty",
+      "source": "allanims",
+      "handTravelMm": 135.3213741035875
+    },
+    {
+      "id": "sm45",
+      "mode": "tactical",
+      "source": "allanims",
+      "handTravelMm": 172.6317428983228
+    },
+    {
+      "id": "ar416",
+      "mode": "empty",
+      "source": "Reload_Empty",
+      "handTravelMm": 163.26633009442455
+    },
+    {
+      "id": "ar416",
+      "mode": "tactical",
+      "source": "Reload",
+      "handTravelMm": 140.08354984916508
+    },
+    {
+      "id": "sg56",
+      "mode": "empty",
+      "source": "Reload_Empty",
+      "handTravelMm": 170.63904633375535
+    },
+    {
+      "id": "sg56",
+      "mode": "tactical",
+      "source": "Reload",
+      "handTravelMm": 140.27067573933869
+    },
+    {
+      "id": "ms56",
+      "mode": "empty",
+      "source": "Reload_Empty",
+      "handTravelMm": 151.85256338541072
+    },
+    {
+      "id": "ms56",
+      "mode": "tactical",
+      "source": "Reload",
+      "handTravelMm": 138.9083157708061
+    },
+    {
+      "id": "lm86",
+      "mode": "empty",
+      "source": "Reload_Empty",
+      "handTravelMm": 180.15000260911165
+    },
+    {
+      "id": "lm86",
+      "mode": "tactical",
+      "source": "Reload",
+      "handTravelMm": 141.3639677022521
+    },
+    {
+      "id": "rk762",
+      "mode": "empty",
+      "source": "Rig|AK_Reload_full",
+      "handTravelMm": 151.6958229808696
+    },
+    {
+      "id": "rk762",
+      "mode": "tactical",
+      "source": "Rig|AK_Reload",
+      "handTravelMm": 193.74940430038095
+    },
+    {
+      "id": "mg60",
+      "mode": "empty",
+      "source": "allanims",
+      "handTravelMm": 144.4403185973617
+    },
+    {
+      "id": "mg60",
+      "mode": "tactical",
+      "source": "allanims",
+      "handTravelMm": 115.44592059758038
+    },
+    {
+      "id": "sr25",
+      "mode": "empty",
+      "source": "Reload_Empty",
+      "handTravelMm": 173.52452046275008
+    },
+    {
+      "id": "sr25",
+      "mode": "tactical",
+      "source": "Reload",
+      "handTravelMm": 140.97521746929766
+    },
+    {
+      "id": "dm56",
+      "mode": "empty",
+      "source": "Armature|Arms_FPS_Anim_Reload_Fast",
+      "handTravelMm": 91.2020154097128
+    },
+    {
+      "id": "dm56",
+      "mode": "tactical",
+      "source": "Armature|Arms_FPS_Anim_Reload_Fast",
+      "handTravelMm": 100.98993007059558
+    },
+    {
+      "id": "m24",
+      "mode": "empty",
+      "source": "allanims",
+      "handTravelMm": 117.5434154110483
+    },
+    {
+      "id": "m24",
+      "mode": "tactical",
+      "source": "allanims",
+      "handTravelMm": 133.0448088534637
+    },
+    {
+      "id": "sp12",
+      "mode": "empty",
+      "source": "Armature|SG_FPS_Reload",
+      "handTravelMm": 23.729924768620613
+    },
+    {
+      "id": "sp12",
+      "mode": "tactical",
+      "source": "Armature|SG_FPS_Reload",
+      "handTravelMm": 23.123088761098305
+    },
+    {
+      "id": "p226",
+      "mode": "empty",
+      "source": "Armature|FPS_Pistol_Reload_full",
+      "handTravelMm": 128.6884960118464
+    },
+    {
+      "id": "p226",
+      "mode": "tactical",
+      "source": "Armature|FPS_Pistol_Reload_easy",
+      "handTravelMm": 129.75181207886112
+    }
+  ],
+  "errors": []
+}

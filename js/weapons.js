@@ -750,6 +750,9 @@ for (const [id, entry] of Object.entries(G.WeaponCatalog || {})) {
   if (entry.stats.cls === 'rifle' && !['belt', 'bolt'].includes(style.s))
     RSTYLE[id] = { ...style, magHold: style.s === 'drum' ? .10 : .18, handleLead: .035 };
 }
+// 신규 총기의 실제 플랫폼에 맞는 조작부를 쓴다. SIG·Vector·UMP는 빈 총의 볼트 멈치를 누른다.
+for(const id of ['ar416','sg56','ms56','lm86','sr25','v45','sm45'])RSTYLE[id]={...RSTYLE.ar7,hd:id==='lm86'?.08:id==='sr25'?.055:.10,magHold:.10,boltCatch:true};
+for(const id of ['mp9','cx9'])RSTYLE[id]={...RSTYLE.sc17,s:'mp5',magHold:.06,handleLead:.025};
 const rstyle = id => RSTYLE[id] || RSTYLE[G.WeaponCatalog?.[id]?.reloadBase] || RSTYLE.ar7;
 // 무게·손목·복귀 리듬. 동작의 접촉점은 makeKeys, 몸의 선행/후행 움직임은 여기서 분리한다.
 const RFEEL = {
@@ -811,7 +814,7 @@ const Guns = G.Guns = {
     r.curlT=r.trigT=curl; r.thumbT=thumb; solveArm(r,dt);
   },
   mats, CLS, gunData, rstyle,
-  reloadFeel(id) { return RFEEL[id] || RFEEL[G.WeaponCatalog?.[id]?.reloadBase] || RFEEL.ar7; },
+  reloadFeel(id) { return G.ExpandedMotion?.feel(id) || RFEEL[id] || RFEEL[G.WeaponCatalog?.[id]?.reloadBase] || RFEEL.ar7; },
   // Freeze the original empty state for the entire reload, including every shell cycle.
   reloadFactor(empty) { return empty ? 1.1 : 1; },
   reloadDuration(id,empty) { return G.WEAPONS[id].reload*this.reloadFactor(empty); },
@@ -832,6 +835,7 @@ const Guns = G.Guns = {
         const T = S.T, span = T.boltB - T.boltA;
         list.push([T.boltA + span * 0.24, 'open'], [T.boltA + span * 0.58, 'close']);
       }
+      if(empty&&S?.T.lockA!==undefined){list=list.filter(e=>e[1]!=='close');list.push([S.T.lockA,'open'],[S.T.unlock,'close']);}
       if (S && S.T.coverA !== undefined) list.push([S.T.coverA, 'coveropen'], [S.T.coverCloseB, 'coverclose']);
     } else if (def.reloadType === 'revolver') {
       list = [[0.16, 'open'], [0.28, 'shell'], [0.6, 'magin'], [0.765, 'close']];
@@ -1015,6 +1019,7 @@ const Guns = G.Guns = {
     const F = o.fore, st = K.st = rstyle(o.id);
     if (o.parts.mag && o.def.reloadType === 'mag') {
       if (o.cls === 'pistol') this.pistolKeys(o, K, v); else this.rifleKeys(o, K, v);
+      G.ExpandedMotion?.keys(o);
       for (const S of [K.E, K.Tac]) {
         const T = S.T;
         S.snd = {
@@ -1053,7 +1058,7 @@ const Guns = G.Guns = {
     const Hm = mr.clone().addScaledVector(md, (st.hd || 0.1) * k).add(new V3(st.hx || -0.032, 0, 0));       // 탄창을 쥔 손 (hd: 탄창 위에서 손까지)
     const g = K.grab = Hm.clone().sub(mr);
     const box = o.magBox || new THREE.Box3(new V3(-0.01, -0.1, -0.03), new V3(0.01, 0, 0.03));
-    Hm.x=mr.x+box.min.x-0.0015;K.grab.copy(Hm).sub(mr);
+    Hm.x=mr.x+box.min.x-0.0015-(G.ExpandedMotion?.profiles[o.id]?.magPalm||0);K.grab.copy(Hm).sub(mr);
     const L = K.lug = new V3(0, box.max.y, box.min.z + 0.004);                                     // 앞턱
     const gp = (a, dy) => gripOf(magAt(mr, L, a, dy, new V3()), g, a, new V3());
     const belt = v(Hm, -0.13, -0.52, 0.2), belt2 = v(Hm, -0.19, -0.46, 0.1);                      // 허리 탄입대
@@ -1092,7 +1097,7 @@ const Guns = G.Guns = {
     };
     const home = (t, t2) => [[t, v(F, -0.02, -0.02, 0.04)], [t2, F]];
     const join = (...parts) => { const k2 = [], T = {}; for (const q of parts) { if (Array.isArray(q)) k2.push(...q); else { k2.push(...q.k); Object.assign(T, q.T); } } return { k: k2, T }; };
-    const fwdPull = ch && ch.z < o.grip.z - 0.12, side = ch ? (ch.x > 0.005 ? 1 : ch.x < -0.005 ? -1 : 0) : 0;
+    const fwdPull = !st.boltCatch && ch && ch.z < o.grip.z - 0.12, side = ch ? (ch.x > 0.005 ? 1 : ch.x < -0.005 ? -1 : 0) : 0;
     let E, Tac;
     if (S === 'belt') {
       // Lift the feed cover before touching the box, then lay the belt in the
@@ -1656,6 +1661,7 @@ const VM = G.VM = {
     p.y -= (1 - raise) * 0.28; r.x -= (1 - raise) * 0.9;
     // 총 애니메이션 (재장전·펌프·볼트·슬라이드) → 자세 오프셋 + 손 목표점
     if (m.def) {
+      G.ExpandedMotion?.aim(m,s,p,r);
       POSE.x = POSE.y = POSE.z = POSE.rx = POSE.ry = POSE.rz = 0;
       this.animGun(m, s, dt);
       this.stepSprings(dt);
@@ -1671,7 +1677,8 @@ const VM = G.VM = {
       const k = m.snap || s.poseRecovery ? 1 : 1 - Math.exp(-dt * 30);
       for (const arm of [m.armL, m.armR]) {
         // 짧은 복귀 곡선에서는 손목·손가락의 추가 지연이 총몸을 가로지르므로 접촉 목표를 그대로 따른다.
-        if(s.poseRecovery){arm.handReady=false;arm.curl=arm.curlT;arm.thumb=arm.thumbT;arm.trig=arm.trigT;}
+        // 신규 총기의 장전 마무리는 현재 손목 보간을 이어 갑작스러운 초기화를 막는다.
+        if(s.poseRecovery&&(!G.ExpandedMotion?.has(m.id)||(s.reload?.p||0)<.94)){arm.handReady=false;arm.curl=arm.curlT;arm.thumb=arm.thumbT;arm.trig=arm.trigT;}
         if(m.snap){arm.handReady=false;arm.bendReady=false;arm.framesReady=false;arm.swivelVelocity=0;arm.foreTwist=0;arm.foreTwistVelocity=0;arm.shoulderShift.set(0,0,0);arm.shoulderVelocity.set(0,0,0);arm.curl=arm.curlT;arm.thumb=arm.thumbT;arm.trig=arm.trigT;}
         arm.motionWeight=s.reload?1:0;
         const follow=k+(1-k)*(arm.contactLock || 0);
@@ -1681,6 +1688,7 @@ const VM = G.VM = {
       this.syncContactParts(m,s);
       // 손에 든 물건(탄창·산탄)은 실제 손 위치를 따라간다
       if (m.holdObj) { const h = m.holdObj; h.position.copy(m.armL.contact).sub(_c.copy(m.keys.grab).applyAxisAngle(AXX, h.rotation.x)); }
+      G.ExpandedMotion?.carried(m,s);
       const feed = s.reload?.type === 'mag' && (s.reload.empty ? m.keys.E : m.keys.Tac)?.T;
       if(m.parts.belt&&feed?.coverA!==undefined&&s.reload.p<feed.out)
         m.parts.belt.position.copy(m.rest.belt).add(m.parts.mag.position).sub(m.rest.mag);
@@ -1732,6 +1740,7 @@ const VM = G.VM = {
     m.holdObj = null;
     m.armR.tgt.copy(m.grip); m.armR.roll = 0; m.armL.roll = 0;
     m.armR.reachRef=null;m.armL.reachRef=null;
+    m.armR.coverBlend=m.armL.coverBlend=null;
     m.armL.pole.set(-0.8,-0.55,0.15).normalize();m.armR.pole.set(0.8,-0.55,0.15).normalize();
     m.armR.contactLock=1;m.armL.contactLock=1;
     // 손 모양 기본값: 오른손은 손잡이를 감싸고 검지는 쏠 때·조준할 때만 방아쇠에
@@ -1769,9 +1778,11 @@ const VM = G.VM = {
       else if (rl.type === 'revolver') this.animRevolver(m, rl);
       else if (rl.type === 'shell') this.animShell(m, rl);
       else if (rl.type === 'break') this.animBreak(m, rl);
+      G.ExpandedMotion?.mechanics(m,s);
       this.handContacts(m, rl);
+      G.ExpandedMotion?.contact(m,rl);
       this.reloadAccent(m, rl);
-      G.ReloadAssets?.apply(m, rl, POSE);
+      G.ReloadAssets?.apply(m, rl, POSE, s);
     } else if (P.barrel) {
       m.armL.tgt.copy(P.barrel.position).add(K.barrelOff);
     }

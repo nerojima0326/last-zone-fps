@@ -66,7 +66,7 @@ const hands=await page.evaluate(()=>{
      maxError=Math.max(maxError,arm.contactError);maxAngle=Math.max(maxAngle,arm.wristAngle);
     }
     if(m.holdObj){
-     const contact=m.keys.grab.clone().applyAxisAngle(new window.THREE.Vector3(1,0,0),m.holdObj.rotation.x).add(m.holdObj.position);
+     const contact=m.keys.grab.clone().applyQuaternion(m.holdObj.quaternion).add(m.holdObj.position);
      fail(contact.distanceTo(m.armL.contact)<1e-6,id+' carried magazine stays in hand');
     }
     frames++;
@@ -152,7 +152,7 @@ const expansion=await page.evaluate(()=>{
  const R=G.ReloadAssets,st=ReloadStudio,out=[];
  if(!R.expansion)throw Error('Expansion curves did not load');
  for(const id of Object.keys(G.WeaponCatalog))for(const mode of ['empty','tactical']){
-  st.select(id,mode);st.pause();const expected=R.expansion.clips[R.expansion.weapons[id][mode]].sourceClip;
+  st.select(id,mode);st.pause();const M=G.ExpandedMotion,profile=M?.profiles[id],expected=M?.data?M.data.clips[profile[mode]].sourceClip:R.expansion.clips[R.expansion.weapons[id][mode]].sourceClip;
   let peak=0,used=0;
   for(let t=0;t<st.duration;t+=1/60){
    st.advance(1/60);const motion=st.model.reloadMotion;
@@ -161,9 +161,9 @@ const expansion=await page.evaluate(()=>{
    peak=Math.max(peak,motion.handDisplacement);used++;
   }
   if(!used||peak<.0001)throw Error('Expansion wrist curve has no effect: '+id+' '+mode+' '+peak);
-  const saved=R.expansion;
-  try{R.expansion=null;st.select(id,mode);st.pause();st.seek(st.duration*.43);if(st.model.reloadMotion)throw Error('Expansion missing-asset fallback still uses a clip');}
-  finally{R.expansion=saved;}
+  const saved=R.expansion,savedMotion=M?.data;
+  try{R.expansion=null;if(M)M.data=null;st.select(id,mode);st.pause();st.seek(st.duration*.43);if(st.model.reloadMotion)throw Error('Expansion missing-asset fallback still uses a clip');}
+  finally{R.expansion=saved;if(M)M.data=savedMotion;}
   out.push({id,mode,source:expected,handTravelMm:peak*1000});
  }
  return out;

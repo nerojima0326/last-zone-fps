@@ -1,0 +1,7442 @@
+{
+  "weapons": 4,
+  "cases": [
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "hip",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.3269510478797684
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937562145312369
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956877946853638
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496649342072213
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.3269510478797684
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937556678074606
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956915199756622
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496649342072213
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "walk",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.3269510478797684
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937562145312369
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956877946853638
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496649342072213
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "sprint",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.326944458920123
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937562145312369
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956877946853638
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496649342072213
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "sprint-to-ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.3269510478797684
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937556678074606
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956915199756622
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496649342072213
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "fire",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.3269445916788873
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937556727566737
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956875630355684
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.4966647574045324
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "hip",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.3269510478797684
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937562145312369
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956877946853638
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496649342072213
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.3269510478797684
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937556678074606
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956915199756622
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496649342072213
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "walk",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.3269510478797684
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937562145312369
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956877946853638
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496649342072213
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "sprint",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.326944458920123
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937562145312369
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956877946853638
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496649342072213
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "sprint-to-ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.3269510478797684
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937556678074606
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956915199756622
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496649342072213
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "fire",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.3269445916788873
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937556727566737
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956875630355684
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.4966647574045324
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "hip",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.3269510478797684
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937562145312369
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956877946853638
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496649342072213
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.3269510478797684
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937556678074606
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956915199756622
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496649342072213
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "walk",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.3269510478797684
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937562145312369
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956877946853638
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496649342072213
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "sprint",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.326944458920123
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937562145312369
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956877946853638
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496649342072213
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "sprint-to-ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.3269510478797684
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937556678074606
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956915199756622
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496649342072213
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "fire",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 3.3269445916788873
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937556727566737
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.2956875630355684
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.4966647574045324
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "hip",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490255432278717
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.033579927063014
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593701789989333
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490247981950459
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.033579927063014
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593627413607817
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "walk",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490255432278717
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.033579927063014
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593701789989333
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "sprint",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490255432278717
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.033579927063014
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593701789989333
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "sprint-to-ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490247981950459
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.033579927063014
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593627413607817
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "fire",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 206,
+          "depthMm": 10.490253290824578
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 10,
+          "depthMm": 2.033575506424839
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593636909770805
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "hip",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490255432278717
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.033579927063014
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593701789989333
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490247981950459
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.033579927063014
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593627413607817
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "walk",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490255432278717
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.033579927063014
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593701789989333
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "sprint",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490255432278717
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.033579927063014
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593701789989333
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "sprint-to-ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490247981950459
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.033579927063014
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593627413607817
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "fire",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 206,
+          "depthMm": 10.490253290824578
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 10,
+          "depthMm": 2.033575506424839
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593636909770805
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "hip",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490255432278717
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.033579927063014
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593701789989333
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490247981950459
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.033579927063014
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593627413607817
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "walk",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490255432278717
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.033579927063014
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593701789989333
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "sprint",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490255432278717
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.033579927063014
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593701789989333
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "sprint-to-ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490247981950459
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.033579927063014
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593627413607817
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "fire",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 206,
+          "depthMm": 10.490253290824578
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 10,
+          "depthMm": 2.033575506424839
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593636909770805
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "hip",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3777159476613208
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.029985324617095
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 187,
+          "depthMm": 4.383335113785955
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6657438279034783
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "ADS",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3777159476613208
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.029985324617095
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 187,
+          "depthMm": 4.379885611984075
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6657438279034783
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "walk",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3777159476613208
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.029985324617095
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 187,
+          "depthMm": 4.383335113785955
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6657438279034783
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "sprint",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3777159476613208
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.029985324617095
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 187,
+          "depthMm": 4.383335113785955
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6657438279034783
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "sprint-to-ADS",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3777159476613208
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.029985324617095
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 187,
+          "depthMm": 4.383335113785955
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6657438279034783
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "fire",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 194,
+          "depthMm": 3.3423200774880533
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.037668268160462
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 181,
+          "depthMm": 4.390687201314278
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6831234910142363
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "hip",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3777159476613208
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.029985324617095
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 187,
+          "depthMm": 4.383335113785955
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6657438279034783
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "ADS",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3777159476613208
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.029985324617095
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 187,
+          "depthMm": 4.383335113785955
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6657438279034783
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "walk",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3777159476613208
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.029985324617095
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 187,
+          "depthMm": 4.383335113785955
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6657438279034783
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "sprint",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3777159476613208
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.029985324617095
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 187,
+          "depthMm": 4.379885611984075
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6657438279034783
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "sprint-to-ADS",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3777159476613208
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.029985324617095
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 187,
+          "depthMm": 4.379885611984075
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6657438279034783
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "fire",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 194,
+          "depthMm": 3.3423200774880533
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.037668268160462
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 181,
+          "depthMm": 4.390687201314278
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6831234910142363
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "hip",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3777159476613208
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.029985324617095
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 187,
+          "depthMm": 4.383335113785955
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6657438279034783
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "ADS",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3777159476613208
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.029985324617095
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 187,
+          "depthMm": 4.383335113785955
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6657438279034783
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "walk",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3777159476613208
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.029985324617095
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 187,
+          "depthMm": 4.379885611984075
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6657438279034783
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "sprint",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3777159476613208
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.029985324617095
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 187,
+          "depthMm": 4.383335113785955
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6657438279034783
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "sprint-to-ADS",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3777159476613208
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.029985324617095
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 187,
+          "depthMm": 4.383335113785955
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6657438279034783
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "fire",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 194,
+          "depthMm": 3.3423200774880533
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.037668268160462
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 181,
+          "depthMm": 4.390687201314278
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6831234910142363
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "hip",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224241974226316
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224240903673221
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "walk",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224242435734203
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "sprint",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224242940122565
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.798967039327025
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "sprint-to-ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224240903673221
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "fire",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224241974226316
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "hip",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224241974226316
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224240903673221
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "walk",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224242435734203
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "sprint",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224242940122565
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.798967039327025
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "sprint-to-ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224240903673221
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "fire",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224241974226316
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "hip",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224241974226316
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224240903673221
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "walk",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224242435734203
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "sprint",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224242940122565
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.798967039327025
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "sprint-to-ADS",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224240903673221
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "fire",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224241974226316
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-tactical-mag-0.12",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.937564549885304
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 13,
+          "depthMm": 2.4966512744985767
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-tactical-mag-0.4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 126,
+          "depthMm": 9.480341832843852
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.937560867416881
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 32,
+          "depthMm": 7.0657335678718205
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 13,
+          "depthMm": 2.4966596302859863
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-tactical-mag-0.68",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.9375651135386
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.4966633978329424
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-tactical-mag-0.92",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 151,
+          "depthMm": 3.122859042910322
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.9375598468163195
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 14,
+          "depthMm": 1.8952273894714564
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.49665976514795
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.2-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 108,
+          "depthMm": 8.030771444175132
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.93755710419852
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 26,
+          "depthMm": 6.439673027396252
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 13,
+          "depthMm": 2.4966598062571457
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.2-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 186,
+          "depthMm": 2.9127537464746793
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.9375558248629385
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 35,
+          "depthMm": 2.681787536119379
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.4966701558426587
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.5-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 125,
+          "depthMm": 9.459576300840585
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.937554120700849
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 25,
+          "depthMm": 7.231598956270403
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 13,
+          "depthMm": 2.4966636278700163
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.5-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 146,
+          "depthMm": 3.1283037613968774
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937553261607297
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 11,
+          "depthMm": 2.003938485615122
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.4966567252610647
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.8-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 159,
+          "depthMm": 3.5534018455931182
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937559409116963
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 21,
+          "depthMm": 7.048814156479889
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496657307292651
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.8-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 140,
+          "depthMm": 3.3962455661803768
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937546863526562
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 15,
+          "depthMm": 2.3764997500354283
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496667455616295
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.2-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 108,
+          "depthMm": 8.030771444175132
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.93755710419852
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 26,
+          "depthMm": 6.439673027396252
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 13,
+          "depthMm": 2.4966598062571457
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.2-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 177,
+          "depthMm": 6.930615319912654
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937560439035585
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 3,
+          "depthMm": 2.690416975704939
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.4966631235292205
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.5-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 125,
+          "depthMm": 9.459576300840585
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.937554120700849
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 25,
+          "depthMm": 7.231598956270403
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 13,
+          "depthMm": 2.4966636278700163
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.5-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 143,
+          "depthMm": 3.289495617273921
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.93756163915493
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 15,
+          "depthMm": 2.3089828141697395
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.4966626561319876
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.8-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 159,
+          "depthMm": 3.5534018455931182
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937559409116963
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 21,
+          "depthMm": 7.048814156479889
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496657307292651
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.8-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 151,
+          "depthMm": 3.234103517390325
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937552906832288
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 15,
+          "depthMm": 1.9690719112045425
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496656745145375
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.2-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 98,
+          "depthMm": 7.607911623580423
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.937562558968225
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 24,
+          "depthMm": 6.17360430763195
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 13,
+          "depthMm": 2.4966557645770457
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.2-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 177,
+          "depthMm": 6.930615319912654
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937560439035585
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 3,
+          "depthMm": 2.690416975704939
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.4966631235292205
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.5-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 128,
+          "depthMm": 8.910851799603547
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.937559474092995
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 25,
+          "depthMm": 7.519712664086203
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 13,
+          "depthMm": 2.496660994586363
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.5-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 143,
+          "depthMm": 3.289495617273921
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.93756163915493
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 15,
+          "depthMm": 2.3089828141697395
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.4966626561319876
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.8-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 149,
+          "depthMm": 3.5465975305150867
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.9375552027006995
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 21,
+          "depthMm": 6.953584948490092
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496651426510496
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.8-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 151,
+          "depthMm": 3.234103517390325
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937552906832288
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 15,
+          "depthMm": 1.9690719112045425
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496656745145375
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-empty-mag-0.12",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.937555947466435
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 13,
+          "depthMm": 2.496658550700223
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-empty-mag-0.4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 142,
+          "depthMm": 9.83434775217175
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.937558355048296
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 29,
+          "depthMm": 6.722778881022152
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 13,
+          "depthMm": 2.496652796900155
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-empty-mag-0.68",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 34,
+          "depthMm": 4.959761684426967
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.937562900960142
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 11,
+          "depthMm": 2.496650863184273
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-empty-mag-0.92",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 155,
+          "depthMm": 3.16689584142721
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.93755865440021
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 14,
+          "depthMm": 1.81260678548613
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.4966573836604202
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.2-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 98,
+          "depthMm": 7.288046374610058
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.9375568515011565
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 33,
+          "depthMm": 6.441247995414735
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 13,
+          "depthMm": 2.4966567304848013
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.2-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 151,
+          "depthMm": 3.218085842097918
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937557580260459
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 22,
+          "depthMm": 6.855595906606496
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.4966605919316227
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.5-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 123,
+          "depthMm": 9.164085517037678
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.937568917488459
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 33,
+          "depthMm": 7.0819936277048425
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 11,
+          "depthMm": 2.4966697400192053
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.5-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 152,
+          "depthMm": 3.271696510058861
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937555299276641
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 17,
+          "depthMm": 2.1496858399482774
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496660168066987
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.8-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 165,
+          "depthMm": 3.0663407666264386
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937555381073394
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 16,
+          "depthMm": 2.1911090805333977
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496657991895535
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.8-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 159,
+          "depthMm": 3.085669941809937
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937558528375574
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 15,
+          "depthMm": 2.169838347459897
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496658795084869
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.2-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 98,
+          "depthMm": 7.288046374610058
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.9375568515011565
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 33,
+          "depthMm": 6.441247995414735
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 13,
+          "depthMm": 2.4966567304848013
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.2-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 223,
+          "depthMm": 3.719222131595186
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.9375572249230615
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 10,
+          "depthMm": 1.0432749769158582
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496664364211348
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.5-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 123,
+          "depthMm": 9.164085517037678
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.937568917488459
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 33,
+          "depthMm": 7.0819936277048425
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 11,
+          "depthMm": 2.4966697400192053
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.5-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 155,
+          "depthMm": 3.25858425279059
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937561098729393
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 16,
+          "depthMm": 2.107387714807582
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.4966695259860754
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.8-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 165,
+          "depthMm": 3.0663407666264386
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937555381073394
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 16,
+          "depthMm": 2.1911090805333977
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496657991895535
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.8-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 154,
+          "depthMm": 3.1935775501905703
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937565276324354
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 16,
+          "depthMm": 2.1335106105782318
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496666887628506
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.2-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 100,
+          "depthMm": 6.583271251970723
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.937567755138483
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 27,
+          "depthMm": 5.855819488074565
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 13,
+          "depthMm": 2.4966539378098984
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.2-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 223,
+          "depthMm": 3.719222131595186
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.9375572249230615
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 10,
+          "depthMm": 1.0432749769158582
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496664364211348
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.5-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 121,
+          "depthMm": 9.371152578475698
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 109,
+          "depthMm": 4.937556008474425
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 28,
+          "depthMm": 6.826259418541126
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 2.4966604644199006
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.5-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 155,
+          "depthMm": 3.25858425279059
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937561098729393
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 16,
+          "depthMm": 2.107387714807582
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.4966695259860754
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.8-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 165,
+          "depthMm": 3.0417713285727817
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937563005906198
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 16,
+          "depthMm": 2.193676248410052
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496660469953901
+        }
+      }
+    },
+    {
+      "id": "ar7",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.8-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 154,
+          "depthMm": 3.1935775501905703
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 108,
+          "depthMm": 4.937565276324354
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 16,
+          "depthMm": 2.1335106105782318
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 14,
+          "depthMm": 2.496666887628506
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-tactical-mag-0.12",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 207,
+          "depthMm": 10.175122628974496
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593717793439707
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-tactical-mag-0.4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 70,
+          "depthMm": 7.566433705141778
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 101,
+          "depthMm": 6.7162584494114554
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 4,
+          "depthMm": 5.165874134459982
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593783587422358
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-tactical-mag-0.68",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 19,
+          "depthMm": 8.992978203499545
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 194,
+          "depthMm": 10.457868397661969
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 28,
+          "depthMm": 7.528958403898834
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.259371398486752
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-tactical-mag-0.92",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490254784775297
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 14,
+          "depthMm": 2.3796820567421677
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.25936435358074
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.2-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 49,
+          "depthMm": 5.6865475939275045
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 218,
+          "depthMm": 10.114798164644109
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 7,
+          "depthMm": 5.686547593927515
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.259373479759185
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.2-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 201,
+          "depthMm": 10.443931941913265
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593729873029018
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.5-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 5,
+          "depthMm": 0.8758148749864465
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 191,
+          "depthMm": 10.316033575620775
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593703794558653
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.5-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490252792635268
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 14,
+          "depthMm": 2.3367883343174967
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593670558850742
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.8-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 1,
+          "depthMm": 1.5988842685249216
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490252286956284
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 13,
+          "depthMm": 2.8093638375912553
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593677908043286
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.8-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.49025369757612
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 10,
+          "depthMm": 2.1433240783614584
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593714764276327
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.2-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 49,
+          "depthMm": 5.6865475939275045
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 218,
+          "depthMm": 10.114798164644109
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 7,
+          "depthMm": 5.686547593927515
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.259373479759185
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.2-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 204,
+          "depthMm": 10.374429487928591
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593669104367933
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.5-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 5,
+          "depthMm": 0.8758148749864465
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 191,
+          "depthMm": 10.316033575620775
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593703794558653
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.5-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 1,
+          "depthMm": 1.3853037419974101
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490250966384489
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 14,
+          "depthMm": 2.5264057149667214
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593650828884178
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.8-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 1,
+          "depthMm": 1.5988842685249216
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490252286956284
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 13,
+          "depthMm": 2.8093638375912553
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593677908043286
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.8-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 1,
+          "depthMm": 1.3869043977174236
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490254187927366
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 14,
+          "depthMm": 2.3499117031146928
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593686455345323
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.2-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 37,
+          "depthMm": 4.172795610168573
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 220,
+          "depthMm": 10.117234431827201
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 11,
+          "depthMm": 3.876284005979272
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593717331903231
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.2-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 204,
+          "depthMm": 10.374429487928591
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593669104367933
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.5-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 10,
+          "depthMm": 1.530636431077508
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 191,
+          "depthMm": 10.323250768071073
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593681077635313
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.5-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 1,
+          "depthMm": 1.3853037419974101
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490250966384489
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 14,
+          "depthMm": 2.5264057149667214
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593650828884178
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.8-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 1,
+          "depthMm": 1.6146823242409991
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490255469031027
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 12,
+          "depthMm": 2.7445195341459225
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593697128626462
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.8-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 1,
+          "depthMm": 1.3869043977174236
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490254187927366
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 14,
+          "depthMm": 2.3499117031146928
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593686455345323
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-empty-mag-0.12",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 36,
+          "depthMm": 6.268725907018118
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 216,
+          "depthMm": 10.314513559293292
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593694512670317
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-empty-mag-0.4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 69,
+          "depthMm": 5.844892763112916
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 98,
+          "depthMm": 6.716254532010074
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 5,
+          "depthMm": 5.662631905365586
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593702161914189
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-empty-mag-0.68",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 204,
+          "depthMm": 11.33615462900095
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593780864491033
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-empty-mag-0.92",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490253344481564
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.3333169773991496
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593698136518188
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.2-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 40,
+          "depthMm": 3.485014080777022
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 215,
+          "depthMm": 10.197561938354914
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 3,
+          "depthMm": 2.6936150776627494
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593745755565267
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.2-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 234,
+          "depthMm": 10.62339737361669
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593656762334704
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.5-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 45,
+          "depthMm": 10.512729876054063
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 213,
+          "depthMm": 9.757726710467763
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593771948137267
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.5-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490252296103064
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 13,
+          "depthMm": 2.4686761149577423
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.259364466963106
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.8-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.49025176954281
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 13,
+          "depthMm": 2.6897561599780095
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593706189135343
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.8-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490253299944822
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 4,
+          "depthMm": 2.138534395571476
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593693336919782
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.2-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 40,
+          "depthMm": 3.485014080777022
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 215,
+          "depthMm": 10.197561938354914
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 3,
+          "depthMm": 2.6936150776627494
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593745755565267
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.2-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 230,
+          "depthMm": 10.610906172968852
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593711235841485
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.5-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 45,
+          "depthMm": 10.512729876054063
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 213,
+          "depthMm": 9.757726710467763
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593771948137267
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.5-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490256729936739
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 14,
+          "depthMm": 2.3362623014718173
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593671537759397
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.8-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.49025176954281
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 13,
+          "depthMm": 2.6897561599780095
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593706189135343
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.8-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490253709125541
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.46556479644605
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593695113073922
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.2-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 49,
+          "depthMm": 5.993077130170221
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 215,
+          "depthMm": 10.206365895247625
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 7,
+          "depthMm": 5.993077130170237
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.259381303277879
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.2-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 230,
+          "depthMm": 10.610906172968852
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593711235841485
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.5-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 58,
+          "depthMm": 8.884255739241217
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 213,
+          "depthMm": 9.718485081784301
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.259381126546706
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.5-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490256729936739
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 14,
+          "depthMm": 2.3362623014718173
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593671537759397
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.8-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 1,
+          "depthMm": 1.5832448789065534
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490251853229049
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 12,
+          "depthMm": 2.7090214934828993
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593656193974068
+        }
+      }
+    },
+    {
+      "id": "g18",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.8-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 202,
+          "depthMm": 10.490253709125541
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 9,
+          "depthMm": 2.46556479644605
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 9,
+          "depthMm": 1.2593695113073922
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-tactical-mag-0.12",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 192,
+          "depthMm": 3.338398255483806
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.02676757823359
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-tactical-mag-0.4",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.334568468100513
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.013446449532705
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-tactical-mag-0.68",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3471227519807774
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.026181431970003
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-tactical-mag-0.92",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 194,
+          "depthMm": 3.362945755062588
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.0443545212741627
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 186,
+          "depthMm": 4.418900314810334
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6944178149133957
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.2-0",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 195,
+          "depthMm": 3.3820035453474353
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.026923200204734
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.2-2",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 192,
+          "depthMm": 3.359095680281365
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.025504389434531
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 149,
+          "depthMm": 4.131749838993294
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.5-0",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3479657971869914
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.013058922960158
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.5-2",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 192,
+          "depthMm": 3.3604648985043757
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.032064844256401
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 191,
+          "depthMm": 4.401788186862245
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6692689749039638
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.8-0",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 192,
+          "depthMm": 3.352059179760926
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.0397054505988805
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 152,
+          "depthMm": 4.049011170320029
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.8-2",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 194,
+          "depthMm": 3.3424375506553514
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.0198175876441087
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 182,
+          "depthMm": 4.3947957727571705
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6522586090676348
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.2-1",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 195,
+          "depthMm": 3.3820035453474353
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.026923200204734
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.2-4",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 194,
+          "depthMm": 3.349456093116633
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.015613571567237
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 23,
+          "depthMm": 3.024048932719708
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.5-1",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3479657971869914
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.013058922960158
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.5-4",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 195,
+          "depthMm": 3.3502509449295794
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.031279360179869
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 184,
+          "depthMm": 4.407246058596228
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6792490437579249
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.8-1",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 192,
+          "depthMm": 3.352059179760926
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.0397054505988805
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 152,
+          "depthMm": 4.049011170320029
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.8-4",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 194,
+          "depthMm": 3.356003681927781
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.0286203190289807
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 185,
+          "depthMm": 4.401398360438751
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.665411785885639
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.2-4",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 195,
+          "depthMm": 3.3820035453474353
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.026923200204734
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.2-11",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 194,
+          "depthMm": 3.349456093116633
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.015613571567237
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 23,
+          "depthMm": 3.024048932719708
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.5-4",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 192,
+          "depthMm": 3.3563584955618118
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.0148297911070734
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.5-11",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 195,
+          "depthMm": 3.3502509449295794
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.031279360179869
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 184,
+          "depthMm": 4.407246058596228
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6792490437579249
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.8-4",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 192,
+          "depthMm": 3.352059179760926
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.0397054505988805
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 152,
+          "depthMm": 4.049011170320029
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.8-11",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 194,
+          "depthMm": 3.356003681927781
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.0286203190289807
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 185,
+          "depthMm": 4.401398360438751
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.665411785885639
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-empty-mag-0.12",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.343452900239588
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.0093488555200656
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-empty-mag-0.4",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 194,
+          "depthMm": 3.3687972965796007
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.0076224270011296
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-empty-mag-0.68",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.367717439255888
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.0113340686445795
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 16,
+          "depthMm": 1.2941237817823692
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-empty-mag-0.92",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 195,
+          "depthMm": 3.343158167586422
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.046477723560411
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 186,
+          "depthMm": 4.392871006133553
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6682477716010616
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.2-0",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 191,
+          "depthMm": 3.3519591207853714
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.022857131480232
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.2-2",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 194,
+          "depthMm": 3.348245867479271
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.041992197697573
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 132,
+          "depthMm": 3.857682940746922
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.5-0",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 192,
+          "depthMm": 3.344788295020926
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.012063035330041
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.5-2",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 194,
+          "depthMm": 3.3490172449845144
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.0441832635100017
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 186,
+          "depthMm": 4.40405532917898
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6729401767402885
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.8-0",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 194,
+          "depthMm": 3.3449632943064884
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.028949096922958
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.8-2",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3556584488803045
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.015861218855933
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 185,
+          "depthMm": 4.398143398237804
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6855352893679056
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.2-1",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 191,
+          "depthMm": 3.3519591207853714
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.022857131480232
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.2-4",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 190,
+          "depthMm": 3.334315421122781
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.046231851059329
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.5-1",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 192,
+          "depthMm": 3.344788295020926
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.012063035330041
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.5-4",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3447572980684446
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.0195864339352108
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.8-1",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 194,
+          "depthMm": 3.3449632943064884
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.028949096922958
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.8-4",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.362902375858151
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.0424639256045456
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 189,
+          "depthMm": 4.418903034502477
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6592367240975894
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.2-4",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 195,
+          "depthMm": 3.3513032094600463
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.014018047077695
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.2-11",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 190,
+          "depthMm": 3.334315421122781
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.046231851059329
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.5-4",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 192,
+          "depthMm": 3.335522268300972
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.0109150914558076
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.5-11",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.3447572980684446
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.0195864339352108
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.8-4",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 192,
+          "depthMm": 3.344963294306502
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.000118863432196
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 0,
+          "depthMm": 0
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "ka47",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.8-11",
+      "regions": {
+        "R:finger": {
+          "samples": 2954,
+          "count": 193,
+          "depthMm": 3.362902375858151
+        },
+        "R:palm": {
+          "samples": 40,
+          "count": 5,
+          "depthMm": 2.0424639256045456
+        },
+        "L:finger": {
+          "samples": 2951,
+          "count": 189,
+          "depthMm": 4.418903034502477
+        },
+        "L:palm": {
+          "samples": 43,
+          "count": 1,
+          "depthMm": 0.6592367240975894
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-tactical-start-0.12",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-tactical-start-0.4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-tactical-start-0.68",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-tactical-start-0.92",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-tactical-load-0.12",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-tactical-load-0.4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-tactical-load-0.68",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-tactical-load-0.92",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-tactical-last-0.12",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-tactical-last-0.4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-tactical-last-0.68",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-tactical-last-0.92",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-tactical-end-0.12",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-tactical-end-0.4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-tactical-end-0.68",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 10,
+          "depthMm": 1.6149133443832397
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-tactical-end-0.92",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224242792585234
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.2-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.2-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.5-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.5-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.8-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "reload-recovery-false-0.8-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.2-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.2-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.5-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.5-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.8-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-recovery-false-0.8-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.2-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.2-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.5-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.5-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.8-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "reload-recovery-false-0.8-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-empty-start-0.12",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-empty-start-0.4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-empty-start-0.68",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-empty-start-0.92",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-empty-load-0.12",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-empty-load-0.4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-empty-load-0.68",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-empty-load-0.92",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-empty-last-0.12",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-empty-last-0.4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-empty-last-0.68",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-empty-last-0.92",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-empty-end-0.12",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-empty-end-0.4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-empty-end-0.68",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 10,
+          "depthMm": 1.6149133443832397
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-empty-end-0.92",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 4,
+          "depthMm": 5.224242792585234
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.2-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.2-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.5-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.5-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.8-0",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 30,
+      "pose": "reload-recovery-true-0.8-2",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.2-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.2-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.5-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.5-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.8-1",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 60,
+      "pose": "reload-recovery-true-0.8-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.2-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.2-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.5-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.5-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.8-4",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    },
+    {
+      "id": "db2",
+      "fps": 144,
+      "pose": "reload-recovery-true-0.8-11",
+      "regions": {
+        "L:finger": {
+          "samples": 3775,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:finger": {
+          "samples": 3890,
+          "count": 38,
+          "depthMm": 4.7989667149442985
+        },
+        "L:palm": {
+          "samples": 1410,
+          "count": 0,
+          "depthMm": 0
+        },
+        "R:palm": {
+          "samples": 1527,
+          "count": 0,
+          "depthMm": 0
+        }
+      }
+    }
+  ],
+  "transitions": [
+    {
+      "id": "ar7",
+      "empty": false,
+      "hands": [
+        "LeftHand",
+        "RightHand"
+      ],
+      "drift": 1.1374233532693354e-14
+    },
+    {
+      "id": "ar7",
+      "empty": true,
+      "hands": [
+        "LeftHand",
+        "RightHand"
+      ],
+      "drift": 8.507706479536001e-15
+    },
+    {
+      "id": "g18",
+      "empty": false,
+      "hands": [
+        "LeftHand",
+        "RightHand"
+      ],
+      "drift": 0
+    },
+    {
+      "id": "g18",
+      "empty": true,
+      "hands": [
+        "LeftHand",
+        "RightHand"
+      ],
+      "drift": 0
+    },
+    {
+      "id": "ka47",
+      "empty": false,
+      "hands": [
+        "Hand_L_016",
+        "Hand_R_037"
+      ],
+      "drift": 5.551115123125783e-17
+    },
+    {
+      "id": "ka47",
+      "empty": true,
+      "hands": [
+        "Hand_L_016",
+        "Hand_R_037"
+      ],
+      "drift": 1.2719202621569003e-16
+    },
+    {
+      "id": "db2",
+      "empty": false,
+      "hands": [
+        "LeftHand",
+        "RightHand"
+      ],
+      "drift": 0
+    },
+    {
+      "id": "db2",
+      "empty": true,
+      "hands": [
+        "LeftHand",
+        "RightHand"
+      ],
+      "drift": 0
+    }
+  ],
+  "coordinates": [
+    {
+      "id": "ar7",
+      "errorMm": 0
+    },
+    {
+      "id": "g18",
+      "errorMm": 3.6743536477312766e-06
+    },
+    {
+      "id": "ka47",
+      "errorMm": 0
+    },
+    {
+      "id": "db2",
+      "errorMm": 4.615078865941036e-07
+    }
+  ],
+  "failures": []
+}

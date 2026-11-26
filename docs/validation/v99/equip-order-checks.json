@@ -1,0 +1,22 @@
+[
+  {
+    "first": "mp9",
+    "hipError": 0,
+    "reloadError": 0
+  },
+  {
+    "first": "p226",
+    "hipError": 4.9526660550469614e-11,
+    "reloadError": 7.976522220509707e-12
+  },
+  {
+    "first": "sp12",
+    "hipError": 2.427641421220983e-12,
+    "reloadError": 8.923861649634546e-12
+  },
+  {
+    "first": "m24",
+    "hipError": 5.1833232150855224e-11,
+    "reloadError": 2.0084808816100974e-11
+  }
+]

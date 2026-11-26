@@ -49,3 +49,7 @@ node tools/guns/extract-expansion-reloads.cjs /path/to/sources
 ```
 
 The shared in-game hand rig retains its existing [viewmodel attribution](../viewmodels/CREDITS.md). Platform grip-template references, including Cransh, are also credited by the upstream derivative projects.
+
+## v99 조준·장전 갱신
+
+신규 총기 15종의 조준·장전에는 기존 M4 장갑·소매와 원본 손목·총몸 곡선을 맞춰 사용합니다. [원본별 저작자·라이선스·변환 기록](../../animations/reloads/EXPANDED-MOTION-CREDITS.md)을 참고하세요.

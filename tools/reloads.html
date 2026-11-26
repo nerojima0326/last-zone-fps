@@ -56,7 +56,7 @@ try {
   if (!version.ok) throw new Error('버전 정보를 불러올 수 없습니다');
   window.LZ_BUILD = (await version.text()).trim();
   document.querySelector('#caption .badge').textContent='RELOAD STUDY / BUILD '+window.LZ_BUILD;
-  for (const file of ['core','weapon-catalog','gunlib','weapon-expansion-models','gunmodels','reload-assets','weapons','weapon-motion','weapon-sound-design','weapon-audio','player']) await new Promise((resolve,reject) => {
+  for (const file of ['core','weapon-catalog','gunlib','weapon-expansion-models','gunmodels','reload-assets','expanded-gun-motion','weapons','weapon-motion','weapon-sound-design','weapon-audio','throwable-models','throwable-motion','player']) await new Promise((resolve,reject) => {
     const s=document.createElement('script'); s.src=`js/${file}.js?v=${encodeURIComponent(window.LZ_BUILD)}`; s.onload=resolve; s.onerror=()=>reject(new Error(file+' 로드 실패')); document.body.appendChild(s);
   });
   const G=window.G, stage=$('stage'), renderer=new T.WebGLRenderer({antialias:true});
@@ -112,7 +112,10 @@ try {
     seeking=true;let n=0;while(P.reload&&n++<6000)P.reloadLogic(1/240);duration=n/240;
     reset();seeking=false;playing=true;$('play').textContent='일시정지';
     $('weaponName').textContent=G.WEAPONS[id].name;$('styleName').textContent=G.Guns.reloadFeel(id).name;
-    if(G.ReloadAssets.expansion?.weapons[id]){
+    if(G.ExpandedMotion?.has(id)&&G.ExpandedMotion.data){
+      const profile=G.ExpandedMotion.profiles[id],mode=$('mode').value==='empty'?'empty':'tactical',clip=G.ExpandedMotion.data.clips[profile[mode]];
+      $('styleName').textContent=profile.name+' · '+clip.sourceClip;
+    }else if(G.ReloadAssets.expansion?.weapons[id]){
       const data=G.ReloadAssets.expansion,mode=$('mode').value==='empty'?'empty':'tactical';
       $('styleName').textContent='임포트 모션 · '+data.clips[data.weapons[id][mode]].sourceClip;
     }else if(G.ReloadAssets.has(id))$('styleName').textContent=id==='db2'?'샷건 모션 조정 · 중절식 개폐':id==='m1014'?'샷건 원본 모션 · 한 발씩 장전':'AK 원본 모션 · 총기별 접촉점 보정';
