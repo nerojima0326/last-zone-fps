@@ -1,13 +1,13 @@
 {
-  "version": 90,
+  "version": 105,
   "files": [
     {
       "id": "butterfly",
       "file": "butterfly.glb",
-      "bytes": 31364,
-      "sha256": "bb0b221064a368da18e03adfee3abb35bdb97c385f7cd7817f3587bea326025e",
-      "triangles": 960,
-      "source": "butterfly"
+      "bytes": 101312,
+      "sha256": "e96bc21e662a2fe1c0cb1d47584a7176c91c42d282439637a558e6650af70bd0",
+      "triangles": 3064,
+      "source": "authored-balisong-v105"
     },
     {
       "id": "dagger",
@@ -122,6 +122,11 @@
       "author": "Cransh (animation), DJMaesen (arms)",
       "license": "CC-BY-4.0",
       "original": "https://sketchfab.com/3d-models/animated-fps-hands-rifle-animation-pack-5f2d0ed780a94724b36ab505f7564057"
+    },
+    "authored-balisong-v105": {
+      "author": "LAST ZONE 자체 제작",
+      "generator": "tools/knives/build-balisong.cjs",
+      "modifications": "안전 손잡이·자유 손잡이의 채널, 두 개의 고정 핀, 래치, 접었을 때 수납되는 칼날"
     }
   }
 }

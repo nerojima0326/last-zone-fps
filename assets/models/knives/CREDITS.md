@@ -46,3 +46,11 @@ python tools/knives/fetch.py /tmp/lz-knife-source
 # three, @gltf-transform/{core,extensions,functions}, meshoptimizer, sharp 필요
 NODE_PATH=/path/to/dependencies/node_modules node tools/knives/build.cjs /tmp/lz-knife-source
 ```
+
+## v105의 전개 리그와 모션
+
+현재 버터플라이 모델은 `tools/knives/build-balisong.cjs`로 자체 제작한 채널 손잡이·탱·핀·래치·칼날입니다. 이전 Ginsta 모델의 출처는 v90~v104 이력을 위해 위 표와 `sources.json`에 보존합니다. 다른 다섯 칼과 검은 전술 장갑·녹색 소매 모델의 출처와 라이선스는 그대로입니다. 재현 시 기존 `build.cjs` 실행 후 `build-balisong.cjs`를 실행해야 현재 버터플라이 모델이 생성됩니다.
+
+동작의 참고 자료는 [GambelStrike2의 공개 뷰모델 구현](https://github.com/erqf1/GambelStrike2/blob/ccde7d5e021cb80f3e2a6889b145f6d6fe59725c/js/viewmodel.js)입니다. 발리송에서 안전 손잡이를 고정한 채 칼날과 자유 손잡이를 순서대로 움직이는 구성, 펼친 뒤 손가락을 닫는 순서를 확인했습니다. 해당 프로젝트의 코드·키프레임을 가져오지 않고 기존 게임 리그에 맞는 별도 곡선을 작성했습니다. 꺼내기 6개·공격 12개·검사 6개가 `js/knives.js`에 있으며 발리송의 관절 각도·손가락 벌림도 같은 시간축에서 재생합니다. 상용 게임의 애니메이션 에셋을 반입하지 않았습니다.
+
+자료 확인 범위: Google 검색과 YouTube는 이 환경의 네트워크 프록시에서 CONNECT 403으로 차단됐습니다. GitHub 저장소 검색·원본 소스 열람은 성공했습니다. YouTube 영상을 시청하거나 그 영상에서 모션을 추출한 작업은 아닙니다.
