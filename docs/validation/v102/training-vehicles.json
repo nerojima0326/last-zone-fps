@@ -1,0 +1,89 @@
+{
+  "rows": [
+    {
+      "kind": "porter",
+      "name": "포터 II 탑차",
+      "pos": [
+        -713,
+        4,
+        717.8
+      ],
+      "contacts": 4,
+      "wheels": [
+        {
+          "gap": 0,
+          "contact": true
+        },
+        {
+          "gap": 0,
+          "contact": true
+        },
+        {
+          "gap": 0,
+          "contact": true
+        },
+        {
+          "gap": 0,
+          "contact": true
+        }
+      ]
+    },
+    {
+      "kind": "e2200",
+      "name": "E2200 트럭",
+      "pos": [
+        -713,
+        4,
+        724
+      ],
+      "contacts": 4,
+      "wheels": [
+        {
+          "gap": 0,
+          "contact": true
+        },
+        {
+          "gap": 0,
+          "contact": true
+        },
+        {
+          "gap": 0,
+          "contact": true
+        },
+        {
+          "gap": 0,
+          "contact": true
+        }
+      ]
+    },
+    {
+      "kind": "izh",
+      "name": "IZH-2715 픽업",
+      "pos": [
+        -713,
+        4,
+        730.2
+      ],
+      "contacts": 4,
+      "wheels": [
+        {
+          "gap": 0,
+          "contact": true
+        },
+        {
+          "gap": 0,
+          "contact": true
+        },
+        {
+          "gap": 0,
+          "contact": true
+        },
+        {
+          "gap": 0,
+          "contact": true
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

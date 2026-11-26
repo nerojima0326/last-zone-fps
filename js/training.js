@@ -97,14 +97,14 @@ function flagTexture() {
 const KH_BEST = 'lastzone_killhouse_best';
 
 const T = G.Training = {
-  active: false, targets: [], objs: [], items: [], nums: [], respawns: [],
+  active: false, targets: [], objs: [], items: [], nums: [], respawns: [], vehicleBays: [],
   stats: { shots: 0, hits: 0, heads: 0, last: 0, downs: 0, dmg: 0 },
 
   start() {
     const W = G.World, R = W.range;
     if (!R) return;
     this.active = true;
-    this.targets = []; this.objs = []; this.items = []; this.nums = []; this.respawns = [];
+    this.targets = []; this.objs = []; this.items = []; this.nums = []; this.respawns = [];this.vehicleBays=[];
     this.stats = { shots: 0, hits: 0, heads: 0, last: 0, downs: 0, dmg: 0 };
     const M = this.mats || (this.mats = {
       sil: new THREE.MeshStandardMaterial({ map: silhouetteTexture(false), alphaTest: 0.5, side: THREE.DoubleSide, roughness: 0.95 }),
@@ -180,13 +180,24 @@ const T = G.Training = {
     const at=W.range.attachmentTable,items=Object.keys(G.Attachments.catalog());
     const cols=Math.ceil(items.length/2);
     items.forEach((kind,i)=>{const x=at.x0+.4+(i%cols)*(at.x1-at.x0-.8)/Math.max(1,cols-1),z=at.z0+.5+Math.floor(i/cols)*.9;this.placeItem(kind,x,at.y,z,0)});
-    // ---- 운전 연습 코스: 사격대 뒤 진입로에 지프 두 대 ----
+    // ---- 운전 연습 코스: 현재 차량 목록 전체를 별도 주차 칸에 둔다 ----
     const C = W.course;
     if (C && G.Vehicles) {
       G.Vehicles.reset();
-      for (const dz of [-2.6, 2.6]) G.Vehicles.spawnAt(C.spurX + 14, C.z1 + dz, -Math.PI / 2, dz < 0 ? 'izh' : 'e2200');   // 나란히 두 대
       // 출발선 (진입로가 코스에 닿는 곳)과 모서리 고깔
       const paint = new THREE.MeshBasicMaterial({ color: 0xf2efe6 }), cone = new THREE.MeshStandardMaterial({ color: 0xff6a1a, roughness: 0.6 });
+      const kinds=G.Vehicles.kinds,bays=new THREE.InstancedMesh(new THREE.PlaneGeometry(1,1),paint,kinds.length*3),flat=new THREE.Quaternion().setFromAxisAngle(new V3(1,0,0),-Math.PI/2);
+      let stripe=0;bays.name='훈련장 차량 주차선';
+      kinds.forEach((kind,i)=>{
+        const x=C.spurX+14,z=C.z1+(i-(kinds.length-1)/2)*6.2,v=G.Vehicles.spawnAt(x,z,-Math.PI/2,kind);
+        this.vehicleBays.push({kind,home:v.home,x,z});
+        for(const [dx,dz,sx,sz]of [[0,-2.8,8,.06],[0,2.8,8,.06],[-4,0,.06,5.6]]){
+          _m.compose(_p.set(x+dx,gy(x+dx,z+dz)+.065,z+dz),flat,_s.set(sx,sz,1));bays.setMatrixAt(stripe++,_m);
+        }
+        const label=new THREE.Mesh(new THREE.PlaneGeometry(3,.65),new THREE.MeshBasicMaterial({map:signTexture(G.Vehicles.nameOf(kind),true),side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1}));
+        label.rotation.set(-Math.PI/2,0,-Math.PI/2);label.position.set(x-5,gy(x-5,z)+.075,z);label.name='차량 주차 표지 '+kind;G.scene.add(label);this.objs.push(label);
+      });
+      bays.instanceMatrix.needsUpdate=true;bays.computeBoundingSphere();G.scene.add(bays);this.objs.push(bays);
       const line = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 8), paint);
       line.rotation.x = -Math.PI / 2; line.position.set(C.x0 + 14, gy(C.x0 + 14, C.z1) + 0.06, C.z1);
       G.scene.add(line); this.objs.push(line);
@@ -315,6 +326,7 @@ const T = G.Training = {
     for (const o of this.objs) {
       G.scene.remove(o);
       o.traverse(m => {
+        if(m.isInstancedMesh)m.dispose();
         if (m.geometry) geometries.add(m.geometry);
         if (m.material && !shared.has(m.material)) materials.add(m.material);
       });
@@ -322,7 +334,7 @@ const T = G.Training = {
     for (const geo of geometries) geo.dispose();
     for (const mat of materials) { if (mat.map) mat.map.dispose(); mat.dispose(); }
     this.respawns = [];
-    this.objs = []; this.targets = []; this.items = [];
+    this.objs = []; this.targets = []; this.items = [];this.vehicleBays=[];
     for (const n of this.nums) n.el.remove();
     this.nums = [];
     if (this.statsEl) this.statsEl.classList.add('hidden');

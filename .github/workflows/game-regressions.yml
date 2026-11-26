@@ -59,6 +59,8 @@ jobs:
         run: |
           node tools/check-map-hydrology.cjs
           node tools/check-map-drive.cjs
+          node tools/check-vehicle-physics.cjs
+          VEHICLE_FALLBACK=1 node tools/check-vehicle-physics.cjs
       - name: 칼 모델·모션·타격·누락 복귀 검사
         run: |
           node tools/check-knives.cjs

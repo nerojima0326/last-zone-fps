@@ -33,8 +33,9 @@ const W=G.VehicleWheels={
       const travel=w.valid?d.copy(p).sub(w.last).dot(prev):0;
       // 뒷바퀴가 잠겼을 때도 접점을 갱신해 브레이크를 놓을 때 회전이 튀지 않게 한다.
       if(!(v.handbrake&&!w.front)){
-        const rotation=v.grounded===false?(w.spinRate||0)*(dt||0):travel/Math.max(.12,w.radius);
-        w.angle=(w.angle+rotation)%(Math.PI*2);if(v.grounded!==false&&dt>0)w.spinRate=rotation/dt;
+        const grounded=v.grounded!==false&&w.grounded!==false;
+        const rotation=grounded?travel/Math.max(.12,w.radius):(w.spinRate||0)*(dt||0);
+        w.angle=(w.angle+rotation)%(Math.PI*2);if(grounded&&dt>0)w.spinRate=rotation/dt;
       }
       w.spin.quaternion.setFromAxisAngle(X,-w.angle);w.last.copy(p);w.forward.copy(f);w.valid=true;
     }v.mesh.updateMatrixWorld(true);

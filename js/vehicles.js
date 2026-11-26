@@ -1,5 +1,5 @@
 // vehicles.js — 탈 수 있는 차량: F 탑승/하차, WASD 운전, Space 핸드브레이크(꺾으며 드리프트)
-//  v48: Kenney Car Kit 모델 4종(SUV·픽업·세단·밴), 드리프트, 총·폭발로 부서지고 불타다 폭발
+//  실사 차량 3종의 접지·공중 관성·차체 충돌을 플레이어와 봇이 함께 사용한다.
 (function () {
 'use strict';
 const THREE = window.THREE, G = window.G, U = G.U;
@@ -12,7 +12,8 @@ const HALF_L = 1.9, HALF_W = 0.95, MAX = 21, REV = 6;
 const HP = 1600;                // 모든 차량 내구도를 5배로 상향한다. 탑승자 피해·폭발 지연은 유지한다.
 const RESPAWN = 25;             // 폭발한 차는 잔해로 이 시간(초)만큼 남았다가, 처음 놓였던 자리에 새 차로 다시 나온다
 // v53 실사 차량 (Sketchfab CC-BY-4.0, tools/vehicles/build-real.cjs): 현대 포터 II 탑차 · 마쓰다 E2200 트럭 · IZH-2715 픽업
-const KINDS = ['porter', 'e2200', 'izh'];
+const NAMES = { porter: '포터 II 탑차', e2200: 'E2200 트럭', izh: 'IZH-2715 픽업' };
+const KINDS = Object.keys(NAMES);
 const S = 1;                    // GLB 단위 = 미터
 const PAINT = {
   porter: [0xd8d8d2],
@@ -23,6 +24,7 @@ const PAINT = {
 const JEEP = { hl: HALF_L, hw: HALF_W, top: 1.7, r: 0.42, wheelPts: [[-0.95, -1.25], [0.95, -1.25], [-0.95, 1.25], [0.95, 1.25]] };
 const dimOf = v => v.dim || (v.dim = JEEP);
 const _q = new THREE.Quaternion(), _q2 = new THREE.Quaternion(), _X = new V3(1, 0, 0), _Y = new V3(0, 1, 0), _vel = new V3(), _o = new V3(), _m4 = new THREE.Matrix4();
+const _wallNormal=new V3(),_move={x:0,z:0,hit:false,impact:0};
 
 function build() {
   const col = (g, c) => { g = g.toNonIndexed(); const k = new THREE.Color(c), n = g.attributes.position.count, a = new Float32Array(n * 3); for (let i = 0; i < n; i++) { a[i * 3] = k.r; a[i * 3 + 1] = k.g; a[i * 3 + 2] = k.b; } g.setAttribute('color', new THREE.BufferAttribute(a, 3)); return g; };
@@ -41,7 +43,8 @@ function build() {
 }
 
 const Vh = G.Vehicles = {
-  list: [], geo: null, mat: null, models: {},
+  list: [], geo: null, mat: null, models: {}, kinds: KINDS,
+  nameOf(kind) { return NAMES[kind] || '차량'; },
   // Kenney Car Kit 모델 (없으면 예전 지프 상자 모델)
   async load() {
     if (location.protocol === 'file:' || !THREE.GLTFLoader) return;
@@ -208,7 +211,7 @@ const Vh = G.Vehicles = {
   block(v) {
     const c = Math.abs(Math.cos(v.yaw)), s = Math.abs(Math.sin(v.yaw)), D = dimOf(v);
     const hx = D.hw * c + D.hl * s - 0.25 * Math.min(c, s) * 2, hz = D.hw * s + D.hl * c - 0.25 * Math.min(c, s) * 2;
-    v.box = G.World.addCollider(v.pos.x - hx, v.pos.y, v.pos.z - hz, v.pos.x + hx, v.pos.y + Math.min(1.9, D.top), v.pos.z + hz, 'metal', true);
+    v.box = G.World.addCollider(v.pos.x - hx, v.pos.y, v.pos.z - hz, v.pos.x + hx, v.pos.y + D.top, v.pos.z + hz, 'metal', true);
     v.box.vehicle = v;
   },
   unblock(v) { G.World.removeCollider(v.box); v.box = null; },
@@ -253,11 +256,46 @@ const Vh = G.Vehicles = {
     v.mesh.position.y+=v.springOffset||0;
     if (v.hop) v.mesh.position.y += v.hop.y;
     v.mesh.updateMatrixWorld(true);
-    if(v.wheelDamage||dt){
+    v.groundContacts=v.wheels?0:D.wheelPts.length;
+    if(v.wheels){
       // 파손된 코너의 높이를 낮추고 남은 작은 접점 오차는 바퀴 이동 범위 안에서 흡수한다.
-      for(const w of v.wheels||[]){w.o.position.y=w.rest.y;if(v.grounded===false)continue;w.o.updateWorldMatrix(true,false);w.o.getWorldPosition(_support);const floor=ground(_support.x,_support.z),axis=_axis.set(1,0,0).applyQuaternion(v.mesh.quaternion),extent=w.radius*Math.sqrt(Math.max(0,1-axis.y*axis.y))+w.width*.5*Math.abs(axis.y);w.o.position.y+=U.clamp((floor-(_support.y-extent))/Math.max(.5,v.mesh.matrixWorld.elements[5]),-.20,.20)}
+      for(const w of v.wheels){
+        w.o.position.y=w.rest.y;w.grounded=false;if(v.grounded===false)continue;
+        w.o.updateWorldMatrix(true,false);w.o.getWorldPosition(_support);
+        const floor=ground(_support.x,_support.z),axis=_axis.set(1,0,0).applyQuaternion(v.mesh.quaternion),extent=w.radius*Math.sqrt(Math.max(0,1-axis.y*axis.y))+w.width*.5*Math.abs(axis.y);
+        const gap=floor-(_support.y-extent),vertical=Math.max(.5,v.mesh.matrixWorld.elements[5]),travel=U.clamp(gap/vertical,-.20,.20);
+        w.o.position.y+=travel;w.groundGap=gap-travel*vertical;w.grounded=Math.abs(w.groundGap)<.055;if(w.grounded)v.groundContacts++;
+      }
       v.mesh.updateMatrixWorld(true);
     }
+  },
+  // 충돌 법선 방향의 운동만 반사한다. 벽을 스칠 때 진행 속도까지 없애지 않는다.
+  move(v,nx,nz,velocity,dt) {
+    const W=G.World,D=dimOf(v),offL=Math.max(.6,D.hl-D.hw),fx=-Math.sin(v.yaw),fz=-Math.cos(v.yaw),radius=D.hw+.05;
+    let bumped=false,impact=0;
+    for(const off of [offL,0,-offL]){
+      const cx0=nx+fx*off,cz0=nz+fz*off;let cx=cx0,cz=cz0;
+      W.queryBoxes(cx-radius,cz-radius,cx+radius,cz+radius,b=>{
+        if(b.vehicle===v||b.bridgeDeck&&v.pos.y>b.maxY-.95)return;
+        if(b.maxY<=v.pos.y+.55||b.minY>=v.pos.y+D.top)return;
+        const px=U.clamp(cx,b.minX,b.maxX),pz=U.clamp(cz,b.minZ,b.maxZ),dx=cx-px,dz=cz-pz,d2=dx*dx+dz*dz;
+        if(d2>=radius*radius)return;
+        let depth;
+        if(d2>1e-8){const distance=Math.sqrt(d2);_wallNormal.set(dx/distance,0,dz/distance);depth=radius-distance;}
+        else{
+          // 상자 안에서 시작해도 가장 가까운 면으로 빠져나온다.
+          const left=cx-b.minX,right=b.maxX-cx,back=cz-b.minZ,front=b.maxZ-cz,nearest=Math.min(left,right,back,front);
+          if(nearest===left)_wallNormal.set(-1,0,0);else if(nearest===right)_wallNormal.set(1,0,0);else if(nearest===back)_wallNormal.set(0,0,-1);else _wallNormal.set(0,0,1);depth=radius+nearest;
+        }
+        cx+=_wallNormal.x*(depth+.001);cz+=_wallNormal.z*(depth+.001);
+        const into=velocity.dot(_wallNormal);
+        if(into<0){impact=Math.max(impact,-into);velocity.addScaledVector(_wallNormal,-into*(1+(-into>4?.025:0)));}
+        bumped=true;
+      });
+      nx+=cx-cx0;nz+=cz-cz0;
+    }
+    if(bumped){velocity.multiplyScalar(Math.exp(-.15*dt));v.yawRate=(v.yawRate||0)*Math.exp(-8*dt);}
+    Object.assign(_move,{x:nx,z:nz,hit:bumped,impact});return _move;
   },
   near(a) {
     let best = null, bd = 3.4;
@@ -356,6 +394,7 @@ const Vh = G.Vehicles = {
   stepPhysics(v, a, dt, thr, st, brake, hand) {
     const W = G.World;
     const grounded=v.grounded!==false;
+    const traction=grounded?U.clamp((v.groundContacts??(v.wheels?.length||4))/(v.wheels?.length||4),0,1):0;
     const wet = W.waterAt(v.pos.x, v.pos.z) - Math.max(W.heightAt(v.pos.x, v.pos.z),v.pos.y);
     const punctures=v.wheelDamage||0,top = (wet > 0.5 ? 4 : MAX)*Math.max(.38,1-punctures*.15);
     v.handbrake=!!hand;
@@ -366,14 +405,14 @@ const Vh = G.Vehicles = {
     else if (hand) {
       // 꺾으면서 당기면 뒷바퀴만 미끄러진다: 거의 감속하지 않고, 가속 페달을 밟고 있으면 속도를 유지
       if (Math.abs(st) > 0.2 && Math.abs(v.speed) > 6) {
-        v.speed = approach(v.speed, 0, 1.8 * dt);
-        if (thr > 0 && v.speed > 0) v.speed = Math.min(top, v.speed + 6 * weak * (1 - v.speed / (top + 4)) * dt);
-      } else v.speed = approach(v.speed, 0, 16 * dt);
+        v.speed = approach(v.speed, 0, 1.8 * traction * dt);
+        if (thr > 0 && v.speed > 0) v.speed = Math.min(top, v.speed + 6 * weak * traction * (1 - v.speed / (top + 4)) * dt);
+      } else v.speed = approach(v.speed, 0, 16 * traction * dt);
     }
-    else if (brake) v.speed = approach(v.speed, 0, 26 * dt);
-    else if (thr > 0) v.speed = v.speed < 0 ? approach(v.speed, 0, 22 * dt) : Math.min(top, v.speed + 9.5 * weak * (1 - v.speed / (top + 4)) * dt);
-    else if (thr < 0) v.speed = v.speed > 0.5 ? approach(v.speed, 0, 20 * dt) : Math.max(-REV*Math.max(.45,1-punctures*.14), v.speed - 6*Math.pow(.88,punctures) * dt);
-    else v.speed = approach(v.speed, 0, (2.2 + Math.abs(v.speed) * 0.12) * dt);
+    else if (brake) v.speed = approach(v.speed, 0, 26 * traction * dt);
+    else if (thr > 0) v.speed = v.speed < 0 ? approach(v.speed, 0, 22 * traction * dt) : Math.min(top, v.speed + 9.5 * weak * traction * (1 - v.speed / (top + 4)) * dt);
+    else if (thr < 0) v.speed = v.speed > 0.5 ? approach(v.speed, 0, 20 * traction * dt) : Math.max(-REV*Math.max(.45,1-punctures*.14), v.speed - 6*Math.pow(.88,punctures)*traction * dt);
+    else v.speed = approach(v.speed, 0, (2.2 + Math.abs(v.speed) * 0.12)*traction * dt);
     if (grounded&&v.speed > top) v.speed = approach(v.speed, top, 14 * dt);
     v.steer = U.damp(v.steer, st, 7, dt);
     const lock = 0.55 / (1 + Math.abs(v.speed) * 0.06);v.steerAngle=v.steer*lock;
@@ -385,47 +424,33 @@ const Vh = G.Vehicles = {
     let yawRate = grounded?Math.tan(v.steerAngle) * v.speed / (v.wheelbase||2.6)+(v.tirePull||0)*U.clamp(v.speed/8,-1,1):0;
     if (slide) yawRate *= 1.25;
     else if (grounded&&Math.abs(v.lat) > 1.5) yawRate += v.steer * 0.35 * Math.sign(v.speed);   // 미끄러지는 동안 카운터 스티어
-    v.yaw += yawRate * dt;
+    // 접지가 끊기면 핸들은 차체를 돌리지 못한다. 도약 직전의 각운동량은 공중에서도 이어진다.
+    v.yawRate=grounded?U.damp(v.yawRate||0,yawRate*traction,12,dt):(v.yawRate||0)*Math.exp(-.35*dt);
+    v.yaw += v.yawRate * dt;
     // 새 방향으로 속도 나누기
     _f.set(-Math.sin(v.yaw), 0, -Math.cos(v.yaw)); _r.set(Math.cos(v.yaw), 0, -Math.sin(v.yaw));
     v.speed = _vel.dot(_f); v.lat = _vel.dot(_r);
     // 옆 접지력: 평소 강하게, 핸드브레이크면 약하게. 잃은 옆 속도 일부는 앞으로 (드리프트를 빠져나올 때 가속)
     const grip = (slide ? 2.2 : wet > 0.3 ? 2.5 : 7.5)*Math.max(.35,1-punctures*.16);
     const lat0 = v.lat;
-    if(grounded)v.lat *= Math.exp(-grip * dt);
-    if (!slide && v.speed > 0) v.speed = Math.min(top, v.speed + Math.abs(lat0 - v.lat) * 0.25);
+    if(grounded)v.lat *= Math.exp(-grip*traction * dt);
+    if (grounded&&!slide && v.speed > 0) v.speed = Math.min(top, v.speed + Math.abs(lat0 - v.lat) * 0.25);
     if (Math.abs(v.lat) < 0.02) v.lat = 0;
     v.drift = grounded&&Math.abs(v.lat) > 2.2 && Math.abs(v.speed) > 4;
     let nx = v.pos.x + (_f.x * v.speed + _r.x * v.lat) * dt, nz = v.pos.z + (_f.z * v.speed + _r.z * v.lat) * dt;
     // 가파른 비탈은 오르지 못한다
     const lead = Math.sign(v.speed) * 2.2, slope = (this.groundAt(nx+_f.x*lead,nz+_f.z*lead,v.pos.y)-this.groundAt(nx,nz,v.pos.y)) / 2.2;
     if (grounded&&slope > 0.95) { v.speed *= -0.15; v.lat = 0; nx = v.pos.x; nz = v.pos.z; }
-    else if(grounded&&!brake&&!hand&&Math.abs(v.speed)>.1)v.speed-=Math.sign(v.speed)*9.81*U.clamp(slope,-.6,.6)/(1+slope*slope)*dt;
-    // 장애물: 앞·가운데·뒤 세 원으로 밀어낸다
-    let bumped = false;
-    const D = dimOf(v), offL = Math.max(0.6, D.hl - D.hw);
-    for (const off of [offL, 0, -offL]) {
-      const cx0 = nx + _f.x * off, cz0 = nz + _f.z * off, r = D.hw + 0.05;
-      let cx = cx0, cz = cz0;
-      W.queryBoxes(cx - r, cz - r, cx + r, cz + r, b => {
-        if(b.bridgeDeck&&v.pos.y>b.maxY-.95)return;
-        if (b.maxY <= v.pos.y + 0.55 || b.minY >= v.pos.y + 1.7) return;
-        const px = cx < b.minX ? b.minX : cx > b.maxX ? b.maxX : cx, pz = cz < b.minZ ? b.minZ : cz > b.maxZ ? b.maxZ : cz;
-        let dx = cx - px, dz = cz - pz; const d2 = dx * dx + dz * dz;
-        if (d2 >= r * r) return;
-        if (d2 > 1e-8) { const d = Math.sqrt(d2); cx += dx / d * (r - d); cz += dz / d * (r - d); }
-        else { cx = cx0 - _f.x * Math.sign(v.speed || 1) * 0.3; cz = cz0 - _f.z * Math.sign(v.speed || 1) * 0.3; }
-        bumped = true;
-      });
-      nx += cx - cx0; nz += cz - cz0;
-    }
-    if (bumped) {
+    // 내리막 힘은 실제 바퀴로 정한 차체 기울기를 따른다. 아직 밟지 않은 절벽으로 끌어당기지 않는다.
+    else if(grounded&&traction>0&&!brake&&!hand&&Math.abs(v.speed)>.1)v.speed-=9.81*Math.sin(v.pitch)*Math.cos(v.pitch)*dt;
+    _vel.copy(_f).multiplyScalar(v.speed).addScaledVector(_r,v.lat);
+    const collision=this.move(v,nx,nz,_vel,dt);nx=collision.x;nz=collision.z;
+    if (collision.hit) {
       // 세게 들이받은 순간에만 한 번 다친다
-      const hitV = Math.hypot(v.speed, v.lat);
+      const hitV = collision.impact;
       if (!v.bump && hitV > 9) { if (a.isPlayer) G.FX.shake(0.3); G.Audio.impact(v.pos, 'metal'); G.Game.damage(a, Math.min(30, (hitV - 9) * 2.2), null, 'fall', false, a.pos, null); this.damage(v, (hitV - 9) * 6, null, 'crash'); }
-      v.speed *= Math.pow(0.02, dt); v.lat *= Math.pow(0.02, dt);
     }
-    v.bump = bumped;
+    v.speed=_vel.dot(_f);v.lat=_vel.dot(_r);v.bump = collision.hit;
     const lim = W.HALF - 6;
     v.pos.x = U.clamp(nx, -lim, lim); v.pos.z = U.clamp(nz, -lim, lim);
     this.place(v, 1 - Math.exp(-10 * dt),dt);
@@ -723,14 +748,20 @@ const Vh = G.Vehicles = {
       }
       if (v.speed === 0 && !v.lat&&v.grounded!==false&&!v.springOffset) continue;
       v.handbrake=false;
-      v.speed = approach(v.speed, 0, 9 * dt); v.lat = approach(v.lat || 0, 0, 12 * dt);
-      _f.set(-Math.sin(v.yaw), 0, -Math.cos(v.yaw)); _r.set(Math.cos(v.yaw), 0, -Math.sin(v.yaw));
-      const nx = v.pos.x + (_f.x * v.speed + _r.x * v.lat) * dt, nz = v.pos.z + (_f.z * v.speed + _r.z * v.lat) * dt;
-      let hit = false;
-      G.World.queryBoxes(nx - 1.2, nz - 1.2, nx + 1.2, nz + 1.2, b => { if(b.bridgeDeck&&v.pos.y>b.maxY-.95)return;if (b.maxY > v.pos.y + 0.55 && b.minY < v.pos.y + 1.7) hit = true; });
-      if (hit) { v.speed = 0; v.lat = 0; } else { v.pos.x = nx; v.pos.z = nz; }
-      this.place(v, 1 - Math.exp(-10 * dt),dt);
-      this.wheelAnim(v, dt);
+      // 하차한 차도 같은 차체 충돌·수직 적분을 쓴다. 공중에서 주차 제동으로 수평 속도를 없애지 않는다.
+      const parts=Math.max(1,Math.ceil(dt*120-1e-7)),h=dt/parts;
+      for(let i=0;i<parts;i++){
+        const grounded=v.grounded!==false;
+        if(grounded){v.speed=approach(v.speed,0,9*h);v.lat=approach(v.lat||0,0,12*h);}
+        else{v.speed*=Math.exp(-.025*h);v.lat=(v.lat||0)*Math.exp(-.025*h);}
+        _f.set(-Math.sin(v.yaw),0,-Math.cos(v.yaw));_r.set(Math.cos(v.yaw),0,-Math.sin(v.yaw));_vel.copy(_f).multiplyScalar(v.speed).addScaledVector(_r,v.lat);
+        v.yawRate=(v.yawRate||0)*Math.exp(-(grounded?8:.35)*h);v.yaw+=v.yawRate*h;
+        _f.set(-Math.sin(v.yaw),0,-Math.cos(v.yaw));_r.set(Math.cos(v.yaw),0,-Math.sin(v.yaw));
+        const collision=this.move(v,v.pos.x+_vel.x*h,v.pos.z+_vel.z*h,_vel,h),lim=G.World.HALF-6;
+        v.pos.x=U.clamp(collision.x,-lim,lim);v.pos.z=U.clamp(collision.z,-lim,lim);v.speed=_vel.dot(_f);v.lat=_vel.dot(_r);
+        if(Math.abs(v.speed)<.02)v.speed=0;if(Math.abs(v.lat)<.02)v.lat=0;
+        this.place(v,1-Math.exp(-10*h),h);this.wheelAnim(v,h);
+      }
       if (v.speed === 0 && !v.lat && !v.box&&v.grounded!==false) this.block(v);
     }
   },

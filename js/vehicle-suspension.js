@@ -3,7 +3,7 @@
 'use strict';
 const G=window.G,U=G.U,GRAVITY=9.81;
 G.VehicleSuspension={
-  reset(v){v.grounded=true;v.flight=false;v.contactFresh=true;v.settleT=0;v.vy=0;v.springOffset=0;v.springVelocity=0;v.pitchRate=0;v.rollRate=0},
+  reset(v){v.grounded=true;v.flight=false;v.contactFresh=true;v.settleT=0;v.vy=0;v.springOffset=0;v.springVelocity=0;v.pitchRate=0;v.rollRate=0;v.yawRate=0},
   step(v,floor,dt){
     if(!Number.isFinite(v.vy))this.reset(v);const y=v.pos.y,parts=Math.max(1,Math.ceil(dt*120)),h=dt/parts;v.settleT=Math.max(0,(v.settleT||0)-dt);
     let falling=!v.grounded;

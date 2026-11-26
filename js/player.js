@@ -638,7 +638,7 @@ const P = G.Player = {
     const it = Game.lootNear(_e, _f);
     if (!it) {
       const v = G.Vehicles.near(a);
-      if (v) { this.prompt = '<kbd>' + G.Settings.label('KeyF') + '</kbd> <b>차량</b> 탑승'; if (I.hit('KeyF')) G.Vehicles.enter(this, v); return; }
+      if (v) { this.prompt = '<kbd>' + G.Settings.label('KeyF') + '</kbd> <b>'+G.Vehicles.nameOf(v.kind)+'</b> 탑승'; if (I.hit('KeyF')) G.Vehicles.enter(this, v); return; }
     }
     if (it) {
       this.lootTarget = it;
