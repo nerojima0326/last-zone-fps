@@ -1,0 +1,2915 @@
+{
+  "version": 96,
+  "environment": {
+    "browser": "Chromium 156.0.8078.79",
+    "renderer": "SwiftShader",
+    "three": "0.160.0",
+    "viewport": [
+      960,
+      600
+    ],
+    "timing": "30·60·144FPS 간격의 동작 시뮬레이션이며 실기기 FPS 벤치마크가 아님"
+  },
+  "geometryThresholdMm": {
+    "noiseFloor": 0.5,
+    "allowedGloveContact": 2
+  },
+  "imported": {
+    "geometryCases": 1070,
+    "geometry": {
+      "knife_butterfly": {
+        "cases": 245,
+        "maxIntersectionMm": 0
+      },
+      "knife_dagger": {
+        "cases": 165,
+        "maxIntersectionMm": 0
+      },
+      "knife_combat": {
+        "cases": 165,
+        "maxIntersectionMm": 0
+      },
+      "knife_karambit": {
+        "cases": 165,
+        "maxIntersectionMm": 0.7118070572798076
+      },
+      "knife_kunai": {
+        "cases": 165,
+        "maxIntersectionMm": 0
+      },
+      "knife_machete": {
+        "cases": 165,
+        "maxIntersectionMm": 0
+      }
+    },
+    "clips": {
+      "knife_butterfly": {
+        "draw": "손목 반회전 정렬",
+        "drawSeconds": 0.82,
+        "slash": [
+          "빠른 수평 베기",
+          "되돌려 긋기"
+        ],
+        "inspect": "날 양면과 잠금 확인",
+        "inspectSeconds": 2.8
+      },
+      "knife_dagger": {
+        "draw": "중앙으로 뽑아 세우기",
+        "drawSeconds": 0.58,
+        "slash": [
+          "깊은 직선 찌르기",
+          "아래에서 올려 찌르기"
+        ],
+        "inspect": "양날과 가드 살피기",
+        "inspectSeconds": 2.25
+      },
+      "knife_combat": {
+        "draw": "옆 칼집에서 대각선 인출",
+        "drawSeconds": 0.66,
+        "slash": [
+          "오른쪽 위에서 내려베기",
+          "왼쪽 아래에서 되받아 베기"
+        ],
+        "inspect": "손등 쪽으로 칼날 확인",
+        "inspectSeconds": 2.15
+      },
+      "knife_karambit": {
+        "draw": "작은 원을 그려 갈고리 정렬",
+        "drawSeconds": 0.74,
+        "slash": [
+          "안쪽으로 짧게 걸어베기",
+          "바깥쪽으로 감아 긋기"
+        ],
+        "inspect": "곡선 날과 고리 돌려 보기",
+        "inspectSeconds": 2.5
+      },
+      "knife_kunai": {
+        "draw": "아래에서 튕겨 올려 잡기",
+        "drawSeconds": 0.5,
+        "slash": [
+          "오른쪽 사선으로 찌르기",
+          "왼쪽 낮은 사선으로 찌르기"
+        ],
+        "inspect": "끝을 세워 균형 확인",
+        "inspectSeconds": 2.05
+      },
+      "knife_machete": {
+        "draw": "긴 칼을 크게 들어 올리기",
+        "drawSeconds": 0.94,
+        "slash": [
+          "머리 위에서 무겁게 내려베기",
+          "반대쪽 넓은 수평 베기"
+        ],
+        "inspect": "넓은 날을 천천히 기울여 보기",
+        "inspectSeconds": 2.95
+      }
+    },
+    "distinctPairs": [
+      {
+        "kind": "draw",
+        "a": "knife_butterfly:0",
+        "b": "knife_dagger:0",
+        "positionRms": 0.09611060654699574,
+        "angleRms": 0.5753021254425341
+      },
+      {
+        "kind": "draw",
+        "a": "knife_butterfly:0",
+        "b": "knife_combat:0",
+        "positionRms": 0.07163578334235007,
+        "angleRms": 0.6279284691411445
+      },
+      {
+        "kind": "draw",
+        "a": "knife_butterfly:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.055870844655396414,
+        "angleRms": 0.6902246710533515
+      },
+      {
+        "kind": "draw",
+        "a": "knife_butterfly:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.10453866519611042,
+        "angleRms": 0.6898548688032562
+      },
+      {
+        "kind": "draw",
+        "a": "knife_butterfly:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.10095804150840286,
+        "angleRms": 0.7336199143784328
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_butterfly:1",
+        "positionRms": 0.14474489279614822,
+        "angleRms": 1.106724694468958
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_dagger:0",
+        "positionRms": 0.08505667324615634,
+        "angleRms": 0.6313535280176329
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_dagger:1",
+        "positionRms": 0.10573866070234339,
+        "angleRms": 0.9599536810610239
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_combat:0",
+        "positionRms": 0.06044556297199242,
+        "angleRms": 0.43756850378643763
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_combat:1",
+        "positionRms": 0.14897503124557895,
+        "angleRms": 0.9924788620032432
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.05298006344970873,
+        "angleRms": 0.6095697036909061
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_karambit:1",
+        "positionRms": 0.12452266110914663,
+        "angleRms": 1.0991738907137278
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.1270034828059973,
+        "angleRms": 1.1073400293630344
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_kunai:1",
+        "positionRms": 0.052325358224826334,
+        "angleRms": 0.4198647008751695
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.10679578404285808,
+        "angleRms": 0.3155613808376905
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_machete:1",
+        "positionRms": 0.17085996021498048,
+        "angleRms": 1.2157988738291514
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_dagger:0",
+        "positionRms": 0.08429940047999504,
+        "angleRms": 0.593859404600037
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_dagger:1",
+        "positionRms": 0.10021600171579716,
+        "angleRms": 0.47767322002586393
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_combat:0",
+        "positionRms": 0.14707630805021116,
+        "angleRms": 1.1515407453695385
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_combat:1",
+        "positionRms": 0.07528676385898947,
+        "angleRms": 0.2719950711326633
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_karambit:0",
+        "positionRms": 0.13318182520297972,
+        "angleRms": 0.8617094006923828
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_karambit:1",
+        "positionRms": 0.070393564432455,
+        "angleRms": 0.7691831265718815
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_kunai:0",
+        "positionRms": 0.049058833336206906,
+        "angleRms": 0.25984247372435615
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_kunai:1",
+        "positionRms": 0.11778283275139997,
+        "angleRms": 0.8531165058070259
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_machete:0",
+        "positionRms": 0.12443409191124616,
+        "angleRms": 1.0622187605592415
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_machete:1",
+        "positionRms": 0.054605845195744164,
+        "angleRms": 0.4848303156678803
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_butterfly:0",
+        "b": "knife_dagger:0",
+        "positionRms": 0.029313596983684766,
+        "angleRms": 0.48764600026128435
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_butterfly:0",
+        "b": "knife_combat:0",
+        "positionRms": 0.02919797944890716,
+        "angleRms": 0.4867058045357234
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_butterfly:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.027995427328037687,
+        "angleRms": 0.5949718693370002
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_butterfly:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.04760675047706593,
+        "angleRms": 0.47766415675461543
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_butterfly:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.03320070987197581,
+        "angleRms": 0.6445672790955137
+      },
+      {
+        "kind": "draw",
+        "a": "knife_dagger:0",
+        "b": "knife_combat:0",
+        "positionRms": 0.08589791697852561,
+        "angleRms": 0.40697678310644486
+      },
+      {
+        "kind": "draw",
+        "a": "knife_dagger:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.12449986883549279,
+        "angleRms": 0.9646245707646094
+      },
+      {
+        "kind": "draw",
+        "a": "knife_dagger:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.10623920244588761,
+        "angleRms": 0.5044258292892472
+      },
+      {
+        "kind": "draw",
+        "a": "knife_dagger:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.07644470531922654,
+        "angleRms": 0.2540551666811193
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_dagger:1",
+        "positionRms": 0.050195148412413855,
+        "angleRms": 0.4277397188133454
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_combat:0",
+        "positionRms": 0.10586408923579357,
+        "angleRms": 0.7019554584853195
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_combat:1",
+        "positionRms": 0.07940673040727737,
+        "angleRms": 0.5564948868913745
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.06436642173113646,
+        "angleRms": 0.4582410808622889
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_karambit:1",
+        "positionRms": 0.08288417011571969,
+        "angleRms": 0.9187947454335914
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.05809669142870819,
+        "angleRms": 0.5790314371289788
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_kunai:1",
+        "positionRms": 0.06062369552822734,
+        "angleRms": 0.3414122446039658
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.11582088044041547,
+        "angleRms": 0.6716354450053305
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_machete:1",
+        "positionRms": 0.11606361375776453,
+        "angleRms": 0.8553571821874707
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:1",
+        "b": "knife_combat:0",
+        "positionRms": 0.14288391766872874,
+        "angleRms": 0.9050558082431207
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:1",
+        "b": "knife_combat:1",
+        "positionRms": 0.06287022139968765,
+        "angleRms": 0.5293987474840183
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:1",
+        "b": "knife_karambit:0",
+        "positionRms": 0.07830014015603506,
+        "angleRms": 0.6721171833220633
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:1",
+        "b": "knife_karambit:1",
+        "positionRms": 0.1178125108155904,
+        "angleRms": 0.9281936258621052
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:1",
+        "b": "knife_kunai:0",
+        "positionRms": 0.07850733950096775,
+        "angleRms": 0.40180140983814144
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:1",
+        "b": "knife_kunai:1",
+        "positionRms": 0.09724316486687705,
+        "angleRms": 0.6302218611675525
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:1",
+        "b": "knife_machete:0",
+        "positionRms": 0.1568158948888786,
+        "angleRms": 0.9132830868892255
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:1",
+        "b": "knife_machete:1",
+        "positionRms": 0.1436659402678721,
+        "angleRms": 0.8282804576005737
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_dagger:0",
+        "b": "knife_combat:0",
+        "positionRms": 0.033135612906851006,
+        "angleRms": 0.3497660295578711
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_dagger:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.04202686784279286,
+        "angleRms": 0.620814838769554
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_dagger:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.02894668469994148,
+        "angleRms": 0.5007491837269227
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_dagger:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.03752121505293898,
+        "angleRms": 0.27145553532023975
+      },
+      {
+        "kind": "draw",
+        "a": "knife_combat:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.1125868352165662,
+        "angleRms": 1.0954459647830748
+      },
+      {
+        "kind": "draw",
+        "a": "knife_combat:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.10090449868755406,
+        "angleRms": 0.832289943468976
+      },
+      {
+        "kind": "draw",
+        "a": "knife_combat:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.06140887563862336,
+        "angleRms": 0.3821106461546721
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:0",
+        "b": "knife_combat:1",
+        "positionRms": 0.17552157409323865,
+        "angleRms": 1.0350975272848528
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.09088160804020273,
+        "angleRms": 0.522762484690355
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:0",
+        "b": "knife_karambit:1",
+        "positionRms": 0.10977970917742931,
+        "angleRms": 1.275582674750923
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.13342078153227388,
+        "angleRms": 1.1245424771228147
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:0",
+        "b": "knife_kunai:1",
+        "positionRms": 0.05883620155122607,
+        "angleRms": 0.42950897545933925
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.06215807781750837,
+        "angleRms": 0.4733481849268133
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:0",
+        "b": "knife_machete:1",
+        "positionRms": 0.15805792189845574,
+        "angleRms": 1.3815748058493273
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:1",
+        "b": "knife_karambit:0",
+        "positionRms": 0.12105050833056387,
+        "angleRms": 0.7902523866711599
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:1",
+        "b": "knife_karambit:1",
+        "positionRms": 0.1130405303036398,
+        "angleRms": 0.6669766341412532
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:1",
+        "b": "knife_kunai:0",
+        "positionRms": 0.07030932859707516,
+        "angleRms": 0.308187038093998
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:1",
+        "b": "knife_kunai:1",
+        "positionRms": 0.12876011119474937,
+        "angleRms": 0.7420176874160808
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:1",
+        "b": "knife_machete:0",
+        "positionRms": 0.17127196465844508,
+        "angleRms": 0.9196659378171829
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:1",
+        "b": "knife_machete:1",
+        "positionRms": 0.1139557507603149,
+        "angleRms": 0.4836747499122202
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_combat:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.020560741999180874,
+        "angleRms": 0.7194450853501277
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_combat:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.03956174184237909,
+        "angleRms": 0.5369860206553301
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_combat:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.02942161525093696,
+        "angleRms": 0.3409964707993435
+      },
+      {
+        "kind": "draw",
+        "a": "knife_karambit:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.15206303554820583,
+        "angleRms": 0.7734333139426613
+      },
+      {
+        "kind": "draw",
+        "a": "knife_karambit:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.13779305690603183,
+        "angleRms": 1.1285374424746135
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:0",
+        "b": "knife_karambit:1",
+        "positionRms": 0.11256336670629903,
+        "angleRms": 1.2428720110711071
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.10744885859053126,
+        "angleRms": 0.8661811893224721
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:0",
+        "b": "knife_kunai:1",
+        "positionRms": 0.049708505275574716,
+        "angleRms": 0.46006293524856284
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.12060818951698599,
+        "angleRms": 0.7189897324282661
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:0",
+        "b": "knife_machete:1",
+        "positionRms": 0.1609478227243264,
+        "angleRms": 1.1756555971978782
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:1",
+        "b": "knife_kunai:0",
+        "positionRms": 0.06022094623015841,
+        "angleRms": 0.6996386239319538
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:1",
+        "b": "knife_kunai:1",
+        "positionRms": 0.08258270792274591,
+        "angleRms": 0.9811089279475231
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:1",
+        "b": "knife_machete:0",
+        "positionRms": 0.07978284588103257,
+        "angleRms": 0.9413345060709346
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:1",
+        "b": "knife_machete:1",
+        "positionRms": 0.06654225923997957,
+        "angleRms": 0.4658891390320873
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_karambit:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.05265266473724595,
+        "angleRms": 0.4510957321856441
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_karambit:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.024558276154902456,
+        "angleRms": 0.788023432097101
+      },
+      {
+        "kind": "draw",
+        "a": "knife_kunai:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.12469937844648776,
+        "angleRms": 0.6855736489192152
+      },
+      {
+        "kind": "slash",
+        "a": "knife_kunai:0",
+        "b": "knife_kunai:1",
+        "positionRms": 0.0918830768232218,
+        "angleRms": 0.8058235800470597
+      },
+      {
+        "kind": "slash",
+        "a": "knife_kunai:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.12052040690928759,
+        "angleRms": 1.0272541999676497
+      },
+      {
+        "kind": "slash",
+        "a": "knife_kunai:0",
+        "b": "knife_machete:1",
+        "positionRms": 0.07919467494111038,
+        "angleRms": 0.5140040888028942
+      },
+      {
+        "kind": "slash",
+        "a": "knife_kunai:1",
+        "b": "knife_machete:0",
+        "positionRms": 0.08385263844969938,
+        "angleRms": 0.43685471057212993
+      },
+      {
+        "kind": "slash",
+        "a": "knife_kunai:1",
+        "b": "knife_machete:1",
+        "positionRms": 0.1356775434227498,
+        "angleRms": 1.0508714717416947
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_kunai:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.052095326758549346,
+        "angleRms": 0.6707335052380754
+      },
+      {
+        "kind": "slash",
+        "a": "knife_machete:0",
+        "b": "knife_machete:1",
+        "positionRms": 0.11919732575824214,
+        "angleRms": 1.121929769744356
+      }
+    ],
+    "motion": {
+      "rates": [
+        30,
+        60,
+        144
+      ],
+      "cases": [
+        {
+          "id": "knife_butterfly",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.0573116538767015,
+          "maxSpeed": 1.719349616301045,
+          "endStep": 0.0014962604257193696
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.052925651233651616,
+          "maxSpeed": 1.5877695370095486,
+          "endStep": 0.0028806772260378684
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 30,
+          "maxStep": 0.053422397671967034,
+          "maxSpeed": 1.602671930159011,
+          "endStep": 0.004683168193542963
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.01734302096576637,
+          "maxSpeed": 0.5202906289729912,
+          "endStep": 0.00020019819386807866
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.07062150657038513,
+          "maxSpeed": 2.118645197111554,
+          "endStep": 0.0021666903556073875
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.06978772364572725,
+          "maxSpeed": 2.0936317093718175,
+          "endStep": 0.003824259294760776
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 30,
+          "maxStep": 0.0749745601945914,
+          "maxSpeed": 2.2492368058377417,
+          "endStep": 0.0021341963326565643
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.01317294874899234,
+          "maxSpeed": 0.39518846246977024,
+          "endStep": 0.0004982304258878261
+        },
+        {
+          "id": "knife_combat",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.06614245430010217,
+          "maxSpeed": 1.9842736290030651,
+          "endStep": 0.0024272890723494554
+        },
+        {
+          "id": "knife_combat",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.07346553000501307,
+          "maxSpeed": 2.203965900150392,
+          "endStep": 0.012118865312880206
+        },
+        {
+          "id": "knife_combat",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 30,
+          "maxStep": 0.09289193714533152,
+          "maxSpeed": 2.786758114359946,
+          "endStep": 0.004236290994476283
+        },
+        {
+          "id": "knife_combat",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.021785134673339604,
+          "maxSpeed": 0.6535540402001881,
+          "endStep": 0.0008513772519893003
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.06582397194547206,
+          "maxSpeed": 1.9747191583641617,
+          "endStep": 0.0022908341606024743
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.07088192102185858,
+          "maxSpeed": 2.1264576306557577,
+          "endStep": 0.010221583443069731
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 30,
+          "maxStep": 0.09979423281809598,
+          "maxSpeed": 2.9938269845428795,
+          "endStep": 0.007267893194024749
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.018212596214605466,
+          "maxSpeed": 0.546377886438164,
+          "endStep": 0.0007180398655740553
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.08622010833469791,
+          "maxSpeed": 2.5866032500409375,
+          "endStep": 0.0038668370172669497
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.060387866861635275,
+          "maxSpeed": 1.8116360058490584,
+          "endStep": 0.0028575518402313314
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 30,
+          "maxStep": 0.04652588212959063,
+          "maxSpeed": 1.3957764638877188,
+          "endStep": 0.0025204016652841795
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.018928107317727188,
+          "maxSpeed": 0.5678432195318156,
+          "endStep": 0.0004705727165251093
+        },
+        {
+          "id": "knife_machete",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.08586568666980286,
+          "maxSpeed": 2.575970600094086,
+          "endStep": 0.001805549254646198
+        },
+        {
+          "id": "knife_machete",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.09357989656402625,
+          "maxSpeed": 2.8073968969207876,
+          "endStep": 0.007243648135766226
+        },
+        {
+          "id": "knife_machete",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 30,
+          "maxStep": 0.13665016321163792,
+          "maxSpeed": 4.099504896349138,
+          "endStep": 0.00976072362345157
+        },
+        {
+          "id": "knife_machete",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.022277339994743045,
+          "maxSpeed": 0.6683201998422914,
+          "endStep": 0.00048757244221201676
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.028539645052404337,
+          "maxSpeed": 1.7123787031442603,
+          "endStep": 0.0011362473608434681
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.029175915733280076,
+          "maxSpeed": 1.7505549439968047,
+          "endStep": 0.0029820630098297304
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 60,
+          "maxStep": 0.028772932978362007,
+          "maxSpeed": 1.7263759787017205,
+          "endStep": 0.00541737733059272
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.008531782139554243,
+          "maxSpeed": 0.5119069283732546,
+          "endStep": 0.0001265028287002253
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.035701773635767986,
+          "maxSpeed": 2.142106418146079,
+          "endStep": 0.002252316649721165
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.03833484419494806,
+          "maxSpeed": 2.3000906516968835,
+          "endStep": 0.0027416482649207257
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 60,
+          "maxStep": 0.04084138508494207,
+          "maxSpeed": 2.450483105096524,
+          "endStep": 0.0015426908993243814
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.006573040759122883,
+          "maxSpeed": 0.394382445547373,
+          "endStep": 0.0005446888073624016
+        },
+        {
+          "id": "knife_combat",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.03342888155670144,
+          "maxSpeed": 2.0057328934020866,
+          "endStep": 0.0017819507108912701
+        },
+        {
+          "id": "knife_combat",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.036981175695129515,
+          "maxSpeed": 2.218870541707771,
+          "endStep": 0.011359646338163183
+        },
+        {
+          "id": "knife_combat",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 60,
+          "maxStep": 0.04606289413592612,
+          "maxSpeed": 2.763773648155567,
+          "endStep": 0.0031664918703393583
+        },
+        {
+          "id": "knife_combat",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.010836557446973191,
+          "maxSpeed": 0.6501934468183915,
+          "endStep": 0.0006853503291244977
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.03278955831509029,
+          "maxSpeed": 1.9673734989054175,
+          "endStep": 0.002559227278410339
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.037232862781108426,
+          "maxSpeed": 2.233971766866506,
+          "endStep": 0.0074411313316271955
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 60,
+          "maxStep": 0.05104937310047767,
+          "maxSpeed": 3.0629623860286603,
+          "endStep": 0.00565141399916669
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.009186639405670799,
+          "maxSpeed": 0.5511983643402479,
+          "endStep": 0.0005199314706485154
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.04259692028923702,
+          "maxSpeed": 2.5558152173542212,
+          "endStep": 0.0028566292415283935
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.03025372176871791,
+          "maxSpeed": 1.8152233061230747,
+          "endStep": 0.003218892937549168
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 60,
+          "maxStep": 0.024367769116270702,
+          "maxSpeed": 1.4620661469762422,
+          "endStep": 0.0029132315836400274
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.009547228124108402,
+          "maxSpeed": 0.5728336874465041,
+          "endStep": 0.0005153620962123264
+        },
+        {
+          "id": "knife_machete",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.04374844287791307,
+          "maxSpeed": 2.624906572674784,
+          "endStep": 0.0020469776498325183
+        },
+        {
+          "id": "knife_machete",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.04864953506427389,
+          "maxSpeed": 2.918972103856434,
+          "endStep": 0.007974262097249971
+        },
+        {
+          "id": "knife_machete",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 60,
+          "maxStep": 0.06914792145227526,
+          "maxSpeed": 4.148875287136516,
+          "endStep": 0.01097808212016533
+        },
+        {
+          "id": "knife_machete",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.011363085528620979,
+          "maxSpeed": 0.6817851317172587,
+          "endStep": 0.000476165083214058
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.013057936245373334,
+          "maxSpeed": 1.8803428193337601,
+          "endStep": 0.0006925142803082484
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.01231595387413427,
+          "maxSpeed": 1.7734973578753348,
+          "endStep": 0.0017556977382374081
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 144,
+          "maxStep": 0.012134400449106077,
+          "maxSpeed": 1.7473536646712753,
+          "endStep": 0.0032727912569627577
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.0035701620980877536,
+          "maxSpeed": 0.5141033421246366,
+          "endStep": 6.273655652792088e-05
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.01483280856317703,
+          "maxSpeed": 2.1359244330974927,
+          "endStep": 0.0012277092636050237
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.01598830253145786,
+          "maxSpeed": 2.302315564529932,
+          "endStep": 0.001395387940814781
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 144,
+          "maxStep": 0.01700477104761116,
+          "maxSpeed": 2.448687030856007,
+          "endStep": 0.0007885774477884624
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.0027562274326642998,
+          "maxSpeed": 0.3968967503036592,
+          "endStep": 0.0003134212755820789
+        },
+        {
+          "id": "knife_combat",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.013980060154577591,
+          "maxSpeed": 2.0131286622591733,
+          "endStep": 0.0009139100603893773
+        },
+        {
+          "id": "knife_combat",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.01552400276169841,
+          "maxSpeed": 2.235456397684571,
+          "endStep": 0.006378746308851869
+        },
+        {
+          "id": "knife_combat",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 144,
+          "maxStep": 0.019034365709517404,
+          "maxSpeed": 2.7409486621705064,
+          "endStep": 0.0016214218670879833
+        },
+        {
+          "id": "knife_combat",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.00444872257968899,
+          "maxSpeed": 0.6406160514752146,
+          "endStep": 0.0003607672603736016
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.013889858872169066,
+          "maxSpeed": 2.0001396775923457,
+          "endStep": 0.001651511066555392
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.015577464022099377,
+          "maxSpeed": 2.2431548191823105,
+          "endStep": 0.004387415842883395
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 144,
+          "maxStep": 0.021310906649415463,
+          "maxSpeed": 3.068770557515827,
+          "endStep": 0.003476797638552839
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.0038265225410296705,
+          "maxSpeed": 0.5510192459082726,
+          "endStep": 0.0003097773065922249
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.018198039400359148,
+          "maxSpeed": 2.6205176736517175,
+          "endStep": 0.0014492066389856745
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.012717539912688992,
+          "maxSpeed": 1.8313257474272149,
+          "endStep": 0.0022163539268559604
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 144,
+          "maxStep": 0.010173501144624454,
+          "maxSpeed": 1.4649841648259214,
+          "endStep": 0.0019366795460311692
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.003973691609760683,
+          "maxSpeed": 0.5722115918055384,
+          "endStep": 0.00022398758144617976
+        },
+        {
+          "id": "knife_machete",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.018281461042826765,
+          "maxSpeed": 2.6325303901670543,
+          "endStep": 0.0012134923012381863
+        },
+        {
+          "id": "knife_machete",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.020431215288859574,
+          "maxSpeed": 2.9420950015957787,
+          "endStep": 0.004357769888202822
+        },
+        {
+          "id": "knife_machete",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 144,
+          "maxStep": 0.028916769810568742,
+          "maxSpeed": 4.164014852721899,
+          "endStep": 0.006052697575417052
+        },
+        {
+          "id": "knife_machete",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.004722659420227695,
+          "maxSpeed": 0.6800629565127881,
+          "endStep": 0.0002342234088177993
+        }
+      ],
+      "inspectToSlash": [
+        {
+          "id": "knife_butterfly",
+          "jump": 5.6518552162154734e-05
+        },
+        {
+          "id": "knife_dagger",
+          "jump": 4.9959676235278305e-05
+        },
+        {
+          "id": "knife_combat",
+          "jump": 2.796518958297911e-05
+        },
+        {
+          "id": "knife_karambit",
+          "jump": 2.669460753959574e-06
+        },
+        {
+          "id": "knife_kunai",
+          "jump": 3.2479350800862505e-05
+        },
+        {
+          "id": "knife_machete",
+          "jump": 5.2254375665194974e-05
+        }
+      ]
+    },
+    "errors": []
+  },
+  "fallback": {
+    "geometryCases": 1070,
+    "geometry": {
+      "knife_butterfly": {
+        "cases": 245,
+        "maxIntersectionMm": 0
+      },
+      "knife_dagger": {
+        "cases": 165,
+        "maxIntersectionMm": 0
+      },
+      "knife_combat": {
+        "cases": 165,
+        "maxIntersectionMm": 0
+      },
+      "knife_karambit": {
+        "cases": 165,
+        "maxIntersectionMm": 0
+      },
+      "knife_kunai": {
+        "cases": 165,
+        "maxIntersectionMm": 0
+      },
+      "knife_machete": {
+        "cases": 165,
+        "maxIntersectionMm": 0
+      }
+    },
+    "clips": {
+      "knife_butterfly": {
+        "draw": "손목 반회전 정렬",
+        "drawSeconds": 0.82,
+        "slash": [
+          "빠른 수평 베기",
+          "되돌려 긋기"
+        ],
+        "inspect": "날 양면과 잠금 확인",
+        "inspectSeconds": 2.8
+      },
+      "knife_dagger": {
+        "draw": "중앙으로 뽑아 세우기",
+        "drawSeconds": 0.58,
+        "slash": [
+          "깊은 직선 찌르기",
+          "아래에서 올려 찌르기"
+        ],
+        "inspect": "양날과 가드 살피기",
+        "inspectSeconds": 2.25
+      },
+      "knife_combat": {
+        "draw": "옆 칼집에서 대각선 인출",
+        "drawSeconds": 0.66,
+        "slash": [
+          "오른쪽 위에서 내려베기",
+          "왼쪽 아래에서 되받아 베기"
+        ],
+        "inspect": "손등 쪽으로 칼날 확인",
+        "inspectSeconds": 2.15
+      },
+      "knife_karambit": {
+        "draw": "작은 원을 그려 갈고리 정렬",
+        "drawSeconds": 0.74,
+        "slash": [
+          "안쪽으로 짧게 걸어베기",
+          "바깥쪽으로 감아 긋기"
+        ],
+        "inspect": "곡선 날과 고리 돌려 보기",
+        "inspectSeconds": 2.5
+      },
+      "knife_kunai": {
+        "draw": "아래에서 튕겨 올려 잡기",
+        "drawSeconds": 0.5,
+        "slash": [
+          "오른쪽 사선으로 찌르기",
+          "왼쪽 낮은 사선으로 찌르기"
+        ],
+        "inspect": "끝을 세워 균형 확인",
+        "inspectSeconds": 2.05
+      },
+      "knife_machete": {
+        "draw": "긴 칼을 크게 들어 올리기",
+        "drawSeconds": 0.94,
+        "slash": [
+          "머리 위에서 무겁게 내려베기",
+          "반대쪽 넓은 수평 베기"
+        ],
+        "inspect": "넓은 날을 천천히 기울여 보기",
+        "inspectSeconds": 2.95
+      }
+    },
+    "distinctPairs": [
+      {
+        "kind": "draw",
+        "a": "knife_butterfly:0",
+        "b": "knife_dagger:0",
+        "positionRms": 0.09611060654699574,
+        "angleRms": 0.5753021254425341
+      },
+      {
+        "kind": "draw",
+        "a": "knife_butterfly:0",
+        "b": "knife_combat:0",
+        "positionRms": 0.07163578334235006,
+        "angleRms": 0.5652697308987757
+      },
+      {
+        "kind": "draw",
+        "a": "knife_butterfly:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.05587084465539641,
+        "angleRms": 0.7588551938488558
+      },
+      {
+        "kind": "draw",
+        "a": "knife_butterfly:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.10453866519611042,
+        "angleRms": 0.632318648027797
+      },
+      {
+        "kind": "draw",
+        "a": "knife_butterfly:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.10095804150840285,
+        "angleRms": 0.6793603594280916
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_butterfly:1",
+        "positionRms": 0.14474489279614822,
+        "angleRms": 1.106724694468958
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_dagger:0",
+        "positionRms": 0.08505667324615634,
+        "angleRms": 0.6313535280176329
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_dagger:1",
+        "positionRms": 0.10573866070234339,
+        "angleRms": 0.9599536810610239
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_combat:0",
+        "positionRms": 0.06044556297199242,
+        "angleRms": 0.3139905663519898
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_combat:1",
+        "positionRms": 0.14897503124557895,
+        "angleRms": 1.1278636757435183
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.0529800634497087,
+        "angleRms": 0.2983976358366829
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_karambit:1",
+        "positionRms": 0.12452266110914662,
+        "angleRms": 1.1533866152238008
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.1270034828059973,
+        "angleRms": 1.028430740289775
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_kunai:1",
+        "positionRms": 0.05232535822482631,
+        "angleRms": 0.3376311012057807
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.1067957840428581,
+        "angleRms": 0.5369761916995021
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:0",
+        "b": "knife_machete:1",
+        "positionRms": 0.17085996021498048,
+        "angleRms": 1.2283003375134125
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_dagger:0",
+        "positionRms": 0.08429940047999504,
+        "angleRms": 0.593859404600037
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_dagger:1",
+        "positionRms": 0.10021600171579716,
+        "angleRms": 0.47767322002586393
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_combat:0",
+        "positionRms": 0.14707630805021113,
+        "angleRms": 1.085885241595124
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_combat:1",
+        "positionRms": 0.07528676385898947,
+        "angleRms": 0.38067199786482153
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_karambit:0",
+        "positionRms": 0.1331818252029797,
+        "angleRms": 1.086350675106602
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_karambit:1",
+        "positionRms": 0.07039356443245492,
+        "angleRms": 0.44095205203059007
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_kunai:0",
+        "positionRms": 0.04905883333620689,
+        "angleRms": 0.26313441104517943
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_kunai:1",
+        "positionRms": 0.11778283275139996,
+        "angleRms": 0.9054141972123353
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_machete:0",
+        "positionRms": 0.12443409191124616,
+        "angleRms": 0.957345920705358
+      },
+      {
+        "kind": "slash",
+        "a": "knife_butterfly:1",
+        "b": "knife_machete:1",
+        "positionRms": 0.0546058451957442,
+        "angleRms": 0.25769000431312067
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_butterfly:0",
+        "b": "knife_dagger:0",
+        "positionRms": 0.029313596983684766,
+        "angleRms": 0.48764600026128435
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_butterfly:0",
+        "b": "knife_combat:0",
+        "positionRms": 0.029197979448907188,
+        "angleRms": 0.4394894733429422
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_butterfly:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.02799542732803768,
+        "angleRms": 0.6012818271522653
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_butterfly:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.047606750477065946,
+        "angleRms": 0.3442892770675528
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_butterfly:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.03320070987197581,
+        "angleRms": 0.6608453197403955
+      },
+      {
+        "kind": "draw",
+        "a": "knife_dagger:0",
+        "b": "knife_combat:0",
+        "positionRms": 0.08589791697852561,
+        "angleRms": 0.5005748142677029
+      },
+      {
+        "kind": "draw",
+        "a": "knife_dagger:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.12449986883549277,
+        "angleRms": 0.8760749757453976
+      },
+      {
+        "kind": "draw",
+        "a": "knife_dagger:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.10623920244588761,
+        "angleRms": 0.3927369202938035
+      },
+      {
+        "kind": "draw",
+        "a": "knife_dagger:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.07644470531922654,
+        "angleRms": 0.3355685190309801
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_dagger:1",
+        "positionRms": 0.050195148412413855,
+        "angleRms": 0.4277397188133454
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_combat:0",
+        "positionRms": 0.10586408923579359,
+        "angleRms": 0.6803691218792711
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_combat:1",
+        "positionRms": 0.07940673040727736,
+        "angleRms": 0.6331072470817639
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.06436642173113641,
+        "angleRms": 0.6111026148702747
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_karambit:1",
+        "positionRms": 0.08288417011571965,
+        "angleRms": 0.7801037678947489
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.0580966914287082,
+        "angleRms": 0.444636103058089
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_kunai:1",
+        "positionRms": 0.06062369552822732,
+        "angleRms": 0.4393358782509662
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.11582088044041547,
+        "angleRms": 0.7195452401243689
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:0",
+        "b": "knife_machete:1",
+        "positionRms": 0.11606361375776457,
+        "angleRms": 0.7530431539996653
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:1",
+        "b": "knife_combat:0",
+        "positionRms": 0.14288391766872877,
+        "angleRms": 0.8975904163089901
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:1",
+        "b": "knife_combat:1",
+        "positionRms": 0.06287022139968765,
+        "angleRms": 0.4926928139619688
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:1",
+        "b": "knife_karambit:0",
+        "positionRms": 0.07830014015603502,
+        "angleRms": 0.8892272798328507
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:1",
+        "b": "knife_karambit:1",
+        "positionRms": 0.11781251081559035,
+        "angleRms": 0.7342718128922101
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:1",
+        "b": "knife_kunai:0",
+        "positionRms": 0.07850733950096772,
+        "angleRms": 0.29874531419843164
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:1",
+        "b": "knife_kunai:1",
+        "positionRms": 0.09724316486687704,
+        "angleRms": 0.7495686368186073
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:1",
+        "b": "knife_machete:0",
+        "positionRms": 0.1568158948888786,
+        "angleRms": 0.9250427691663814
+      },
+      {
+        "kind": "slash",
+        "a": "knife_dagger:1",
+        "b": "knife_machete:1",
+        "positionRms": 0.14366594026787216,
+        "angleRms": 0.6834691490422033
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_dagger:0",
+        "b": "knife_combat:0",
+        "positionRms": 0.033135612906851054,
+        "angleRms": 0.3612465516533209
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_dagger:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.04202686784279286,
+        "angleRms": 0.6143014838425741
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_dagger:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.028946684699941484,
+        "angleRms": 0.4689570553052064
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_dagger:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.03752121505293898,
+        "angleRms": 0.2854197424258493
+      },
+      {
+        "kind": "draw",
+        "a": "knife_combat:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.11258683521656616,
+        "angleRms": 1.0860361182884763
+      },
+      {
+        "kind": "draw",
+        "a": "knife_combat:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.10090449868755405,
+        "angleRms": 0.793589097857027
+      },
+      {
+        "kind": "draw",
+        "a": "knife_combat:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.0614088756386233,
+        "angleRms": 0.34949601500638455
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:0",
+        "b": "knife_combat:1",
+        "positionRms": 0.17552157409323865,
+        "angleRms": 1.0668018341277286
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.09088160804020272,
+        "angleRms": 0.3361563822746331
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:0",
+        "b": "knife_karambit:1",
+        "positionRms": 0.10977970917742927,
+        "angleRms": 1.1512366515650532
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.13342078153227385,
+        "angleRms": 1.010902368914178
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:0",
+        "b": "knife_kunai:1",
+        "positionRms": 0.05883620155122606,
+        "angleRms": 0.4191123876567233
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.06215807781750835,
+        "angleRms": 0.5228850142162002
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:0",
+        "b": "knife_machete:1",
+        "positionRms": 0.15805792189845574,
+        "angleRms": 1.224974090651453
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:1",
+        "b": "knife_karambit:0",
+        "positionRms": 0.12105050833056386,
+        "angleRms": 1.0203044204510792
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:1",
+        "b": "knife_karambit:1",
+        "positionRms": 0.11304053030363975,
+        "angleRms": 0.7451557858039919
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:1",
+        "b": "knife_kunai:0",
+        "positionRms": 0.0703093285970751,
+        "angleRms": 0.38681182485240245
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:1",
+        "b": "knife_kunai:1",
+        "positionRms": 0.12876011119474937,
+        "angleRms": 0.9455368861155589
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:1",
+        "b": "knife_machete:0",
+        "positionRms": 0.17127196465844508,
+        "angleRms": 1.0810918266211154
+      },
+      {
+        "kind": "slash",
+        "a": "knife_combat:1",
+        "b": "knife_machete:1",
+        "positionRms": 0.11395575076031492,
+        "angleRms": 0.47823917555694884
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_combat:0",
+        "b": "knife_karambit:0",
+        "positionRms": 0.020560741999180877,
+        "angleRms": 0.6429452948270238
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_combat:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.0395617418423791,
+        "angleRms": 0.4713172362478382
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_combat:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.02942161525093696,
+        "angleRms": 0.3519370092488841
+      },
+      {
+        "kind": "draw",
+        "a": "knife_karambit:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.15206303554820583,
+        "angleRms": 0.6784460441774359
+      },
+      {
+        "kind": "draw",
+        "a": "knife_karambit:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.1377930569060318,
+        "angleRms": 1.1322617419570544
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:0",
+        "b": "knife_karambit:1",
+        "positionRms": 0.11256336670629902,
+        "angleRms": 1.1878286003930036
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.10744885859053123,
+        "angleRms": 0.9786983694230429
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:0",
+        "b": "knife_kunai:1",
+        "positionRms": 0.04970850527557469,
+        "angleRms": 0.39596022976327083
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.120608189516986,
+        "angleRms": 0.6525122297905573
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:0",
+        "b": "knife_machete:1",
+        "positionRms": 0.1609478227243264,
+        "angleRms": 1.212432569181087
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:1",
+        "b": "knife_kunai:0",
+        "positionRms": 0.060220946230158376,
+        "angleRms": 0.5704014452929576
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:1",
+        "b": "knife_kunai:1",
+        "positionRms": 0.08258270792274588,
+        "angleRms": 0.923789521530215
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:1",
+        "b": "knife_machete:0",
+        "positionRms": 0.07978284588103259,
+        "angleRms": 0.8296840047824321
+      },
+      {
+        "kind": "slash",
+        "a": "knife_karambit:1",
+        "b": "knife_machete:1",
+        "positionRms": 0.06654225923997957,
+        "angleRms": 0.4343254554751846
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_karambit:0",
+        "b": "knife_kunai:0",
+        "positionRms": 0.05265266473724595,
+        "angleRms": 0.4531197908899833
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_karambit:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.024558276154902428,
+        "angleRms": 0.7399929558520643
+      },
+      {
+        "kind": "draw",
+        "a": "knife_kunai:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.12469937844648772,
+        "angleRms": 0.6719101697868272
+      },
+      {
+        "kind": "slash",
+        "a": "knife_kunai:0",
+        "b": "knife_kunai:1",
+        "positionRms": 0.09188307682322179,
+        "angleRms": 0.8154249119100818
+      },
+      {
+        "kind": "slash",
+        "a": "knife_kunai:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.12052040690928759,
+        "angleRms": 0.9503412588100044
+      },
+      {
+        "kind": "slash",
+        "a": "knife_kunai:0",
+        "b": "knife_machete:1",
+        "positionRms": 0.07919467494111045,
+        "angleRms": 0.4365136672612051
+      },
+      {
+        "kind": "slash",
+        "a": "knife_kunai:1",
+        "b": "knife_machete:0",
+        "positionRms": 0.08385263844969938,
+        "angleRms": 0.42651213661058124
+      },
+      {
+        "kind": "slash",
+        "a": "knife_kunai:1",
+        "b": "knife_machete:1",
+        "positionRms": 0.13567754342274982,
+        "angleRms": 1.0337387882777611
+      },
+      {
+        "kind": "inspect",
+        "a": "knife_kunai:0",
+        "b": "knife_machete:0",
+        "positionRms": 0.052095326758549346,
+        "angleRms": 0.6320857260211362
+      },
+      {
+        "kind": "slash",
+        "a": "knife_machete:0",
+        "b": "knife_machete:1",
+        "positionRms": 0.11919732575824214,
+        "angleRms": 1.0367463294042942
+      }
+    ],
+    "motion": {
+      "rates": [
+        30,
+        60,
+        144
+      ],
+      "cases": [
+        {
+          "id": "knife_butterfly",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.056570025392843205,
+          "maxSpeed": 1.6971007617852962,
+          "endStep": 0.0014410906231628684
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.055402097690380875,
+          "maxSpeed": 1.6620629307114263,
+          "endStep": 0.0025580939526583172
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 30,
+          "maxStep": 0.050385100345588234,
+          "maxSpeed": 1.511553010367647,
+          "endStep": 0.004592812160753149
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.016756520675932928,
+          "maxSpeed": 0.5026956202779879,
+          "endStep": 0.00018316781455697385
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.06946394523295477,
+          "maxSpeed": 2.083918356988643,
+          "endStep": 0.002085210299995538
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.0685272239352938,
+          "maxSpeed": 2.055816718058814,
+          "endStep": 0.0037047041462728177
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 30,
+          "maxStep": 0.07329803004622476,
+          "maxSpeed": 2.198940901386743,
+          "endStep": 0.0020905560831614863
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.012990176987136021,
+          "maxSpeed": 0.3897053096140806,
+          "endStep": 0.0004850354061777069
+        },
+        {
+          "id": "knife_combat",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.052382896426128575,
+          "maxSpeed": 1.5714868927838572,
+          "endStep": 0.0020594680440211097
+        },
+        {
+          "id": "knife_combat",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.07792009623684151,
+          "maxSpeed": 2.337602887105245,
+          "endStep": 0.009383766955613887
+        },
+        {
+          "id": "knife_combat",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 30,
+          "maxStep": 0.06494144495371694,
+          "maxSpeed": 1.9482433486115083,
+          "endStep": 0.004354846988571158
+        },
+        {
+          "id": "knife_combat",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.017848752065128787,
+          "maxSpeed": 0.5354625619538637,
+          "endStep": 0.0007983861833321104
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.0807824995107321,
+          "maxSpeed": 2.4234749853219633,
+          "endStep": 0.0028141944063692446
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.07871982103404085,
+          "maxSpeed": 2.3615946310212257,
+          "endStep": 0.012341621161159095
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 30,
+          "maxStep": 0.09781860003566832,
+          "maxSpeed": 2.93455800107005,
+          "endStep": 0.009113222593064779
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.01985354222629384,
+          "maxSpeed": 0.5956062667888152,
+          "endStep": 0.0006330292621014977
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.09576549902388563,
+          "maxSpeed": 2.872964970716569,
+          "endStep": 0.0038280224377299603
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.05778012292604115,
+          "maxSpeed": 1.7334036877812344,
+          "endStep": 0.0030206042058633443
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 30,
+          "maxStep": 0.044833141211045036,
+          "maxSpeed": 1.3449942363313512,
+          "endStep": 0.0029065974434528538
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.0231912875873322,
+          "maxSpeed": 0.6957386276199661,
+          "endStep": 0.0004585782257919834
+        },
+        {
+          "id": "knife_machete",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.09083295595603406,
+          "maxSpeed": 2.724988678681022,
+          "endStep": 0.0017753546800601512
+        },
+        {
+          "id": "knife_machete",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.13536157477455799,
+          "maxSpeed": 4.06084724323674,
+          "endStep": 0.006879555272640055
+        },
+        {
+          "id": "knife_machete",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 30,
+          "maxStep": 0.12715020657002224,
+          "maxSpeed": 3.814506197100667,
+          "endStep": 0.009796033908696707
+        },
+        {
+          "id": "knife_machete",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 30,
+          "maxStep": 0.021510227708809764,
+          "maxSpeed": 0.6453068312642929,
+          "endStep": 0.0003301830048420272
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.02819558424714564,
+          "maxSpeed": 1.6917350548287384,
+          "endStep": 0.0011018629853026128
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.029983858670389073,
+          "maxSpeed": 1.7990315202233444,
+          "endStep": 0.0026240649133442285
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 60,
+          "maxStep": 0.02705519286831159,
+          "maxSpeed": 1.6233115720986955,
+          "endStep": 0.005344347347348908
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.008241201965443437,
+          "maxSpeed": 0.4944721179266062,
+          "endStep": 0.00011639644657254111
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.03515195542692959,
+          "maxSpeed": 2.109117325615775,
+          "endStep": 0.002166786383565549
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.03765088530898697,
+          "maxSpeed": 2.259053118539218,
+          "endStep": 0.0026588366338770814
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 60,
+          "maxStep": 0.04001746974502769,
+          "maxSpeed": 2.4010481847016614,
+          "endStep": 0.0015131018942481657
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.006481288728963488,
+          "maxSpeed": 0.38887732373780926,
+          "endStep": 0.000530872931218263
+        },
+        {
+          "id": "knife_combat",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.02609805834646888,
+          "maxSpeed": 1.5658835007881329,
+          "endStep": 0.0015244247061452232
+        },
+        {
+          "id": "knife_combat",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.03892714819609365,
+          "maxSpeed": 2.335628891765619,
+          "endStep": 0.008111150929320968
+        },
+        {
+          "id": "knife_combat",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 60,
+          "maxStep": 0.032997364107651084,
+          "maxSpeed": 1.979841846459065,
+          "endStep": 0.004323558949825217
+        },
+        {
+          "id": "knife_combat",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.008861267786956426,
+          "maxSpeed": 0.5316760672173856,
+          "endStep": 0.0006597221959942234
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.04002172025060884,
+          "maxSpeed": 2.4013032150365308,
+          "endStep": 0.0030517722799342857
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.04061994016405652,
+          "maxSpeed": 2.4371964098433914,
+          "endStep": 0.008969684987686423
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 60,
+          "maxStep": 0.05009146403887165,
+          "maxSpeed": 3.005487842332299,
+          "endStep": 0.006876887586563085
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.009932555276080595,
+          "maxSpeed": 0.5959533165648357,
+          "endStep": 0.0004604655371589989
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.04879413008120239,
+          "maxSpeed": 2.9276478048721435,
+          "endStep": 0.0027993471662514677
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.028923023701685306,
+          "maxSpeed": 1.7353814221011183,
+          "endStep": 0.0033319042235199336
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 60,
+          "maxStep": 0.02324883265660055,
+          "maxSpeed": 1.394929959396033,
+          "endStep": 0.003363017860532726
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.011703400712298816,
+          "maxSpeed": 0.702204042737929,
+          "endStep": 0.00047265098129393535
+        },
+        {
+          "id": "knife_machete",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.04659504542301716,
+          "maxSpeed": 2.7957027253810294,
+          "endStep": 0.0019976751338776307
+        },
+        {
+          "id": "knife_machete",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.06845851384204618,
+          "maxSpeed": 4.107510830522771,
+          "endStep": 0.007603773023766239
+        },
+        {
+          "id": "knife_machete",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 60,
+          "maxStep": 0.06509027328293085,
+          "maxSpeed": 3.905416396975851,
+          "endStep": 0.010910753640278582
+        },
+        {
+          "id": "knife_machete",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 60,
+          "maxStep": 0.010787204974305634,
+          "maxSpeed": 0.6472322984583381,
+          "endStep": 0.00030213767698827545
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.012419316623427318,
+          "maxSpeed": 1.788381593773534,
+          "endStep": 0.0006754985582000004
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.012621876821888795,
+          "maxSpeed": 1.8175502623519866,
+          "endStep": 0.0015349107776147497
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 144,
+          "maxStep": 0.011411276459805482,
+          "maxSpeed": 1.6432238102119894,
+          "endStep": 0.0032370841296354277
+        },
+        {
+          "id": "knife_butterfly",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.0034531920722891906,
+          "maxSpeed": 0.4972596584096435,
+          "endStep": 5.679952962063874e-05
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.01450612359214767,
+          "maxSpeed": 2.0888817972692646,
+          "endStep": 0.001184042124580984
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.01570524517362217,
+          "maxSpeed": 2.2615553050015924,
+          "endStep": 0.0013559573999100678
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 144,
+          "maxStep": 0.016663735167294243,
+          "maxSpeed": 2.399577864090371,
+          "endStep": 0.0007764371004356246
+        },
+        {
+          "id": "knife_dagger",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.0027179983398036562,
+          "maxSpeed": 0.3913917609317265,
+          "endStep": 0.0003063438475664633
+        },
+        {
+          "id": "knife_combat",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.010942956899458017,
+          "maxSpeed": 1.5757857935219546,
+          "endStep": 0.0007754863075081724
+        },
+        {
+          "id": "knife_combat",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.01660530485587529,
+          "maxSpeed": 2.391163899246042,
+          "endStep": 0.0044597022280071265
+        },
+        {
+          "id": "knife_combat",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 144,
+          "maxStep": 0.013782613627495914,
+          "maxSpeed": 1.9846963623594116,
+          "endStep": 0.00251884268177571
+        },
+        {
+          "id": "knife_combat",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.003587897057344217,
+          "maxSpeed": 0.5166571762575672,
+          "endStep": 0.0003500236293494386
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.01662927429464084,
+          "maxSpeed": 2.394615498428281,
+          "endStep": 0.0019381115946885137
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.016943319932500114,
+          "maxSpeed": 2.4398380702800164,
+          "endStep": 0.005268426383215798
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 144,
+          "maxStep": 0.020971993681388402,
+          "maxSpeed": 3.01996709011993,
+          "endStep": 0.004135119230746294
+        },
+        {
+          "id": "knife_karambit",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.004189501305851254,
+          "maxSpeed": 0.6032881880425807,
+          "endStep": 0.00027375561978358105
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.02015925959649569,
+          "maxSpeed": 2.9029333818953793,
+          "endStep": 0.0013902432623798637
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.012346822231667318,
+          "maxSpeed": 1.7779424013600937,
+          "endStep": 0.002281953579989414
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 144,
+          "maxStep": 0.0103163058885604,
+          "maxSpeed": 1.4855480479526977,
+          "endStep": 0.00220622375952874
+        },
+        {
+          "id": "knife_kunai",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.00486937002740099,
+          "maxSpeed": 0.7011892839457425,
+          "endStep": 0.00021371264968471183
+        },
+        {
+          "id": "knife_machete",
+          "kind": "draw",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.019519422880124544,
+          "maxSpeed": 2.8107968947379347,
+          "endStep": 0.0011654360458708
+        },
+        {
+          "id": "knife_machete",
+          "kind": "slash",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.02855767408968018,
+          "maxSpeed": 4.112305068913947,
+          "endStep": 0.0041511183803864165
+        },
+        {
+          "id": "knife_machete",
+          "kind": "slash",
+          "variant": 1,
+          "hz": 144,
+          "maxStep": 0.02707185083450675,
+          "maxSpeed": 3.898346520168972,
+          "endStep": 0.005999717060693237
+        },
+        {
+          "id": "knife_machete",
+          "kind": "inspect",
+          "variant": 0,
+          "hz": 144,
+          "maxStep": 0.004484242149926526,
+          "maxSpeed": 0.6457308695894198,
+          "endStep": 0.00014569635847919634
+        }
+      ],
+      "inspectToSlash": [
+        {
+          "id": "knife_butterfly",
+          "jump": 5.6518552162140856e-05
+        },
+        {
+          "id": "knife_dagger",
+          "jump": 4.9959676235278305e-05
+        },
+        {
+          "id": "knife_combat",
+          "jump": 2.796518958286809e-05
+        },
+        {
+          "id": "knife_karambit",
+          "jump": 2.6694607537930404e-06
+        },
+        {
+          "id": "knife_kunai",
+          "jump": 3.2479350800806994e-05
+        },
+        {
+          "id": "knife_machete",
+          "jump": 5.225437566536151e-05
+        }
+      ]
+    },
+    "errors": []
+  }
+}

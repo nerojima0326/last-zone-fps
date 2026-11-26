@@ -6,7 +6,7 @@ for(const asset of manifest.files)assert.equal(crypto.createHash('sha256').updat
 (async()=>{
  const f=await fixture({viewport:{width:960,height:600},route:async page=>{if(fallback)await page.route('**/assets/models/knives/**',r=>r.fulfill({status:404,body:''}))}}),{page}=f,report={};
  try{
-  await page.evaluate(()=>{window.requestAnimationFrame=()=>0;G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};G.UI.opts.renderResolution='100';G.startGame({...G.UI.opts,mode:'training',quality:'medium',players:4,loadout:'all'});G.paused=true;G.UI.showPause(false)});
+  await page.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};G.UI.opts.renderResolution='100';G.startGame({...G.UI.opts,mode:'training',quality:'medium',players:4,loadout:'all'});G.paused=true;G.UI.showPause(false)});
   report.assets=await page.evaluate(()=>({version:LZ_BUILD,loaded:G.Knives.loaded,motion:!!G.Knives.motion,ready:G.Knives.ready,guns:G.GUN_IDS.length,ids:G.Knives.ids,sourceClips:Object.values(G.Knives.motion||{}).map(c=>c.sourceClip)}));
   assert.equal(report.assets.guns,30);assert.equal(report.assets.ids.length,6);assert.equal(report.assets.loaded,fallback?0:6);assert.equal(report.assets.motion,!fallback);
   report.assets.maxNormalTangentDot=await page.evaluate(()=>{let max=0;for(const root of Object.values(G.Knives.templates))root.traverse(o=>{const n=o.geometry?.attributes.normal,t=o.geometry?.attributes.tangent;if(n&&t)for(let i=0;i<n.count;i++)max=Math.max(max,Math.abs(n.getX(i)*t.getX(i)+n.getY(i)*t.getY(i)+n.getZ(i)*t.getZ(i)))});return max});
@@ -16,7 +16,7 @@ for(const asset of manifest.files)assert.equal(crypto.createHash('sha256').updat
    const victim=new G.Actor({id:999,team:1,name:'근접 표적'}),friend=new G.Actor({id:998,team:a.team,name:'아군 표적'});
    for(const b of [victim,friend]){b.model=new G.CharacterModel();b.state='ground';b.alive=true;}
    const step=(hz,n)=>{for(let i=0;i<n;i++){P.time+=1/hz;K.tick(P,1/hz);I.endFrame()}};
-   function ready(id){I.reset();a.cur='melee';a.knife=id;a.state='ground';a.alive=true;a.knocked=false;a.yaw=0;a.pitch=0;P.sw=P.heal=P.revive=P.throwSt=P.vehicle=P.melee=null;P.sprinting=false;P.knifeSeen=id;P.nextFire=-1;}
+   function ready(id){I.reset();a.cur='melee';a.knife=id;a.state='ground';a.alive=true;a.knocked=false;a.yaw=0;a.pitch=0;P.sw=P.heal=P.revive=P.throwSt=P.vehicle=P.melee=null;P.sprinting=false;P.knifeSeen=id;P.nextFire=-1;P.knifeCombo=null;}
    let wall;
    try{
     let arena=null;
@@ -26,6 +26,14 @@ for(const asset of manifest.files)assert.equal(crypto.createHash('sha256').updat
     for(const hz of [30,60,144])for(const id of K.ids){
      ready(id);victim.hp=1000;friend.hp=1000;check(K.start(P,'slash'),'공격 시작 실패');step(hz,Math.ceil(K.catalog[id].duration*hz)+3);
      check(victim.hp===1000-K.catalog[id].dmg,'공격당 피해가 중복되거나 누락됨 '+id+' '+hz);check(friend.hp===1000,'아군 피해');rows.push({hz,id,damage:1000-victim.hp});
+    }
+    const comboHits=[];
+    for(const hz of [30,60,144])for(const id of K.ids){
+     ready(id);victim.hp=1000;const variants=[];
+     for(let hit=0;hit<2;hit++){check(K.start(P,'slash'),'연속 공격 시작');variants.push(P.melee.variant);step(hz,Math.ceil(K.catalog[id].duration*hz)+2);}
+     check(variants[0]===0&&variants[1]===1,'정방향·복귀 공격 교대 '+id);check(victim.hp===1000-2*K.catalog[id].dmg,'두 공격의 타격 횟수 '+id);
+     P.time+=K.catalog[id].duration+.5;K.start(P,'slash');check(P.melee.variant===0,'연속 공격 대기 뒤 첫 동작 복귀 '+id);step(hz,Math.ceil(K.catalog[id].duration*hz)+2);
+     check(victim.hp===1000-3*K.catalog[id].dmg,'대기 뒤 공격 중복 피해 '+id);comboHits.push({id,hz,variants,totalDamage:1000-victim.hp});
     }
     ready('knife_combat');victim.hp=1000;wall=W.addCollider(arena.x-.65,arena.y,arena.z-.85,arena.x+.65,arena.y+2.4,arena.z-.55,'concrete',true);
     K.start(P,'slash');step(60,60);check(victim.hp===1000,'벽 너머에 칼 피해');W.removeCollider(wall);wall=null;
@@ -39,7 +47,7 @@ for(const asset of manifest.files)assert.equal(crypto.createHash('sha256').updat
      target.root.position.copy(arena).add(new T.Vector3(0,0,-1.1));target.root.rotation.y=0;target.root.updateMatrixWorld(true);a.pos.copy(arena);ready('knife_combat');a.pitch=-Math.atan2(.42,1.1);
      K.start(P,'slash');step(60,50);check(G.Training.stats.hits===hits+1,'훈련 표적에 근접 타격이 기록되지 않음');
     }finally{target.root.position.copy(old);target.root.quaternion.copy(oldQ);target.root.updateMatrixWorld(true)}
-    return{singleHits:rows,friendProtected:true,wallBlocked:true,rangeLimited:true,switchCancelled:true,deathCancelled:true,trainingHit:true};
+    return{singleHits:rows,comboHits,friendProtected:true,wallBlocked:true,rangeLimited:true,switchCancelled:true,deathCancelled:true,trainingHit:true};
    }finally{if(wall)W.removeCollider(wall);Game.actors=saved.actors;G.Training.active=saved.training;victim.model.dispose();friend.model.dispose();a.pos.copy(saved.pos);a.yaw=saved.yaw;a.pitch=saved.pitch;a.alive=true;a.knocked=false;I.reset();P.melee=P.sw=P.heal=P.revive=P.throwSt=P.vehicle=null;P.sprinting=false;P.knifeSeen=null;}
   });
   report.thirdPerson=await page.evaluate(()=>{
@@ -78,13 +86,15 @@ for(const asset of manifest.files)assert.equal(crypto.createHash('sha256').updat
    const row=await page.evaluate(id=>{
     const P=G.Player;G.Input.reset();G.Knives.equip(P,id);for(let i=0;i<90;i++){P.update(1/60);G.Game.syncModels(1/60);G.UI.update(1/60)}
     const m=G.VM.models[id],metrics={id,imported:!!m.knife.userData.imported,maxGripError:0,maxWrist:0,maxScreenX:0,maxScreenY:0,source:m.knife.userData.imported?'가져온 모델':'대체 모델'};
-    for(const kind of ['draw','slash','inspect'])for(let i=0;i<=30;i++){
+    for(const [kind,variant]of [['draw',0],['slash',0],['slash',1],['inspect',0]]){
      const d=kind==='inspect'?G.Knives.catalog[id].inspect:kind==='draw'?(G.Knives.catalog[id].draw||.58):G.Knives.catalog[id].duration;
-     P.melee={id,kind,t:i/30*d,duration:d,hit:true};P.updateCamera(1/60);
-     const r=m.staticArms.R;metrics.maxGripError=Math.max(metrics.maxGripError,r.contactError);metrics.maxWrist=Math.max(metrics.maxWrist,r.wristAngle);
-     m.root.updateMatrixWorld(true);m.root.traverse(o=>{if(!o.matrixWorld.elements.every(Number.isFinite))throw Error('모션의 비정상 행렬')});
-     if(m.grip.position.distanceTo(r.contact)>.00001)throw Error('손과 손잡이가 분리됨');
-     const screen=m.grip.getWorldPosition(new THREE.Vector3()).project(G.vmCamera);metrics.maxScreenX=Math.max(metrics.maxScreenX,Math.abs(screen.x));metrics.maxScreenY=Math.max(metrics.maxScreenY,Math.abs(screen.y));
+     P.melee={id,kind,variant,t:0,duration:d,hit:true};for(let i=0;i<=30;i++){
+      P.melee.t=i/30*d;P.updateCamera(d/30);
+      const r=m.staticArms.R;metrics.maxGripError=Math.max(metrics.maxGripError,r.contactError);metrics.maxWrist=Math.max(metrics.maxWrist,r.wristAngle);
+      m.root.updateMatrixWorld(true);m.root.traverse(o=>{if(!o.matrixWorld.elements.every(Number.isFinite))throw Error('모션의 비정상 행렬')});
+      if(m.grip.position.distanceTo(r.contact)>.00001)throw Error('손과 손잡이가 분리됨');
+      const screen=m.grip.getWorldPosition(new THREE.Vector3()).project(G.vmCamera);metrics.maxScreenX=Math.max(metrics.maxScreenX,Math.abs(screen.x));metrics.maxScreenY=Math.max(metrics.maxScreenY,Math.abs(screen.y));
+     }
     }
     P.melee=null;for(let i=0;i<40;i++)P.updateCamera(1/60);G.UI.update(.016);G.renderNow();G.Perf.gpuWait();return metrics;
    },id);
@@ -108,8 +118,8 @@ for(const asset of manifest.files)assert.equal(crypto.createHash('sha256').updat
   for(const [name,kind,phase]of [['butterfly-draw','draw',.4],['butterfly-inspect','inspect',.45],['butterfly-slash','slash',.43]]){
    await page.evaluate(({kind,phase})=>{
     const id='knife_butterfly',P=G.Player;G.Knives.equip(P,id);for(let i=0;i<70;i++){P.update(1/60);G.Input.endFrame()}
-    const duration=kind==='draw'?G.Knives.catalog[id].draw:kind==='inspect'?3.1:.61;
-    for(let i=0;i<=Math.ceil(phase*60);i++){P.melee={id,kind,t:i/60*duration,duration,hit:true};P.updateCamera(1/60)}
+    const d=G.Knives.catalog[id],duration=kind==='draw'?d.draw:kind==='inspect'?d.inspect:d.duration;
+    P.melee={id,kind,t:0,duration,hit:true};for(let i=0;i<=Math.ceil(phase*60);i++){P.melee.t=i/60*duration;P.updateCamera(duration/60)}
     G.UI.update(.016);G.renderNow();G.Perf.gpuWait();
    },{kind,phase});
    await page.screenshot({path:path.join(out,name+'.png'),timeout:60000});

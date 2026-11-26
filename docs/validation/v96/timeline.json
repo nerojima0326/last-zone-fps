@@ -1,0 +1,206 @@
+{
+  "knife_butterfly": [
+    {
+      "kind": "draw",
+      "variant": 0,
+      "duration": 0.82,
+      "name": "손목 반회전 정렬",
+      "startFrame": 0,
+      "endFrame": 25
+    },
+    {
+      "kind": "slash",
+      "variant": 0,
+      "duration": 0.61,
+      "name": "빠른 수평 베기",
+      "startFrame": 26,
+      "endFrame": 45
+    },
+    {
+      "kind": "slash",
+      "variant": 1,
+      "duration": 0.61,
+      "name": "되돌려 긋기",
+      "startFrame": 46,
+      "endFrame": 65
+    },
+    {
+      "kind": "inspect",
+      "variant": 0,
+      "duration": 2.8,
+      "name": "날 양면과 잠금 확인",
+      "startFrame": 66,
+      "endFrame": 150
+    }
+  ],
+  "knife_dagger": [
+    {
+      "kind": "draw",
+      "variant": 0,
+      "duration": 0.58,
+      "name": "중앙으로 뽑아 세우기",
+      "startFrame": 0,
+      "endFrame": 18
+    },
+    {
+      "kind": "slash",
+      "variant": 0,
+      "duration": 0.73,
+      "name": "깊은 직선 찌르기",
+      "startFrame": 19,
+      "endFrame": 41
+    },
+    {
+      "kind": "slash",
+      "variant": 1,
+      "duration": 0.73,
+      "name": "아래에서 올려 찌르기",
+      "startFrame": 42,
+      "endFrame": 64
+    },
+    {
+      "kind": "inspect",
+      "variant": 0,
+      "duration": 2.25,
+      "name": "양날과 가드 살피기",
+      "startFrame": 65,
+      "endFrame": 133
+    }
+  ],
+  "knife_combat": [
+    {
+      "kind": "draw",
+      "variant": 0,
+      "duration": 0.66,
+      "name": "옆 칼집에서 대각선 인출",
+      "startFrame": 0,
+      "endFrame": 20
+    },
+    {
+      "kind": "slash",
+      "variant": 0,
+      "duration": 0.64,
+      "name": "오른쪽 위에서 내려베기",
+      "startFrame": 21,
+      "endFrame": 41
+    },
+    {
+      "kind": "slash",
+      "variant": 1,
+      "duration": 0.64,
+      "name": "왼쪽 아래에서 되받아 베기",
+      "startFrame": 42,
+      "endFrame": 62
+    },
+    {
+      "kind": "inspect",
+      "variant": 0,
+      "duration": 2.15,
+      "name": "손등 쪽으로 칼날 확인",
+      "startFrame": 63,
+      "endFrame": 128
+    }
+  ],
+  "knife_karambit": [
+    {
+      "kind": "draw",
+      "variant": 0,
+      "duration": 0.74,
+      "name": "작은 원을 그려 갈고리 정렬",
+      "startFrame": 0,
+      "endFrame": 23
+    },
+    {
+      "kind": "slash",
+      "variant": 0,
+      "duration": 0.56,
+      "name": "안쪽으로 짧게 걸어베기",
+      "startFrame": 24,
+      "endFrame": 41
+    },
+    {
+      "kind": "slash",
+      "variant": 1,
+      "duration": 0.56,
+      "name": "바깥쪽으로 감아 긋기",
+      "startFrame": 42,
+      "endFrame": 59
+    },
+    {
+      "kind": "inspect",
+      "variant": 0,
+      "duration": 2.5,
+      "name": "곡선 날과 고리 돌려 보기",
+      "startFrame": 60,
+      "endFrame": 135
+    }
+  ],
+  "knife_kunai": [
+    {
+      "kind": "draw",
+      "variant": 0,
+      "duration": 0.5,
+      "name": "아래에서 튕겨 올려 잡기",
+      "startFrame": 0,
+      "endFrame": 15
+    },
+    {
+      "kind": "slash",
+      "variant": 0,
+      "duration": 0.54,
+      "name": "오른쪽 사선으로 찌르기",
+      "startFrame": 16,
+      "endFrame": 33
+    },
+    {
+      "kind": "slash",
+      "variant": 1,
+      "duration": 0.54,
+      "name": "왼쪽 낮은 사선으로 찌르기",
+      "startFrame": 34,
+      "endFrame": 51
+    },
+    {
+      "kind": "inspect",
+      "variant": 0,
+      "duration": 2.05,
+      "name": "끝을 세워 균형 확인",
+      "startFrame": 52,
+      "endFrame": 114
+    }
+  ],
+  "knife_machete": [
+    {
+      "kind": "draw",
+      "variant": 0,
+      "duration": 0.94,
+      "name": "긴 칼을 크게 들어 올리기",
+      "startFrame": 0,
+      "endFrame": 29
+    },
+    {
+      "kind": "slash",
+      "variant": 0,
+      "duration": 0.88,
+      "name": "머리 위에서 무겁게 내려베기",
+      "startFrame": 30,
+      "endFrame": 57
+    },
+    {
+      "kind": "slash",
+      "variant": 1,
+      "duration": 0.88,
+      "name": "반대쪽 넓은 수평 베기",
+      "startFrame": 58,
+      "endFrame": 85
+    },
+    {
+      "kind": "inspect",
+      "variant": 0,
+      "duration": 2.95,
+      "name": "넓은 날을 천천히 기울여 보기",
+      "startFrame": 86,
+      "endFrame": 175
+    }
+  ]
+}
