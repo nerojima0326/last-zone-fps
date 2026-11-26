@@ -1,0 +1,54 @@
+{
+  "sources": [
+    {
+      "weapon": "knife_karambit",
+      "author": "erqf1",
+      "revision": "ccde7d5e021cb80f3e2a6889b145f6d6fe59725c",
+      "url": "https://github.com/erqf1/GambelStrike2/blob/ccde7d5e021cb80f3e2a6889b145f6d6fe59725c/js/viewmodel.js#L248",
+      "file": "js/viewmodel.js",
+      "observed": "고리 축 회전·반회전 후 복귀의 동작 구성",
+      "sha256": "53849291c23f9803fc14083265fe8f5ad73edd705fb8a84b70e99ad2d6607d94",
+      "bytes": 47110,
+      "use": "동작 참고·기존 손 리그용 곡선 자체 작성",
+      "bundled": false
+    },
+    {
+      "weapon": "knife_kunai",
+      "author": "Liew Zhe Wei Damien",
+      "revision": "3295dfde3d8df7990a4eb865e478a1e34b505abb",
+      "url": "https://github.com/liewdamien22-a11y/project_kunai/blob/3295dfde3d8df7990a4eb865e478a1e34b505abb/personal%20project/Assets/Arms_rig.fbx",
+      "file": "personal project/Assets/Arms_rig.fbx",
+      "clips": [
+        {
+          "name": "arms_rig|catch",
+          "seconds": 0.8333333134651184
+        },
+        {
+          "name": "arms_rig|throw",
+          "seconds": 0.125
+        },
+        {
+          "name": "arms_rig|parry",
+          "seconds": 0.4166666567325592
+        }
+      ],
+      "observed": "실제 FBX 클립의 팔 이동·받아 쥐기·빠른 전방 동작·복귀를 확인",
+      "sha256": "c74bcb70c289a37cef853363e093174d8de89004359602e806acb40e0dd7c108",
+      "bytes": 8463948,
+      "use": "동작 참고·기존 손 리그용 곡선 자체 작성",
+      "bundled": false
+    }
+  ],
+  "hands": "기존 검은 전술 장갑·녹색 소매",
+  "ringGeometry": {
+    "innerCenterMetres": [
+      -0.002165,
+      -0.026844,
+      0
+    ],
+    "outerRadiusMetres": 0.0198476541,
+    "innerRadiusMetres": 0.0155716354,
+    "mountedScale": 1.18,
+    "contactAnchor": "검지 끝마디(Index3)에서 Index2→Index3 방향으로 3mm 이동한 점"
+  }
+}

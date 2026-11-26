@@ -54,3 +54,10 @@ NODE_PATH=/path/to/dependencies/node_modules node tools/knives/build.cjs /tmp/lz
 동작의 참고 자료는 [GambelStrike2의 공개 뷰모델 구현](https://github.com/erqf1/GambelStrike2/blob/ccde7d5e021cb80f3e2a6889b145f6d6fe59725c/js/viewmodel.js)입니다. 발리송에서 안전 손잡이를 고정한 채 칼날과 자유 손잡이를 순서대로 움직이는 구성, 펼친 뒤 손가락을 닫는 순서를 확인했습니다. 해당 프로젝트의 코드·키프레임을 가져오지 않고 기존 게임 리그에 맞는 별도 곡선을 작성했습니다. 꺼내기 6개·공격 12개·검사 6개가 `js/knives.js`에 있으며 발리송의 관절 각도·손가락 벌림도 같은 시간축에서 재생합니다. 상용 게임의 애니메이션 에셋을 반입하지 않았습니다.
 
 자료 확인 범위: Google 검색과 YouTube는 이 환경의 네트워크 프록시에서 CONNECT 403으로 차단됐습니다. GitHub 저장소 검색·원본 소스 열람은 성공했습니다. YouTube 영상을 시청하거나 그 영상에서 모션을 추출한 작업은 아닙니다.
+
+## v106 카람빗·쿠나이의 별도 참고 자료
+
+- **카람빗:** [GambelStrike2의 카람빗 전용 클립](https://github.com/erqf1/GambelStrike2/blob/ccde7d5e021cb80f3e2a6889b145f6d6fe59725c/js/viewmodel.js#L248)의 고리 중심 회전·반회전 후 복귀 구성을 확인했습니다. 게임에서는 실제 검지 끝마디에 고리를 고정한 확장 그립으로 꺼내기·두 방향 베기·검사를 새로 작성했습니다. 기존 Diamonddogkz 모델과 라이선스를 유지하며 장갑에 맞게 장착 크기를 1.18배로 맞춥니다.
+- **쿠나이:** **Liew Zhe Wei Damien**의 [Project Kunai 고정 커밋](https://github.com/liewdamien22-a11y/project_kunai/tree/3295dfde3d8df7990a4eb865e478a1e34b505abb), `personal project/Assets/Arms_rig.fbx`의 실제 `arms_rig|catch`, `arms_rig|throw`, `arms_rig|parry` 클립과 `PlayerKunaiScript.cs`의 동작 연결을 열어 확인했습니다. 안쪽으로 당겨 받아 쥐는 팔 이동, 빠른 전방 동작과 복귀 리듬을 기존 게임의 오른손과 근접 공격에 맞게 새로 구성했습니다.
+
+두 자료는 각각 별도의 동작 참고 자료입니다. v106에 들어가는 키프레임은 LAST ZONE의 기존 손 리그용으로 작성한 곡선이며 참고 프로젝트의 모델·코드·애니메이션 파일을 번들에 추가하지 않았습니다. 실제 팔은 기존 검은 전술 장갑·녹색 소매 모델입니다. 확인한 원본 파일의 주소·SHA-256과 검증 결과는 [v106 기록](../../../docs/validation/v106-knife-motion.md)에 남깁니다.

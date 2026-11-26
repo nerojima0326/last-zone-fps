@@ -6,8 +6,8 @@ const catalog={
  knife_butterfly:{file:'butterfly',name:'버터플라이 나이프',short:'발리송',dmg:40,reach:1.75,duration:.61,role:'접힌 칼을 펴서 잡고 짧고 빠르게 베는 발리송'},
  knife_dagger:{file:'dagger',name:'양날 단검',short:'단검',dmg:52,reach:1.85,duration:.73,role:'깊은 직선 찌르기와 올려 찌르기에 맞춘 양날 단검'},
  knife_combat:{file:'combat',name:'전투 나이프',short:'전투 나이프',dmg:46,reach:1.8,duration:.64,role:'사선으로 꺼내 위아래 대각선으로 베는 전투 나이프'},
- knife_karambit:{file:'karambit',name:'카람빗',short:'카람빗',dmg:42,reach:1.65,duration:.56,role:'작은 원을 그려 꺼내고 안팎으로 걸어 베는 곡선 칼'},
- knife_kunai:{file:'kunai',name:'쿠나이',short:'쿠나이',dmg:38,reach:1.7,duration:.54,role:'빠르게 올려 잡고 좌우 사선으로 찌르는 쿠나이'},
+ knife_karambit:{file:'karambit',name:'카람빗',short:'카람빗',dmg:42,reach:1.65,duration:.56,role:'검지 고리를 지지해 돌려 잡고 갈고리 날을 확장해 베는 카람빗'},
+ knife_kunai:{file:'kunai',name:'쿠나이',short:'쿠나이',dmg:38,reach:1.7,duration:.54,role:'안쪽으로 당겨 쥐고 칼끝을 곧게 뻗거나 올려 긋는 쿠나이'},
  knife_machete:{file:'machete',name:'마체테',short:'마체테',dmg:62,reach:2.05,duration:.88,role:'긴 칼을 들어 무겁게 내려 베고 넓게 되받아 베는 마체테'}
 };
 // 장갑의 실제 스킨 메시로 맞춘 손잡이 접점과 엄지→새끼손가락의 마디별 굽힘.
@@ -15,7 +15,7 @@ const grips={
  knife_butterfly:{roll:-0.25,twist:0.6,at:[0,0.04,0],fingers:[[.5,.5,.6],[.05,.2,.3],[.0385,.44,.6325],[.231,.319,.8525],[.1375,.319,.55]]},
  knife_dagger:{roll:-0.25,twist:0.6,at:[0.015,0.03,0],fingers:[[0.07,0.58,1.55],[0.43,0.98,1.55],[0.43,0.8,1.25],[0.78,0.8,1.25],[0.78,1.02,1.15]]},
  knife_combat:{roll:-0.25,twist:0,at:[0.015,0.02,0],turns:{0:[0,0,-.2]},fingers:[[0.25,0.4,1.55],[0.6,0.98,1.25],[0.78,0.8,1.25],[1,1,1],[1,0.8,1.25]]},
- knife_karambit:{roll:-0.65,twist:0,at:[0,0.03,0],fingers:[[1,0.98,0.85],[0.07,1.6,1],[0.07,0.22,1.55],[0.6,1.2,1.55],[0.43,0.8,1.15]]},
+ knife_karambit:{roll:-0.65,twist:0,at:[0,0.03,0],fingers:[[1.4,1.4,1.4],[.02,.08,.1],[1,1,1],[1,1,1],[1,1,1]]},
  knife_kunai:{roll:-0.25,twist:0,at:[0,0.02,0],fingers:[[0.43,1.2,1.55],[0.25,1.2,1.15],[1,0.8,1.4],[0.78,1.02,1.15],[0.43,1.02,1]]},
  knife_machete:{roll:-0.25,twist:0,at:[0.013,0.022,0],fingers:[[0.07,0.8,1.55],[0.6,0.98,1.25],[0.78,0.8,1.4],[0.78,1.02,1.15],[0.78,1.02,1.15]]}
 };
@@ -32,7 +32,7 @@ function curveSlopes(rows){
  }
  return out;
 }
-function clip(name,keys,support=[[0,0,0,0],[1,0,0,0]],joints=null){return {name,keys,support,joints,slopes:curveSlopes(keys),supportSlopes:curveSlopes(support),jointSlopes:joints?curveSlopes(joints):null}}
+function clip(name,keys,support=[[0,0,0,0],[1,0,0,0]],joints=null,handling=null){return {name,keys,support,joints,handling,slopes:curveSlopes(keys),supportSlopes:curveSlopes(support),jointSlopes:joints?curveSlopes(joints):null,handlingSlopes:handling?curveSlopes(handling):null}}
 function curveAt(rows,slopes,t,out){
  t=U.clamp(t,0,1);let i=0;while(i<rows.length-2&&t>rows[i+1][0])i++;
  const a=rows[i],b=rows[i+1],span=b[0]-a[0],u=U.clamp((t-a[0])/span,0,1),u2=u*u,u3=u2*u;
@@ -64,21 +64,21 @@ const motionSets={
   ],
   inspect:clip('날등과 손잡이를 기울여 확인',[[0,0,0,0,0,0,0],[.23,-.055,.065,-.005,.15,-.55,.48],[.42,-.055,.065,-.005,.15,-.55,.48],[.64,-.075,.07,-.025,-.15,.38,.22],[.80,-.045,.045,-.01,-.08,.30,.12],[1,0,0,0,0,0,0]],[[0,0,0,0],[.31,-.025,-.025,.025],[.71,-.02,-.03,.025],[1,0,0,0]])
  },
- knife_karambit:{drawSeconds:.82,inspectSeconds:2.65,rest:[.17,-.175,-.46],ready:[-.25,1.95,-.5],
-  draw:clip('고리를 지지하며 짧게 감아 꺼내기',[[0,.065,-.23,.10,.22,-.40,.65],[.25,.07,-.045,.035,-.12,-.40,.48],[.48,-.035,.04,-.015,-.18,.32,-.55],[.72,.015,.005,-.005,.12,.10,-.16],[.87,.005,-.01,.005,.05,-.05,.05],[1,0,0,0,0,0,0]],[[0,-.015,-.015,.025],[.34,-.03,.005,.025],[.72,-.025,-.015,.03],[1,0,0,0]]),
+ knife_karambit:{drawSeconds:1.02,inspectSeconds:2.90,rest:[.12,-.05,-.53],ready:[-.25,1.95,-.5],
+  draw:clip('검지 고리에 걸어 반회전으로 꺼내기',[[0,.055,-.20,.08,.30,-.30,.35],[.23,.035,-.045,.025,.48,-.01,.36],[.48,-.045,.025,-.035,.56,-.01,.42],[.74,-.015,.015,-.02,.20,.02,.15],[.89,.005,-.01,.005,.04,-.03,.03],[1,0,0,0,0,0,0]],[[0,-.015,-.025,.025],[.24,-.035,.015,.005],[.55,-.04,-.025,.05],[1,0,0,0]],null,[[0,180],[.20,180],[.70,0],[1,0]]),
   slash:[
-   clip('안쪽 갈고리로 가로채듯 베기',[[0,0,0,0,0,0,0],[.22,.07,.015,.045,.05,.40,-.30],[.43,-.10,-.025,-.105,.18,-.62,1.10],[.60,-.09,.015,-.055,-.10,-.46,.92],[.79,-.025,.025,.01,-.10,-.12,.20],[1,0,0,0,0,0,0]],[[0,0,0,0],[.22,-.01,.02,.025],[.47,-.04,-.03,.07],[.74,-.025,-.025,.035],[1,0,0,0]]),
-   clip('낮은 바깥 원으로 되받아 긋기',[[0,0,0,0,0,0,0],[.22,-.055,.025,.045,-.14,-.28,.42],[.43,.07,-.06,-.12,.40,.58,-1.0],[.62,.04,-.115,-.025,.50,.40,-.76],[.81,-.005,-.035,.015,.17,.10,-.17],[1,0,0,0,0,0,0]],[[0,0,0,0],[.23,-.03,.005,.03],[.50,-.04,-.035,.065],[1,0,0,0]])
+   clip('확장 그립에서 바깥을 감아 당겨 베기',[[0,0,0,0,0,0,0],[.23,.075,.035,.055,.14,.42,-.42],[.43,-.11,-.035,-.13,-.08,-.55,.98],[.61,-.135,-.075,-.045,.22,-.65,1.18],[.81,-.035,-.025,.015,.10,-.17,.27],[1,0,0,0,0,0,0]],[[0,0,0,0],[.25,-.035,.005,.015],[.48,-.055,-.045,.085],[.77,-.02,-.035,.04],[1,0,0,0]]),
+   clip('아래에서 고리 날을 걸어 올려 베기',[[0,0,0,0,0,0,0],[.23,-.065,-.075,.045,.35,-.32,.58],[.43,.055,.055,-.125,-.38,.37,-.85],[.62,.08,.11,-.025,-.55,.48,-1.03],[.82,.015,.03,.015,-.15,.12,-.22],[1,0,0,0,0,0,0]],[[0,0,0,0],[.23,-.045,.015,.035],[.47,-.06,-.025,.075],[.76,-.025,-.025,.035],[1,0,0,0]])
   ],
-  inspect:clip('손목을 굴려 곡선 날과 고리 확인',[[0,0,0,0,0,0,0],[.23,-.08,.075,-.015,.22,-.55,-.52],[.40,-.08,.075,-.015,.22,-.55,-.52],[.60,-.09,.075,-.02,-.15,.58,.62],[.78,-.06,.05,-.005,-.08,.32,.38],[1,0,0,0,0,0,0]],[[0,0,0,0],[.34,-.025,-.015,.035],[.72,-.03,-.025,.04],[1,0,0,0]])
+  inspect:clip('검지 끝마디로 반회전하고 되돌려 잡기',[[0,0,0,0,0,0,0],[.18,-.045,.035,-.015,.56,-.01,.42],[.42,-.055,.045,-.02,.56,-.01,.42],[.62,-.06,.04,-.025,.56,-.01,.42],[.82,-.025,.025,-.01,.35,.02,.26],[1,0,0,0,0,0,0]],[[0,0,0,0],[.26,-.04,-.015,.045],[.63,-.045,-.025,.055],[1,0,0,0]],null,[[0,0],[.18,0],[.48,180],[.60,180],[.86,0],[1,0]])
  },
- knife_kunai:{drawSeconds:.59,inspectSeconds:2.2,rest:[.11,-.145,-.48],ready:[-.5,2.2,.05],
-  draw:clip('허리에서 빠르게 뽑아 검지 정렬',[[0,-.025,-.28,.025,.76,-.20,.48],[.28,-.03,-.07,-.025,.28,-.32,.25],[.53,.025,.05,-.035,-.28,.25,-.28],[.77,.01,.005,.005,.10,.07,-.07],[1,0,0,0,0,0,0]],[[0,-.01,-.02,.02],[.27,-.02,.025,.005],[.61,-.03,.005,.02],[1,0,0,0]]),
+ knife_kunai:{drawSeconds:.86,inspectSeconds:2.75,rest:[.095,-.13,-.50],ready:[-.58,2.12,.18],
+  draw:clip('안쪽으로 당겨 받아 쥐고 전방 정렬',[[0,.065,-.25,.10,.78,.26,-.30],[.20,-.065,.035,-.025,-.28,-.46,.50],[.38,-.075,.085,-.055,-.48,-.25,.65],[.57,-.035,.045,-.035,-.30,.12,.22],[.79,.012,-.015,.018,.10,.08,-.12],[1,0,0,0,0,0,0]],[[0,-.015,-.03,.025],[.22,.035,.055,-.045],[.42,.025,.07,-.055],[.66,-.015,.015,.015],[1,0,0,0]]),
   slash:[
-   clip('중앙을 향해 빠른 사선 찌르기',[[0,0,0,0,0,0,0],[.22,-.025,-.045,.05,.25,-.18,.18],[.43,.055,.02,-.175,-.55,.36,-.46],[.56,.075,-.025,-.105,-.32,.46,-.36],[.75,.02,-.035,.01,.10,.14,-.10],[1,0,0,0,0,0,0]],[[0,0,0,0],[.22,-.02,.005,.015],[.46,-.035,-.035,.065],[.72,-.02,-.025,.025],[1,0,0,0]]),
-   clip('반대쪽 낮은 표적을 찌르고 당기기',[[0,0,0,0,0,0,0],[.22,.04,-.005,.055,.18,.20,-.24],[.43,-.075,-.025,-.17,-.46,-.31,.43],[.58,-.095,-.07,-.065,.07,-.40,.58],[.80,-.015,-.035,.02,.11,-.09,.12],[1,0,0,0,0,0,0]],[[0,0,0,0],[.23,-.03,.015,.015],[.48,-.04,-.04,.05],[1,0,0,0]])
+   clip('어깨를 당겼다가 칼끝을 곧게 뻗기',[[0,0,0,0,0,0,0],[.25,.055,.075,.085,.38,.15,-.12],[.43,-.045,.015,-.215,-.95,-.13,.12],[.55,-.055,.005,-.175,-.80,-.12,.16],[.75,-.005,-.035,.025,.10,.05,.08],[1,0,0,0,0,0,0]],[[0,0,0,0],[.20,.02,.055,-.045],[.43,-.045,.015,.035],[.64,-.035,-.015,.06],[1,0,0,0]]),
+   clip('낮은 바깥 준비에서 올려 긋고 회수',[[0,0,0,0,0,0,0],[.23,.06,-.09,.065,.56,.22,-.48],[.43,-.08,.065,-.13,-.42,-.52,.86],[.61,-.105,.12,-.045,-.62,-.60,1.05],[.81,-.03,.035,.025,-.13,-.20,.25],[1,0,0,0,0,0,0]],[[0,0,0,0],[.22,-.035,.07,-.035],[.46,-.055,.02,.05],[.71,-.025,-.025,.055],[1,0,0,0]])
   ],
-  inspect:clip('칼끝과 평평한 날 양면 확인',[[0,0,0,0,0,0,0],[.22,-.04,.105,-.035,-.38,-.30,-.12],[.42,-.04,.105,-.035,-.38,-.30,-.12],[.62,-.065,.085,-.045,-.10,.62,.42],[.80,-.025,.045,-.005,.12,.22,.18],[1,0,0,0,0,0,0]],[[0,0,0,0],[.30,-.02,-.005,.025],[.70,-.025,-.02,.03],[1,0,0,0]])
+  inspect:clip('손등으로 뒤집어 삼각 날과 고리 확인',[[0,0,0,0,0,0,0],[.18,-.065,.10,-.02,-.42,-.10,.95],[.34,-.065,.10,-.02,-.42,-.10,.95],[.52,-.09,.065,-.045,.16,-.80,-.30],[.69,-.09,.065,-.045,.16,-.80,-.30],[.84,-.025,.025,-.01,-.08,.20,-.10],[1,0,0,0,0,0,0]],[[0,0,0,0],[.24,.025,.06,-.03],[.49,.025,.035,-.025],[.75,-.015,-.015,.025],[1,0,0,0]])
  },
  knife_machete:{drawSeconds:1.02,inspectSeconds:3.05,rest:[.16,-.17,-.50],ready:[-.4,1.98,-.14],
   draw:clip('긴 칼집에서 당겨 무게를 받쳐 세우기',[[0,.07,-.32,.13,.82,.75,-.50],[.30,.08,-.14,.065,.55,.65,-.42],[.56,.025,.055,-.025,-.27,-.30,.28],[.72,-.015,.025,-.01,-.12,-.08,.08],[.88,-.005,-.015,.01,.04,.02,-.04],[1,0,0,0,0,0,0]],[[0,-.03,-.015,.04],[.26,.005,.04,-.02],[.52,.01,.025,-.01],[.76,-.03,-.025,.04],[1,0,0,0]]),
@@ -124,6 +124,13 @@ const K=G.Knives={catalog,ids,motionSets,templates:{},motion:null,ready:false,lo
     box(.012,.005,.012,grip,0,-.1215,p);
    }
    const p=new T.Group();p.name='blade';p.position.y=.065;root.add(p);box(.017,.108,.0025,steel,0,.054,p);
+  }else if(d.file==='karambit'){
+   // 고리 중심은 가져온 모델과 같게 두어 대체 모델도 검지 회전을 따른다.
+   const ring=new T.Mesh(new T.TorusGeometry(.0185,.0025,8,24),steel);ring.position.set(-.002165,-.026844,0);root.add(ring);
+   const handle=new T.Shape();handle.moveTo(-.009,-.01);handle.lineTo(.015,-.01);handle.quadraticCurveTo(.029,.015,.027,.05);handle.lineTo(.015,.07);handle.lineTo(-.012,.068);handle.quadraticCurveTo(-.002,.035,-.009,-.01);
+   const body=new T.Mesh(new T.ExtrudeGeometry(handle,{depth:.009,bevelEnabled:false,curveSegments:5}),grip);body.position.z=-.0045;root.add(body);
+   const blade=new T.Shape();blade.moveTo(-.012,.062);blade.lineTo(.022,.07);blade.quadraticCurveTo(.009,.15,-.060,.180);blade.quadraticCurveTo(-.016,.145,-.012,.062);
+   const edge=new T.Mesh(new T.ExtrudeGeometry(blade,{depth:.0035,bevelEnabled:false,curveSegments:8}),steel);edge.position.z=-.00175;root.add(edge);
   }else{
    box(.020,.11,.016,grip,0,-.005);box(.045,.010,.014,steel,0,.060);
    const long=d.file==='machete'?.29:.15,shape=new T.Shape(),curve=d.file==='karambit';
@@ -155,7 +162,7 @@ const K=G.Knives={catalog,ids,motionSets,templates:{},motion:null,ready:false,lo
   }
   m.muzzle.set(0,.15,0);m.curve={r:new V(),l:new V(),q:new Q(),e:new T.Euler()};m.root.userData.knife=id;return m;
  },
- gripProfile(id,imported=true){return !imported&&id!=='knife_butterfly'?fallbackGrip:grips[id]},
+ gripProfile(id,imported=true){return !imported&&id!=='knife_butterfly'&&id!=='knife_karambit'?fallbackGrip:grips[id]},
  gripOffset(id,frame,imported=true){
   return new V(...this.gripProfile(id,imported).at).applyQuaternion(frame.clone().invert());
  },
@@ -169,7 +176,7 @@ const K=G.Knives={catalog,ids,motionSets,templates:{},motion:null,ready:false,lo
   return root._knifeHinges={safe,tang,blade,bite,latch:root.getObjectByName('knifeLatch')};
  },
  sample(kind,t,out,id='knife_butterfly',variant=0){
-  out.r.set(0,0,0);out.l.set(0,0,0);out.q.identity();out.curl=.9;out.thumb=.72;out.blade=out.bite=out.release=0;
+  out.r.set(0,0,0);out.l.set(0,0,0);out.q.identity();out.curl=.9;out.thumb=.72;out.blade=out.bite=out.release=out.ring=0;
   if(kind==='idle')return out;
   const set=motionSets[id],motion=kind==='slash'?set.slash[variant%set.slash.length]:set[kind];
   if(!motion)return out;
@@ -177,6 +184,7 @@ const K=G.Knives={catalog,ids,motionSets,templates:{},motion:null,ready:false,lo
   curveAt(motion.keys,motion.slopes,t,values);out.r.set(values[0],values[1],values[2]);out.q.setFromEuler(_e.set(values[3],values[4],values[5]));
   curveAt(motion.support,motion.supportSlopes,t,values);out.l.set(values[0],values[1],values[2]);
   if(motion.joints){curveAt(motion.joints,motion.jointSlopes,t,values);out.blade=values[0]*Math.PI/180;out.bite=values[1]*Math.PI/180;out.release=values[2];}
+  if(motion.handling){curveAt(motion.handling,motion.handlingSlopes,t,values);out.ring=values[0]*Math.PI/180;}
   return out;
  },
  fitRealGrip(m,r,S,unit){
@@ -188,6 +196,18 @@ const K=G.Knives={catalog,ids,motionSets,templates:{},motion:null,ready:false,lo
   f.p.copy(r.anchorLocal).multiplyScalar(G.ARM_CONST.handS*ratio);
   f.matrix.copy(m.root.matrixWorld).invert().multiply(S.b.hand.matrixWorld).multiply(f.turn.makeRotationFromQuaternion(f.q.copy(S.handInv).invert())).multiply(f.scale.makeScale(1/unit,1/unit,1/unit)).multiply(f.at.makeTranslation(f.p.x,f.p.y,f.p.z)).multiply(f.turn.makeRotationFromQuaternion(m.bladeOffset));
   m.grip.matrixAutoUpdate=false;m.grip.matrix.copy(f.matrix);m.grip.matrix.decompose(m.grip.position,m.grip.quaternion,m.grip.scale);m.grip.updateMatrixWorld(true);
+  if(m.id==='knife_karambit')this.fitRing(m.knife,S.b.fingers.Index,S.b.fingers.Pinky[0],m.curve.ring);
+ },
+ fitRing(knife,index,pinky,angle){
+  // 모델에서 측정한 고리 중심을 검지 끝마디에 고정한다. 손목과 별개로 칼 자체가 회전한다.
+  // 검지를 편 채 다른 손가락을 접고, 손바닥을 통과하지 않는 반회전 구간을 사용한다.
+  const f=knife._ringFit||(knife._ringFit={a:new V(),b:new V(),p:new V(),x:new V(),y:new V(),z:new V(),world:new T.Matrix4(),basis:new T.Matrix4(),turn:new T.Matrix4(),tilt:new T.Matrix4().makeRotationY(-.65),size:new T.Matrix4().makeScale(1.18,1.18,1.18),offset:new T.Matrix4().makeTranslation(.002165,.026844,0)});
+  index[1].getWorldPosition(f.a);index[2].getWorldPosition(f.b);f.z.copy(f.b).sub(f.a).normalize();
+  pinky.getWorldPosition(f.y);f.y.sub(f.a);f.y.addScaledVector(f.z,-f.y.dot(f.z));
+  if(f.y.lengthSq()<1e-8)return;f.y.normalize();f.x.crossVectors(f.y,f.z).normalize();f.y.crossVectors(f.z,f.x).normalize();
+  f.p.copy(f.b).addScaledVector(f.z,.003);
+  f.world.makeTranslation(f.p.x,f.p.y,f.p.z).multiply(f.basis.makeBasis(f.x,f.y,f.z)).multiply(f.turn.makeRotationZ(1.2+(angle||0))).multiply(f.tilt).multiply(f.size).multiply(f.offset);
+  knife.parent.updateWorldMatrix(true,false);knife.matrixAutoUpdate=false;knife.matrix.copy(knife.parent.matrixWorld).invert().multiply(f.world);knife.matrix.decompose(knife.position,knife.quaternion,knife.scale);knife.updateWorldMatrix(false,true);
  },
  actionCurve(action,id,out){
   const t=action?U.clamp(action.t/action.duration,0,1):0,c=this.sample(action?.kind||'idle',t,out,id,action?.variant||0);
@@ -195,6 +215,7 @@ const K=G.Knives={catalog,ids,motionSets,templates:{},motion:null,ready:false,lo
    const f=action.blendFrom,w=1-U.smoothstep(0,action.blendEnd||.24,t);c.r.lerp(f.r,w);c.l.lerp(f.l,w);c.q.slerp(f.q,w);c.curl=U.lerp(c.curl,f.curl,w);c.thumb=U.lerp(c.thumb,f.thumb,w);
    // 검사 중 공격도 같은 자세에서 시작하며, 칼날→자유 손잡이→손가락 순서로 회수한다.
    c.blade=U.lerp(c.blade,f.blade,w);c.bite=U.lerp(c.bite,f.bite,w);c.release=U.lerp(c.release,f.release,w);
+   c.ring=U.lerp(c.ring,f.ring,w);
    if(id==='knife_butterfly'&&(Math.abs(f.blade)>.001||Math.abs(f.bite)>.001)){
     const u=U.clamp(t/(action.blendEnd||.24),0,1);
     c.blade=f.blade*(1-U.smoothstep(0,.52,u));c.bite=f.bite*(1-U.smoothstep(.50,.90,u));c.release=U.lerp(f.release,0,U.smoothstep(.90,1,u));
@@ -214,10 +235,11 @@ const K=G.Knives={catalog,ids,motionSets,templates:{},motion:null,ready:false,lo
   _p.copy(L.rest).add(c.l);_q.copy(m.baseHands.L);G.Guns.poseStaticArm(L,_p,_q,dt,.7,.6,drawStart);
   m.grip.matrixAutoUpdate=true;m.grip.scale.setScalar(1);m.grip.position.copy(R.contact);m.grip.quaternion.copy(R.handQ).multiply(m.bladeOffset);
   this.poseHinges(m.hinges,c);
-  m.knife.position.copy(m.knifeRest);m.knife.quaternion.identity();
+  m.knife.matrixAutoUpdate=true;m.knife.position.copy(m.knifeRest);m.knife.quaternion.identity();
   m.root.position.set(Math.sin(s.phase)*.008*s.moving,Math.sin(vm.t*1.7)*.002-s.landDip*.04-(1-s.raise)*.22,0);
   m.root.rotation.set(-(1-s.raise)*.55-vm.sprint*.12,vm.sway.x,vm.sway.y);
   m.root.position.y-=vm.sprint*.055;m.root.rotation.z+=vm.sprint*.12;
+  if(m.id==='knife_karambit'){m.root.updateMatrixWorld(true);this.fitRing(m.knife,R.fing[0],R.fing[3][0],c.ring);}
   vm.flashLight.intensity=0;vm.camRX=vm.camRY=vm.camRZ=0;
  },
  poseHinges(h,c){
@@ -237,7 +259,7 @@ const K=G.Knives={catalog,ids,motionSets,templates:{},motion:null,ready:false,lo
   let blendFrom,blendEnd;
   if(kind==='slash'&&p.melee?.kind==='inspect'){
    blendFrom=this.actionCurve(p.melee,a.knife,{r:new V(),l:new V(),q:new Q(),e:new T.Euler()});
-   if(a.knife==='knife_butterfly')blendEnd=.40;
+   if(a.knife==='knife_butterfly'||a.knife==='knife_karambit')blendEnd=.40;
   }
   let variant=0;
   if(kind==='slash'){
@@ -293,6 +315,7 @@ const K=G.Knives={catalog,ids,motionSets,templates:{},motion:null,ready:false,lo
   m.armL.rotation.set(.75+c.l.z,0,.15);m.elbowL.rotation.x=.8;
   m.armR.rotation.set(1.2-c.r.z*3.5+c.e.x*.25,c.r.x*3+c.e.y*.3,-.2+c.r.y*2+c.e.z*.45);m.elbowR.rotation.x=.6+c.r.z*2-c.e.x*.15;m.ikGun='knife';
   const knife=m.guns[m.curGun];if(knife){
+   knife.matrixAutoUpdate=true;
    knife.rotation.set(-.25,0,-.27-(action?.kind==='slash'?Math.sin(t*Math.PI)*1.0:0));
    const hinges=knife._hinges||(knife._hinges=this.rig(knife));this.poseHinges(hinges,c);
   }
@@ -319,8 +342,12 @@ const K=G.Knives={catalog,ids,motionSets,templates:{},motion:null,ready:false,lo
   }
   hand.active=true;
   const release=m.curGun==='knife_butterfly'?(m.knifeCurve?.release||0):0;
-  for(const f of hand.fingers){const loose=!/Index/.test(f.bone.name)?U.lerp(1,.28,release):1;f.bone.quaternion.copy(f.bind).multiply(_q.setFromAxisAngle(f.axis,f.angle*loose));}
+  for(const f of hand.fingers){const loose=m.curGun==='knife_karambit'?(/Index/.test(f.bone.name)?.10:1.2):!/Index/.test(f.bone.name)?U.lerp(1,.28,release):1;f.bone.quaternion.copy(f.bind).multiply(_q.setFromAxisAngle(f.axis,f.angle*loose));}
   hand.wrist.updateMatrixWorld(true);
+  if(m.curGun==='knife_karambit'){
+   const index=hand.index||(hand.index=[root.getObjectByName('RightHandIndex1'),root.getObjectByName('RightHandIndex2'),root.getObjectByName('RightHandIndex3')]),pinky=hand.pinky||(hand.pinky=root.getObjectByName('RightHandPinky1'));
+   if(index.every(Boolean)&&pinky){this.fitRing(knife,index,pinky,m.knifeCurve?.ring);return;}
+  }
   // 원점 사이의 빈 공간이 아니라 고정 손잡이의 중심을 실제 손바닥에 맞춘다.
   const y=hand.worldY.copy(hand.y).transformDirection(hand.wrist.matrixWorld),z=hand.worldZ.copy(hand.n).transformDirection(hand.wrist.matrixWorld),x=hand.worldX.crossVectors(y,z).normalize();z.crossVectors(x,y).normalize();
   knife.position.copy(m.gunMount.worldToLocal(_p.copy(hand.palm).applyMatrix4(hand.wrist.matrixWorld)));

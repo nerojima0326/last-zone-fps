@@ -56,7 +56,7 @@ for(const asset of manifest.files)assert.equal(crypto.createHash('sha256').updat
     for(const id of G.Knives.ids){
      const d=G.Knives.catalog[id];for(let i=0;i<=20;i++)m.update(1/60,{...pose,gun:id,melee:{id,kind:'inspect',t:i/20*d.inspect,duration:d.inspect}});
      m.root.updateMatrixWorld(true);const hand=m.knifeHand;if(!hand?.active)throw Error('3인칭 손 그립 없음');
-     const expected=hand.palm.clone().applyMatrix4(hand.wrist.matrixWorld),actual=m.guns[id].localToWorld(new THREE.Vector3(id==='knife_butterfly'?-.011:0,-.02,0)),gap=expected.distanceTo(actual);
+     const ring=id==='knife_karambit',expected=ring?hand.index[2].getWorldPosition(new THREE.Vector3()).addScaledVector(hand.index[2].getWorldPosition(new THREE.Vector3()).sub(hand.index[1].getWorldPosition(new THREE.Vector3())).normalize(),.003):hand.palm.clone().applyMatrix4(hand.wrist.matrixWorld),actual=m.guns[id].localToWorld(ring?new THREE.Vector3(-.002165,-.026844,0):new THREE.Vector3(id==='knife_butterfly'?-.011:0,-.02,0)),gap=expected.distanceTo(actual);
      if(gap>.0001)throw Error('3인칭 손바닥과 칼이 분리됨');if(!hand.fingers.some(f=>f.bone.quaternion.angleTo(f.bind)>.5))throw Error('3인칭 손가락이 손잡이를 쥐지 않음');
      rows.push({id,palmGap:gap,fingers:hand.fingers.length});
     }

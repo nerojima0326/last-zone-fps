@@ -13,6 +13,9 @@ def main():
     parser.add_argument('before', type=Path)
     parser.add_argument('after', type=Path)
     parser.add_argument('output', type=Path)
+    parser.add_argument('--before-label', default='v104 변경 전')
+    parser.add_argument('--after-label', default='v105 변경 후')
+    parser.add_argument('--preview-id', default='knife_butterfly')
     args = parser.parse_args()
     old = json.loads((args.before / 'timeline.json').read_text())
     new = json.loads((args.after / 'timeline.json').read_text())
@@ -38,8 +41,8 @@ def main():
                     elapsed = frame / 30
                     view = Image.new('RGB', (1280, 480), '#14202b')
                     draw = ImageDraw.Draw(view)
-                    draw.text((20, 9), 'v104 변경 전', font=font, fill='#d6dde4')
-                    draw.text((660, 9), 'v105 변경 후', font=font, fill='#8fe1b0')
+                    draw.text((20, 9), args.before_label, font=font, fill='#d6dde4')
+                    draw.text((660, 9), args.after_label, font=font, fill='#8fe1b0')
                     for x, base, clip in [(0, args.before, a), (640, args.after, b)]:
                         n = round(min(elapsed / clip['duration'], 1) * (clip['endFrame'] - clip['startFrame']))
                         filename = base / (knife + '-frames') / f"{clip['startFrame'] + n:03d}.png"
@@ -50,7 +53,7 @@ def main():
                     draw.text((940, 449), '실제 게임 손 리그 · 30FPS', font=small, fill='#b0becb')
                     encoder.stdin.write(view.tobytes())
                     count += 1
-                    if knife == 'knife_butterfly' and action in [0, 3] and frame == round(duration * .4 * 30):
+                    if (args.preview_id == 'all' or knife == args.preview_id) and action in [0, 3] and frame == round(duration * .4 * 30):
                         preview.append(view.copy())
                 # 짧은 쪽이 끝난 뒤에는 마지막 자세를 유지해 다음 동작의 시작을 맞춘다.
                 for _ in range(6):

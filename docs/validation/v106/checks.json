@@ -1,0 +1,826 @@
+{
+  "version": 106,
+  "baseCommit": "73353db35f10fa56e2e6aa73961b8c699186e297",
+  "modifiedKnives": [
+    "knife_karambit",
+    "knife_kunai"
+  ],
+  "references": "references.json",
+  "clips": {
+    "knife_karambit": {
+      "draw": "검지 고리에 걸어 반회전으로 꺼내기",
+      "drawSeconds": 1.02,
+      "slash": [
+        "확장 그립에서 바깥을 감아 당겨 베기",
+        "아래에서 고리 날을 걸어 올려 베기"
+      ],
+      "inspect": "검지 끝마디로 반회전하고 되돌려 잡기",
+      "inspectSeconds": 2.9
+    },
+    "knife_kunai": {
+      "draw": "안쪽으로 당겨 받아 쥐고 전방 정렬",
+      "drawSeconds": 0.86,
+      "slash": [
+        "어깨를 당겼다가 칼끝을 곧게 뻗기",
+        "낮은 바깥 준비에서 올려 긋고 회수"
+      ],
+      "inspect": "손등으로 뒤집어 삼각 날과 고리 확인",
+      "inspectSeconds": 2.75
+    }
+  },
+  "normal": {
+    "poses": 1310,
+    "maxPenetrationMm": {
+      "knife_butterfly": 1.9495218488830446,
+      "knife_dagger": 0,
+      "knife_combat": 0,
+      "knife_karambit": 1.5071709644955014,
+      "knife_kunai": 0,
+      "knife_machete": 0
+    },
+    "distinctTrajectoryPairs": 96,
+    "frameRates": [
+      30,
+      60,
+      144
+    ],
+    "motionCases": 72,
+    "maxTipSpeedMetresPerSecond": 4.6202072634083535,
+    "inspectToSlash": [
+      {
+        "id": "knife_butterfly",
+        "jump": 4.504735462682041e-05
+      },
+      {
+        "id": "knife_dagger",
+        "jump": 1.9734119872494293e-05
+      },
+      {
+        "id": "knife_combat",
+        "jump": 1.1676195874471551e-05
+      },
+      {
+        "id": "knife_karambit",
+        "jump": 3.9479017980709186e-05
+      },
+      {
+        "id": "knife_kunai",
+        "jump": 5.508434804402107e-05
+      },
+      {
+        "id": "knife_machete",
+        "jump": 5.367074168544095e-05
+      }
+    ],
+    "ringInterrupts": [
+      {
+        "hz": 30,
+        "phase": 0.18,
+        "maxSpeed": 2.6711788599651234,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 30,
+        "phase": 0.35,
+        "maxSpeed": 4.54055725098509,
+        "maxPenetrationMm": 1.5071709644955014,
+        "worst": {
+          "frame": 0,
+          "hit": {
+            "region": "R:finger",
+            "bone": "RightHandIndex2",
+            "depth": 0.0015071709644955014,
+            "span": 0.00209495209048518,
+            "gun": "body",
+            "point": [
+              0.05061263729510093,
+              0.056333421402522565,
+              0.02958171200155022
+            ]
+          }
+        }
+      },
+      {
+        "hz": 30,
+        "phase": 0.52,
+        "maxSpeed": 5.219111001167595,
+        "maxPenetrationMm": 1.4944970311072043,
+        "worst": {
+          "frame": 3,
+          "hit": {
+            "region": "R:finger",
+            "bone": "RightHandIndex2",
+            "depth": 0.0014944970311072043,
+            "span": 0.0015298117888248623,
+            "gun": "body",
+            "point": [
+              0.05314300680598945,
+              0.05922517256335207,
+              0.027916466277123624
+            ]
+          }
+        }
+      },
+      {
+        "hz": 30,
+        "phase": 0.7,
+        "maxSpeed": 4.86989760466245,
+        "maxPenetrationMm": 1.3030438047964878,
+        "worst": {
+          "frame": 0,
+          "hit": {
+            "region": "R:finger",
+            "bone": "RightHandIndex2",
+            "depth": 0.0013030438047964877,
+            "span": 0.0016866447580633774,
+            "gun": "body",
+            "point": [
+              0.052939507847651515,
+              0.05916221365917053,
+              0.027998574991575542
+            ]
+          }
+        }
+      },
+      {
+        "hz": 30,
+        "phase": 0.9,
+        "maxSpeed": 2.646576468848925,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 60,
+        "phase": 0.18,
+        "maxSpeed": 2.202952935993133,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 60,
+        "phase": 0.35,
+        "maxSpeed": 3.967493844573381,
+        "maxPenetrationMm": 1.5071709644955014,
+        "worst": {
+          "frame": 0,
+          "hit": {
+            "region": "R:finger",
+            "bone": "RightHandIndex2",
+            "depth": 0.0015071709644955014,
+            "span": 0.00209495209048518,
+            "gun": "body",
+            "point": [
+              0.05061263729510093,
+              0.056333421402522565,
+              0.02958171200155022
+            ]
+          }
+        }
+      },
+      {
+        "hz": 60,
+        "phase": 0.52,
+        "maxSpeed": 6.391843921863058,
+        "maxPenetrationMm": 1.4944940932383621,
+        "worst": {
+          "frame": 6,
+          "hit": {
+            "region": "R:finger",
+            "bone": "RightHandIndex2",
+            "depth": 0.0014944940932383622,
+            "span": 0.0015298101256202212,
+            "gun": "body",
+            "point": [
+              0.053143005553370676,
+              0.059225172588020875,
+              0.02791646598865116
+            ]
+          }
+        }
+      },
+      {
+        "hz": 60,
+        "phase": 0.7,
+        "maxSpeed": 4.089154171333794,
+        "maxPenetrationMm": 1.5003101285671046,
+        "worst": {
+          "frame": 3,
+          "hit": {
+            "region": "R:finger",
+            "bone": "RightHandIndex2",
+            "depth": 0.0015003101285671046,
+            "span": 0.0016292991693617452,
+            "gun": "body",
+            "point": [
+              0.05048907369952664,
+              0.05648003616717179,
+              0.029719074098574216
+            ]
+          }
+        }
+      },
+      {
+        "hz": 60,
+        "phase": 0.9,
+        "maxSpeed": 2.205866773079266,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 144,
+        "phase": 0.18,
+        "maxSpeed": 2.812275332600574,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 144,
+        "phase": 0.35,
+        "maxSpeed": 4.5868787823854404,
+        "maxPenetrationMm": 1.5071709644955014,
+        "worst": {
+          "frame": 0,
+          "hit": {
+            "region": "R:finger",
+            "bone": "RightHandIndex2",
+            "depth": 0.0015071709644955014,
+            "span": 0.00209495209048518,
+            "gun": "body",
+            "point": [
+              0.05061263729510093,
+              0.056333421402522565,
+              0.02958171200155022
+            ]
+          }
+        }
+      },
+      {
+        "hz": 144,
+        "phase": 0.52,
+        "maxSpeed": 4.866580182522894,
+        "maxPenetrationMm": 1.4249969983658066,
+        "worst": {
+          "frame": 15,
+          "hit": {
+            "region": "R:finger",
+            "bone": "RightHandIndex2",
+            "depth": 0.0014249969983658067,
+            "span": 0.0005311832350764715,
+            "gun": "body",
+            "point": [
+              0.05185404155852713,
+              0.060197718009562466,
+              0.027662505145469224
+            ]
+          }
+        }
+      },
+      {
+        "hz": 144,
+        "phase": 0.7,
+        "maxSpeed": 4.932292692870276,
+        "maxPenetrationMm": 1.5023968460892019,
+        "worst": {
+          "frame": 6,
+          "hit": {
+            "region": "R:finger",
+            "bone": "RightHandIndex2",
+            "depth": 0.0015023968460892018,
+            "span": 0.002390120042728717,
+            "gun": "body",
+            "point": [
+              0.05069746146309287,
+              0.05623907355710275,
+              0.029489322197103388
+            ]
+          }
+        }
+      },
+      {
+        "hz": 144,
+        "phase": 0.9,
+        "maxSpeed": 2.7960062503284386,
+        "maxPenetrationMm": 0,
+        "worst": null
+      }
+    ],
+    "errors": []
+  },
+  "fallback": {
+    "poses": 1310,
+    "maxPenetrationMm": {
+      "knife_butterfly": 1.4114901423454285,
+      "knife_dagger": 0,
+      "knife_combat": 0,
+      "knife_karambit": 0,
+      "knife_kunai": 0,
+      "knife_machete": 0
+    },
+    "distinctTrajectoryPairs": 96,
+    "frameRates": [
+      30,
+      60,
+      144
+    ],
+    "motionCases": 72,
+    "maxTipSpeedMetresPerSecond": 4.3139925644814925,
+    "inspectToSlash": [
+      {
+        "id": "knife_butterfly",
+        "jump": 4.504735462679266e-05
+      },
+      {
+        "id": "knife_dagger",
+        "jump": 1.9734119872549805e-05
+      },
+      {
+        "id": "knife_combat",
+        "jump": 1.1675823412526073e-05
+      },
+      {
+        "id": "knife_karambit",
+        "jump": 3.9479017980709186e-05
+      },
+      {
+        "id": "knife_kunai",
+        "jump": 5.5084348044437403e-05
+      },
+      {
+        "id": "knife_machete",
+        "jump": 5.367074168530217e-05
+      }
+    ],
+    "ringInterrupts": [
+      {
+        "hz": 30,
+        "phase": 0.18,
+        "maxSpeed": 2.6634421252996114,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 30,
+        "phase": 0.35,
+        "maxSpeed": 4.51261188945035,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 30,
+        "phase": 0.52,
+        "maxSpeed": 5.1874444911874384,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 30,
+        "phase": 0.7,
+        "maxSpeed": 4.839374983819397,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 30,
+        "phase": 0.9,
+        "maxSpeed": 2.6414070840751847,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 60,
+        "phase": 0.18,
+        "maxSpeed": 2.199353395215442,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 60,
+        "phase": 0.35,
+        "maxSpeed": 3.9475142788128728,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 60,
+        "phase": 0.52,
+        "maxSpeed": 6.3493057297741675,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 60,
+        "phase": 0.7,
+        "maxSpeed": 4.067862129125351,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 60,
+        "phase": 0.9,
+        "maxSpeed": 2.200230141972117,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 144,
+        "phase": 0.18,
+        "maxSpeed": 2.8047571278460364,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 144,
+        "phase": 0.35,
+        "maxSpeed": 4.558777897991511,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 144,
+        "phase": 0.52,
+        "maxSpeed": 4.837407462632411,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 144,
+        "phase": 0.7,
+        "maxSpeed": 4.901539828635617,
+        "maxPenetrationMm": 0,
+        "worst": null
+      },
+      {
+        "hz": 144,
+        "phase": 0.9,
+        "maxSpeed": 2.790200875934393,
+        "maxPenetrationMm": 0,
+        "worst": null
+      }
+    ],
+    "errors": []
+  },
+  "unchanged": {
+    "base": "73353db",
+    "unchanged": [
+      {
+        "id": "knife_butterfly",
+        "samples": 605,
+        "maxDifference": 0
+      },
+      {
+        "id": "knife_dagger",
+        "samples": 605,
+        "maxDifference": 0
+      },
+      {
+        "id": "knife_combat",
+        "samples": 605,
+        "maxDifference": 0
+      },
+      {
+        "id": "knife_machete",
+        "samples": 605,
+        "maxDifference": 0
+      }
+    ],
+    "combatValuesUnchanged": true
+  },
+  "gameplay": {
+    "singleHits": [
+      {
+        "hz": 30,
+        "id": "knife_butterfly",
+        "damage": 40
+      },
+      {
+        "hz": 30,
+        "id": "knife_dagger",
+        "damage": 52
+      },
+      {
+        "hz": 30,
+        "id": "knife_combat",
+        "damage": 46
+      },
+      {
+        "hz": 30,
+        "id": "knife_karambit",
+        "damage": 42
+      },
+      {
+        "hz": 30,
+        "id": "knife_kunai",
+        "damage": 38
+      },
+      {
+        "hz": 30,
+        "id": "knife_machete",
+        "damage": 62
+      },
+      {
+        "hz": 60,
+        "id": "knife_butterfly",
+        "damage": 40
+      },
+      {
+        "hz": 60,
+        "id": "knife_dagger",
+        "damage": 52
+      },
+      {
+        "hz": 60,
+        "id": "knife_combat",
+        "damage": 46
+      },
+      {
+        "hz": 60,
+        "id": "knife_karambit",
+        "damage": 42
+      },
+      {
+        "hz": 60,
+        "id": "knife_kunai",
+        "damage": 38
+      },
+      {
+        "hz": 60,
+        "id": "knife_machete",
+        "damage": 62
+      },
+      {
+        "hz": 144,
+        "id": "knife_butterfly",
+        "damage": 40
+      },
+      {
+        "hz": 144,
+        "id": "knife_dagger",
+        "damage": 52
+      },
+      {
+        "hz": 144,
+        "id": "knife_combat",
+        "damage": 46
+      },
+      {
+        "hz": 144,
+        "id": "knife_karambit",
+        "damage": 42
+      },
+      {
+        "hz": 144,
+        "id": "knife_kunai",
+        "damage": 38
+      },
+      {
+        "hz": 144,
+        "id": "knife_machete",
+        "damage": 62
+      }
+    ],
+    "comboHits": [
+      {
+        "id": "knife_butterfly",
+        "hz": 30,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 120
+      },
+      {
+        "id": "knife_dagger",
+        "hz": 30,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 156
+      },
+      {
+        "id": "knife_combat",
+        "hz": 30,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 138
+      },
+      {
+        "id": "knife_karambit",
+        "hz": 30,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 126
+      },
+      {
+        "id": "knife_kunai",
+        "hz": 30,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 114
+      },
+      {
+        "id": "knife_machete",
+        "hz": 30,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 186
+      },
+      {
+        "id": "knife_butterfly",
+        "hz": 60,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 120
+      },
+      {
+        "id": "knife_dagger",
+        "hz": 60,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 156
+      },
+      {
+        "id": "knife_combat",
+        "hz": 60,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 138
+      },
+      {
+        "id": "knife_karambit",
+        "hz": 60,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 126
+      },
+      {
+        "id": "knife_kunai",
+        "hz": 60,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 114
+      },
+      {
+        "id": "knife_machete",
+        "hz": 60,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 186
+      },
+      {
+        "id": "knife_butterfly",
+        "hz": 144,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 120
+      },
+      {
+        "id": "knife_dagger",
+        "hz": 144,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 156
+      },
+      {
+        "id": "knife_combat",
+        "hz": 144,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 138
+      },
+      {
+        "id": "knife_karambit",
+        "hz": 144,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 126
+      },
+      {
+        "id": "knife_kunai",
+        "hz": 144,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 114
+      },
+      {
+        "id": "knife_machete",
+        "hz": 144,
+        "variants": [
+          0,
+          1
+        ],
+        "totalDamage": 186
+      }
+    ],
+    "friendProtected": true,
+    "wallBlocked": true,
+    "rangeLimited": true,
+    "switchCancelled": true,
+    "deathCancelled": true,
+    "trainingHit": true
+  },
+  "thirdPerson": {
+    "poses": [
+      {
+        "id": "knife_butterfly",
+        "palmGap": 2.220446049250313e-16,
+        "fingers": 12
+      },
+      {
+        "id": "knife_dagger",
+        "palmGap": 0,
+        "fingers": 12
+      },
+      {
+        "id": "knife_combat",
+        "palmGap": 0,
+        "fingers": 12
+      },
+      {
+        "id": "knife_karambit",
+        "palmGap": 0,
+        "fingers": 12
+      },
+      {
+        "id": "knife_kunai",
+        "palmGap": 0,
+        "fingers": 12
+      },
+      {
+        "id": "knife_machete",
+        "palmGap": 0,
+        "fingers": 12
+      }
+    ],
+    "restored": true
+  },
+  "keyboard": {
+    "equip5": true,
+    "inspectT": true,
+    "remappedY": true
+  },
+  "touch": {
+    "equip": {
+      "slot": "melee",
+      "knife": "knife_combat"
+    },
+    "inspect": {
+      "slot": "melee",
+      "kind": "inspect",
+      "knife": "knife_combat"
+    },
+    "slash": {
+      "slot": "melee",
+      "kind": "slash",
+      "knife": "knife_combat"
+    },
+    "next": {
+      "slot": "melee",
+      "knife": "knife_karambit"
+    },
+    "errors": []
+  },
+  "media": {
+    "file": "knife-motion-comparison.mp4",
+    "seconds": 11.7,
+    "fps": 30,
+    "resolution": [
+      1280,
+      480
+    ],
+    "baseline": 105,
+    "candidate": 106
+  },
+  "limits": "소프트웨어 Chromium과 모바일 터치 에뮬레이션 검사. 실제 Galaxy S24 FE FPS 측정은 수행하지 않음."
+}
