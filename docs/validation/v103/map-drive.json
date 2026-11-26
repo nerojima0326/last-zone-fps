@@ -1,0 +1,453 @@
+{
+  "version": "103",
+  "roadQueries": 1200,
+  "footQueries": 1200,
+  "roadClearanceBytes": 263169,
+  "housing": 202,
+  "streetLots": 261,
+  "randomLots": 112,
+  "rivers": [
+    {
+      "name": "청류강",
+      "maxGrade": 0.16234266646120682,
+      "maxWaterError": 0.02663950989284558
+    },
+    {
+      "name": "청류강",
+      "maxGrade": 0.041252298174916456,
+      "maxWaterError": 0.05043122868674388
+    },
+    {
+      "name": "서천",
+      "maxGrade": 0.0774187884207079,
+      "maxWaterError": 0.04793691427358482
+    }
+  ],
+  "water": {
+    "triangles": 16538,
+    "maxWaterError": 0.000003431757292560178,
+    "overLand": 0
+  },
+  "trees": 7523,
+  "minimumTreeDistance": 4.200109203291076,
+  "driving": [
+    {
+      "kind": "porter",
+      "fps": 30,
+      "profile": "descent",
+      "airborneSeconds": 0,
+      "gravityError": 0,
+      "landAt": null,
+      "minY": 18.09771979109448,
+      "maxY": 30.000000004643887,
+      "maxDownwardAcceleration": 0,
+      "speed": 5.957500911243468,
+      "landings": 0
+    },
+    {
+      "kind": "porter",
+      "fps": 30,
+      "profile": "drop",
+      "airborneSeconds": 1.8666666666666667,
+      "gravityError": 5.5067062021407764e-14,
+      "landAt": 3.2,
+      "minY": 4.0000000000297105,
+      "maxY": 24,
+      "maxDownwardAcceleration": 11.790092182106449,
+      "speed": 3.9959531079425665,
+      "landings": 1
+    },
+    {
+      "kind": "porter",
+      "fps": 60,
+      "profile": "descent",
+      "airborneSeconds": 0,
+      "gravityError": 0,
+      "landAt": null,
+      "minY": 18.09771979109448,
+      "maxY": 30.000000004643887,
+      "maxDownwardAcceleration": 0,
+      "speed": 5.957500911243468,
+      "landings": 0
+    },
+    {
+      "kind": "porter",
+      "fps": 60,
+      "profile": "drop",
+      "airborneSeconds": 1.8666666666666667,
+      "gravityError": 5.5067062021407764e-14,
+      "landAt": 3.183333333333333,
+      "minY": 4.0000000000297105,
+      "maxY": 24,
+      "maxDownwardAcceleration": 18.7097530881573,
+      "speed": 3.9959531079425665,
+      "landings": 1
+    },
+    {
+      "kind": "porter",
+      "fps": 144,
+      "profile": "descent",
+      "airborneSeconds": 0,
+      "gravityError": 0,
+      "landAt": null,
+      "minY": 18.09292108228991,
+      "maxY": 30.000000004643887,
+      "maxDownwardAcceleration": 0,
+      "speed": 5.958015736624253,
+      "landings": 0
+    },
+    {
+      "kind": "porter",
+      "fps": 144,
+      "profile": "drop",
+      "airborneSeconds": 1.8680555555555556,
+      "gravityError": 2.255973186038318e-13,
+      "landAt": 3.173611111111111,
+      "minY": 4.000000000028701,
+      "maxY": 24,
+      "maxDownwardAcceleration": 38.64124171178264,
+      "speed": 3.98705556473819,
+      "landings": 1
+    },
+    {
+      "kind": "e2200",
+      "fps": 30,
+      "profile": "descent",
+      "airborneSeconds": 0,
+      "gravityError": 0,
+      "landAt": null,
+      "minY": 18.101024557768987,
+      "maxY": 30.003304771318398,
+      "maxDownwardAcceleration": 0,
+      "speed": 5.957500911243468,
+      "landings": 0
+    },
+    {
+      "kind": "e2200",
+      "fps": 30,
+      "profile": "drop",
+      "airborneSeconds": 1.8666666666666667,
+      "gravityError": 5.5067062021407764e-14,
+      "landAt": 3.1666666666666665,
+      "minY": 4.000000000023808,
+      "maxY": 24.00310867489068,
+      "maxDownwardAcceleration": 12.780034476353563,
+      "speed": 3.9228969813874586,
+      "landings": 1
+    },
+    {
+      "kind": "e2200",
+      "fps": 60,
+      "profile": "descent",
+      "airborneSeconds": 0,
+      "gravityError": 0,
+      "landAt": null,
+      "minY": 18.101024557768987,
+      "maxY": 30.003304771318398,
+      "maxDownwardAcceleration": 0,
+      "speed": 5.957500911243468,
+      "landings": 0
+    },
+    {
+      "kind": "e2200",
+      "fps": 60,
+      "profile": "drop",
+      "airborneSeconds": 1.8666666666666667,
+      "gravityError": 5.5067062021407764e-14,
+      "landAt": 3.1666666666666665,
+      "minY": 4.000000000023808,
+      "maxY": 24.00310867489068,
+      "maxDownwardAcceleration": 20.746948829192036,
+      "speed": 3.9228969813874586,
+      "landings": 1
+    },
+    {
+      "kind": "e2200",
+      "fps": 144,
+      "profile": "descent",
+      "airborneSeconds": 0,
+      "gravityError": 0,
+      "landAt": null,
+      "minY": 18.096225848964416,
+      "maxY": 30.003304771318398,
+      "maxDownwardAcceleration": 0,
+      "speed": 5.958015736624253,
+      "landings": 0
+    },
+    {
+      "kind": "e2200",
+      "fps": 144,
+      "profile": "drop",
+      "airborneSeconds": 1.8819444444444444,
+      "gravityError": 2.255973186038318e-13,
+      "landAt": 3.1805555555555554,
+      "minY": 4.000000000025487,
+      "maxY": 24,
+      "maxDownwardAcceleration": 23.747679403712937,
+      "speed": 3.9177859990454476,
+      "landings": 1
+    },
+    {
+      "kind": "izh",
+      "fps": 30,
+      "profile": "descent",
+      "airborneSeconds": 0,
+      "gravityError": 0,
+      "landAt": null,
+      "minY": 18.09923333040454,
+      "maxY": 30.00151354395395,
+      "maxDownwardAcceleration": 0,
+      "speed": 5.957500911243468,
+      "landings": 0
+    },
+    {
+      "kind": "izh",
+      "fps": 30,
+      "profile": "drop",
+      "airborneSeconds": 1.8666666666666667,
+      "gravityError": 5.5067062021407764e-14,
+      "landAt": 3.1666666666666665,
+      "minY": 4.000000000023556,
+      "maxY": 24.002571461461397,
+      "maxDownwardAcceleration": 13.126052130975197,
+      "speed": 3.919091000426635,
+      "landings": 1
+    },
+    {
+      "kind": "izh",
+      "fps": 60,
+      "profile": "descent",
+      "airborneSeconds": 0,
+      "gravityError": 0,
+      "landAt": null,
+      "minY": 18.09923333040454,
+      "maxY": 30.00151354395395,
+      "maxDownwardAcceleration": 0,
+      "speed": 5.957500911243468,
+      "landings": 0
+    },
+    {
+      "kind": "izh",
+      "fps": 60,
+      "profile": "drop",
+      "airborneSeconds": 1.8666666666666667,
+      "gravityError": 5.5067062021407764e-14,
+      "landAt": 3.1666666666666665,
+      "minY": 4.000000000023556,
+      "maxY": 24.002571461461397,
+      "maxDownwardAcceleration": 19.196660642522545,
+      "speed": 3.919091000426635,
+      "landings": 1
+    },
+    {
+      "kind": "izh",
+      "fps": 144,
+      "profile": "descent",
+      "airborneSeconds": 0,
+      "gravityError": 0,
+      "landAt": null,
+      "minY": 18.09443462159997,
+      "maxY": 30.00151354395395,
+      "maxDownwardAcceleration": 0,
+      "speed": 5.958015736624253,
+      "landings": 0
+    },
+    {
+      "kind": "izh",
+      "fps": 144,
+      "profile": "drop",
+      "airborneSeconds": 1.8819444444444444,
+      "gravityError": 2.255973186038318e-13,
+      "landAt": 3.1805555555555554,
+      "minY": 4.000000000025468,
+      "maxY": 24,
+      "maxDownwardAcceleration": 29.733548862015596,
+      "speed": 3.922030897619302,
+      "landings": 1
+    },
+    {
+      "kind": "fallback",
+      "fps": 30,
+      "profile": "descent",
+      "airborneSeconds": 0,
+      "gravityError": 0,
+      "landAt": null,
+      "minY": 18.097719786450593,
+      "maxY": 30,
+      "maxDownwardAcceleration": 0,
+      "speed": 5.957500911243468,
+      "landings": 0
+    },
+    {
+      "kind": "fallback",
+      "fps": 30,
+      "profile": "drop",
+      "airborneSeconds": 1.9,
+      "gravityError": 5.5067062021407764e-14,
+      "landAt": 3.2,
+      "minY": 4.000000000022888,
+      "maxY": 24,
+      "maxDownwardAcceleration": 12.359649538485229,
+      "speed": 3.8878573590695655,
+      "landings": 1
+    },
+    {
+      "kind": "fallback",
+      "fps": 60,
+      "profile": "descent",
+      "airborneSeconds": 0,
+      "gravityError": 0,
+      "landAt": null,
+      "minY": 18.097719786450593,
+      "maxY": 30,
+      "maxDownwardAcceleration": 0,
+      "speed": 5.957500911243468,
+      "landings": 0
+    },
+    {
+      "kind": "fallback",
+      "fps": 60,
+      "profile": "drop",
+      "airborneSeconds": 1.8833333333333333,
+      "gravityError": 5.5067062021407764e-14,
+      "landAt": 3.183333333333333,
+      "minY": 4.000000000022888,
+      "maxY": 24,
+      "maxDownwardAcceleration": 20.008598153961543,
+      "speed": 3.8878573590695655,
+      "landings": 1
+    },
+    {
+      "kind": "fallback",
+      "fps": 144,
+      "profile": "descent",
+      "airborneSeconds": 0,
+      "gravityError": 0,
+      "landAt": null,
+      "minY": 18.09292107764602,
+      "maxY": 30,
+      "maxDownwardAcceleration": 0,
+      "speed": 5.958015736624253,
+      "landings": 0
+    },
+    {
+      "kind": "fallback",
+      "fps": 144,
+      "profile": "drop",
+      "airborneSeconds": 1.875,
+      "gravityError": 2.255973186038318e-13,
+      "landAt": 3.173611111111111,
+      "minY": 4.000000000022725,
+      "maxY": 24,
+      "maxDownwardAcceleration": 38.00109929305472,
+      "speed": 3.8884441459008015,
+      "landings": 1
+    }
+  ],
+  "airborneExit": {
+    "landed": true,
+    "landings": 1,
+    "colliderCount": 1
+  },
+  "bridges": [
+    {
+      "x": 314.8494636057209,
+      "z": 276.72903449029764,
+      "crossed": true,
+      "minClearance": 1.4722445484949276e-11,
+      "maxSpeed": 19.93842337523597,
+      "underpass": true
+    },
+    {
+      "x": 177.40731188641234,
+      "z": 593.5449462532607,
+      "crossed": true,
+      "minClearance": 3.240785417801817e-10,
+      "maxSpeed": 19.797273330981614,
+      "underpass": true
+    },
+    {
+      "x": 311.4915360692753,
+      "z": -252.87751025804275,
+      "crossed": true,
+      "minClearance": 5.166891270391716e-8,
+      "maxSpeed": 17.033039680939723,
+      "underpass": true
+    }
+  ],
+  "foliage": [
+    {
+      "tier": "potato",
+      "yaw": 0,
+      "checked": 2799,
+      "far": 5213
+    },
+    {
+      "tier": "potato",
+      "yaw": 1.5707963267948966,
+      "checked": 6322,
+      "far": 12929
+    },
+    {
+      "tier": "potato",
+      "yaw": 3.141592653589793,
+      "checked": 5086,
+      "far": 9020
+    },
+    {
+      "tier": "low",
+      "yaw": 0,
+      "checked": 2799,
+      "far": 5213
+    },
+    {
+      "tier": "low",
+      "yaw": 1.5707963267948966,
+      "checked": 8923,
+      "far": 12929
+    },
+    {
+      "tier": "low",
+      "yaw": 3.141592653589793,
+      "checked": 5447,
+      "far": 9020
+    },
+    {
+      "tier": "medium",
+      "yaw": 0,
+      "checked": 2799,
+      "far": 5213
+    },
+    {
+      "tier": "medium",
+      "yaw": 1.5707963267948966,
+      "checked": 8923,
+      "far": 12929
+    },
+    {
+      "tier": "medium",
+      "yaw": 3.141592653589793,
+      "checked": 5447,
+      "far": 9138
+    },
+    {
+      "tier": "high",
+      "yaw": 0,
+      "checked": 2799,
+      "far": 5213
+    },
+    {
+      "tier": "high",
+      "yaw": 1.5707963267948966,
+      "checked": 8923,
+      "far": 12929
+    },
+    {
+      "tier": "high",
+      "yaw": 3.141592653589793,
+      "checked": 5447,
+      "far": 9138
+    }
+  ],
+  "errors": []
+}

@@ -117,10 +117,11 @@
 
   function press(code) { if (!I.keys[code]) I.hits[code] = true; I.keys[code] = true; }
   function release(code) { I.keys[code] = false; }
+  function boostHeld(){for(const r of touches.values())if(r.role==='btn'&&r.key==='ShiftLeft')return true;return false;}
   function setMove(nx, ny) {
     I.keys.KeyW = ny < -0.3; I.keys.KeyS = ny > 0.3;
     I.keys.KeyA = nx < -0.3; I.keys.KeyD = nx > 0.3;
-    const sprint = ny < -0.85 && Math.abs(nx) < 0.5;
+    const sprint = G.Player?.vehicle?boostHeld():ny < -0.85 && Math.abs(nx) < 0.5;
     I.keys.ShiftLeft = sprint;
     sprintTag.classList.toggle('on', sprint);
   }
@@ -287,13 +288,20 @@
     if (!playing) return;
     const P = G.Player, a = P && P.a;
     if (!a) return;
+    const driving=!!P.vehicle;
+    if(ui.dataset.vehicle!==(driving?'1':'0')){
+      if(driving)I.keys.ShiftLeft=boostHeld();
+      ui.dataset.vehicle=driving?'1':'0';
+      BY.reload.el.dataset.key=driving?'ShiftLeft':'KeyR';BY.reload.el.querySelector('span').textContent=driving?'가속':'장전';
+      BY.jump.el.querySelector('span').textContent=driving?'드리프트':'점프';
+    }
     const st = !a.alive ? 'dead' : (a.state === 'plane' || a.state === 'freefall' || a.state === 'chute') ? 'air' : 'ground';
     if (ui.dataset.st !== st) ui.dataset.st = st;
     const knife=a.cur==='melee';
     BY.mode.el.dataset.key=knife?'Digit5':'KeyB';BY.mode.el.querySelector('span').textContent=knife?'다음 칼':'연사';
     BY.scope.el.dataset.key=knife?'KeyT':'KeyV';BY.scope.el.querySelector('span').textContent=knife?'보기':'배율';
     adsBtn.querySelector('span').textContent=knife?'보기':'조준';
-    const sprintText = st === 'air' ? '빠른 하강' : '달리기';
+    const sprintText = st === 'air' ? '빠른 하강' : driving?'운전':'달리기';
     if (sprintTag.textContent !== sprintText) sprintTag.textContent = sprintText;
     let label = '', on = false;
     if (st === 'air') { label = a.state === 'plane' ? '점프' : '낙하산'; on = true; }

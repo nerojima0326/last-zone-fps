@@ -55,6 +55,12 @@ jobs:
         run: node tools/check-vehicle-throwable-vfx.cjs
       - name: 바퀴 굴림·조향·타이어 피격·재생성 검사
         run: node tools/check-vehicle-wheels.cjs
+      - name: Space 드리프트·Shift 가속·터치·타이어 자국 검사
+        run: |
+          node tools/check-driving-controls.cjs
+          node tools/check-driving-input.cjs
+          DRIVE_MOBILE=1 node tools/check-driving-input.cjs
+          SHOTS="$RUNNER_TEMP/타이어-자국.png" node tools/capture-skid-trails.cjs after
       - name: 맵 배치·수면 일치·고저차 주행 검사
         run: |
           node tools/check-map-hydrology.cjs

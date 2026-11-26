@@ -1,0 +1,67 @@
+{
+  "mobile": false,
+  "steering": {
+    "speed": 20.461706997533604,
+    "boosting": false,
+    "drift": false,
+    "space": false,
+    "shift": false,
+    "marks": 0,
+    "prompt": "<kbd>F</kbd> 내리기 · <kbd>Space</kbd> 드리프트 · <kbd>왼쪽 Shift</kbd> 가속 · <b>74</b> km/h · 차량 <b>100%</b>"
+  },
+  "space": {
+    "speed": 8.993783286136336,
+    "boosting": false,
+    "drift": true,
+    "space": true,
+    "shift": false,
+    "marks": 150,
+    "prompt": "<kbd>F</kbd> 내리기 · <kbd>Space</kbd> 드리프트 · <kbd>왼쪽 Shift</kbd> 가속 · <b>49</b> km/h · 차량 <b>100%</b> · <b style=\"color:#ffd23f\">드리프트</b>"
+  },
+  "release": {
+    "speed": 8.99422239532067,
+    "boosting": false,
+    "drift": false,
+    "space": false,
+    "shift": false,
+    "marks": 152,
+    "prompt": "<kbd>F</kbd> 내리기 · <kbd>Space</kbd> 드리프트 · <kbd>왼쪽 Shift</kbd> 가속 · <b>47</b> km/h · 차량 <b>100%</b>"
+  },
+  "boost": {
+    "speed": 28,
+    "boosting": true,
+    "drift": false,
+    "space": false,
+    "shift": true,
+    "marks": 0,
+    "prompt": "<kbd>F</kbd> 내리기 · <kbd>Space</kbd> 드리프트 · <kbd>왼쪽 Shift</kbd> 가속 · <b>101</b> km/h · 차량 <b>100%</b> · <b style=\"color:#ffd23f\">가속 중</b>"
+  },
+  "boostRelease": {
+    "speed": 27.93333333333333,
+    "boosting": false,
+    "drift": false,
+    "space": false,
+    "shift": false,
+    "marks": 0,
+    "prompt": "<kbd>F</kbd> 내리기 · <kbd>Space</kbd> 드리프트 · <kbd>왼쪽 Shift</kbd> 가속 · <b>101</b> km/h · 차량 <b>100%</b>"
+  },
+  "rightShift": {
+    "speed": 27.960452033971148,
+    "boosting": true,
+    "drift": false,
+    "space": false,
+    "shift": true,
+    "marks": 0,
+    "prompt": "<kbd>F</kbd> 내리기 · <kbd>Space</kbd> 드리프트 · <kbd>왼쪽 Shift</kbd> 가속 · <b>101</b> km/h · 차량 <b>100%</b> · <b style=\"color:#ffd23f\">가속 중</b>"
+  },
+  "priority": {
+    "speed": 19.813936186510624,
+    "boosting": false,
+    "drift": true,
+    "space": true,
+    "shift": true,
+    "marks": 84,
+    "prompt": "<kbd>F</kbd> 내리기 · <kbd>Space</kbd> 드리프트 · <kbd>왼쪽 Shift</kbd> 가속 · <b>83</b> km/h · 차량 <b>100%</b> · <b style=\"color:#ffd23f\">드리프트</b>"
+  },
+  "errors": []
+}

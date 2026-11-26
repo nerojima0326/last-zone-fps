@@ -1,0 +1,916 @@
+{
+  "tests": {
+    "rows": [
+      {
+        "kind": "porter",
+        "axes": [
+          2.75531750146835e-17,
+          2.479785751321515e-16,
+          0,
+          0
+        ],
+        "rolling": [
+          {
+            "radius": 0.3039170205593109,
+            "angle": 3.2903718197804754,
+            "error": 0
+          },
+          {
+            "radius": 0.3039170205593109,
+            "angle": 3.2903718197804754,
+            "error": 0
+          },
+          {
+            "radius": 0.2486039400100708,
+            "angle": 4.022462395243979,
+            "error": 8.881784197001252e-16
+          },
+          {
+            "radius": 0.2486039400100708,
+            "angle": 4.02246239524398,
+            "error": 0
+          }
+        ],
+        "steer": [
+          0.43994909360466455,
+          0.3663981007003931
+        ],
+        "pops": [
+          {
+            "name": "wheel_frontLeft",
+            "shots": 2,
+            "radius": 0.22368292713165283,
+            "normal": 0.3039170205593109
+          },
+          {
+            "name": "wheel_frontRight",
+            "shots": 2,
+            "radius": 0.22368292713165283,
+            "normal": 0.3039170205593109
+          },
+          {
+            "name": "wheel_backLeft",
+            "shots": 2,
+            "radius": 0.1829724998474121,
+            "normal": 0.2486039400100708
+          },
+          {
+            "name": "wheel_backRight",
+            "shots": 2,
+            "radius": 0.1829724998474121,
+            "normal": 0.2486039400100708
+          }
+        ],
+        "bodyHP": 1600,
+        "geometries": 8
+      },
+      {
+        "kind": "e2200",
+        "axes": [
+          -0.17734170629858403,
+          -0.17627365405264475,
+          1.0889054081032788e-16,
+          1.0889054081032788e-16
+        ],
+        "rolling": [
+          {
+            "radius": 0.3346109275281507,
+            "angle": 2.988545554645313,
+            "error": 8.881784197001252e-16
+          },
+          {
+            "radius": 0.33614158630371094,
+            "angle": 2.974936874060203,
+            "error": 8.881784197001252e-16
+          },
+          {
+            "radius": 0.33501577377319336,
+            "angle": 2.9849340785876035,
+            "error": 0
+          },
+          {
+            "radius": 0.33501575887203217,
+            "angle": 2.984934211354444,
+            "error": 0
+          }
+        ],
+        "steer": [
+          0.4458396606004155,
+          0.36109189514382445
+        ],
+        "pops": [
+          {
+            "name": "wheel_frontLeft",
+            "shots": 2,
+            "radius": 0.2462736426607189,
+            "normal": 0.3346109275281507
+          },
+          {
+            "name": "wheel_frontRight",
+            "shots": 2,
+            "radius": 0.24740020751953123,
+            "normal": 0.33614158630371094
+          },
+          {
+            "name": "wheel_backLeft",
+            "shots": 2,
+            "radius": 0.2465716094970703,
+            "normal": 0.33501577377319336
+          },
+          {
+            "name": "wheel_backRight",
+            "shots": 2,
+            "radius": 0.24657159852981567,
+            "normal": 0.33501575887203217
+          }
+        ],
+        "bodyHP": 1600,
+        "geometries": 13
+      },
+      {
+        "kind": "izh",
+        "axes": [
+          0.02072543159947008,
+          -0.11976233894520488,
+          -6.866809864963129e-17,
+          -6.866809864963129e-17
+        ],
+        "rolling": [
+          {
+            "radius": 0.32321833016065327,
+            "angle": 3.093883937532124,
+            "error": 0
+          },
+          {
+            "radius": 0.32321236441230505,
+            "angle": 3.093941043432214,
+            "error": 0
+          },
+          {
+            "radius": 0.32322767299954114,
+            "angle": 3.0937945093625063,
+            "error": 0
+          },
+          {
+            "radius": 0.32319626080057395,
+            "angle": 3.0940952024721695,
+            "error": 0
+          }
+        ],
+        "steer": [
+          0.43656347961230213,
+          0.3638548618092971
+        ],
+        "pops": [
+          {
+            "name": "wheel_frontLeft",
+            "shots": 2,
+            "radius": 0.2378886909982408,
+            "normal": 0.32321833016065327
+          },
+          {
+            "name": "wheel_frontRight",
+            "shots": 2,
+            "radius": 0.23788430020745652,
+            "normal": 0.32321236441230505
+          },
+          {
+            "name": "wheel_backLeft",
+            "shots": 2,
+            "radius": 0.23789556732766226,
+            "normal": 0.32322767299954114
+          },
+          {
+            "name": "wheel_backRight",
+            "shots": 2,
+            "radius": 0.23787244794922244,
+            "normal": 0.32319626080057395
+          }
+        ],
+        "bodyHP": 1600,
+        "geometries": 4
+      },
+      {
+        "kind": "fallback",
+        "axes": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "rolling": [
+          {
+            "radius": 0.42,
+            "angle": 2.380952380952381,
+            "error": 0
+          },
+          {
+            "radius": 0.42,
+            "angle": 2.380952380952381,
+            "error": 0
+          },
+          {
+            "radius": 0.42,
+            "angle": 2.380952380952381,
+            "error": 0
+          },
+          {
+            "radius": 0.42,
+            "angle": 2.380952380952381,
+            "error": 0
+          }
+        ],
+        "steer": [
+          0.46662069026326913,
+          0.3493298265295612
+        ],
+        "pops": [
+          {
+            "name": "wheel_frontLeft",
+            "shots": 2,
+            "radius": 0.30912,
+            "normal": 0.42
+          },
+          {
+            "name": "wheel_frontRight",
+            "shots": 2,
+            "radius": 0.30912,
+            "normal": 0.42
+          },
+          {
+            "name": "wheel_backLeft",
+            "shots": 2,
+            "radius": 0.30912,
+            "normal": 0.42
+          },
+          {
+            "name": "wheel_backRight",
+            "shots": 2,
+            "radius": 0.30912,
+            "normal": 0.42
+          }
+        ],
+        "bodyHP": 1600,
+        "geometries": 8
+      }
+    ],
+    "guns": [
+      {
+        "kind": "porter",
+        "gun": "ar7",
+        "shots": 2
+      },
+      {
+        "kind": "porter",
+        "gun": "ka47",
+        "shots": 2
+      },
+      {
+        "kind": "porter",
+        "gun": "sc17",
+        "shots": 2
+      },
+      {
+        "kind": "porter",
+        "gun": "mk14",
+        "shots": 1
+      },
+      {
+        "kind": "porter",
+        "gun": "kr98",
+        "shots": 1
+      },
+      {
+        "kind": "porter",
+        "gun": "s12",
+        "shots": 3
+      },
+      {
+        "kind": "porter",
+        "gun": "m1014",
+        "shots": 3
+      },
+      {
+        "kind": "porter",
+        "gun": "db2",
+        "shots": 3
+      },
+      {
+        "kind": "porter",
+        "gun": "sa12",
+        "shots": 3
+      },
+      {
+        "kind": "porter",
+        "gun": "aa12",
+        "shots": 4
+      },
+      {
+        "kind": "porter",
+        "gun": "p92",
+        "shots": 2
+      },
+      {
+        "kind": "porter",
+        "gun": "g18",
+        "shots": 2
+      },
+      {
+        "kind": "porter",
+        "gun": "m1911",
+        "shots": 2
+      },
+      {
+        "kind": "porter",
+        "gun": "de7",
+        "shots": 1
+      },
+      {
+        "kind": "porter",
+        "gun": "r45",
+        "shots": 1
+      },
+      {
+        "kind": "porter",
+        "gun": "mp9",
+        "shots": 2
+      },
+      {
+        "kind": "porter",
+        "gun": "v45",
+        "shots": 2
+      },
+      {
+        "kind": "porter",
+        "gun": "cx9",
+        "shots": 2
+      },
+      {
+        "kind": "porter",
+        "gun": "sm45",
+        "shots": 2
+      },
+      {
+        "kind": "porter",
+        "gun": "ar416",
+        "shots": 2
+      },
+      {
+        "kind": "porter",
+        "gun": "sg56",
+        "shots": 2
+      },
+      {
+        "kind": "porter",
+        "gun": "ms56",
+        "shots": 2
+      },
+      {
+        "kind": "porter",
+        "gun": "lm86",
+        "shots": 2
+      },
+      {
+        "kind": "porter",
+        "gun": "rk762",
+        "shots": 2
+      },
+      {
+        "kind": "porter",
+        "gun": "mg60",
+        "shots": 2
+      },
+      {
+        "kind": "porter",
+        "gun": "sr25",
+        "shots": 1
+      },
+      {
+        "kind": "porter",
+        "gun": "dm56",
+        "shots": 1
+      },
+      {
+        "kind": "porter",
+        "gun": "m24",
+        "shots": 1
+      },
+      {
+        "kind": "porter",
+        "gun": "sp12",
+        "shots": 3
+      },
+      {
+        "kind": "porter",
+        "gun": "p226",
+        "shots": 2
+      },
+      {
+        "kind": "e2200",
+        "gun": "ar7",
+        "shots": 2
+      },
+      {
+        "kind": "e2200",
+        "gun": "ka47",
+        "shots": 2
+      },
+      {
+        "kind": "e2200",
+        "gun": "sc17",
+        "shots": 2
+      },
+      {
+        "kind": "e2200",
+        "gun": "mk14",
+        "shots": 1
+      },
+      {
+        "kind": "e2200",
+        "gun": "kr98",
+        "shots": 1
+      },
+      {
+        "kind": "e2200",
+        "gun": "s12",
+        "shots": 3
+      },
+      {
+        "kind": "e2200",
+        "gun": "m1014",
+        "shots": 3
+      },
+      {
+        "kind": "e2200",
+        "gun": "db2",
+        "shots": 3
+      },
+      {
+        "kind": "e2200",
+        "gun": "sa12",
+        "shots": 3
+      },
+      {
+        "kind": "e2200",
+        "gun": "aa12",
+        "shots": 4
+      },
+      {
+        "kind": "e2200",
+        "gun": "p92",
+        "shots": 2
+      },
+      {
+        "kind": "e2200",
+        "gun": "g18",
+        "shots": 2
+      },
+      {
+        "kind": "e2200",
+        "gun": "m1911",
+        "shots": 2
+      },
+      {
+        "kind": "e2200",
+        "gun": "de7",
+        "shots": 1
+      },
+      {
+        "kind": "e2200",
+        "gun": "r45",
+        "shots": 1
+      },
+      {
+        "kind": "e2200",
+        "gun": "mp9",
+        "shots": 2
+      },
+      {
+        "kind": "e2200",
+        "gun": "v45",
+        "shots": 2
+      },
+      {
+        "kind": "e2200",
+        "gun": "cx9",
+        "shots": 2
+      },
+      {
+        "kind": "e2200",
+        "gun": "sm45",
+        "shots": 2
+      },
+      {
+        "kind": "e2200",
+        "gun": "ar416",
+        "shots": 2
+      },
+      {
+        "kind": "e2200",
+        "gun": "sg56",
+        "shots": 2
+      },
+      {
+        "kind": "e2200",
+        "gun": "ms56",
+        "shots": 2
+      },
+      {
+        "kind": "e2200",
+        "gun": "lm86",
+        "shots": 2
+      },
+      {
+        "kind": "e2200",
+        "gun": "rk762",
+        "shots": 2
+      },
+      {
+        "kind": "e2200",
+        "gun": "mg60",
+        "shots": 2
+      },
+      {
+        "kind": "e2200",
+        "gun": "sr25",
+        "shots": 1
+      },
+      {
+        "kind": "e2200",
+        "gun": "dm56",
+        "shots": 1
+      },
+      {
+        "kind": "e2200",
+        "gun": "m24",
+        "shots": 1
+      },
+      {
+        "kind": "e2200",
+        "gun": "sp12",
+        "shots": 3
+      },
+      {
+        "kind": "e2200",
+        "gun": "p226",
+        "shots": 2
+      },
+      {
+        "kind": "izh",
+        "gun": "ar7",
+        "shots": 2
+      },
+      {
+        "kind": "izh",
+        "gun": "ka47",
+        "shots": 2
+      },
+      {
+        "kind": "izh",
+        "gun": "sc17",
+        "shots": 2
+      },
+      {
+        "kind": "izh",
+        "gun": "mk14",
+        "shots": 1
+      },
+      {
+        "kind": "izh",
+        "gun": "kr98",
+        "shots": 1
+      },
+      {
+        "kind": "izh",
+        "gun": "s12",
+        "shots": 3
+      },
+      {
+        "kind": "izh",
+        "gun": "m1014",
+        "shots": 3
+      },
+      {
+        "kind": "izh",
+        "gun": "db2",
+        "shots": 3
+      },
+      {
+        "kind": "izh",
+        "gun": "sa12",
+        "shots": 3
+      },
+      {
+        "kind": "izh",
+        "gun": "aa12",
+        "shots": 4
+      },
+      {
+        "kind": "izh",
+        "gun": "p92",
+        "shots": 2
+      },
+      {
+        "kind": "izh",
+        "gun": "g18",
+        "shots": 2
+      },
+      {
+        "kind": "izh",
+        "gun": "m1911",
+        "shots": 2
+      },
+      {
+        "kind": "izh",
+        "gun": "de7",
+        "shots": 1
+      },
+      {
+        "kind": "izh",
+        "gun": "r45",
+        "shots": 1
+      },
+      {
+        "kind": "izh",
+        "gun": "mp9",
+        "shots": 2
+      },
+      {
+        "kind": "izh",
+        "gun": "v45",
+        "shots": 2
+      },
+      {
+        "kind": "izh",
+        "gun": "cx9",
+        "shots": 2
+      },
+      {
+        "kind": "izh",
+        "gun": "sm45",
+        "shots": 2
+      },
+      {
+        "kind": "izh",
+        "gun": "ar416",
+        "shots": 2
+      },
+      {
+        "kind": "izh",
+        "gun": "sg56",
+        "shots": 2
+      },
+      {
+        "kind": "izh",
+        "gun": "ms56",
+        "shots": 2
+      },
+      {
+        "kind": "izh",
+        "gun": "lm86",
+        "shots": 2
+      },
+      {
+        "kind": "izh",
+        "gun": "rk762",
+        "shots": 2
+      },
+      {
+        "kind": "izh",
+        "gun": "mg60",
+        "shots": 2
+      },
+      {
+        "kind": "izh",
+        "gun": "sr25",
+        "shots": 1
+      },
+      {
+        "kind": "izh",
+        "gun": "dm56",
+        "shots": 1
+      },
+      {
+        "kind": "izh",
+        "gun": "m24",
+        "shots": 1
+      },
+      {
+        "kind": "izh",
+        "gun": "sp12",
+        "shots": 3
+      },
+      {
+        "kind": "izh",
+        "gun": "p226",
+        "shots": 2
+      },
+      {
+        "kind": "fallback",
+        "gun": "ar7",
+        "shots": 2
+      },
+      {
+        "kind": "fallback",
+        "gun": "ka47",
+        "shots": 2
+      },
+      {
+        "kind": "fallback",
+        "gun": "sc17",
+        "shots": 2
+      },
+      {
+        "kind": "fallback",
+        "gun": "mk14",
+        "shots": 1
+      },
+      {
+        "kind": "fallback",
+        "gun": "kr98",
+        "shots": 1
+      },
+      {
+        "kind": "fallback",
+        "gun": "s12",
+        "shots": 3
+      },
+      {
+        "kind": "fallback",
+        "gun": "m1014",
+        "shots": 3
+      },
+      {
+        "kind": "fallback",
+        "gun": "db2",
+        "shots": 3
+      },
+      {
+        "kind": "fallback",
+        "gun": "sa12",
+        "shots": 3
+      },
+      {
+        "kind": "fallback",
+        "gun": "aa12",
+        "shots": 4
+      },
+      {
+        "kind": "fallback",
+        "gun": "p92",
+        "shots": 2
+      },
+      {
+        "kind": "fallback",
+        "gun": "g18",
+        "shots": 2
+      },
+      {
+        "kind": "fallback",
+        "gun": "m1911",
+        "shots": 2
+      },
+      {
+        "kind": "fallback",
+        "gun": "de7",
+        "shots": 1
+      },
+      {
+        "kind": "fallback",
+        "gun": "r45",
+        "shots": 1
+      },
+      {
+        "kind": "fallback",
+        "gun": "mp9",
+        "shots": 2
+      },
+      {
+        "kind": "fallback",
+        "gun": "v45",
+        "shots": 2
+      },
+      {
+        "kind": "fallback",
+        "gun": "cx9",
+        "shots": 2
+      },
+      {
+        "kind": "fallback",
+        "gun": "sm45",
+        "shots": 2
+      },
+      {
+        "kind": "fallback",
+        "gun": "ar416",
+        "shots": 2
+      },
+      {
+        "kind": "fallback",
+        "gun": "sg56",
+        "shots": 2
+      },
+      {
+        "kind": "fallback",
+        "gun": "ms56",
+        "shots": 2
+      },
+      {
+        "kind": "fallback",
+        "gun": "lm86",
+        "shots": 2
+      },
+      {
+        "kind": "fallback",
+        "gun": "rk762",
+        "shots": 2
+      },
+      {
+        "kind": "fallback",
+        "gun": "mg60",
+        "shots": 2
+      },
+      {
+        "kind": "fallback",
+        "gun": "sr25",
+        "shots": 1
+      },
+      {
+        "kind": "fallback",
+        "gun": "dm56",
+        "shots": 1
+      },
+      {
+        "kind": "fallback",
+        "gun": "m24",
+        "shots": 1
+      },
+      {
+        "kind": "fallback",
+        "gun": "sp12",
+        "shots": 3
+      },
+      {
+        "kind": "fallback",
+        "gun": "p226",
+        "shots": 2
+      }
+    ],
+    "wall": true,
+    "roof": true,
+    "tilted": 4,
+    "handling": [
+      {
+        "flats": 0,
+        "speed": 21,
+        "gripDamage": 0
+      },
+      {
+        "flats": 1,
+        "speed": 17.85134426142651,
+        "gripDamage": 1
+      },
+      {
+        "flats": 2,
+        "speed": 14.702686318438094,
+        "gripDamage": 2
+      },
+      {
+        "flats": 4,
+        "speed": 8.400000028125586,
+        "gripDamage": 4
+      }
+    ],
+    "driverHUD": true,
+    "respawn": true
+  },
+  "resources": {
+    "base": {
+      "objects": 607,
+      "geometries": 195,
+      "textures": 238
+    },
+    "rows": [
+      {
+        "objects": 0,
+        "geometries": 0,
+        "textures": 0
+      },
+      {
+        "objects": 0,
+        "geometries": 0,
+        "textures": 0
+      },
+      {
+        "objects": 0,
+        "geometries": 0,
+        "textures": 0
+      },
+      {
+        "objects": 0,
+        "geometries": 0,
+        "textures": 0
+      }
+    ]
+  }
+}
