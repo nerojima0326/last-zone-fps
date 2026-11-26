@@ -300,9 +300,10 @@ const Soldiers = G.Soldiers = {
       _P.set(0, m.hip.position.y + 0.06, 0).add(_v.set(0, 0.42, 0).applyQuaternion(P.spine)).add(_w.copy(m.gunMount.position).applyQuaternion(P.chest));
       if (gp.l) this.ikArm(s, T.ik.L, _T.fromArray(gp.l).applyQuaternion(P.chest).add(_P), _w.set(-0.8, -1, 0.1).applyQuaternion(P.chest));
     }
+    if(m.driving)G.VehicleCabin.driverIK(s,m);
     // Retarget planted feet with this source's own segment lengths. Arm and
     // aiming targets stay independent of the foot solve.
-    const planted = m.motion?.ik > .8 && !m.lod;
+    const planted = !m.driving && m.motion?.ik > .8 && !m.lod;
     if (planted) for (let i = 0; i < (T.feet || []).length; i++) {
       const foot = T.feet[i], target = m.motion.feet[i]?.actualTarget;
       if (!foot || !target) continue;
@@ -316,12 +317,14 @@ const Soldiers = G.Soldiers = {
     }
     for (let i = 0; i < (T.feet || []).length; i++) {
       const foot = T.feet[i], bone = s.footBones[i]; if (!foot || !bone) continue;
-      if (planted) {
+      if(m.driving)bone.quaternion.copy(_q.copy(O[foot.pair[1]]).invert()).multiply(foot.worldQ);
+      else if (planted) {
         _q2.setFromUnitVectors(_u.set(0, 1, 0), m.motion.feet[i].normal);
         bone.quaternion.copy(_q.copy(O[foot.pair[1]]).invert().multiply(_q2).multiply(foot.worldQ));
       }
       else bone.quaternion.copy(foot.localQ);
     }
+    if(m.driving)G.VehicleCabin.finishGrip(s,m);
   },
 
   // 위팔·아래팔을 돌려 손목이 target 에 닿게 (pole: 팔꿈치가 향할 방향)

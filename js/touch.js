@@ -297,9 +297,9 @@
     }
     const st = !a.alive ? 'dead' : (a.state === 'plane' || a.state === 'freefall' || a.state === 'chute') ? 'air' : 'ground';
     if (ui.dataset.st !== st) ui.dataset.st = st;
-    const knife=a.cur==='melee';
+    const knife=!driving&&a.cur==='melee';
     BY.mode.el.dataset.key=knife?'Digit5':'KeyB';BY.mode.el.querySelector('span').textContent=knife?'다음 칼':'연사';
-    BY.scope.el.dataset.key=knife?'KeyT':'KeyV';BY.scope.el.querySelector('span').textContent=knife?'보기':'배율';
+    BY.scope.el.dataset.key=knife?'KeyT':'KeyV';BY.scope.el.querySelector('span').textContent=driving?'시점':knife?'보기':'배율';
     adsBtn.querySelector('span').textContent=knife?'보기':'조준';
     const sprintText = st === 'air' ? '빠른 하강' : driving?'운전':'달리기';
     if (sprintTag.textContent !== sprintText) sprintTag.textContent = sprintText;

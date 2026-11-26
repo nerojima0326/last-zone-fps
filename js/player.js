@@ -26,6 +26,7 @@ const P = G.Player = {
     this.melee = null; this.knifeSeen = null;
     this.prompt = ''; this.lootTarget = null; this.reviveTarget = null;
     this.lean = 0; this.vault = null; this.vehicle = null; this.killcam = null;
+    this.vehicleView='third';this.vehicleLookYaw=0;this.vehicleLookPitch=-.12;
     this.camMode = 'plane';
     this.time = 0;
   },

@@ -1,4 +1,4 @@
-// vehicles.js — 탈 수 있는 차량: F 탑승/하차, WASD 운전, Space 핸드브레이크(꺾으며 드리프트), Shift 가속
+// vehicles.js — 탈 수 있는 차량: F 탑승/하차, WASD 운전, Space 드리프트, Shift 가속, V 시점 전환
 //  실사 차량 3종의 접지·공중 관성·차체 충돌을 플레이어와 봇이 함께 사용한다.
 (function () {
 'use strict';
@@ -29,11 +29,11 @@ const _wallNormal=new V3(),_move={x:0,z:0,hit:false,impact:0};
 function build() {
   const col = (g, c) => { g = g.toNonIndexed(); const k = new THREE.Color(c), n = g.attributes.position.count, a = new Float32Array(n * 3); for (let i = 0; i < n; i++) { a[i * 3] = k.r; a[i * 3 + 1] = k.g; a[i * 3 + 2] = k.b; } g.setAttribute('color', new THREE.BufferAttribute(a, 3)); return g; };
   const bx = (w, h, d, x, y, z, c) => col(new THREE.BoxGeometry(w, h, d).translate(x, y, z), c);
-  const body = 0x4d5a3a, dark = 0x23261f, glass = 0x10151a;
+  const body = 0x4d5a3a, dark = 0x23261f;
   const parts = [
-    bx(1.85, 0.5, 3.8, 0, 0.75, 0, body), bx(1.7, 0.28, 1.25, 0, 1.12, -1.2, body),               // 차체, 보닛
-    bx(1.78, 0.72, 1.9, 0, 1.36, 0.45, body), bx(1.6, 0.5, 0.05, 0, 1.4, -0.52, glass),           // 캐빈, 앞유리
-    bx(0.05, 0.42, 1.5, -0.9, 1.42, 0.45, glass), bx(0.05, 0.42, 1.5, 0.9, 1.42, 0.45, glass), bx(1.5, 0.42, 0.05, 0, 1.42, 1.41, glass),
+    bx(1.85,.20,3.8,0,.30,0,body), bx(1.7, 0.28, 1.25, 0, 1.12, -1.2, body),                   // 바닥·보닛
+    bx(1.78,.08,1.9,0,1.73,.45,body), bx(.065,.34,1.9,-.86,.98,.45,body),bx(.065,.34,1.9,.86,.98,.45,body),bx(1.78,.34,.07,0,.98,1.36,body), // 지붕·문 아래쪽
+    ...[-.86,.86].flatMap(x=>[-.46,1.36].map(z=>bx(.07,.63,.07,x,1.40,z,body))),
     bx(1.95, 0.16, 0.2, 0, 0.6, -1.95, dark), bx(1.95, 0.16, 0.2, 0, 0.6, 1.95, dark),             // 범퍼
     bx(0.3, 0.18, 0.06, -0.62, 0.95, -1.91, 0xfff6d0), bx(0.3, 0.18, 0.06, 0.62, 0.95, -1.91, 0xfff6d0),
     bx(0.3, 0.14, 0.06, -0.62, 0.9, 1.91, 0xb01c14), bx(0.3, 0.14, 0.06, 0.62, 0.9, 1.91, 0xb01c14),
@@ -136,6 +136,7 @@ const Vh = G.Vehicles = {
       if(!this.tireGeo){this.tireGeo=new THREE.CylinderGeometry(.42,.42,.3,20).rotateZ(Math.PI/2);this.tireMat=new THREE.MeshStandardMaterial({color:0x151515,roughness:.95});this.rimGeo=new THREE.CylinderGeometry(.21,.21,.315,6).rotateZ(Math.PI/2);this.rimMat=new THREE.MeshStandardMaterial({color:0x85857d,metalness:.7,roughness:.5})}
       v.wheels=JEEP.wheelPts.map(([x,z],i)=>{const w=new THREE.Group();w.name='wheel_'+(z<0?'front':'back')+(x<0?'Left':'Right');w.position.set(x,.42,z);const tire=new THREE.Mesh(this.tireGeo,this.tireMat),rim=new THREE.Mesh(this.rimGeo,this.rimMat);tire.castShadow=rim.castShadow=true;w.add(tire,rim);m.add(w);return{o:w,front:z<0,r:.42,width:.3}});
       v.dim = JEEP;
+      v.cabinKind='fallback';
       v.ownedMaterials=[];
       return m;
     }
@@ -171,6 +172,7 @@ const Vh = G.Vehicles = {
     if (!v.home) v.home = { x, z, yaw };
     v.home.kind = v.kind;
     v.mesh = this.makeMesh(v);
+    G.VehicleCabin.glazing(v);
     G.VehicleWheels.setup(v);
     G.scene.add(v.mesh);
     this.list.push(v); this.place(v, 1); G.VehicleWheels.sync(v);this.block(v);G.RT?.invalidate();
@@ -311,6 +313,7 @@ const Vh = G.Vehicles = {
     const a = P.a;
     this.unblock(v);
     v.driver = a; v.claim = null; P.vehicle = v;
+    G.VehicleCabin.enter(P,v);
     P.reload = null; P.autoReload = null; P.heal = null; P.ads = 0; P.scopeView = 0; P.lean = 0; a.leanX = 0; if (P.abortThrow) P.abortThrow(); else P.throwSt = null; P.cycleT = -1;
     a.crouch = false; a.prone = false;
     P.orbitYaw = v.yaw; P.orbitPitch = -0.22;
@@ -331,6 +334,7 @@ const Vh = G.Vehicles = {
       a.pos.set(x, Math.max(this.groundAt(x,z,v.pos.y), v.pos.y - 0.5), z); done = true; break;
     }
     if (!done && !forced) return;
+    G.VehicleCabin.leave(P);
     if (!done) a.pos.set(v.pos.x, v.pos.y + 1.8, v.pos.z);
     a.vel.set(-Math.sin(v.yaw) * v.speed * 0.5, 0, -Math.cos(v.yaw) * v.speed * 0.5);
     a.yaw = P.orbitYaw; a.pitch = 0;
@@ -345,8 +349,11 @@ const Vh = G.Vehicles = {
   drive(P, dt) {
     const I = G.Input, a = P.a, v = P.vehicle, W = G.World, cam = G.camera;
     P.camMode = 'vehicle';
-    P.orbitYaw -= I.mdx * 0.0026 * P.sens;
-    P.orbitPitch = U.clamp(P.orbitPitch - P.lookY() * 0.0026 * P.sens, -1.1, 0.25);
+    if(I.hit('KeyV'))G.VehicleCabin.toggle(P);
+    if(P.vehicleView!=='first'){
+      P.orbitYaw -= I.mdx * 0.0026 * P.sens;
+      P.orbitPitch = U.clamp(P.orbitPitch - P.lookY() * 0.0026 * P.sens, -1.1, 0.25);
+    }
     const thr = (I.down('KeyW') ? 1 : 0) - (I.down('KeyS') ? 1 : 0), st = (I.down('KeyA') ? 1 : 0) - (I.down('KeyD') ? 1 : 0);
     this.step(v, a, dt, thr, st, false, I.down('Space'), I.down('ShiftLeft')||I.down('ShiftRight'));
     if (!v.driver) return;
@@ -361,26 +368,29 @@ const Vh = G.Vehicles = {
     // 내리기
     const hpP = Math.round(v.hp / HP * 100);
     P.prompt = '<kbd>' + G.Settings.label('KeyF') + '</kbd> 내리기 · <kbd>' + G.Settings.label('Space') + '</kbd> 드리프트 · <kbd>'+G.Settings.label('ShiftLeft')+'</kbd> 가속 · <b>' + Math.round(Math.hypot(v.speed, v.lat) * 3.6) + '</b> km/h · 차량 ' + (v.burnT > 0 ? '<b style="color:#ff5a3c">불붙음!</b>' : '<b' + (hpP < 30 ? ' style="color:#ff8a3c"' : '') + '>' + hpP + '%</b>') + (v.wheelDamage?' · <b style="color:#ffb45e">타이어 파손 '+v.wheelDamage+'/4</b>':'') + (v.drift ? ' · <b style="color:#ffd23f">드리프트</b>' : v.boosting?' · <b style="color:#ffd23f">가속 중</b>':''); P.lootTarget = null; P.reviveTarget = null;
+    P.prompt+=' · <kbd>'+G.Settings.label('KeyV')+'</kbd> '+(P.vehicleView==='first'?'외부 시점':'내부 시점');
     if (I.hit('KeyF')) { this.exit(P); return; }
-    // 3인칭 카메라
-    const dist = 7.5;
-    _c.set(Math.sin(P.orbitYaw) * Math.cos(P.orbitPitch), -Math.sin(P.orbitPitch), Math.cos(P.orbitYaw) * Math.cos(P.orbitPitch));
-    _e.copy(v.pos); _e.y += 1.9;
-    _d.copy(_e).addScaledVector(_c, dist);
-    // Lift the camera boom over hills before checking buildings. A terrain hit used
-    // to shorten the boom into the jeep's cabin on steep slopes.
-    for (let i = 1; i <= 8; i++) {
-      const t = i / 8, x = U.lerp(_e.x, _d.x, t), z = U.lerp(_e.z, _d.z, t);
-      _d.y = Math.max(_d.y, _e.y + (W.heightAt(x, z) + 0.5 - _e.y) / t);
+    if(P.vehicleView==='first')G.VehicleCabin.camera(P,dt);
+    else{
+      cam.near=P.vehicleNear??.05;
+      // 경사면에서 추적 카메라가 캐빈 안으로 당겨지지 않도록 지형 위로 올린다.
+      const dist = 7.5;
+      _c.set(Math.sin(P.orbitYaw) * Math.cos(P.orbitPitch), -Math.sin(P.orbitPitch), Math.cos(P.orbitYaw) * Math.cos(P.orbitPitch));
+      _e.copy(v.pos); _e.y += 1.9;
+      _d.copy(_e).addScaledVector(_c, dist);
+      for (let i = 1; i <= 8; i++) {
+        const t = i / 8, x = U.lerp(_e.x, _d.x, t), z = U.lerp(_e.z, _d.z, t);
+        _d.y = Math.max(_d.y, _e.y + (W.heightAt(x, z) + 0.5 - _e.y) / t);
+      }
+      _c.copy(_d).sub(_e);
+      let L = _c.length(); _c.normalize();
+      const wall = W.rayBoxes(_e.x, _e.y, _e.z, _c.x, _c.y, _c.z, L, null);
+      if (wall < Infinity) L = Math.max(0.3, wall - 0.3);
+      cam.position.copy(_e).addScaledVector(_c, L);
+      const gy = W.heightAt(cam.position.x, cam.position.z) + 0.4; if (cam.position.y < gy) cam.position.y = gy;
+      cam.lookAt(_e);
+      cam.fov = U.damp(cam.fov, 74 + Math.abs(v.speed) * 0.35, 5, dt); cam.updateProjectionMatrix();
     }
-    _c.copy(_d).sub(_e);
-    let L = _c.length(); _c.normalize();
-    const wall = W.rayBoxes(_e.x, _e.y, _e.z, _c.x, _c.y, _c.z, L, null);
-    if (wall < Infinity) L = Math.max(0.3, wall - 0.3);
-    cam.position.copy(_e).addScaledVector(_c, L);
-    const gy = W.heightAt(cam.position.x, cam.position.z) + 0.4; if (cam.position.y < gy) cam.position.y = gy;
-    cam.lookAt(_e);
-    cam.fov = U.damp(cam.fov, 74 + Math.abs(v.speed) * 0.35, 5, dt); cam.updateProjectionMatrix();
     G.VM.set(null);
     G.lodZoom = 1;
   },
@@ -627,6 +637,7 @@ const Vh = G.Vehicles = {
     this.unblock(v);
     v.driver = a; v.claim = null; bot.vehicle = v; a.inVehicle = v;
     a.crouch = false; a.prone = false; a.leanX = 0;
+    G.VehicleCabin.ensure(v);
     bot.vStop = false; bot.vStuck = 0; bot.vRev = 0; bot.vLast = v.pos.clone(); bot.vT = 0;
     if (G.Audio.ok() && G.WeaponAudio) G.WeaponAudio.eventAt(G.Audio, 'close', 'ka47', v.pos);
     return true;
@@ -646,6 +657,7 @@ const Vh = G.Vehicles = {
     if (!done) a.pos.set(v.pos.x, v.pos.y + 1.8, v.pos.z);
     a.vel.set(-Math.sin(v.yaw) * v.speed * 0.4, 0, -Math.cos(v.yaw) * v.speed * 0.4);
     a.yaw = v.yaw; a.pitch = 0;
+    G.VehicleCabin.release(a.model);
     v.driver = null;v.handbrake=false;v.drift=false;v.boosting=false;G.VehicleSkids.stop(v); bot.vehicle = null; a.inVehicle = null;
     if (Math.abs(v.speed) < 1.5&&v.grounded!==false) { v.speed = 0; this.block(v); }
   },

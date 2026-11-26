@@ -55,6 +55,10 @@ jobs:
         run: node tools/check-vehicle-throwable-vfx.cjs
       - name: 바퀴 굴림·조향·타이어 피격·재생성 검사
         run: node tools/check-vehicle-wheels.cjs
+      - name: 차량 운전 자세·내부 시점·V키·터치·하차 복귀 검사
+        run: |
+          node tools/check-vehicle-cabin.cjs
+          CABIN_MOBILE=1 node tools/check-vehicle-cabin.cjs
       - name: Space 드리프트·Shift 가속·터치·타이어 자국 검사
         run: |
           node tools/check-driving-controls.cjs

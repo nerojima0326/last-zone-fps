@@ -175,6 +175,7 @@ class CharacterModel {
     if (on) this.lodMesh.scale.y = crouch ? 0.72 : 1;
   }
   update(dt, a) {
+    if(this.driving)G.VehicleCabin.release(this);
     G.HitResponse?.restore(this);
     const r = this.root;
     let hipY = 0.95, spineRX = 0, chestRX = U.clamp(a.pitch, -1.1, 1.1) * 0.85, headRX = U.clamp(a.pitch, -1, 1) * 0.15;
@@ -266,6 +267,7 @@ class CharacterModel {
     G.HitResponse?.support(this, a, dt);
   }
   dispose() {
+    if(this.driving)G.VehicleCabin.release(this);
     if (!this.soldier) for (const m of this.meshes) m.geometry.dispose();
     else {
       this.body.geometry.dispose();
