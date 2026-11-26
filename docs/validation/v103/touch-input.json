@@ -1,0 +1,62 @@
+{
+  "mobile": true,
+  "joystick": {
+    "speed": 17.018973755669684,
+    "boosting": false,
+    "drift": false,
+    "space": false,
+    "shift": false,
+    "marks": 0,
+    "prompt": "<kbd>F</kbd> 내리기 · <kbd>Space</kbd> 드리프트 · <kbd>왼쪽 Shift</kbd> 가속 · <b>61</b> km/h · 차량 <b>100%</b>"
+  },
+  "boost": {
+    "speed": 27.507414229249175,
+    "boosting": true,
+    "drift": false,
+    "space": false,
+    "shift": true,
+    "marks": 0,
+    "prompt": "<kbd>F</kbd> 내리기 · <kbd>Space</kbd> 드리프트 · <kbd>왼쪽 Shift</kbd> 가속 · <b>99</b> km/h · 차량 <b>100%</b> · <b style=\"color:#ffd23f\">가속 중</b>"
+  },
+  "priority": {
+    "speed": 19.58373383283638,
+    "boosting": false,
+    "drift": true,
+    "space": true,
+    "shift": true,
+    "marks": 84,
+    "prompt": "<kbd>F</kbd> 내리기 · <kbd>Space</kbd> 드리프트 · <kbd>왼쪽 Shift</kbd> 가속 · <b>82</b> km/h · 차량 <b>100%</b> · <b style=\"color:#ffd23f\">드리프트</b>"
+  },
+  "release": {
+    "speed": 19.46516705284013,
+    "boosting": true,
+    "drift": false,
+    "space": false,
+    "shift": true,
+    "marks": 86,
+    "prompt": "<kbd>F</kbd> 내리기 · <kbd>Space</kbd> 드리프트 · <kbd>왼쪽 Shift</kbd> 가속 · <b>82</b> km/h · 차량 <b>100%</b> · <b style=\"color:#ffd23f\">가속 중</b>"
+  },
+  "gasRelease": {
+    "speed": 19.474712476380965,
+    "boosting": false,
+    "drift": false,
+    "space": false,
+    "shift": false,
+    "marks": 86,
+    "prompt": "<kbd>F</kbd> 내리기 · <kbd>Space</kbd> 드리프트 · <kbd>왼쪽 Shift</kbd> 가속 · <b>80</b> km/h · 차량 <b>100%</b>"
+  },
+  "cancel": {
+    "speed": 19.773033868964497,
+    "boosting": false,
+    "drift": false,
+    "space": false,
+    "shift": false,
+    "marks": 86,
+    "prompt": "<kbd>F</kbd> 내리기 · <kbd>Space</kbd> 드리프트 · <kbd>왼쪽 Shift</kbd> 가속 · <b>78</b> km/h · 차량 <b>100%</b>"
+  },
+  "labels": {
+    "gas": "가속",
+    "space": "드리프트"
+  },
+  "errors": []
+}

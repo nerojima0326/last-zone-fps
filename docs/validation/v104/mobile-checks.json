@@ -1,0 +1,797 @@
+{
+  "menu": {
+    "dpr": 2.625,
+    "mobile": true,
+    "viewport": [
+      412,
+      892
+    ],
+    "stage": [
+      1559,
+      720
+    ],
+    "stageScale": 0.5721616420782553,
+    "canvas": [
+      2341,
+      1081
+    ],
+    "display": [
+      411.95635986328125,
+      891.9999389648438
+    ],
+    "rendererPR": 1.50192431045542,
+    "scene": [
+      1756,
+      811,
+      2
+    ],
+    "viewmodel": [
+      1,
+      1,
+      2
+    ],
+    "presentation": [
+      2341,
+      1081
+    ],
+    "quality": "low",
+    "drs": 0.75,
+    "memory": {
+      "geometries": 176,
+      "textures": 194
+    },
+    "heap": 432993729,
+    "gpu": {
+      "contexts": 1,
+      "lost": 0,
+      "estimatedBytes": 287134445,
+      "peakEstimatedBytes": 287134445,
+      "unknownFormats": []
+    },
+    "imageLimit": 512,
+    "resized": 151
+  },
+  "training": {
+    "dpr": 2.625,
+    "mobile": true,
+    "viewport": [
+      412,
+      892
+    ],
+    "stage": [
+      1559,
+      720
+    ],
+    "stageScale": 0.5721616420782553,
+    "canvas": [
+      2341,
+      1081
+    ],
+    "display": [
+      411.95635986328125,
+      891.9999389648438
+    ],
+    "rendererPR": 1.50192431045542,
+    "scene": [
+      1756,
+      811,
+      2
+    ],
+    "viewmodel": [
+      2341,
+      1081,
+      2
+    ],
+    "presentation": [
+      2341,
+      1081
+    ],
+    "quality": "low",
+    "drs": 0.75,
+    "memory": {
+      "geometries": 280,
+      "textures": 220
+    },
+    "heap": 329630529,
+    "gpu": {
+      "contexts": 1,
+      "lost": 0,
+      "estimatedBytes": 434792177,
+      "peakEstimatedBytes": 434792177,
+      "unknownFormats": []
+    },
+    "imageLimit": 512,
+    "resized": 172
+  },
+  "controls": {
+    "fired": true,
+    "reloading": true,
+    "reloaded": true,
+    "knife": true,
+    "inspect": true,
+    "scope": [
+      2341,
+      1081
+    ],
+    "throwActions": [
+      {
+        "kind": "frag",
+        "created": 1,
+        "ammo": 2,
+        "finished": true
+      },
+      {
+        "kind": "smoke",
+        "created": 1,
+        "ammo": 2,
+        "finished": true
+      },
+      {
+        "kind": "molotov",
+        "created": 1,
+        "ammo": 2,
+        "finished": true
+      },
+      {
+        "kind": "flash",
+        "created": 1,
+        "ammo": 2,
+        "finished": true
+      }
+    ],
+    "expandedReloads": [
+      {
+        "id": "mp9",
+        "started": true,
+        "finished": true,
+        "mag": 30,
+        "expected": 30,
+        "oldHands": true
+      },
+      {
+        "id": "v45",
+        "started": true,
+        "finished": true,
+        "mag": 25,
+        "expected": 25,
+        "oldHands": true
+      },
+      {
+        "id": "cx9",
+        "started": true,
+        "finished": true,
+        "mag": 40,
+        "expected": 40,
+        "oldHands": true
+      },
+      {
+        "id": "sm45",
+        "started": true,
+        "finished": true,
+        "mag": 30,
+        "expected": 30,
+        "oldHands": true
+      },
+      {
+        "id": "ar416",
+        "started": true,
+        "finished": true,
+        "mag": 30,
+        "expected": 30,
+        "oldHands": true
+      },
+      {
+        "id": "sg56",
+        "started": true,
+        "finished": true,
+        "mag": 30,
+        "expected": 30,
+        "oldHands": true
+      },
+      {
+        "id": "ms56",
+        "started": true,
+        "finished": true,
+        "mag": 30,
+        "expected": 30,
+        "oldHands": true
+      },
+      {
+        "id": "lm86",
+        "started": true,
+        "finished": true,
+        "mag": 60,
+        "expected": 60,
+        "oldHands": true
+      },
+      {
+        "id": "rk762",
+        "started": true,
+        "finished": true,
+        "mag": 45,
+        "expected": 45,
+        "oldHands": true
+      },
+      {
+        "id": "mg60",
+        "started": true,
+        "finished": true,
+        "mag": 100,
+        "expected": 100,
+        "oldHands": true
+      },
+      {
+        "id": "sr25",
+        "started": true,
+        "finished": true,
+        "mag": 20,
+        "expected": 20,
+        "oldHands": true
+      },
+      {
+        "id": "dm56",
+        "started": true,
+        "finished": true,
+        "mag": 20,
+        "expected": 20,
+        "oldHands": true
+      },
+      {
+        "id": "m24",
+        "started": true,
+        "finished": true,
+        "mag": 5,
+        "expected": 5,
+        "oldHands": true
+      },
+      {
+        "id": "sp12",
+        "started": true,
+        "finished": true,
+        "mag": 8,
+        "expected": 8,
+        "oldHands": true
+      },
+      {
+        "id": "p226",
+        "started": true,
+        "finished": true,
+        "mag": 18,
+        "expected": 18,
+        "oldHands": true
+      }
+    ]
+  },
+  "scopes": [
+    {
+      "scope": "reddot",
+      "estimatedBytes": 460657029,
+      "textures": 249
+    },
+    {
+      "scope": "holo",
+      "estimatedBytes": 464851325,
+      "textures": 255
+    },
+    {
+      "scope": "x2",
+      "estimatedBytes": 466948473,
+      "textures": 258
+    },
+    {
+      "scope": "x4",
+      "estimatedBytes": 469045621,
+      "textures": 261
+    },
+    {
+      "scope": "micro",
+      "estimatedBytes": 469373301,
+      "textures": 266
+    }
+  ],
+  "tiers": [
+    {
+      "dpr": 2.625,
+      "mobile": true,
+      "viewport": [
+        412,
+        892
+      ],
+      "stage": [
+        1559,
+        720
+      ],
+      "stageScale": 0.5721616420782553,
+      "canvas": [
+        2341,
+        1081
+      ],
+      "display": [
+        411.95635986328125,
+        891.9999389648438
+      ],
+      "rendererPR": 1.50192431045542,
+      "scene": [
+        1404,
+        648,
+        0
+      ],
+      "viewmodel": [
+        2341,
+        1081,
+        0
+      ],
+      "presentation": [
+        2341,
+        1081
+      ],
+      "quality": "potato",
+      "drs": 0.6,
+      "memory": {
+        "geometries": 318,
+        "textures": 266
+      },
+      "heap": 444827392,
+      "gpu": {
+        "contexts": 1,
+        "lost": 0,
+        "estimatedBytes": 277488629,
+        "peakEstimatedBytes": 469373301,
+        "unknownFormats": []
+      },
+      "imageLimit": 512,
+      "resized": 189
+    },
+    {
+      "dpr": 2.625,
+      "mobile": true,
+      "viewport": [
+        412,
+        892
+      ],
+      "stage": [
+        1559,
+        720
+      ],
+      "stageScale": 0.5721616420782553,
+      "canvas": [
+        2341,
+        1081
+      ],
+      "display": [
+        411.95635986328125,
+        891.9999389648438
+      ],
+      "rendererPR": 1.50192431045542,
+      "scene": [
+        1756,
+        811,
+        2
+      ],
+      "viewmodel": [
+        2341,
+        1081,
+        2
+      ],
+      "presentation": [
+        2341,
+        1081
+      ],
+      "quality": "low",
+      "drs": 0.75,
+      "memory": {
+        "geometries": 318,
+        "textures": 266
+      },
+      "heap": 447782524,
+      "gpu": {
+        "contexts": 1,
+        "lost": 0,
+        "estimatedBytes": 469373301,
+        "peakEstimatedBytes": 469373301,
+        "unknownFormats": []
+      },
+      "imageLimit": 512,
+      "resized": 189
+    },
+    {
+      "dpr": 2.625,
+      "mobile": true,
+      "viewport": [
+        412,
+        892
+      ],
+      "stage": [
+        1559,
+        720
+      ],
+      "stageScale": 0.5721616420782553,
+      "canvas": [
+        2341,
+        1081
+      ],
+      "display": [
+        411.95635986328125,
+        891.9999389648438
+      ],
+      "rendererPR": 1.50192431045542,
+      "scene": [
+        2341,
+        1081,
+        2
+      ],
+      "viewmodel": [
+        1,
+        1,
+        2
+      ],
+      "presentation": [
+        1,
+        1
+      ],
+      "quality": "medium",
+      "drs": 1,
+      "memory": {
+        "geometries": 322,
+        "textures": 277
+      },
+      "heap": 428070978,
+      "gpu": {
+        "contexts": 1,
+        "lost": 0,
+        "estimatedBytes": 412143587,
+        "peakEstimatedBytes": 469373301,
+        "unknownFormats": []
+      },
+      "imageLimit": 512,
+      "resized": 189
+    },
+    {
+      "dpr": 2.625,
+      "mobile": true,
+      "viewport": [
+        412,
+        892
+      ],
+      "stage": [
+        1559,
+        720
+      ],
+      "stageScale": 0.5721616420782553,
+      "canvas": [
+        2341,
+        1081
+      ],
+      "display": [
+        411.95635986328125,
+        891.9999389648438
+      ],
+      "rendererPR": 1.50192431045542,
+      "scene": [
+        2341,
+        1081,
+        4
+      ],
+      "viewmodel": [
+        1,
+        1,
+        2
+      ],
+      "presentation": [
+        1,
+        1
+      ],
+      "quality": "high",
+      "drs": 1,
+      "memory": {
+        "geometries": 322,
+        "textures": 281
+      },
+      "heap": 429501944,
+      "gpu": {
+        "contexts": 1,
+        "lost": 0,
+        "estimatedBytes": 417735987,
+        "peakEstimatedBytes": 469373301,
+        "unknownFormats": []
+      },
+      "imageLimit": 512,
+      "resized": 192
+    }
+  ],
+  "fixed": {
+    "dpr": 2.625,
+    "mobile": true,
+    "viewport": [
+      412,
+      892
+    ],
+    "stage": [
+      1559,
+      720
+    ],
+    "stageScale": 0.5721616420782553,
+    "canvas": [
+      2341,
+      1081
+    ],
+    "display": [
+      411.95635986328125,
+      891.9999389648438
+    ],
+    "rendererPR": 1.50192431045542,
+    "scene": [
+      2341,
+      1081,
+      2
+    ],
+    "viewmodel": [
+      1,
+      1,
+      2
+    ],
+    "presentation": [
+      1,
+      1
+    ],
+    "quality": "low",
+    "drs": 1,
+    "memory": {
+      "geometries": 321,
+      "textures": 270
+    },
+    "heap": 429225560,
+    "gpu": {
+      "contexts": 1,
+      "lost": 0,
+      "estimatedBytes": 402836107,
+      "peakEstimatedBytes": 469373301,
+      "unknownFormats": []
+    },
+    "imageLimit": 512,
+    "resized": 192
+  },
+  "landscape": {
+    "dpr": 2.625,
+    "mobile": true,
+    "viewport": [
+      892,
+      412
+    ],
+    "stage": [
+      1559,
+      720
+    ],
+    "stageScale": 0.5721616420782553,
+    "canvas": [
+      2341,
+      1081
+    ],
+    "display": [
+      891.9999389648438,
+      411.95635986328125
+    ],
+    "rendererPR": 1.50192431045542,
+    "scene": [
+      1756,
+      811,
+      2
+    ],
+    "viewmodel": [
+      2341,
+      1081,
+      2
+    ],
+    "presentation": [
+      2341,
+      1081
+    ],
+    "quality": "low",
+    "drs": 0.75,
+    "memory": {
+      "geometries": 321,
+      "textures": 272
+    },
+    "heap": 428352026,
+    "gpu": {
+      "contexts": 1,
+      "lost": 0,
+      "estimatedBytes": 476890139,
+      "peakEstimatedBytes": 476890139,
+      "unknownFormats": []
+    },
+    "imageLimit": 512,
+    "resized": 192
+  },
+  "textures": {
+    "image": [
+      512,
+      256
+    ],
+    "shared": true,
+    "compressed": [
+      512,
+      512,
+      2
+    ],
+    "data": [
+      1024,
+      1024
+    ]
+  },
+  "recovery": {
+    "paused": true,
+    "pauseMenu": true,
+    "loading": false,
+    "recoveries": 1,
+    "error": 0
+  },
+  "restored": {
+    "dpr": 2.625,
+    "mobile": true,
+    "viewport": [
+      892,
+      412
+    ],
+    "stage": [
+      1559,
+      720
+    ],
+    "stageScale": 0.5721616420782553,
+    "canvas": [
+      2341,
+      1081
+    ],
+    "display": [
+      891.9999389648438,
+      411.95635986328125
+    ],
+    "rendererPR": 1.50192431045542,
+    "scene": [
+      1756,
+      811,
+      2
+    ],
+    "viewmodel": [
+      2341,
+      1081,
+      2
+    ],
+    "presentation": [
+      2341,
+      1081
+    ],
+    "quality": "low",
+    "drs": 0.75,
+    "memory": {
+      "geometries": 254,
+      "textures": 103
+    },
+    "heap": 431947576,
+    "gpu": {
+      "contexts": 1,
+      "lost": 1,
+      "estimatedBytes": 279074469,
+      "peakEstimatedBytes": 476890139,
+      "unknownFormats": []
+    },
+    "imageLimit": 512,
+    "resized": 194
+  },
+  "reentry": {
+    "dpr": 2.625,
+    "mobile": true,
+    "viewport": [
+      892,
+      412
+    ],
+    "stage": [
+      1559,
+      720
+    ],
+    "stageScale": 0.5721616420782553,
+    "canvas": [
+      2341,
+      1081
+    ],
+    "display": [
+      891.9999389648438,
+      411.95635986328125
+    ],
+    "rendererPR": 1.50192431045542,
+    "scene": [
+      1756,
+      811,
+      2
+    ],
+    "viewmodel": [
+      2341,
+      1081,
+      2
+    ],
+    "presentation": [
+      2341,
+      1081
+    ],
+    "quality": "low",
+    "drs": 0.75,
+    "memory": {
+      "geometries": 268,
+      "textures": 112
+    },
+    "heap": 439481308,
+    "gpu": {
+      "contexts": 1,
+      "lost": 1,
+      "estimatedBytes": 287641925,
+      "peakEstimatedBytes": 476890139,
+      "unknownFormats": []
+    },
+    "imageLimit": 512,
+    "resized": 194
+  },
+  "match": {
+    "dpr": 2.625,
+    "mobile": true,
+    "viewport": [
+      892,
+      412
+    ],
+    "stage": [
+      1559,
+      720
+    ],
+    "stageScale": 0.5721616420782553,
+    "canvas": [
+      2341,
+      1081
+    ],
+    "display": [
+      891.9999389648438,
+      411.95635986328125
+    ],
+    "rendererPR": 1.50192431045542,
+    "scene": [
+      1756,
+      811,
+      2
+    ],
+    "viewmodel": [
+      2341,
+      1081,
+      2
+    ],
+    "presentation": [
+      2341,
+      1081
+    ],
+    "quality": "low",
+    "drs": 0.75,
+    "memory": {
+      "geometries": 271,
+      "textures": 154
+    },
+    "heap": 514065493,
+    "gpu": {
+      "contexts": 1,
+      "lost": 1,
+      "estimatedBytes": 329104381,
+      "peakEstimatedBytes": 476890139,
+      "unknownFormats": []
+    },
+    "imageLimit": 512,
+    "resized": 196,
+    "landing": {
+      "steps": 585,
+      "state": "ground",
+      "camera": "fp",
+      "height": 20.516698033071442,
+      "ground": 20.516698033071442,
+      "water": 0
+    },
+    "actors": 40
+  },
+  "crashes": [],
+  "errors": [],
+  "기록 안내": "GPU 개별 저장소 목록은 생략하고 합계·오류·검증 결과를 보존했습니다."
+}

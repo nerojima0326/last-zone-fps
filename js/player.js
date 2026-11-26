@@ -26,6 +26,7 @@ const P = G.Player = {
     this.melee = null; this.knifeSeen = null;
     this.prompt = ''; this.lootTarget = null; this.reviveTarget = null;
     this.lean = 0; this.vault = null; this.vehicle = null; this.killcam = null;
+    this.vehicleView='third';this.vehicleLookYaw=0;this.vehicleLookPitch=-.12;
     this.camMode = 'plane';
     this.time = 0;
   },
@@ -638,7 +639,7 @@ const P = G.Player = {
     const it = Game.lootNear(_e, _f);
     if (!it) {
       const v = G.Vehicles.near(a);
-      if (v) { this.prompt = '<kbd>' + G.Settings.label('KeyF') + '</kbd> <b>차량</b> 탑승'; if (I.hit('KeyF')) G.Vehicles.enter(this, v); return; }
+      if (v) { this.prompt = '<kbd>' + G.Settings.label('KeyF') + '</kbd> <b>'+G.Vehicles.nameOf(v.kind)+'</b> 탑승'; if (I.hit('KeyF')) G.Vehicles.enter(this, v); return; }
     }
     if (it) {
       this.lootTarget = it;

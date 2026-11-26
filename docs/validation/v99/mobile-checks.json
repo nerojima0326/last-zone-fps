@@ -1,0 +1,258 @@
+{
+  "device": "S24 FE Chrome 화면·터치 에뮬레이션 / Chromium SwiftShader",
+  "controls": {
+    "fired": true,
+    "reloading": true,
+    "reloaded": true,
+    "knife": true,
+    "inspect": true,
+    "scope": [
+      2341,
+      1081
+    ],
+    "throwActions": [
+      {
+        "kind": "frag",
+        "created": 1,
+        "ammo": 2,
+        "finished": true
+      },
+      {
+        "kind": "smoke",
+        "created": 1,
+        "ammo": 2,
+        "finished": true
+      },
+      {
+        "kind": "molotov",
+        "created": 1,
+        "ammo": 2,
+        "finished": true
+      },
+      {
+        "kind": "flash",
+        "created": 1,
+        "ammo": 2,
+        "finished": true
+      }
+    ],
+    "expandedReloads": [
+      {
+        "id": "mp9",
+        "started": true,
+        "finished": true,
+        "mag": 30,
+        "expected": 30,
+        "oldHands": true
+      },
+      {
+        "id": "v45",
+        "started": true,
+        "finished": true,
+        "mag": 25,
+        "expected": 25,
+        "oldHands": true
+      },
+      {
+        "id": "cx9",
+        "started": true,
+        "finished": true,
+        "mag": 40,
+        "expected": 40,
+        "oldHands": true
+      },
+      {
+        "id": "sm45",
+        "started": true,
+        "finished": true,
+        "mag": 30,
+        "expected": 30,
+        "oldHands": true
+      },
+      {
+        "id": "ar416",
+        "started": true,
+        "finished": true,
+        "mag": 30,
+        "expected": 30,
+        "oldHands": true
+      },
+      {
+        "id": "sg56",
+        "started": true,
+        "finished": true,
+        "mag": 30,
+        "expected": 30,
+        "oldHands": true
+      },
+      {
+        "id": "ms56",
+        "started": true,
+        "finished": true,
+        "mag": 30,
+        "expected": 30,
+        "oldHands": true
+      },
+      {
+        "id": "lm86",
+        "started": true,
+        "finished": true,
+        "mag": 60,
+        "expected": 60,
+        "oldHands": true
+      },
+      {
+        "id": "rk762",
+        "started": true,
+        "finished": true,
+        "mag": 45,
+        "expected": 45,
+        "oldHands": true
+      },
+      {
+        "id": "mg60",
+        "started": true,
+        "finished": true,
+        "mag": 100,
+        "expected": 100,
+        "oldHands": true
+      },
+      {
+        "id": "sr25",
+        "started": true,
+        "finished": true,
+        "mag": 20,
+        "expected": 20,
+        "oldHands": true
+      },
+      {
+        "id": "dm56",
+        "started": true,
+        "finished": true,
+        "mag": 20,
+        "expected": 20,
+        "oldHands": true
+      },
+      {
+        "id": "m24",
+        "started": true,
+        "finished": true,
+        "mag": 5,
+        "expected": 5,
+        "oldHands": true
+      },
+      {
+        "id": "sp12",
+        "started": true,
+        "finished": true,
+        "mag": 8,
+        "expected": 8,
+        "oldHands": true
+      },
+      {
+        "id": "p226",
+        "started": true,
+        "finished": true,
+        "mag": 18,
+        "expected": 18,
+        "oldHands": true
+      }
+    ]
+  },
+  "tiers": [
+    {
+      "quality": "potato",
+      "canvas": [
+        2341,
+        1081
+      ],
+      "scene": [
+        1404,
+        648,
+        0
+      ],
+      "viewmodel": [
+        2341,
+        1081,
+        0
+      ],
+      "estimatedGpuBytes": 277139097
+    },
+    {
+      "quality": "low",
+      "canvas": [
+        2341,
+        1081
+      ],
+      "scene": [
+        1756,
+        811,
+        2
+      ],
+      "viewmodel": [
+        2341,
+        1081,
+        2
+      ],
+      "estimatedGpuBytes": 469023769
+    },
+    {
+      "quality": "medium",
+      "canvas": [
+        2341,
+        1081
+      ],
+      "scene": [
+        2341,
+        1081,
+        2
+      ],
+      "viewmodel": [
+        1,
+        1,
+        2
+      ],
+      "estimatedGpuBytes": 411794055
+    },
+    {
+      "quality": "high",
+      "canvas": [
+        2341,
+        1081
+      ],
+      "scene": [
+        2341,
+        1081,
+        4
+      ],
+      "viewmodel": [
+        1,
+        1,
+        2
+      ],
+      "estimatedGpuBytes": 417386455
+    }
+  ],
+  "trainingGpuBytes": 434792177,
+  "recovery": {
+    "paused": true,
+    "pauseMenu": true,
+    "loading": false,
+    "recoveries": 1,
+    "error": 0
+  },
+  "match": {
+    "actors": 40,
+    "landing": {
+      "steps": 619,
+      "state": "ground",
+      "camera": "fp",
+      "height": 24.590901396796827,
+      "ground": 24.590901396796827,
+      "water": 0
+    },
+    "estimatedGpuBytes": 326832417
+  },
+  "errors": [],
+  "crashes": []
+}

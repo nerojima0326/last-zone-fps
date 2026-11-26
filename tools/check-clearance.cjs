@@ -11,7 +11,8 @@ try{
 const page=await browser.newPage({viewport:{width:1440,height:900}});const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')console.log('console:',m.text())});
 if(process.env.THREE_DIR) await page.route('https://cdn.jsdelivr.net/npm/three@0.160.0/**',route=>{const file=path.join(process.env.THREE_DIR,route.request().url().split('/three@0.160.0/')[1]);return route.fulfill({status:200,contentType:'application/javascript',body:fs.readFileSync(file)})});
 if(process.env.BASELINE_WEAPONS)await page.route('**/js/weapons.js?*',route=>route.fulfill({contentType:'application/javascript',body:fs.readFileSync(process.env.BASELINE_WEAPONS)}));
-await page.goto(`http://127.0.0.1:${server.address().port}/tools/reloads.html`);
+// 충돌 회피를 계산하는 팔 IK는 손 메시 선택과 별개로 확인한다.
+await page.goto(`http://127.0.0.1:${server.address().port}/tools/reloads.html?arms=procedural`);
 await page.waitForFunction(()=>window.ReloadStudio?.ready,null,{timeout:120000});
 console.log('Studio loaded');await page.evaluate(()=>ReloadStudio.pause());
 // Optional regression replay: use an old weapons.js while measuring with today's envelopes.

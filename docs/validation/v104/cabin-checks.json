@@ -1,0 +1,501 @@
+{
+  "mobile": false,
+  "rows": [
+    {
+      "kind": "porter",
+      "visible": true,
+      "model": "swat_coyote",
+      "pelvis": [
+        -0.38,
+        0.6899999999999977,
+        -1.19
+      ],
+      "pelvisError": 2.220446049250313e-15,
+      "hands": [
+        {
+          "actual": [
+            -0.5396440770738329,
+            1.1625214543096263,
+            -1.4488610428335726
+          ],
+          "error": 7.243050662651805e-8
+        },
+        {
+          "actual": [
+            -0.22035587468572418,
+            1.1625214372585333,
+            -1.4488610006297475
+          ],
+          "error": 5.1778702037190174e-8
+        }
+      ],
+      "feet": [
+        [
+          -0.4899999764378428,
+          0.4435699990357307,
+          -1.4500000919644926
+        ],
+        [
+          -0.2699999975743075,
+          0.4437545587131808,
+          -1.449999954387797
+        ]
+      ],
+      "headTop": 1.547787688354731,
+      "roof": 1.72,
+      "gun": null,
+      "scope": null,
+      "rootQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "vehicleQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "near": 0.05,
+      "first": {
+        "view": "first",
+        "mode": "vehicle",
+        "localCamera": [
+          -0.38,
+          1.3999999999999773,
+          -1.15
+        ],
+        "near": 0.035,
+        "visible": true,
+        "hidden": true,
+        "culling": [
+          false,
+          false
+        ],
+        "scope": null,
+        "prompt": "<kbd>F</kbd> 내리기 · <kbd>Space</kbd> 드리프트 · <kbd>왼쪽 Shift</kbd> 가속 · <b>0</b> km/h · 차량 <b>100%</b> · <kbd>V</kbd> 외부 시점"
+      },
+      "render": {
+        "memory": {
+          "geometries": 241,
+          "textures": 202
+        },
+        "error": 0
+      },
+      "slope": {
+        "positionError": 3.531294666095933e-14,
+        "rotationError": 0,
+        "bodyError": 0,
+        "pitch": -0.17809309112595537,
+        "roll": 0.11755771855956255
+      },
+      "handsRestored": true
+    },
+    {
+      "kind": "e2200",
+      "visible": true,
+      "model": "swat_coyote",
+      "pelvis": [
+        -0.43,
+        0.839999999999975,
+        -1.07
+      ],
+      "pelvisError": 2.4980018054066022e-14,
+      "hands": [
+        {
+          "actual": [
+            -0.5896440817051013,
+            1.2525214426792672,
+            -1.3788610410331326
+          ],
+          "error": 6.122990498591902e-8
+        },
+        {
+          "actual": [
+            -0.2703558750773968,
+            1.2525214364085286,
+            -1.3788610024057208
+          ],
+          "error": 4.991137670083326e-8
+        }
+      ],
+      "feet": [
+        [
+          -0.5399999749068572,
+          0.5435699889561079,
+          -1.3800001104525357
+        ],
+        [
+          -0.3199999950616813,
+          0.543754564492076,
+          -1.3799999509201861
+        ]
+      ],
+      "headTop": 1.6977876883547083,
+      "roof": 1.86,
+      "gun": null,
+      "scope": null,
+      "rootQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "vehicleQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "near": 0.05,
+      "first": {
+        "view": "first",
+        "mode": "vehicle",
+        "localCamera": [
+          -0.43,
+          1.5500000000000114,
+          -1.03
+        ],
+        "near": 0.035,
+        "visible": true,
+        "hidden": true,
+        "culling": [
+          false,
+          false
+        ],
+        "scope": null,
+        "prompt": "<kbd>F</kbd> 내리기 · <kbd>Space</kbd> 드리프트 · <kbd>왼쪽 Shift</kbd> 가속 · <b>0</b> km/h · 차량 <b>100%</b> · <kbd>V</kbd> 외부 시점"
+      },
+      "render": {
+        "memory": {
+          "geometries": 255,
+          "textures": 227
+        },
+        "error": 0
+      },
+      "slope": {
+        "positionError": 1.4519005010844865e-14,
+        "rotationError": 4.2146848510894035e-8,
+        "bodyError": 0,
+        "pitch": -0.17757539502962102,
+        "roll": 0.11361282017941814
+      },
+      "handsRestored": true
+    },
+    {
+      "kind": "izh",
+      "visible": true,
+      "model": "swat_coyote",
+      "pelvis": [
+        -0.36,
+        0.5999999999999659,
+        0.05999999999999996
+      ],
+      "pelvisError": 3.408386451400357e-14,
+      "hands": [
+        {
+          "actual": [
+            -0.5196440791101585,
+            1.072521455424237,
+            -0.23886104378068695
+          ],
+          "error": 7.18020426229778e-8
+        },
+        {
+          "actual": [
+            -0.20035587419042436,
+            1.072521441899596,
+            -0.2388610028951036
+          ],
+          "error": 5.3196843955774795e-8
+        }
+      ],
+      "feet": [
+        [
+          -0.46999997537496313,
+          0.3335699960195484,
+          -0.24000010472668745
+        ],
+        [
+          -0.24999999558284805,
+          0.3337545596672271,
+          -0.2399999494329793
+        ]
+      ],
+      "headTop": 1.4577876883546992,
+      "roof": 1.55,
+      "gun": null,
+      "scope": null,
+      "rootQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "vehicleQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "near": 0.05,
+      "first": {
+        "view": "first",
+        "mode": "vehicle",
+        "localCamera": [
+          -0.36,
+          1.3100000000000023,
+          0.1
+        ],
+        "near": 0.035,
+        "visible": true,
+        "hidden": true,
+        "culling": [
+          false,
+          false
+        ],
+        "scope": null,
+        "prompt": "<kbd>F</kbd> 내리기 · <kbd>Space</kbd> 드리프트 · <kbd>왼쪽 Shift</kbd> 가속 · <b>0</b> km/h · 차량 <b>100%</b> · <kbd>V</kbd> 외부 시점"
+      },
+      "render": {
+        "memory": {
+          "geometries": 262,
+          "textures": 232
+        },
+        "error": 0
+      },
+      "slope": {
+        "positionError": 1.2992218624616444e-14,
+        "rotationError": 0,
+        "bodyError": 0,
+        "pitch": -0.17705452179649583,
+        "roll": 0.1197027697478057
+      },
+      "handsRestored": true
+    },
+    {
+      "kind": "fallback",
+      "visible": true,
+      "model": "swat_coyote",
+      "pelvis": [
+        -0.42,
+        0.7299999999999613,
+        0.4799999999999999
+      ],
+      "pelvisError": 3.863580113563546e-14,
+      "hands": [
+        {
+          "actual": [
+            -0.5796440797407858,
+            1.1825214511733293,
+            0.18113895711131373
+          ],
+          "error": 6.83414484394521e-8
+        },
+        {
+          "actual": [
+            -0.2603558744236411,
+            1.1825214395871626,
+            0.1811389975512026
+          ],
+          "error": 5.192976532338509e-8
+        }
+      ],
+      "feet": [
+        [
+          -0.5299999756601038,
+          0.4935700033838657,
+          0.17999989835724256
+        ],
+        [
+          -0.30999999555307156,
+          0.4937545536932362,
+          0.18000005384952353
+        ]
+      ],
+      "headTop": 1.5877876883546946,
+      "roof": 1.7,
+      "gun": null,
+      "scope": null,
+      "rootQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "vehicleQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "near": 0.05,
+      "first": {
+        "view": "first",
+        "mode": "vehicle",
+        "localCamera": [
+          -0.42,
+          1.4399999999999977,
+          0.52
+        ],
+        "near": 0.035,
+        "visible": true,
+        "hidden": true,
+        "culling": [
+          false,
+          false
+        ],
+        "scope": null,
+        "prompt": "<kbd>F</kbd> 내리기 · <kbd>Space</kbd> 드리프트 · <kbd>왼쪽 Shift</kbd> 가속 · <b>0</b> km/h · 차량 <b>100%</b> · <kbd>V</kbd> 외부 시점"
+      },
+      "render": {
+        "memory": {
+          "geometries": 268,
+          "textures": 234
+        },
+        "error": 0
+      },
+      "slope": {
+        "positionError": 1.7043731512902463e-14,
+        "rotationError": 0,
+        "bodyError": 0,
+        "pitch": -0.1780930845086581,
+        "roll": 0.11755773612644353
+      },
+      "handsRestored": true
+    }
+  ],
+  "rigs": {
+    "rows": [
+      {
+        "rig": "swat_black",
+        "steer": -1,
+        "hands": [
+          5.033203062688412e-8,
+          6.518924760882981e-8
+        ]
+      },
+      {
+        "rig": "swat_black",
+        "steer": 0,
+        "hands": [
+          7.180204263093397e-8,
+          5.319684399673557e-8
+        ]
+      },
+      {
+        "rig": "swat_black",
+        "steer": 1,
+        "hands": [
+          1.059429719867831e-7,
+          4.3627103502283444e-8
+        ]
+      },
+      {
+        "rig": "swat_ranger",
+        "steer": -1,
+        "hands": [
+          5.033203062688412e-8,
+          6.518924760882981e-8
+        ]
+      },
+      {
+        "rig": "swat_ranger",
+        "steer": 0,
+        "hands": [
+          7.180204263093397e-8,
+          5.319684399673557e-8
+        ]
+      },
+      {
+        "rig": "swat_ranger",
+        "steer": 1,
+        "hands": [
+          1.059429719867831e-7,
+          4.3627103502283444e-8
+        ]
+      },
+      {
+        "rig": "swat_coyote",
+        "steer": -1,
+        "hands": [
+          5.033203062688412e-8,
+          6.518924760882981e-8
+        ]
+      },
+      {
+        "rig": "swat_coyote",
+        "steer": 0,
+        "hands": [
+          7.180204263093397e-8,
+          5.319684399673557e-8
+        ]
+      },
+      {
+        "rig": "swat_coyote",
+        "steer": 1,
+        "hands": [
+          1.059429719867831e-7,
+          4.3627103502283444e-8
+        ]
+      },
+      {
+        "rig": "swat_grey",
+        "steer": -1,
+        "hands": [
+          5.033203062688412e-8,
+          6.518924760882981e-8
+        ]
+      },
+      {
+        "rig": "swat_grey",
+        "steer": 0,
+        "hands": [
+          7.180204263093397e-8,
+          5.319684399673557e-8
+        ]
+      },
+      {
+        "rig": "swat_grey",
+        "steer": 1,
+        "hands": [
+          1.059429719867831e-7,
+          4.3627103502283444e-8
+        ]
+      },
+      {
+        "rig": "절차적 대체",
+        "steer": -1,
+        "hands": [
+          2.8199787758370737e-14,
+          5.173642272818426e-14
+        ]
+      },
+      {
+        "rig": "절차적 대체",
+        "steer": 0,
+        "hands": [
+          3.641616140444708e-14,
+          3.6415579646299255e-14
+        ]
+      },
+      {
+        "rig": "절차적 대체",
+        "steer": 1,
+        "hands": [
+          5.1736512070037285e-14,
+          2.8088820794428507e-14
+        ]
+      }
+    ],
+    "failures": []
+  },
+  "cleanup": {
+    "near": 0.05,
+    "expected": 0.05,
+    "vehicle": false,
+    "state": "menu"
+  },
+  "errors": []
+}

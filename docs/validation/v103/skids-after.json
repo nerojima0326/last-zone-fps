@@ -1,0 +1,22 @@
+{
+  "mode": "after",
+  "gpu": {
+    "fresh": {
+      "energy": 117304,
+      "pixels": 2259,
+      "levels": 68
+    },
+    "middle": {
+      "energy": 11815,
+      "pixels": 821,
+      "levels": 29
+    },
+    "faded": {
+      "energy": 0,
+      "pixels": 0,
+      "levels": 0
+    },
+    "marks": 0
+  },
+  "errors": []
+}

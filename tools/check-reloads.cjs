@@ -10,7 +10,8 @@ const browser=await chromium.launch({executablePath:process.env.CHROME_BIN||unde
 try{
 const page=await browser.newPage({viewport:{width:1440,height:900}});const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')console.log('console:',m.text())});
 if(process.env.THREE_DIR) await page.route('https://cdn.jsdelivr.net/npm/three@0.160.0/**',route=>{const file=path.join(process.env.THREE_DIR,route.request().url().split('/three@0.160.0/')[1]);return route.fulfill({status:200,contentType:'application/javascript',body:fs.readFileSync(file)})});
-await page.goto(`http://127.0.0.1:${server.address().port}/tools/reloads.html`);
+// 팔 IK 자체의 연속성은 기본 손으로 검사한다. 실제 장갑은 게임·손 메시 검사에서 확인한다.
+await page.goto(`http://127.0.0.1:${server.address().port}/tools/reloads.html?arms=procedural`);
 await page.waitForFunction(()=>window.ReloadStudio?.ready,null,{timeout:120000});
 console.log('Studio loaded');await page.evaluate(()=>ReloadStudio.pause());
 const results=await page.evaluate(()=>{
@@ -66,7 +67,7 @@ const hands=await page.evaluate(()=>{
      maxError=Math.max(maxError,arm.contactError);maxAngle=Math.max(maxAngle,arm.wristAngle);
     }
     if(m.holdObj){
-     const contact=m.keys.grab.clone().applyAxisAngle(new window.THREE.Vector3(1,0,0),m.holdObj.rotation.x).add(m.holdObj.position);
+     const contact=m.keys.grab.clone().applyQuaternion(m.holdObj.quaternion).add(m.holdObj.position);
      fail(contact.distanceTo(m.armL.contact)<1e-6,id+' carried magazine stays in hand');
     }
     frames++;
@@ -152,7 +153,7 @@ const expansion=await page.evaluate(()=>{
  const R=G.ReloadAssets,st=ReloadStudio,out=[];
  if(!R.expansion)throw Error('Expansion curves did not load');
  for(const id of Object.keys(G.WeaponCatalog))for(const mode of ['empty','tactical']){
-  st.select(id,mode);st.pause();const expected=R.expansion.clips[R.expansion.weapons[id][mode]].sourceClip;
+  st.select(id,mode);st.pause();const M=G.ExpandedMotion,profile=M?.profiles[id],expected=M?.data?M.data.clips[profile[mode]].sourceClip:R.expansion.clips[R.expansion.weapons[id][mode]].sourceClip;
   let peak=0,used=0;
   for(let t=0;t<st.duration;t+=1/60){
    st.advance(1/60);const motion=st.model.reloadMotion;
@@ -161,9 +162,9 @@ const expansion=await page.evaluate(()=>{
    peak=Math.max(peak,motion.handDisplacement);used++;
   }
   if(!used||peak<.0001)throw Error('Expansion wrist curve has no effect: '+id+' '+mode+' '+peak);
-  const saved=R.expansion;
-  try{R.expansion=null;st.select(id,mode);st.pause();st.seek(st.duration*.43);if(st.model.reloadMotion)throw Error('Expansion missing-asset fallback still uses a clip');}
-  finally{R.expansion=saved;}
+  const saved=R.expansion,savedMotion=M?.data;
+  try{R.expansion=null;if(M)M.data=null;st.select(id,mode);st.pause();st.seek(st.duration*.43);if(st.model.reloadMotion)throw Error('Expansion missing-asset fallback still uses a clip');}
+  finally{R.expansion=saved;if(M)M.data=savedMotion;}
   out.push({id,mode,source:expected,handTravelMm:peak*1000});
  }
  return out;

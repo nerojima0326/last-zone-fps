@@ -1,0 +1,411 @@
+{
+  "rows": [
+    {
+      "kind": "porter",
+      "fps": 30,
+      "type": "방향키만",
+      "drift": false,
+      "slip": 0.5248434915429012,
+      "marks": 0
+    },
+    {
+      "kind": "porter",
+      "fps": 30,
+      "type": "Space와 해제",
+      "active": true,
+      "marks": 162,
+      "rearLocked": true,
+      "stopped": true,
+      "releaseMarks": 162,
+      "finalMarks": 162,
+      "slip": 0.4637545788306596
+    },
+    {
+      "kind": "porter",
+      "fps": 30,
+      "type": "Shift 가속",
+      "normal": 21,
+      "boost": 28,
+      "released": 27.86666666666666,
+      "spacePriority": true,
+      "airBoost": false,
+      "airGain": -0.023051496703846652
+    },
+    {
+      "kind": "porter",
+      "fps": 60,
+      "type": "방향키만",
+      "drift": false,
+      "slip": 0.5248434915429012,
+      "marks": 0
+    },
+    {
+      "kind": "porter",
+      "fps": 60,
+      "type": "Space와 해제",
+      "active": true,
+      "marks": 162,
+      "rearLocked": true,
+      "stopped": true,
+      "releaseMarks": 162,
+      "finalMarks": 162,
+      "slip": 0.45142815376580914
+    },
+    {
+      "kind": "porter",
+      "fps": 60,
+      "type": "Shift 가속",
+      "normal": 21,
+      "boost": 28,
+      "released": 27.93333333333333,
+      "spacePriority": true,
+      "airBoost": false,
+      "airGain": -0.011599259843553256
+    },
+    {
+      "kind": "porter",
+      "fps": 144,
+      "type": "방향키만",
+      "drift": false,
+      "slip": 0.5317003528313737,
+      "marks": 0
+    },
+    {
+      "kind": "porter",
+      "fps": 144,
+      "type": "Space와 해제",
+      "active": true,
+      "marks": 159,
+      "rearLocked": true,
+      "stopped": true,
+      "releaseMarks": 159,
+      "finalMarks": 159,
+      "slip": 0.4462256180704669
+    },
+    {
+      "kind": "porter",
+      "fps": 144,
+      "type": "Shift 가속",
+      "normal": 21,
+      "boost": 28,
+      "released": 27.97222222222222,
+      "spacePriority": true,
+      "airBoost": false,
+      "airGain": -0.004848940544444957
+    },
+    {
+      "kind": "e2200",
+      "fps": 30,
+      "type": "방향키만",
+      "drift": false,
+      "slip": 0.5248551195996622,
+      "marks": 0
+    },
+    {
+      "kind": "e2200",
+      "fps": 30,
+      "type": "Space와 해제",
+      "active": true,
+      "marks": 146,
+      "rearLocked": true,
+      "stopped": true,
+      "releaseMarks": 146,
+      "finalMarks": 146,
+      "slip": 0.49091862333594505
+    },
+    {
+      "kind": "e2200",
+      "fps": 30,
+      "type": "Shift 가속",
+      "normal": 21,
+      "boost": 28,
+      "released": 27.86666666666666,
+      "spacePriority": true,
+      "airBoost": false,
+      "airGain": -0.02305149558033648
+    },
+    {
+      "kind": "e2200",
+      "fps": 60,
+      "type": "방향키만",
+      "drift": false,
+      "slip": 0.5248551195996622,
+      "marks": 0
+    },
+    {
+      "kind": "e2200",
+      "fps": 60,
+      "type": "Space와 해제",
+      "active": true,
+      "marks": 146,
+      "rearLocked": true,
+      "stopped": true,
+      "releaseMarks": 146,
+      "finalMarks": 146,
+      "slip": 0.4805310548791075
+    },
+    {
+      "kind": "e2200",
+      "fps": 60,
+      "type": "Shift 가속",
+      "normal": 21,
+      "boost": 28,
+      "released": 27.93333333333333,
+      "spacePriority": true,
+      "airBoost": false,
+      "airGain": -0.011599675722770542
+    },
+    {
+      "kind": "e2200",
+      "fps": 144,
+      "type": "방향키만",
+      "drift": false,
+      "slip": 0.5317071078581446,
+      "marks": 0
+    },
+    {
+      "kind": "e2200",
+      "fps": 144,
+      "type": "Space와 해제",
+      "active": true,
+      "marks": 143,
+      "rearLocked": true,
+      "stopped": true,
+      "releaseMarks": 143,
+      "finalMarks": 143,
+      "slip": 0.47701349614832766
+    },
+    {
+      "kind": "e2200",
+      "fps": 144,
+      "type": "Shift 가속",
+      "normal": 21,
+      "boost": 28,
+      "released": 27.97222222222222,
+      "spacePriority": true,
+      "airBoost": false,
+      "airGain": -0.004848949440084738
+    },
+    {
+      "kind": "izh",
+      "fps": 30,
+      "type": "방향키만",
+      "drift": false,
+      "slip": 0.5248543210414471,
+      "marks": 0
+    },
+    {
+      "kind": "izh",
+      "fps": 30,
+      "type": "Space와 해제",
+      "active": true,
+      "marks": 148,
+      "rearLocked": true,
+      "stopped": true,
+      "releaseMarks": 148,
+      "finalMarks": 148,
+      "slip": 0.4893400548293656
+    },
+    {
+      "kind": "izh",
+      "fps": 30,
+      "type": "Shift 가속",
+      "normal": 21,
+      "boost": 28,
+      "released": 27.86666666666666,
+      "spacePriority": true,
+      "airBoost": false,
+      "airGain": -0.023051495660716625
+    },
+    {
+      "kind": "izh",
+      "fps": 60,
+      "type": "방향키만",
+      "drift": false,
+      "slip": 0.5248543210414471,
+      "marks": 0
+    },
+    {
+      "kind": "izh",
+      "fps": 60,
+      "type": "Space와 해제",
+      "active": true,
+      "marks": 148,
+      "rearLocked": true,
+      "stopped": true,
+      "releaseMarks": 148,
+      "finalMarks": 148,
+      "slip": 0.4787888044003852
+    },
+    {
+      "kind": "izh",
+      "fps": 60,
+      "type": "Shift 가속",
+      "normal": 21,
+      "boost": 28,
+      "released": 27.93333333333333,
+      "spacePriority": true,
+      "airBoost": false,
+      "airGain": -0.011599645979433859
+    },
+    {
+      "kind": "izh",
+      "fps": 144,
+      "type": "방향키만",
+      "drift": false,
+      "slip": 0.5317064658833566,
+      "marks": 0
+    },
+    {
+      "kind": "izh",
+      "fps": 144,
+      "type": "Space와 해제",
+      "active": true,
+      "marks": 144,
+      "rearLocked": true,
+      "stopped": true,
+      "releaseMarks": 144,
+      "finalMarks": 144,
+      "slip": 0.47511015918251465
+    },
+    {
+      "kind": "izh",
+      "fps": 144,
+      "type": "Shift 가속",
+      "normal": 21,
+      "boost": 28,
+      "released": 27.97222222222222,
+      "spacePriority": true,
+      "airBoost": false,
+      "airGain": -0.004848948803878983
+    },
+    {
+      "kind": "fallback",
+      "fps": 30,
+      "type": "방향키만",
+      "drift": false,
+      "slip": 0.5248612996903006,
+      "marks": 0
+    },
+    {
+      "kind": "fallback",
+      "fps": 30,
+      "type": "Space와 해제",
+      "active": true,
+      "marks": 145,
+      "rearLocked": true,
+      "stopped": true,
+      "releaseMarks": 145,
+      "finalMarks": 145,
+      "slip": 0.5022934569765762
+    },
+    {
+      "kind": "fallback",
+      "fps": 30,
+      "type": "Shift 가속",
+      "normal": 21,
+      "boost": 28,
+      "released": 27.86666666666666,
+      "spacePriority": true,
+      "airBoost": false,
+      "airGain": -0.023051494947075923
+    },
+    {
+      "kind": "fallback",
+      "fps": 60,
+      "type": "방향키만",
+      "drift": false,
+      "slip": 0.5248612996903006,
+      "marks": 0
+    },
+    {
+      "kind": "fallback",
+      "fps": 60,
+      "type": "Space와 해제",
+      "active": true,
+      "marks": 145,
+      "rearLocked": true,
+      "stopped": true,
+      "releaseMarks": 145,
+      "finalMarks": 145,
+      "slip": 0.49321186812581796
+    },
+    {
+      "kind": "fallback",
+      "fps": 60,
+      "type": "Shift 가속",
+      "normal": 21,
+      "boost": 28,
+      "released": 27.93333333333333,
+      "spacePriority": true,
+      "airBoost": false,
+      "airGain": -0.011599910135448255
+    },
+    {
+      "kind": "fallback",
+      "fps": 144,
+      "type": "방향키만",
+      "drift": false,
+      "slip": 0.5317125807193532,
+      "marks": 0
+    },
+    {
+      "kind": "fallback",
+      "fps": 144,
+      "type": "Space와 해제",
+      "active": true,
+      "marks": 137,
+      "rearLocked": true,
+      "stopped": true,
+      "releaseMarks": 137,
+      "finalMarks": 137,
+      "slip": 0.490903481939156
+    },
+    {
+      "kind": "fallback",
+      "fps": 144,
+      "type": "Shift 가속",
+      "normal": 21,
+      "boost": 28,
+      "released": 27.97222222222222,
+      "spacePriority": true,
+      "airBoost": false,
+      "airGain": -0.004848954454175214
+    }
+  ],
+  "limits": [
+    {
+      "mode": "입력 없음",
+      "speed": 0,
+      "boosting": false
+    },
+    {
+      "mode": "후진",
+      "speed": -6,
+      "boosting": false
+    },
+    {
+      "mode": "물속",
+      "speed": 4,
+      "boosting": false
+    },
+    {
+      "mode": "타이어 4개 파손",
+      "speed": 11.200000000000001,
+      "boosting": true
+    }
+  ],
+  "ribbons": {
+    "gap": 0,
+    "capacity": 4096,
+    "total": 6443,
+    "count": 4096,
+    "draw": 24576,
+    "reused": true,
+    "finite": true,
+    "textures": false,
+    "cleared": true
+  },
+  "failures": [],
+  "errors": []
+}

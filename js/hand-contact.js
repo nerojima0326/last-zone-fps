@@ -232,7 +232,9 @@ G.HandContact = {
         }
       }
       let magWeight = 0, magDelta = new V();
-      if (h.side === 'L' && reload?.type === 'mag') {
+      // 신규 총기의 IK가 접촉 상태를 이미 정한다. 첫 무기의 휴식점과 거리를 비교하면
+      // 무기를 꺼낸 순서에 따라 탄창을 쥐는 손 보정이 달라지므로 명시한 상태를 유지한다.
+      if (h.side === 'L' && reload?.type === 'mag' && !(weights && G.ExpandedMotion?.has(id))) {
         const p = reload.p || 0, release = smooth(p / .12) * (1 - smooth((p - .86) / .14));
         const nearGrip = 1 - smooth((distance - .035) / .06);
         weight = 1 - release + release * nearGrip;
@@ -274,7 +276,7 @@ G.HandContact = {
       if (moving) {
         // Procedural hands already follow moving barrels and levers. Keep
         // their authored finger pose and rotate the small fit with the hand.
-        const inverseRest = h.restMatrix.clone().invert();
+        const inverseRest = (context?.handReference?.[h.side]||h.restMatrix).clone().invert();
         offset.applyMatrix4(inverseRest).sub(new V().setFromMatrixPosition(inverseRest)); offsetFrame = sourceMatrix;
       }
       // 왼손은 장착된 손잡이의 접점으로 옮긴다. 자유 손의 장전 경로에는 기존 블렌드를 유지한다.
@@ -292,7 +294,7 @@ G.HandContact = {
       }
       const arm = context?.proceduralArms?.[h.side];
       // 빠른 장전 복귀 중 자유 손은 총몸 바깥으로 여유를 두고 돌아온다.
-      const gap = (imported && arm?.contactMode === 'cover' ? .012 : C.freeGap || 0) + (context?.recoveryGap || 0);
+      const gap = (imported && arm?.contactMode === 'cover' ? .012 : imported && arm?.contactMode === 'coverReach' ? T.MathUtils.lerp(C.freeGap||0,.012,arm.coverBlend) : C.freeGap || 0) + (context?.recoveryGap || 0);
       if (gap && freeWeight && arm?.palmRef) delta.add(arm.palmRef.clone().transformDirection(frame).multiplyScalar(-gap * freeWeight));
       if (C.recoveryAt && context?.recoveryGap && freeWeight) {
         const v = new V(...C.recoveryAt), amount = v.length() * freeWeight * Math.min(1, context.recoveryGap / .045);

@@ -1,5 +1,7 @@
 # 장전 애니메이션 (v40)
 
+v99의 `expanded-motion.json`은 [원본별 별도 크레딧과 라이선스](EXPANDED-MOTION-CREDITS.md)를 적용합니다. 아래는 기존 `motion.json`의 출처입니다.
+
 저작자: **Cransh** ([Sketchfab](https://sketchfab.com/ccransh)). 두 원본의 glTF `asset.extras` 및 AK 배포본의 `license.txt`에 **CC BY 4.0**이 명시되어 있습니다. 코드 저장소의 MIT 표기 대신 모델·애니메이션 자체의 CC BY 4.0 조건을 따릅니다.
 
 | 게임 적용 | 원본 / 클립 | GitHub 배포본 |

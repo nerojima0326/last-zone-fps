@@ -1,0 +1,692 @@
+{
+  "training": {
+    "kinds": [
+      "e2200",
+      "izh",
+      "porter"
+    ],
+    "positions": [
+      {
+        "kind": "porter",
+        "pos": [
+          -713,
+          4,
+          717.8
+        ],
+        "yaw": -1.5707963267948966,
+        "hl": 1.9,
+        "hw": 0.95
+      },
+      {
+        "kind": "e2200",
+        "pos": [
+          -713,
+          4,
+          724
+        ],
+        "yaw": -1.5707963267948966,
+        "hl": 1.9,
+        "hw": 0.95
+      },
+      {
+        "kind": "izh",
+        "pos": [
+          -713,
+          4,
+          730.2
+        ],
+        "yaw": -1.5707963267948966,
+        "hl": 1.9,
+        "hw": 0.95
+      }
+    ]
+  },
+  "rows": [
+    {
+      "kind": "porter",
+      "fps": 30,
+      "type": "정면 충돌",
+      "hit": true,
+      "impactSpeed": -0.40690012149082305,
+      "reverseDistance": 0.9659500607454126,
+      "speed": -3.4069001214908194,
+      "hp": 1556.2218244801832
+    },
+    {
+      "kind": "porter",
+      "fps": 30,
+      "type": "벽 스침",
+      "parallelSpeed": 13.470122258709333,
+      "hpLost": 0
+    },
+    {
+      "kind": "porter",
+      "fps": 60,
+      "type": "정면 충돌",
+      "hit": true,
+      "impactSpeed": -0.40690012149082305,
+      "reverseDistance": 0.9659500607454126,
+      "speed": -3.4069001214908194,
+      "hp": 1556.2218244801832
+    },
+    {
+      "kind": "porter",
+      "fps": 60,
+      "type": "벽 스침",
+      "parallelSpeed": 13.470122258709333,
+      "hpLost": 0
+    },
+    {
+      "kind": "porter",
+      "fps": 144,
+      "type": "정면 충돌",
+      "hit": true,
+      "impactSpeed": -0.40742107553194584,
+      "reverseDistance": 0.9641272044326392,
+      "speed": -3.4074210755319423,
+      "hp": 1556.1170335354057
+    },
+    {
+      "kind": "porter",
+      "fps": 144,
+      "type": "벽 스침",
+      "parallelSpeed": 13.624113192958468,
+      "hpLost": 0
+    },
+    {
+      "kind": "e2200",
+      "fps": 30,
+      "type": "정면 충돌",
+      "hit": true,
+      "impactSpeed": -0.40690012149082305,
+      "reverseDistance": 0.9659500607454126,
+      "speed": -3.4069001214908194,
+      "hp": 1556.2218244801832
+    },
+    {
+      "kind": "e2200",
+      "fps": 30,
+      "type": "벽 스침",
+      "parallelSpeed": 13.470122258709333,
+      "hpLost": 0
+    },
+    {
+      "kind": "e2200",
+      "fps": 60,
+      "type": "정면 충돌",
+      "hit": true,
+      "impactSpeed": -0.40690012149082305,
+      "reverseDistance": 0.9659500607454126,
+      "speed": -3.4069001214908194,
+      "hp": 1556.2218244801832
+    },
+    {
+      "kind": "e2200",
+      "fps": 60,
+      "type": "벽 스침",
+      "parallelSpeed": 13.470122258709333,
+      "hpLost": 0
+    },
+    {
+      "kind": "e2200",
+      "fps": 144,
+      "type": "정면 충돌",
+      "hit": true,
+      "impactSpeed": -0.40742107553194584,
+      "reverseDistance": 0.9641272044326392,
+      "speed": -3.4074210755319423,
+      "hp": 1556.1170335354057
+    },
+    {
+      "kind": "e2200",
+      "fps": 144,
+      "type": "벽 스침",
+      "parallelSpeed": 13.624113192958468,
+      "hpLost": 0
+    },
+    {
+      "kind": "izh",
+      "fps": 30,
+      "type": "정면 충돌",
+      "hit": true,
+      "impactSpeed": -0.40690012149082305,
+      "reverseDistance": 0.9659500607454126,
+      "speed": -3.4069001214908194,
+      "hp": 1556.2218244801832
+    },
+    {
+      "kind": "izh",
+      "fps": 30,
+      "type": "벽 스침",
+      "parallelSpeed": 13.470122258709333,
+      "hpLost": 0
+    },
+    {
+      "kind": "izh",
+      "fps": 60,
+      "type": "정면 충돌",
+      "hit": true,
+      "impactSpeed": -0.40690012149082305,
+      "reverseDistance": 0.9659500607454126,
+      "speed": -3.4069001214908194,
+      "hp": 1556.2218244801832
+    },
+    {
+      "kind": "izh",
+      "fps": 60,
+      "type": "벽 스침",
+      "parallelSpeed": 13.470122258709333,
+      "hpLost": 0
+    },
+    {
+      "kind": "izh",
+      "fps": 144,
+      "type": "정면 충돌",
+      "hit": true,
+      "impactSpeed": -0.40742107553194584,
+      "reverseDistance": 0.9641272044326392,
+      "speed": -3.4074210755319423,
+      "hp": 1556.1170335354057
+    },
+    {
+      "kind": "izh",
+      "fps": 144,
+      "type": "벽 스침",
+      "parallelSpeed": 13.624113192958468,
+      "hpLost": 0
+    },
+    {
+      "kind": "fallback",
+      "fps": 30,
+      "type": "정면 충돌",
+      "hit": true,
+      "impactSpeed": -0.40690012149082305,
+      "reverseDistance": 0.9659500607454126,
+      "speed": -3.4069001214908194,
+      "hp": 1556.2218244801832
+    },
+    {
+      "kind": "fallback",
+      "fps": 30,
+      "type": "벽 스침",
+      "parallelSpeed": 13.470122258709333,
+      "hpLost": 0
+    },
+    {
+      "kind": "fallback",
+      "fps": 60,
+      "type": "정면 충돌",
+      "hit": true,
+      "impactSpeed": -0.40690012149082305,
+      "reverseDistance": 0.9659500607454126,
+      "speed": -3.4069001214908194,
+      "hp": 1556.2218244801832
+    },
+    {
+      "kind": "fallback",
+      "fps": 60,
+      "type": "벽 스침",
+      "parallelSpeed": 13.470122258709333,
+      "hpLost": 0
+    },
+    {
+      "kind": "fallback",
+      "fps": 144,
+      "type": "정면 충돌",
+      "hit": true,
+      "impactSpeed": -0.40742107553194584,
+      "reverseDistance": 0.9641272044326392,
+      "speed": -3.4074210755319423,
+      "hp": 1556.1170335354057
+    },
+    {
+      "kind": "fallback",
+      "fps": 144,
+      "type": "벽 스침",
+      "parallelSpeed": 13.624113192958468,
+      "hpLost": 0
+    },
+    {
+      "kind": "porter",
+      "type": "부분 접지",
+      "actual": 2,
+      "reported": 2,
+      "fullAcceleration": 0.15808263888888888,
+      "partialAcceleration": 0.07910399305555554
+    },
+    {
+      "kind": "porter",
+      "type": "절벽 접근",
+      "speed": 0.9613526666666666,
+      "pitch": 0,
+      "contacts": 4
+    },
+    {
+      "kind": "porter",
+      "type": "공중 회전",
+      "air": [
+        {
+          "steer": -1,
+          "yawDelta": 0.3112983445114583,
+          "pos": [
+            -0.6982107938167377,
+            305.68321875,
+            -7.203362097595571
+          ],
+          "speed": 10.806181186563219,
+          "initialSpeed": 10.873931317598059
+        },
+        {
+          "steer": 1,
+          "yawDelta": 0.3112983445114583,
+          "pos": [
+            -0.6982107938167377,
+            305.68321875,
+            -7.203362097595571
+          ],
+          "speed": 10.806181186563219,
+          "initialSpeed": 10.873931317598059
+        }
+      ]
+    },
+    {
+      "kind": "porter",
+      "type": "차체 높이",
+      "top": 1.7,
+      "hit": true,
+      "z": -6.7471142117598975
+    },
+    {
+      "kind": "porter",
+      "type": "하차한 차량 충돌",
+      "minimum": -8.64667556410008,
+      "limit": -8.7,
+      "parked": true
+    },
+    {
+      "kind": "e2200",
+      "type": "부분 접지",
+      "actual": 2,
+      "reported": 2,
+      "fullAcceleration": 0.15808263888888888,
+      "partialAcceleration": 0.07910399305555554
+    },
+    {
+      "kind": "e2200",
+      "type": "절벽 접근",
+      "speed": 0.9613526666666666,
+      "pitch": 0,
+      "contacts": 4
+    },
+    {
+      "kind": "e2200",
+      "type": "공중 회전",
+      "air": [
+        {
+          "steer": -1,
+          "yawDelta": 0.3112983445114583,
+          "pos": [
+            -0.6982107938167377,
+            305.68321875,
+            -7.203362097595571
+          ],
+          "speed": 10.806181186563219,
+          "initialSpeed": 10.873931317598059
+        },
+        {
+          "steer": 1,
+          "yawDelta": 0.3112983445114583,
+          "pos": [
+            -0.6982107938167377,
+            305.68321875,
+            -7.203362097595571
+          ],
+          "speed": 10.806181186563219,
+          "initialSpeed": 10.873931317598059
+        }
+      ]
+    },
+    {
+      "kind": "e2200",
+      "type": "차체 높이",
+      "top": 1.7,
+      "hit": true,
+      "z": -6.7471142117598975
+    },
+    {
+      "kind": "e2200",
+      "type": "하차한 차량 충돌",
+      "minimum": -8.64667556410008,
+      "limit": -8.7,
+      "parked": true
+    },
+    {
+      "kind": "izh",
+      "type": "부분 접지",
+      "actual": 2,
+      "reported": 2,
+      "fullAcceleration": 0.15808263888888888,
+      "partialAcceleration": 0.07910399305555554
+    },
+    {
+      "kind": "izh",
+      "type": "절벽 접근",
+      "speed": 0.9613526666666666,
+      "pitch": 0,
+      "contacts": 4
+    },
+    {
+      "kind": "izh",
+      "type": "공중 회전",
+      "air": [
+        {
+          "steer": -1,
+          "yawDelta": 0.3112983445114583,
+          "pos": [
+            -0.6982107938167377,
+            305.68321875,
+            -7.203362097595571
+          ],
+          "speed": 10.806181186563219,
+          "initialSpeed": 10.873931317598059
+        },
+        {
+          "steer": 1,
+          "yawDelta": 0.3112983445114583,
+          "pos": [
+            -0.6982107938167377,
+            305.68321875,
+            -7.203362097595571
+          ],
+          "speed": 10.806181186563219,
+          "initialSpeed": 10.873931317598059
+        }
+      ]
+    },
+    {
+      "kind": "izh",
+      "type": "차체 높이",
+      "top": 1.7,
+      "hit": true,
+      "z": -6.7471142117598975
+    },
+    {
+      "kind": "izh",
+      "type": "하차한 차량 충돌",
+      "minimum": -8.64667556410008,
+      "limit": -8.7,
+      "parked": true
+    },
+    {
+      "kind": "fallback",
+      "type": "부분 접지",
+      "actual": 2,
+      "reported": 2,
+      "fullAcceleration": 0.15808263888888888,
+      "partialAcceleration": 0.07910399305555554
+    },
+    {
+      "kind": "fallback",
+      "type": "절벽 접근",
+      "speed": 0.9613526666666666,
+      "pitch": 0,
+      "contacts": 4
+    },
+    {
+      "kind": "fallback",
+      "type": "공중 회전",
+      "air": [
+        {
+          "steer": -1,
+          "yawDelta": 0.3112983445114583,
+          "pos": [
+            -0.6982107938167377,
+            305.68321875,
+            -7.203362097595571
+          ],
+          "speed": 10.806181186563219,
+          "initialSpeed": 10.873931317598059
+        },
+        {
+          "steer": 1,
+          "yawDelta": 0.3112983445114583,
+          "pos": [
+            -0.6982107938167377,
+            305.68321875,
+            -7.203362097595571
+          ],
+          "speed": 10.806181186563219,
+          "initialSpeed": 10.873931317598059
+        }
+      ]
+    },
+    {
+      "kind": "fallback",
+      "type": "차체 높이",
+      "top": 1.7,
+      "hit": true,
+      "z": -6.7471142117598975
+    },
+    {
+      "kind": "fallback",
+      "type": "하차한 차량 충돌",
+      "minimum": -8.64667556410008,
+      "limit": -8.7,
+      "parked": true
+    }
+  ],
+  "failures": [],
+  "range": [
+    {
+      "visit": 0,
+      "initial": {
+        "cars": 3,
+        "bays": [
+          "porter",
+          "e2200",
+          "izh"
+        ],
+        "colliders": 3
+      },
+      "rows": [
+        {
+          "kind": "porter",
+          "speed": 7.913769845543618,
+          "moved": 4.240237962194669,
+          "home": {
+            "x": -713,
+            "z": 717.8,
+            "yaw": -1.5707963267948966,
+            "kind": "porter"
+          }
+        },
+        {
+          "kind": "e2200",
+          "speed": 7.913769845543618,
+          "moved": 4.240237962194669,
+          "home": {
+            "x": -713,
+            "z": 724,
+            "yaw": -1.5707963267948966,
+            "kind": "e2200"
+          }
+        },
+        {
+          "kind": "izh",
+          "speed": 7.913769845543618,
+          "moved": 4.240237962194669,
+          "home": {
+            "x": -713,
+            "z": 730.2,
+            "yaw": -1.5707963267948966,
+            "kind": "izh"
+          }
+        }
+      ],
+      "respawn": [
+        {
+          "kind": "porter",
+          "ok": true,
+          "homeMatches": true,
+          "hp": 1600,
+          "tires": true
+        },
+        {
+          "kind": "e2200",
+          "ok": true,
+          "homeMatches": true,
+          "hp": 1600,
+          "tires": true
+        },
+        {
+          "kind": "izh",
+          "ok": true,
+          "homeMatches": true,
+          "hp": 1600,
+          "tires": true
+        }
+      ]
+    },
+    {
+      "visit": 1,
+      "initial": {
+        "cars": 3,
+        "bays": [
+          "porter",
+          "e2200",
+          "izh"
+        ],
+        "colliders": 3
+      },
+      "rows": [
+        {
+          "kind": "porter",
+          "speed": 7.913769845543618,
+          "moved": 4.240237962194669,
+          "home": {
+            "x": -713,
+            "z": 717.8,
+            "yaw": -1.5707963267948966,
+            "kind": "porter"
+          }
+        },
+        {
+          "kind": "e2200",
+          "speed": 7.913769845543618,
+          "moved": 4.240237962194669,
+          "home": {
+            "x": -713,
+            "z": 724,
+            "yaw": -1.5707963267948966,
+            "kind": "e2200"
+          }
+        },
+        {
+          "kind": "izh",
+          "speed": 7.913769845543618,
+          "moved": 4.240237962194669,
+          "home": {
+            "x": -713,
+            "z": 730.2,
+            "yaw": -1.5707963267948966,
+            "kind": "izh"
+          }
+        }
+      ],
+      "respawn": [
+        {
+          "kind": "porter",
+          "ok": true,
+          "homeMatches": true,
+          "hp": 1600,
+          "tires": true
+        },
+        {
+          "kind": "e2200",
+          "ok": true,
+          "homeMatches": true,
+          "hp": 1600,
+          "tires": true
+        },
+        {
+          "kind": "izh",
+          "ok": true,
+          "homeMatches": true,
+          "hp": 1600,
+          "tires": true
+        }
+      ]
+    },
+    {
+      "visit": 2,
+      "initial": {
+        "cars": 3,
+        "bays": [
+          "porter",
+          "e2200",
+          "izh"
+        ],
+        "colliders": 3
+      },
+      "rows": [
+        {
+          "kind": "porter",
+          "speed": 7.913769845543618,
+          "moved": 4.240237962194669,
+          "home": {
+            "x": -713,
+            "z": 717.8,
+            "yaw": -1.5707963267948966,
+            "kind": "porter"
+          }
+        },
+        {
+          "kind": "e2200",
+          "speed": 7.913769845543618,
+          "moved": 4.240237962194669,
+          "home": {
+            "x": -713,
+            "z": 724,
+            "yaw": -1.5707963267948966,
+            "kind": "e2200"
+          }
+        },
+        {
+          "kind": "izh",
+          "speed": 7.913769845543618,
+          "moved": 4.240237962194669,
+          "home": {
+            "x": -713,
+            "z": 730.2,
+            "yaw": -1.5707963267948966,
+            "kind": "izh"
+          }
+        }
+      ],
+      "respawn": [
+        {
+          "kind": "porter",
+          "ok": true,
+          "homeMatches": true,
+          "hp": 1600,
+          "tires": true
+        },
+        {
+          "kind": "e2200",
+          "ok": true,
+          "homeMatches": true,
+          "hp": 1600,
+          "tires": true
+        },
+        {
+          "kind": "izh",
+          "ok": true,
+          "homeMatches": true,
+          "hp": 1600,
+          "tires": true
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

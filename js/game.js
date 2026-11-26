@@ -120,6 +120,7 @@ const Game = G.Game = {
     G.UI.center('훈련 기지', '테이블의 총·조준경은 <b>' + G.Settings.label('KeyF') + '</b> 로 바꿔 들 수 있어요 · 탄약 무한 · 사격대 뒤(남쪽) 킬하우스·투척 훈련장 · 동쪽 운전 코스', '', 6);
   },
   cleanup() {
+    G.VehicleCabin?.leave(G.Player);
     G.Footsteps?.stop();
     if (G.Training) G.Training.stop();
     this.training = false;
@@ -667,15 +668,20 @@ const Game = G.Game = {
     const cam = G.camera.position, P = G.Player;
     for (const a of this.actors) {
       const m = a.model;
+      const vehicle=a.alive?(a.isPlayer?P.vehicle:a.inVehicle):null;
       if (a.state === 'plane') { m.root.visible = false; continue; }
       const dx = a.pos.x - cam.x, dz = a.pos.z - cam.z, d2 = dx * dx + dz * dz;
       const far = P.scopeView > 0.5 ? 620 : 380;   // 배율 조준 중에는 더 멀리까지 보인다
       let vis = d2 < (a.alive ? far * far : 160 * 160);
-      if (a.isPlayer && a.alive && (P.camMode === 'fp' || P.vehicle)) vis = false;
-      if (a.inVehicle && a.alive) vis = false;
+      if (a.isPlayer && a.alive && P.camMode === 'fp' && !vehicle) vis = false;
+      if (vehicle && d2>90*90) vis=false;
       if (m.root.visible !== vis) m.root.visible = vis;
       if (a.isPlayer && a.alive && P.camMode === 'fp') { m.root.position.copy(a.pos); }
       if (!vis) continue;
+      if(vehicle){
+        m.setHelmet(!!a.helmet);G.VehicleCabin.pose(m,vehicle,a.isPlayer&&P.vehicleView==='first');
+        const sh=d2<40*40;if(m._sh!==sh){m._sh=sh;m.setShadows(sh);}continue;
+      }
       m.root.position.copy(a.pos);
       m.root.rotation.y = a.yaw;
       const airborne = a.state === 'freefall' || a.state === 'chute';

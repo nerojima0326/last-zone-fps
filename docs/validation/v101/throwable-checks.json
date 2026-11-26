@@ -1,0 +1,2656 @@
+{
+  "fallback": false,
+  "smoke": [
+    {
+      "label": "바닥",
+      "first": {
+        "time": 2.683333333333333,
+        "height": 0.060000000000002274
+      },
+      "air": false,
+      "follows": 0,
+      "below": false,
+      "inside": true,
+      "cleared": true
+    },
+    {
+      "label": "지붕",
+      "first": {
+        "time": 2.683333333333333,
+        "height": 0.060000000000002274
+      },
+      "air": false,
+      "follows": 0,
+      "below": false,
+      "inside": true,
+      "cleared": true
+    },
+    {
+      "label": "수면",
+      "first": {
+        "time": 2.683333333333333,
+        "height": 0.040000000000020464
+      },
+      "air": false,
+      "follows": 0,
+      "below": false,
+      "inside": true,
+      "cleared": true
+    }
+  ],
+  "actions": {
+    "rows": [
+      {
+        "hz": 30,
+        "kind": "frag",
+        "under": false,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.08247075686726764,
+        "release": {
+          "time": 1.4333333333333333,
+          "kind": "frag",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 30,
+        "kind": "frag",
+        "under": false,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.08242008071093256,
+        "release": {
+          "time": 1.0333333333333332,
+          "kind": "frag",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 30,
+        "kind": "frag",
+        "under": true,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.05938802338910795,
+        "release": {
+          "time": 1.4,
+          "kind": "frag",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 30,
+        "kind": "frag",
+        "under": true,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.059503963883311514,
+        "release": {
+          "time": 1,
+          "kind": "frag",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 30,
+        "kind": "smoke",
+        "under": false,
+        "manual": false,
+        "maxAttach": 2.220446049250313e-16,
+        "maxStep": 0.06920461616260469,
+        "release": {
+          "time": 1.5,
+          "kind": "smoke",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 30,
+        "kind": "smoke",
+        "under": false,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.06924593728259916,
+        "release": {
+          "time": 1.1,
+          "kind": "smoke",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 30,
+        "kind": "smoke",
+        "under": true,
+        "manual": false,
+        "maxAttach": 3.885780586188048e-16,
+        "maxStep": 0.05648502788004787,
+        "release": {
+          "time": 1.4333333333333333,
+          "kind": "smoke",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 30,
+        "kind": "smoke",
+        "under": true,
+        "manual": true,
+        "maxAttach": 2.220446049250313e-16,
+        "maxStep": 0.05636403184893447,
+        "release": {
+          "time": 1.0333333333333332,
+          "kind": "smoke",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 30,
+        "kind": "molotov",
+        "under": false,
+        "manual": false,
+        "maxAttach": 2.220446049250313e-16,
+        "maxStep": 0.0599776345666753,
+        "release": {
+          "time": 1.1333333333333333,
+          "kind": "molotov",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 30,
+        "kind": "molotov",
+        "under": false,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.059943140861664496,
+        "release": {
+          "time": 1.1333333333333333,
+          "kind": "molotov",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 30,
+        "kind": "molotov",
+        "under": true,
+        "manual": false,
+        "maxAttach": 2.220446049250313e-16,
+        "maxStep": 0.051726942774690955,
+        "release": {
+          "time": 1.0666666666666667,
+          "kind": "molotov",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 30,
+        "kind": "molotov",
+        "under": true,
+        "manual": true,
+        "maxAttach": 2.220446049250313e-16,
+        "maxStep": 0.05185136778137648,
+        "release": {
+          "time": 1.0666666666666667,
+          "kind": "molotov",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 30,
+        "kind": "flash",
+        "under": false,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.07991813969662272,
+        "release": {
+          "time": 1.4,
+          "kind": "flash",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 30,
+        "kind": "flash",
+        "under": false,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.07992716782091977,
+        "release": {
+          "time": 1,
+          "kind": "flash",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 30,
+        "kind": "flash",
+        "under": true,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.06165345585270998,
+        "release": {
+          "time": 1.3666666666666667,
+          "kind": "flash",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 30,
+        "kind": "flash",
+        "under": true,
+        "manual": true,
+        "maxAttach": 2.220446049250313e-16,
+        "maxStep": 0.06153164090515378,
+        "release": {
+          "time": 0.9666666666666667,
+          "kind": "flash",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 60,
+        "kind": "frag",
+        "under": false,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.0415660516196195,
+        "release": {
+          "time": 1.45,
+          "kind": "frag",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 60,
+        "kind": "frag",
+        "under": false,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.041562645098055566,
+        "release": {
+          "time": 1.05,
+          "kind": "frag",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 5
+      },
+      {
+        "hz": 60,
+        "kind": "frag",
+        "under": true,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.02978390913633477,
+        "release": {
+          "time": 1.4,
+          "kind": "frag",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 60,
+        "kind": "frag",
+        "under": true,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.029838849100651165,
+        "release": {
+          "time": 1,
+          "kind": "frag",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 4
+      },
+      {
+        "hz": 60,
+        "kind": "smoke",
+        "under": false,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.035976822381765965,
+        "release": {
+          "time": 1.4833333333333334,
+          "kind": "smoke",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 60,
+        "kind": "smoke",
+        "under": false,
+        "manual": true,
+        "maxAttach": 2.220446049250313e-16,
+        "maxStep": 0.03596490309533688,
+        "release": {
+          "time": 1.1,
+          "kind": "smoke",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 5
+      },
+      {
+        "hz": 60,
+        "kind": "smoke",
+        "under": true,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.02831500790187785,
+        "release": {
+          "time": 1.4333333333333333,
+          "kind": "smoke",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 60,
+        "kind": "smoke",
+        "under": true,
+        "manual": true,
+        "maxAttach": 2.220446049250313e-16,
+        "maxStep": 0.028283828501282565,
+        "release": {
+          "time": 1.0333333333333332,
+          "kind": "smoke",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 4
+      },
+      {
+        "hz": 60,
+        "kind": "molotov",
+        "under": false,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.032624471412682106,
+        "release": {
+          "time": 1.1333333333333333,
+          "kind": "molotov",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 60,
+        "kind": "molotov",
+        "under": false,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.03263895836379865,
+        "release": {
+          "time": 1.1333333333333333,
+          "kind": "molotov",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 5
+      },
+      {
+        "hz": 60,
+        "kind": "molotov",
+        "under": true,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.02597561126930391,
+        "release": {
+          "time": 1.0666666666666667,
+          "kind": "molotov",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 60,
+        "kind": "molotov",
+        "under": true,
+        "manual": true,
+        "maxAttach": 2.220446049250313e-16,
+        "maxStep": 0.026020959654483637,
+        "release": {
+          "time": 1.0666666666666667,
+          "kind": "molotov",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 5
+      },
+      {
+        "hz": 60,
+        "kind": "flash",
+        "under": false,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.043406014672122635,
+        "release": {
+          "time": 1.4166666666666667,
+          "kind": "flash",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 60,
+        "kind": "flash",
+        "under": false,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.043385541081871315,
+        "release": {
+          "time": 1.0166666666666666,
+          "kind": "flash",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 4
+      },
+      {
+        "hz": 60,
+        "kind": "flash",
+        "under": true,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.03093716481816085,
+        "release": {
+          "time": 1.3666666666666667,
+          "kind": "flash",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 60,
+        "kind": "flash",
+        "under": true,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.030897345951690195,
+        "release": {
+          "time": 0.9666666666666667,
+          "kind": "flash",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 4
+      },
+      {
+        "hz": 144,
+        "kind": "frag",
+        "under": false,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.017356844149128043,
+        "release": {
+          "time": 1.4583333333333333,
+          "kind": "frag",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 144,
+        "kind": "frag",
+        "under": false,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.01731132145658209,
+        "release": {
+          "time": 1.0555555555555556,
+          "kind": "frag",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 144,
+        "kind": "frag",
+        "under": true,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.012411908260390483,
+        "release": {
+          "time": 1.4027777777777777,
+          "kind": "frag",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 144,
+        "kind": "frag",
+        "under": true,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.012422571851834374,
+        "release": {
+          "time": 1.0069444444444444,
+          "kind": "frag",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 144,
+        "kind": "smoke",
+        "under": false,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.015211708244388757,
+        "release": {
+          "time": 1.5,
+          "kind": "smoke",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 144,
+        "kind": "smoke",
+        "under": false,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.015209337134785901,
+        "release": {
+          "time": 1.097222222222222,
+          "kind": "smoke",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 144,
+        "kind": "smoke",
+        "under": true,
+        "manual": false,
+        "maxAttach": 2.220446049250313e-16,
+        "maxStep": 0.01181602189231156,
+        "release": {
+          "time": 1.4375,
+          "kind": "smoke",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 144,
+        "kind": "smoke",
+        "under": true,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.011814361168491641,
+        "release": {
+          "time": 1.034722222222222,
+          "kind": "smoke",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 144,
+        "kind": "molotov",
+        "under": false,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.013570850977422388,
+        "release": {
+          "time": 1.1388888888888888,
+          "kind": "molotov",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 144,
+        "kind": "molotov",
+        "under": false,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.013584548173014523,
+        "release": {
+          "time": 1.1388888888888888,
+          "kind": "molotov",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 144,
+        "kind": "molotov",
+        "under": true,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.010847760893887472,
+        "release": {
+          "time": 1.0694444444444444,
+          "kind": "molotov",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 144,
+        "kind": "molotov",
+        "under": true,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.010853861572321986,
+        "release": {
+          "time": 1.0694444444444444,
+          "kind": "molotov",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 144,
+        "kind": "flash",
+        "under": false,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.018148596981175404,
+        "release": {
+          "time": 1.4305555555555556,
+          "kind": "flash",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 144,
+        "kind": "flash",
+        "under": false,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.01820972671762785,
+        "release": {
+          "time": 1.0277777777777777,
+          "kind": "flash",
+          "speed": 21.160340261914506
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 144,
+        "kind": "flash",
+        "under": true,
+        "manual": false,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.01287307255969014,
+        "release": {
+          "time": 1.375,
+          "kind": "flash",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      },
+      {
+        "hz": 144,
+        "kind": "flash",
+        "under": true,
+        "manual": true,
+        "maxAttach": 4.440892098500626e-16,
+        "maxStep": 0.012870747354837852,
+        "release": {
+          "time": 0.9791666666666666,
+          "kind": "flash",
+          "speed": 9.264987857520376
+        },
+        "geometryCount": 0
+      }
+    ],
+    "geometry": [
+      {
+        "kind": "frag",
+        "under": false,
+        "phase": "hold",
+        "t": 0,
+        "pin": 0.15,
+        "id": "throw",
+        "gunMeshes": 2,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "frag",
+        "under": false,
+        "phase": "hold",
+        "t": 0,
+        "pin": 0.35,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "frag",
+        "under": false,
+        "phase": "throw",
+        "t": 0.06666666666666667,
+        "pin": 0.7666666666666674,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "frag",
+        "under": false,
+        "phase": "throw",
+        "t": 0.2333333333333333,
+        "pin": 0.9333333333333346,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "frag",
+        "under": false,
+        "phase": "throw",
+        "t": 0.35,
+        "pin": 1.0500000000000012,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "frag",
+        "under": true,
+        "phase": "hold",
+        "t": 0,
+        "pin": 0.15,
+        "id": "throw",
+        "gunMeshes": 2,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "frag",
+        "under": true,
+        "phase": "hold",
+        "t": 0,
+        "pin": 0.35,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "frag",
+        "under": true,
+        "phase": "throw",
+        "t": 0.06666666666666667,
+        "pin": 0.7666666666666674,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "frag",
+        "under": true,
+        "phase": "throw",
+        "t": 0.2333333333333333,
+        "pin": 0.9333333333333346,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "smoke",
+        "under": false,
+        "phase": "hold",
+        "t": 0,
+        "pin": 0.15,
+        "id": "throw",
+        "gunMeshes": 2,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "smoke",
+        "under": false,
+        "phase": "hold",
+        "t": 0,
+        "pin": 0.35,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "smoke",
+        "under": false,
+        "phase": "throw",
+        "t": 0.06666666666666667,
+        "pin": 0.7666666666666674,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "smoke",
+        "under": false,
+        "phase": "throw",
+        "t": 0.2333333333333333,
+        "pin": 0.9333333333333346,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "smoke",
+        "under": false,
+        "phase": "throw",
+        "t": 0.35,
+        "pin": 1.0500000000000012,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "smoke",
+        "under": true,
+        "phase": "hold",
+        "t": 0,
+        "pin": 0.15,
+        "id": "throw",
+        "gunMeshes": 2,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "smoke",
+        "under": true,
+        "phase": "hold",
+        "t": 0,
+        "pin": 0.35,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "smoke",
+        "under": true,
+        "phase": "throw",
+        "t": 0.06666666666666667,
+        "pin": 0.7666666666666674,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "smoke",
+        "under": true,
+        "phase": "throw",
+        "t": 0.2333333333333333,
+        "pin": 0.9333333333333346,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "molotov",
+        "under": false,
+        "phase": "hold",
+        "t": 0,
+        "pin": -1,
+        "id": "throw",
+        "gunMeshes": 4,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "molotov",
+        "under": false,
+        "phase": "hold",
+        "t": 0,
+        "pin": -1,
+        "id": "throw",
+        "gunMeshes": 4,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "molotov",
+        "under": false,
+        "phase": "throw",
+        "t": 0.06666666666666667,
+        "pin": -1,
+        "id": "throw",
+        "gunMeshes": 4,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 4,
+            "max": 0.0005089361731381088,
+            "span": 0.002527416120361508,
+            "sum": 0.000001036064113313852
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": [
+          {
+            "region": "R:finger",
+            "bone": "RightHandThumb1",
+            "depth": 0.0005089361731381088,
+            "span": 0.0005495494905652448,
+            "gun": "",
+            "point": [
+              -0.003924447726742259,
+              0.03096753174403588,
+              -0.01274367547592634
+            ]
+          },
+          {
+            "region": "R:finger",
+            "bone": "RightHandThumb1",
+            "depth": 0.0005089361731381088,
+            "span": 0.00060961867662194,
+            "gun": "",
+            "point": [
+              -0.003432046239897689,
+              0.03122027928386601,
+              -0.012894361897514866
+            ]
+          },
+          {
+            "region": "R:finger",
+            "bone": "RightHandThumb2",
+            "depth": 0.0005089361731381088,
+            "span": 0.002527416120361508,
+            "gun": "",
+            "point": [
+              -0.001983756373181272,
+              0.03152767454763272,
+              -0.013403205183830745
+            ]
+          },
+          {
+            "region": "R:finger",
+            "bone": "RightHandThumb1",
+            "depth": 0.0005089361731381088,
+            "span": 0.0025082764296847685,
+            "gun": "",
+            "point": [
+              0.00033208012842736445,
+              0.03208463916206691,
+              -0.014207002932316411
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "molotov",
+        "under": false,
+        "phase": "throw",
+        "t": 0.2333333333333333,
+        "pin": -1,
+        "id": "throw",
+        "gunMeshes": 4,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "molotov",
+        "under": false,
+        "phase": "throw",
+        "t": 0.35,
+        "pin": -1,
+        "id": "throw",
+        "gunMeshes": 4,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "molotov",
+        "under": true,
+        "phase": "hold",
+        "t": 0,
+        "pin": -1,
+        "id": "throw",
+        "gunMeshes": 4,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 4,
+            "max": 0.0006243103527562397,
+            "span": 0.002926748029733189,
+            "sum": 0.0000015590536662344817
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": [
+          {
+            "region": "R:finger",
+            "bone": "RightHandThumb1",
+            "depth": 0.0006243103527562397,
+            "span": 0.0007502127749810874,
+            "gun": "",
+            "point": [
+              -0.0041089621013731155,
+              0.03094851792506642,
+              -0.012807889458776912
+            ]
+          },
+          {
+            "region": "R:finger",
+            "bone": "RightHandThumb1",
+            "depth": 0.0006243103527562397,
+            "span": 0.0007488553806427626,
+            "gun": "",
+            "point": [
+              -0.0034717444460278346,
+              0.03127786992360867,
+              -0.012996898280734973
+            ]
+          },
+          {
+            "region": "R:finger",
+            "bone": "RightHandThumb2",
+            "depth": 0.0006243103527562397,
+            "span": 0.002926748029733189,
+            "gun": "",
+            "point": [
+              -0.0017680611289818246,
+              0.03163066572639017,
+              -0.01357743977203241
+            ]
+          },
+          {
+            "region": "R:finger",
+            "bone": "RightHandThumb1",
+            "depth": 0.0006243103527562397,
+            "span": 0.0022731879305312595,
+            "gun": "",
+            "point": [
+              0.0006351672395811722,
+              0.03218047683560299,
+              -0.01438892436585822
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "molotov",
+        "under": true,
+        "phase": "hold",
+        "t": 0,
+        "pin": -1,
+        "id": "throw",
+        "gunMeshes": 4,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "molotov",
+        "under": true,
+        "phase": "throw",
+        "t": 0.06666666666666667,
+        "pin": -1,
+        "id": "throw",
+        "gunMeshes": 4,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "molotov",
+        "under": true,
+        "phase": "throw",
+        "t": 0.2333333333333333,
+        "pin": -1,
+        "id": "throw",
+        "gunMeshes": 4,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 4,
+            "max": 0.000593809663854738,
+            "span": 0.002877858038525886,
+            "sum": 0.000001410439667549108
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": [
+          {
+            "region": "R:finger",
+            "bone": "RightHandThumb1",
+            "depth": 0.000593809663854738,
+            "span": 0.0006480705263944477,
+            "gun": "",
+            "point": [
+              -0.004039291709558591,
+              0.030966605298412365,
+              -0.012794698488822105
+            ]
+          },
+          {
+            "region": "R:finger",
+            "bone": "RightHandThumb1",
+            "depth": 0.000593809663854738,
+            "span": 0.0007128692578656925,
+            "gun": "",
+            "point": [
+              -0.003460731872135722,
+              0.0312630968926397,
+              -0.012970399460099934
+            ]
+          },
+          {
+            "region": "R:finger",
+            "bone": "RightHandThumb2",
+            "depth": 0.000593809663854738,
+            "span": 0.002877858038525886,
+            "gun": "",
+            "point": [
+              -0.0018000945595819647,
+              0.031611805846809185,
+              -0.01354615651030126
+            ]
+          },
+          {
+            "region": "R:finger",
+            "bone": "RightHandThumb1",
+            "depth": 0.000593809663854738,
+            "span": 0.0023310742209943533,
+            "gun": "",
+            "point": [
+              0.0006016911685655467,
+              0.0321700126789001,
+              -0.014371214386669103
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "molotov",
+        "under": true,
+        "phase": "throw",
+        "t": 0.35,
+        "pin": -1,
+        "id": "throw",
+        "gunMeshes": 4,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          }
+        },
+        "worst": []
+      },
+      {
+        "kind": "flash",
+        "under": false,
+        "phase": "hold",
+        "t": 0,
+        "pin": 0.15,
+        "id": "throw",
+        "gunMeshes": 2,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 3,
+            "max": 0.0007484616841624932,
+            "span": 0.012061803740618991,
+            "sum": 0.0000016805846779780675
+          }
+        },
+        "worst": [
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484616841624932,
+            "span": 0.004138846446653916,
+            "gun": "Flashbang",
+            "point": [
+              -0.027795319602767966,
+              0.007539918774998675,
+              -0.005449237432975054
+            ]
+          },
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484616841624932,
+            "span": 0.002093824878428935,
+            "gun": "Flashbang",
+            "point": [
+              -0.025458516340050412,
+              0.007705482322974849,
+              -0.004100914956713164
+            ]
+          },
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484616841624932,
+            "span": 0.012061803740618991,
+            "gun": "Flashbang",
+            "point": [
+              -0.0196847807387484,
+              0.009457598045256532,
+              -0.000769501650581574
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "flash",
+        "under": false,
+        "phase": "hold",
+        "t": 0,
+        "pin": 0.35,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 3,
+            "max": 0.0007484616841624932,
+            "span": 0.012061803740618991,
+            "sum": 0.0000016805846779780675
+          }
+        },
+        "worst": [
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484616841624932,
+            "span": 0.004138846446653916,
+            "gun": "Flashbang",
+            "point": [
+              -0.027795319602767966,
+              0.007539918774998675,
+              -0.005449237432975054
+            ]
+          },
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484616841624932,
+            "span": 0.002093824878428935,
+            "gun": "Flashbang",
+            "point": [
+              -0.025458516340050412,
+              0.007705482322974849,
+              -0.004100914956713164
+            ]
+          },
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484616841624932,
+            "span": 0.012061803740618991,
+            "gun": "Flashbang",
+            "point": [
+              -0.0196847807387484,
+              0.009457598045256532,
+              -0.000769501650581574
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "flash",
+        "under": false,
+        "phase": "throw",
+        "t": 0.06666666666666667,
+        "pin": 0.7666666666666674,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 3,
+            "max": 0.0007484616841624932,
+            "span": 0.012061803560433404,
+            "sum": 0.0000016805846779780675
+          }
+        },
+        "worst": [
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484616841624932,
+            "span": 0.004138846642933002,
+            "gun": "Flashbang",
+            "point": [
+              -0.027795319613091035,
+              0.007539919154507745,
+              -0.005449237438931409
+            ]
+          },
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484616841624932,
+            "span": 0.0020938248946262305,
+            "gun": "Flashbang",
+            "point": [
+              -0.02545851635037348,
+              0.007705482323056741,
+              -0.004100914962669518
+            ]
+          },
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484616841624932,
+            "span": 0.012061803560433404,
+            "gun": "Flashbang",
+            "point": [
+              -0.01968478080780102,
+              0.009457597975435238,
+              -0.000769501690424551
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "flash",
+        "under": false,
+        "phase": "throw",
+        "t": 0.2333333333333333,
+        "pin": 0.9333333333333346,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 3,
+            "max": 0.0007484634217277432,
+            "span": 0.012061799226917481,
+            "sum": 0.0000016805924809932049
+          }
+        },
+        "worst": [
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484634217277432,
+            "span": 0.004138847930513584,
+            "gun": "Flashbang",
+            "point": [
+              -0.027795319358243174,
+              0.007539916090644449,
+              -0.005449237291885609
+            ]
+          },
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484634217277432,
+            "span": 0.002093829767481177,
+            "gun": "Flashbang",
+            "point": [
+              -0.02545851455492852,
+              0.007705479953648994,
+              -0.004100913926707766
+            ]
+          },
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484634217277432,
+            "span": 0.012061799226917481,
+            "gun": "Flashbang",
+            "point": [
+              -0.019684779609585215,
+              0.009457597418696378,
+              -0.0007695009990607011
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "flash",
+        "under": true,
+        "phase": "hold",
+        "t": 0,
+        "pin": 0.15,
+        "id": "throw",
+        "gunMeshes": 2,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 3,
+            "max": 0.0007484616841624932,
+            "span": 0.012061803740618991,
+            "sum": 0.0000016805846779780675
+          }
+        },
+        "worst": [
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484616841624932,
+            "span": 0.004138846446653916,
+            "gun": "Flashbang",
+            "point": [
+              -0.027795319602767966,
+              0.007539918774998675,
+              -0.005449237432975054
+            ]
+          },
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484616841624932,
+            "span": 0.002093824878428935,
+            "gun": "Flashbang",
+            "point": [
+              -0.025458516340050412,
+              0.007705482322974849,
+              -0.004100914956713164
+            ]
+          },
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484616841624932,
+            "span": 0.012061803740618991,
+            "gun": "Flashbang",
+            "point": [
+              -0.0196847807387484,
+              0.009457598045256532,
+              -0.000769501650581574
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "flash",
+        "under": true,
+        "phase": "hold",
+        "t": 0,
+        "pin": 0.35,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 3,
+            "max": 0.0007484616841624932,
+            "span": 0.012061803740618991,
+            "sum": 0.0000016805846779780675
+          }
+        },
+        "worst": [
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484616841624932,
+            "span": 0.004138846446653916,
+            "gun": "Flashbang",
+            "point": [
+              -0.027795319602767966,
+              0.007539918774998675,
+              -0.005449237432975054
+            ]
+          },
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484616841624932,
+            "span": 0.002093824878428935,
+            "gun": "Flashbang",
+            "point": [
+              -0.025458516340050412,
+              0.007705482322974849,
+              -0.004100914956713164
+            ]
+          },
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484616841624932,
+            "span": 0.012061803740618991,
+            "gun": "Flashbang",
+            "point": [
+              -0.0196847807387484,
+              0.009457598045256532,
+              -0.000769501650581574
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "flash",
+        "under": true,
+        "phase": "throw",
+        "t": 0.06666666666666667,
+        "pin": 0.7666666666666674,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 3,
+            "max": 0.0007484620874991296,
+            "span": 0.01206180288772505,
+            "sum": 0.0000016805864892706641
+          }
+        },
+        "worst": [
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484620874991296,
+            "span": 0.004138846330700277,
+            "gun": "Flashbang",
+            "point": [
+              -0.02779531977520803,
+              0.007539918246363145,
+              -0.005449237532472011
+            ]
+          },
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484620874991296,
+            "span": 0.002093826050656082,
+            "gun": "Flashbang",
+            "point": [
+              -0.025458516353839337,
+              0.007705481780156179,
+              -0.0041009149646692965
+            ]
+          },
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484620874991296,
+            "span": 0.01206180288772505,
+            "gun": "Flashbang",
+            "point": [
+              -0.019684780774605233,
+              0.009457597799709769,
+              -0.0007695016712707665
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "flash",
+        "under": true,
+        "phase": "throw",
+        "t": 0.2333333333333333,
+        "pin": 0.9333333333333346,
+        "id": "throw",
+        "gunMeshes": 1,
+        "armMeshes": 2,
+        "result": {
+          "L:finger": {
+            "samples": 3775,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:finger": {
+            "samples": 3890,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "L:palm": {
+            "samples": 1410,
+            "count": 0,
+            "max": 0,
+            "span": 0,
+            "sum": 0
+          },
+          "R:palm": {
+            "samples": 1527,
+            "count": 3,
+            "max": 0.0007484620874991296,
+            "span": 0.012061803462676397,
+            "sum": 0.0000016805864892706641
+          }
+        },
+        "worst": [
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484620874991296,
+            "span": 0.004138845887121761,
+            "gun": "Flashbang",
+            "point": [
+              -0.027795319833260418,
+              0.007539918106770433,
+              -0.005449237565967917
+            ]
+          },
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484620874991296,
+            "span": 0.002093825846288654,
+            "gun": "Flashbang",
+            "point": [
+              -0.025458516411891726,
+              0.0077054819832635315,
+              -0.004100914998165202
+            ]
+          },
+          {
+            "region": "R:palm",
+            "bone": "RightHand",
+            "depth": 0.0007484620874991296,
+            "span": 0.012061803462676397,
+            "gun": "Flashbang",
+            "point": [
+              -0.019684780554266316,
+              0.00945759802250144,
+              -0.0007695015441364383
+            ]
+          }
+        ]
+      }
+    ],
+    "heldSmoke": {
+      "phase": "hold",
+      "count": 0,
+      "ammo": 9,
+      "text": "준비"
+    },
+    "droppedSmoke": 1,
+    "cooked": {
+      "count": 1,
+      "ammo": 8
+    },
+    "safeCancel": {
+      "count": 0,
+      "ammo": 9
+    },
+    "quick": "pistol"
+  },
+  "maxPenetration": 0.0007484634217277432,
+  "errors": []
+}
