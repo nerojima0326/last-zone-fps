@@ -1,0 +1,782 @@
+{
+  "game": {
+    "source": [
+      {
+        "vertices": 6204,
+        "attributes": {
+          "position": "de9c22a9",
+          "normal": "eecf3a9f",
+          "uv": "67c6c71e"
+        },
+        "materials": [
+          "Hand_D"
+        ],
+        "tinted": true
+      },
+      {
+        "vertices": 7230,
+        "attributes": {
+          "position": "8393c99e",
+          "normal": "f73f1389",
+          "uv": "ef1cfac6"
+        },
+        "materials": [
+          "Glove_D"
+        ],
+        "tinted": true
+      }
+    ],
+    "rows": [
+      {
+        "id": "mp9",
+        "visible": true,
+        "proceduralHidden": true,
+        "meshes": [
+          {
+            "vertices": 6204,
+            "attributes": {
+              "position": "de9c22a9",
+              "normal": "eecf3a9f",
+              "uv": "67c6c71e"
+            },
+            "materials": [
+              "Hand_D"
+            ],
+            "tinted": true
+          },
+          {
+            "vertices": 7230,
+            "attributes": {
+              "position": "8393c99e",
+              "normal": "f73f1389",
+              "uv": "ef1cfac6"
+            },
+            "materials": [
+              "Glove_D"
+            ],
+            "tinted": true
+          }
+        ]
+      },
+      {
+        "id": "v45",
+        "visible": true,
+        "proceduralHidden": true,
+        "meshes": [
+          {
+            "vertices": 6204,
+            "attributes": {
+              "position": "de9c22a9",
+              "normal": "eecf3a9f",
+              "uv": "67c6c71e"
+            },
+            "materials": [
+              "Hand_D"
+            ],
+            "tinted": true
+          },
+          {
+            "vertices": 7230,
+            "attributes": {
+              "position": "8393c99e",
+              "normal": "f73f1389",
+              "uv": "ef1cfac6"
+            },
+            "materials": [
+              "Glove_D"
+            ],
+            "tinted": true
+          }
+        ]
+      },
+      {
+        "id": "cx9",
+        "visible": true,
+        "proceduralHidden": true,
+        "meshes": [
+          {
+            "vertices": 6204,
+            "attributes": {
+              "position": "de9c22a9",
+              "normal": "eecf3a9f",
+              "uv": "67c6c71e"
+            },
+            "materials": [
+              "Hand_D"
+            ],
+            "tinted": true
+          },
+          {
+            "vertices": 7230,
+            "attributes": {
+              "position": "8393c99e",
+              "normal": "f73f1389",
+              "uv": "ef1cfac6"
+            },
+            "materials": [
+              "Glove_D"
+            ],
+            "tinted": true
+          }
+        ]
+      },
+      {
+        "id": "sm45",
+        "visible": true,
+        "proceduralHidden": true,
+        "meshes": [
+          {
+            "vertices": 6204,
+            "attributes": {
+              "position": "de9c22a9",
+              "normal": "eecf3a9f",
+              "uv": "67c6c71e"
+            },
+            "materials": [
+              "Hand_D"
+            ],
+            "tinted": true
+          },
+          {
+            "vertices": 7230,
+            "attributes": {
+              "position": "8393c99e",
+              "normal": "f73f1389",
+              "uv": "ef1cfac6"
+            },
+            "materials": [
+              "Glove_D"
+            ],
+            "tinted": true
+          }
+        ]
+      },
+      {
+        "id": "ar416",
+        "visible": true,
+        "proceduralHidden": true,
+        "meshes": [
+          {
+            "vertices": 6204,
+            "attributes": {
+              "position": "de9c22a9",
+              "normal": "eecf3a9f",
+              "uv": "67c6c71e"
+            },
+            "materials": [
+              "Hand_D"
+            ],
+            "tinted": true
+          },
+          {
+            "vertices": 7230,
+            "attributes": {
+              "position": "8393c99e",
+              "normal": "f73f1389",
+              "uv": "ef1cfac6"
+            },
+            "materials": [
+              "Glove_D"
+            ],
+            "tinted": true
+          }
+        ]
+      },
+      {
+        "id": "sg56",
+        "visible": true,
+        "proceduralHidden": true,
+        "meshes": [
+          {
+            "vertices": 6204,
+            "attributes": {
+              "position": "de9c22a9",
+              "normal": "eecf3a9f",
+              "uv": "67c6c71e"
+            },
+            "materials": [
+              "Hand_D"
+            ],
+            "tinted": true
+          },
+          {
+            "vertices": 7230,
+            "attributes": {
+              "position": "8393c99e",
+              "normal": "f73f1389",
+              "uv": "ef1cfac6"
+            },
+            "materials": [
+              "Glove_D"
+            ],
+            "tinted": true
+          }
+        ]
+      },
+      {
+        "id": "ms56",
+        "visible": true,
+        "proceduralHidden": true,
+        "meshes": [
+          {
+            "vertices": 6204,
+            "attributes": {
+              "position": "de9c22a9",
+              "normal": "eecf3a9f",
+              "uv": "67c6c71e"
+            },
+            "materials": [
+              "Hand_D"
+            ],
+            "tinted": true
+          },
+          {
+            "vertices": 7230,
+            "attributes": {
+              "position": "8393c99e",
+              "normal": "f73f1389",
+              "uv": "ef1cfac6"
+            },
+            "materials": [
+              "Glove_D"
+            ],
+            "tinted": true
+          }
+        ]
+      },
+      {
+        "id": "lm86",
+        "visible": true,
+        "proceduralHidden": true,
+        "meshes": [
+          {
+            "vertices": 6204,
+            "attributes": {
+              "position": "de9c22a9",
+              "normal": "eecf3a9f",
+              "uv": "67c6c71e"
+            },
+            "materials": [
+              "Hand_D"
+            ],
+            "tinted": true
+          },
+          {
+            "vertices": 7230,
+            "attributes": {
+              "position": "8393c99e",
+              "normal": "f73f1389",
+              "uv": "ef1cfac6"
+            },
+            "materials": [
+              "Glove_D"
+            ],
+            "tinted": true
+          }
+        ]
+      },
+      {
+        "id": "rk762",
+        "visible": true,
+        "proceduralHidden": true,
+        "meshes": [
+          {
+            "vertices": 6204,
+            "attributes": {
+              "position": "de9c22a9",
+              "normal": "eecf3a9f",
+              "uv": "67c6c71e"
+            },
+            "materials": [
+              "Hand_D"
+            ],
+            "tinted": true
+          },
+          {
+            "vertices": 7230,
+            "attributes": {
+              "position": "8393c99e",
+              "normal": "f73f1389",
+              "uv": "ef1cfac6"
+            },
+            "materials": [
+              "Glove_D"
+            ],
+            "tinted": true
+          }
+        ]
+      },
+      {
+        "id": "mg60",
+        "visible": true,
+        "proceduralHidden": true,
+        "meshes": [
+          {
+            "vertices": 6204,
+            "attributes": {
+              "position": "de9c22a9",
+              "normal": "eecf3a9f",
+              "uv": "67c6c71e"
+            },
+            "materials": [
+              "Hand_D"
+            ],
+            "tinted": true
+          },
+          {
+            "vertices": 7230,
+            "attributes": {
+              "position": "8393c99e",
+              "normal": "f73f1389",
+              "uv": "ef1cfac6"
+            },
+            "materials": [
+              "Glove_D"
+            ],
+            "tinted": true
+          }
+        ]
+      },
+      {
+        "id": "sr25",
+        "visible": true,
+        "proceduralHidden": true,
+        "meshes": [
+          {
+            "vertices": 6204,
+            "attributes": {
+              "position": "de9c22a9",
+              "normal": "eecf3a9f",
+              "uv": "67c6c71e"
+            },
+            "materials": [
+              "Hand_D"
+            ],
+            "tinted": true
+          },
+          {
+            "vertices": 7230,
+            "attributes": {
+              "position": "8393c99e",
+              "normal": "f73f1389",
+              "uv": "ef1cfac6"
+            },
+            "materials": [
+              "Glove_D"
+            ],
+            "tinted": true
+          }
+        ]
+      },
+      {
+        "id": "dm56",
+        "visible": true,
+        "proceduralHidden": true,
+        "meshes": [
+          {
+            "vertices": 6204,
+            "attributes": {
+              "position": "de9c22a9",
+              "normal": "eecf3a9f",
+              "uv": "67c6c71e"
+            },
+            "materials": [
+              "Hand_D"
+            ],
+            "tinted": true
+          },
+          {
+            "vertices": 7230,
+            "attributes": {
+              "position": "8393c99e",
+              "normal": "f73f1389",
+              "uv": "ef1cfac6"
+            },
+            "materials": [
+              "Glove_D"
+            ],
+            "tinted": true
+          }
+        ]
+      },
+      {
+        "id": "m24",
+        "visible": true,
+        "proceduralHidden": true,
+        "meshes": [
+          {
+            "vertices": 6204,
+            "attributes": {
+              "position": "de9c22a9",
+              "normal": "eecf3a9f",
+              "uv": "67c6c71e"
+            },
+            "materials": [
+              "Hand_D"
+            ],
+            "tinted": true
+          },
+          {
+            "vertices": 7230,
+            "attributes": {
+              "position": "8393c99e",
+              "normal": "f73f1389",
+              "uv": "ef1cfac6"
+            },
+            "materials": [
+              "Glove_D"
+            ],
+            "tinted": true
+          }
+        ]
+      },
+      {
+        "id": "sp12",
+        "visible": true,
+        "proceduralHidden": true,
+        "meshes": [
+          {
+            "vertices": 6204,
+            "attributes": {
+              "position": "de9c22a9",
+              "normal": "eecf3a9f",
+              "uv": "67c6c71e"
+            },
+            "materials": [
+              "Hand_D"
+            ],
+            "tinted": true
+          },
+          {
+            "vertices": 7230,
+            "attributes": {
+              "position": "8393c99e",
+              "normal": "f73f1389",
+              "uv": "ef1cfac6"
+            },
+            "materials": [
+              "Glove_D"
+            ],
+            "tinted": true
+          }
+        ]
+      },
+      {
+        "id": "p226",
+        "visible": true,
+        "proceduralHidden": true,
+        "meshes": [
+          {
+            "vertices": 6204,
+            "attributes": {
+              "position": "de9c22a9",
+              "normal": "eecf3a9f",
+              "uv": "67c6c71e"
+            },
+            "materials": [
+              "Hand_D"
+            ],
+            "tinted": true
+          },
+          {
+            "vertices": 7230,
+            "attributes": {
+              "position": "8393c99e",
+              "normal": "f73f1389",
+              "uv": "ef1cfac6"
+            },
+            "materials": [
+              "Glove_D"
+            ],
+            "tinted": true
+          }
+        ]
+      }
+    ]
+  },
+  "studio": {
+    "label": "에셋 모델 · 기존 손 · 검은 장갑 / 녹색 소매 · 잔탄 있음 · 장전 1.24초",
+    "ready": true,
+    "meshes": [
+      {
+        "vertices": 6204,
+        "attributes": {
+          "position": "de9c22a9",
+          "normal": "eecf3a9f",
+          "uv": "67c6c71e"
+        },
+        "materials": [
+          "Hand_D"
+        ],
+        "tinted": true
+      },
+      {
+        "vertices": 7230,
+        "attributes": {
+          "position": "8393c99e",
+          "normal": "f73f1389",
+          "uv": "ef1cfac6"
+        },
+        "materials": [
+          "Glove_D"
+        ],
+        "tinted": true
+      }
+    ],
+    "rows": [
+      {
+        "id": "mp9",
+        "mode": "empty",
+        "visible": true,
+        "finite": true,
+        "mag": 30,
+        "expected": 30
+      },
+      {
+        "id": "mp9",
+        "mode": "tactical",
+        "visible": true,
+        "finite": true,
+        "mag": 30,
+        "expected": 30
+      },
+      {
+        "id": "v45",
+        "mode": "empty",
+        "visible": true,
+        "finite": true,
+        "mag": 25,
+        "expected": 25
+      },
+      {
+        "id": "v45",
+        "mode": "tactical",
+        "visible": true,
+        "finite": true,
+        "mag": 25,
+        "expected": 25
+      },
+      {
+        "id": "cx9",
+        "mode": "empty",
+        "visible": true,
+        "finite": true,
+        "mag": 40,
+        "expected": 40
+      },
+      {
+        "id": "cx9",
+        "mode": "tactical",
+        "visible": true,
+        "finite": true,
+        "mag": 40,
+        "expected": 40
+      },
+      {
+        "id": "sm45",
+        "mode": "empty",
+        "visible": true,
+        "finite": true,
+        "mag": 30,
+        "expected": 30
+      },
+      {
+        "id": "sm45",
+        "mode": "tactical",
+        "visible": true,
+        "finite": true,
+        "mag": 30,
+        "expected": 30
+      },
+      {
+        "id": "ar416",
+        "mode": "empty",
+        "visible": true,
+        "finite": true,
+        "mag": 30,
+        "expected": 30
+      },
+      {
+        "id": "ar416",
+        "mode": "tactical",
+        "visible": true,
+        "finite": true,
+        "mag": 30,
+        "expected": 30
+      },
+      {
+        "id": "sg56",
+        "mode": "empty",
+        "visible": true,
+        "finite": true,
+        "mag": 30,
+        "expected": 30
+      },
+      {
+        "id": "sg56",
+        "mode": "tactical",
+        "visible": true,
+        "finite": true,
+        "mag": 30,
+        "expected": 30
+      },
+      {
+        "id": "ms56",
+        "mode": "empty",
+        "visible": true,
+        "finite": true,
+        "mag": 30,
+        "expected": 30
+      },
+      {
+        "id": "ms56",
+        "mode": "tactical",
+        "visible": true,
+        "finite": true,
+        "mag": 30,
+        "expected": 30
+      },
+      {
+        "id": "lm86",
+        "mode": "empty",
+        "visible": true,
+        "finite": true,
+        "mag": 60,
+        "expected": 60
+      },
+      {
+        "id": "lm86",
+        "mode": "tactical",
+        "visible": true,
+        "finite": true,
+        "mag": 60,
+        "expected": 60
+      },
+      {
+        "id": "rk762",
+        "mode": "empty",
+        "visible": true,
+        "finite": true,
+        "mag": 45,
+        "expected": 45
+      },
+      {
+        "id": "rk762",
+        "mode": "tactical",
+        "visible": true,
+        "finite": true,
+        "mag": 45,
+        "expected": 45
+      },
+      {
+        "id": "mg60",
+        "mode": "empty",
+        "visible": true,
+        "finite": true,
+        "mag": 100,
+        "expected": 100
+      },
+      {
+        "id": "mg60",
+        "mode": "tactical",
+        "visible": true,
+        "finite": true,
+        "mag": 100,
+        "expected": 100
+      },
+      {
+        "id": "sr25",
+        "mode": "empty",
+        "visible": true,
+        "finite": true,
+        "mag": 20,
+        "expected": 20
+      },
+      {
+        "id": "sr25",
+        "mode": "tactical",
+        "visible": true,
+        "finite": true,
+        "mag": 20,
+        "expected": 20
+      },
+      {
+        "id": "dm56",
+        "mode": "empty",
+        "visible": true,
+        "finite": true,
+        "mag": 20,
+        "expected": 20
+      },
+      {
+        "id": "dm56",
+        "mode": "tactical",
+        "visible": true,
+        "finite": true,
+        "mag": 20,
+        "expected": 20
+      },
+      {
+        "id": "m24",
+        "mode": "empty",
+        "visible": true,
+        "finite": true,
+        "mag": 5,
+        "expected": 5
+      },
+      {
+        "id": "m24",
+        "mode": "tactical",
+        "visible": true,
+        "finite": true,
+        "mag": 5,
+        "expected": 5
+      },
+      {
+        "id": "sp12",
+        "mode": "empty",
+        "visible": true,
+        "finite": true,
+        "mag": 8,
+        "expected": 8
+      },
+      {
+        "id": "sp12",
+        "mode": "tactical",
+        "visible": true,
+        "finite": true,
+        "mag": 8,
+        "expected": 8
+      },
+      {
+        "id": "p226",
+        "mode": "empty",
+        "visible": true,
+        "finite": true,
+        "mag": 18,
+        "expected": 18
+      },
+      {
+        "id": "p226",
+        "mode": "tactical",
+        "visible": true,
+        "finite": true,
+        "mag": 18,
+        "expected": 18
+      }
+    ]
+  },
+  "procedural": {
+    "ready": false,
+    "hidden": false,
+    "mag": 30,
+    "label": "에셋 모델 · 기본 손 · 빈 탄창 · 장전 2.16초"
+  },
+  "missing": {
+    "ready": false,
+    "hidden": false,
+    "mag": 30,
+    "label": "에셋 모델 · 기존 손 로드 실패 · 기본 손 · 빈 탄창 · 장전 2.16초"
+  },
+  "errors": []
+}

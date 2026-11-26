@@ -47,6 +47,7 @@ jobs:
         run: |
           node tools/check-expanded-motion.cjs
           MOTION_FALLBACK=1 node tools/check-expanded-motion.cjs
+          node tools/check-classic-hands.cjs
       - name: 훈련 기록·프레임 측정·봇 재조준·자세 복귀 검사
         run: node tools/check-session-polish.cjs
       - name: 차량 내구도·투척 충돌·폭발 효과 풀 검사

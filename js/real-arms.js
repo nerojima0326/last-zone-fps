@@ -43,17 +43,19 @@ function mapFrame(ly, lz, wy, wz, out) {
 
 const R = G.RealArms = {
   ready: false, enabled: true, copy: null, host: null,
-  init() {
+  init(source, pistolSource) {
     try { this.enabled = localStorage.getItem('lastzone_realarms') !== '0'; } catch (e) { /* 저장소 없음 */ }
     const M = G.M4Viewmodel;
-    if (!M) return;
     // M4 모델을 다시 불러오거나 내리면 함께 따라간다 (같은 지오메트리·재질을 공유한다)
-    const install = M.install, unload = M.unload;
-    M.install = function (model) { install.call(this, model); R.build(); };
-    M.unload = function () { R.dispose(); unload.call(this); };
+    if (M) {
+      const install = M.install, unload = M.unload;
+      M.install = function (model) { install.call(this, model); R.build(); };
+      M.unload = function () { R.dispose(); unload.call(this); };
+    }
     const update = G.VM.update;
     G.VM.update = function (dt, s) { update.call(this, dt, s); R.update(this, s, dt); };
-    if (M.ready) this.build();
+    // 독립 장전 화면도 같은 원본과 구동기를 사용한다. 게임의 파일 선택 UI는 필요 없다.
+    if (source || M?.ready) this.build(source, pistolSource);
   },
   setEnabled(on) {
     this.enabled = !!on;
@@ -91,12 +93,12 @@ const R = G.RealArms = {
     });
     return out;
   },
-  build() {
+  build(source, pistolSource) {
     this.dispose();
     const M = G.M4Viewmodel, SU = T.SkeletonUtils;
-    if (!M || !M.ready || !SU) return;
+    if ((!source && !M?.ready) || !SU) return;
     try {
-      const src = M.model, copy = SU.clone(src);
+      const src = source || M.model, copy = SU.clone(src);
       copy.animations = src.animations;
       const drop = [];
       copy.traverse(o => { if ((o.isMesh && !o.isSkinnedMesh) || o.isCamera || o.isLight) drop.push(o); });
@@ -141,9 +143,9 @@ const R = G.RealArms = {
       }
       mix.stopAllAction(); mix.uncacheRoot(copy);
       // 권총: Glock 대기 자세의 손가락 (같은 팔 뼈대)
-      const gp = G.G17Pilot;
-      if (gp && gp.ready && gp.model) {
-        const g = SU.clone(gp.model); g.animations = gp.model.animations;
+      const gp = pistolSource || (G.G17Pilot?.ready && G.G17Pilot.model);
+      if (gp) {
+        const g = SU.clone(gp); g.animations = gp.animations;
         const gm = this.pose(g, 'Idle');
         if (gm) {
           for (const sd of SIDES) {
@@ -168,6 +170,8 @@ const R = G.RealArms = {
     if (this.copy) this.copy.removeFromParent();
     Object.assign(this, { copy: null, mesh: null, S: null, ready: false, host: null, contactReference:null });
   },
+  // 손 모델 선택은 모션 데이터와 분리한다. 신규 총기는 기존 검은 장갑·녹색 소매를 쓴다.
+  classic(id) { return !!G.WeaponCatalog?.[id]; },
   // 절차적 팔 메시 보이기/숨기기
   armsOf(m) { return m.def ? { L: m.armL, R: m.armR } : m.staticArms; },
   procVisible(m, on) {
@@ -185,10 +189,11 @@ const R = G.RealArms = {
     const m = vm.models[vm.cur];
     const own = (vm.cur === 'ar7' && G.M4Viewmodel?.ready) || (vm.cur === 'g18' && G.G17Pilot?.ready) || G.AssetVM?.owns(vm.cur);
     const A = m && this.armsOf(m);
+    const expanded = this.classic(vm.cur);
     // 큰 손목 회전에서도 장갑이 팔뚝 쪽으로 끌려가지 않게 기존 손 접촉용 스킨을 재사용한다.
-    if(this.ready&&this.copy)G.ThrowMotion.skin(this,m?.type==='throw'||G.ExpandedMotion?.has(vm.cur));
+    if(this.ready&&this.copy)G.ThrowMotion.skin(this,m?.type==='throw'||expanded);
     // v65 투척물·맨손은 설정과 상관없이 총과 같은 실사 팔 (절차적 팔과 섞이지 않게)
-    const use = this.ready && (this.enabled || G.ExpandedMotion?.has(vm.cur) || vm.cur === 'throw' || vm.cur === 'fists' || G.Knives?.is(vm.cur)) && A && (A.L || A.R) && !own && !s.hideVM;
+    const use = this.ready && (this.enabled || expanded || vm.cur === 'throw' || vm.cur === 'fists' || G.Knives?.is(vm.cur)) && A && (A.L || A.R) && !own && !s.hideVM;
     if (this.lastM && this.lastM !== m) this.procVisible(this.lastM, true);
     if (!use) { this.hide(); return; }
     if (this.copy.parent !== m.root) m.root.add(this.copy);
@@ -201,7 +206,6 @@ const R = G.RealArms = {
       if (r) { S.b.arm.scale.setScalar(1); this.drive(m, r, S, pistol);if(m.type==='throw'&&sd.key==='R'){G.ThrowMotion.fitRealGrip(m,r,S,.01*(this.scale||1));G.ThrowMotion.poseLeft(m,dt);m.root.updateMatrixWorld(true);}else if(m.type==='throw'&&sd.key==='L')G.ThrowMotion.fitRealPin(m,r,S,this); }
       else this.tuck(S);   // 한 팔만 쓰는 동작(투척): 다른 팔은 접어서 감춘다
     }
-    const expanded=G.ExpandedMotion?.has(vm.cur);
     // 복귀 중에는 이 총의 실제 받침점에 가까워질수록 쥔 자세로 돌아간다.
     const supporting=A.L?.contactMode==='support'||expanded&&A.L?.contactMode==='coverReach';
     const left=supporting?(expanded?(1-U.smoothstep(.012,.085,A.L.cur.distanceTo(m.fore)))*(1-(A.L.coverBlend||0)):1):0;

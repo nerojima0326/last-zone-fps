@@ -1,0 +1,124 @@
+{
+  "baseline": "b6c293e7c75706e5f7d07fcbb3510c7a5e484bc5",
+  "baselineStudioSHA256": "4cd4035ca30c8a78f607c4434df98a005a77e7d9ad6f8b7e777e562705f2a869",
+  "identicalResults": true,
+  "cases": 180,
+  "frames": 32334,
+  "resultsSHA256": "237811742da8650ca84f2945b6ce51be3973627c224d972107c2a5705394e1ae",
+  "failureCount": 14,
+  "maxFailedMm": 17.83949950919758,
+  "failures": [
+    {
+      "id": "v45",
+      "mode": "tactical",
+      "fps": 30,
+      "key": "L:support",
+      "mm": 11.522523109082389,
+      "p": 0.7092198581560288
+    },
+    {
+      "id": "v45",
+      "mode": "tactical",
+      "fps": 60,
+      "key": "L:support",
+      "mm": 13.439424291150553,
+      "p": 0.7003546099290782
+    },
+    {
+      "id": "v45",
+      "mode": "tactical",
+      "fps": 144,
+      "key": "L:support",
+      "mm": 13.315706767274143,
+      "p": 0.7018321513002346
+    },
+    {
+      "id": "cx9",
+      "mode": "tactical",
+      "fps": 60,
+      "key": "L:support",
+      "mm": 12.48131485004584,
+      "p": 0.7118055555555556
+    },
+    {
+      "id": "cx9",
+      "mode": "tactical",
+      "fps": 144,
+      "key": "L:support",
+      "mm": 13.842039261219709,
+      "p": 0.7125289351851832
+    },
+    {
+      "id": "sm45",
+      "mode": "tactical",
+      "fps": 144,
+      "key": "L:support",
+      "mm": 13.512496476515441,
+      "p": 0.7019927536231865
+    },
+    {
+      "id": "ar416",
+      "mode": "tactical",
+      "fps": 60,
+      "key": "L:support",
+      "mm": 12.015294334179277,
+      "p": 0.70578231292517
+    },
+    {
+      "id": "ar416",
+      "mode": "tactical",
+      "fps": 144,
+      "key": "L:support",
+      "mm": 13.468787764945505,
+      "p": 0.7015306122448961
+    },
+    {
+      "id": "ms56",
+      "mode": "tactical",
+      "fps": 30,
+      "key": "L:support",
+      "mm": 11.608273390038587,
+      "p": 0.700757575757576
+    },
+    {
+      "id": "ms56",
+      "mode": "tactical",
+      "fps": 60,
+      "key": "L:support",
+      "mm": 15.361088887532986,
+      "p": 0.700757575757576
+    },
+    {
+      "id": "ms56",
+      "mode": "tactical",
+      "fps": 144,
+      "key": "L:support",
+      "mm": 17.83949950919758,
+      "p": 0.7023358585858567
+    },
+    {
+      "id": "sr25",
+      "mode": "empty",
+      "fps": 144,
+      "key": "L:reach",
+      "mm": 11.683548604918867,
+      "p": 0.23674242424242378
+    },
+    {
+      "id": "sr25",
+      "mode": "tactical",
+      "fps": 60,
+      "key": "L:support",
+      "mm": 13.405836640852636,
+      "p": 0.7040229885057467
+    },
+    {
+      "id": "sr25",
+      "mode": "tactical",
+      "fps": 144,
+      "key": "L:support",
+      "mm": 14.955458473644073,
+      "p": 0.7004310344827567
+    }
+  ]
+}
