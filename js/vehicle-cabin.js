@@ -199,7 +199,9 @@ const C=G.VehicleCabin={
   if(c.warning!==warning||c.handbrake!==handbrake){c.lamps.setColorAt(0,new T.Color(warning?0xff4934:0x111719));c.lamps.setColorAt(1,new T.Color(handbrake?0xffc34b:0x111719));c.lamps.instanceColor.needsUpdate=true;c.warning=warning;c.handbrake=handbrake;}
   return c;
  },
- grip(v,i,out){const c=v.cabin,s=c.profile,w=c.wheelSpec,angle=(i===0?Math.PI*.76:Math.PI*.24)+c.angle;return out.set(Math.cos(angle)*w.grip,Math.sin(angle)*w.grip,w.z).applyEuler(euler.set(-.43,0,0)).add(p.fromArray(s.wheel));},
+ // v108 최대 약 41도 조향부터 생기던 팔 교차를 림 위의 연속적인 미끄럼 그립으로 푼다.
+ gripAngle(v,i){return (i===0?Math.PI:0)+.12*Math.tanh(v.cabin.angle/.12);},
+ grip(v,i,out){const c=v.cabin,s=c.profile,w=c.wheelSpec,angle=this.gripAngle(v,i),local=angle-c.angle,gap=a=>Math.atan2(Math.sin(local-a),Math.cos(local-a)),bulge=1+w.bulge*Math.max(...[.24,.76].map(a=>Math.exp(-((gap(Math.PI*a)/.19)**2)))),radius=w.grip-Math.sqrt((w.tube*(1+w.bulge))**2-w.z*w.z)+Math.sqrt((w.tube*bulge)**2-w.z*w.z);return out.set(Math.cos(angle)*radius,Math.sin(angle)*radius,w.z).applyEuler(euler.set(-.43,0,0)).add(p.fromArray(s.wheel));},
  pose(m,v,first){
   const c=this.animate(v),s=c.profile;G.HitResponse?.restore(m);G.Knives?.handTP(m,false);
   m.driving=v;m.motion=null;m.ikGun=null;m.setLOD(false);m.setGun(null);m.showChute(false);m.airGear.visible=false;
@@ -216,13 +218,13 @@ const C=G.VehicleCabin={
   for(let i=0;i<2;i++){
    this.grip(v,i,target).sub(p.fromArray(s.hip)).add(origin);const hand=hands[i];
    if(hand){
-    const angle=(i===0?Math.PI*.76:Math.PI*.24)+v.cabin.angle;
+    const angle=this.gripAngle(v,i);
     gripSide.set(-Math.sin(angle),Math.cos(angle),0).multiplyScalar(i===0?-1:1).applyEuler(euler.set(-.43,0,0));
     gripForward.set(0,0,-1).applyEuler(euler);gripNormal.crossVectors(gripSide,gripForward).normalize();
     hand.desired.setFromRotationMatrix(gripMatrix.makeBasis(gripSide,gripForward,gripNormal)).multiply(hand.inverseBasis);
     target.sub(gripOffset.copy(hand.palm).applyQuaternion(hand.desired));
    }
-   G.Soldiers.ikArm(sd,i===0?sd.T.ik.L:sd.T.ik.R,target,pole.set(i===0?-.7:.7,-1,.15));
+   G.Soldiers.ikArm(sd,i===0?sd.T.ik.L:sd.T.ik.R,target,pole.set(i===0?-.95:.95,-1.2,.32));
   }
   for(let i=0;i<(sd.T.feet||[]).length;i++){
    const foot=sd.T.feet[i];if(!foot)continue;
