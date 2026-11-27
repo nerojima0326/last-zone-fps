@@ -4,7 +4,7 @@ require('./artifact-paths.cjs');
 // 부착물의 실제 메시·광축·움직이는 부품 연결을 브라우저에서 확인한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./optimize/browser-fixture.cjs');
 (async()=>{const f=await fixture({viewport:{width:1100,height:700}});try{
- const p=f.page;await p.evaluate(async()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=cb=>cb.name==='frame'?0:raf(cb);G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};for(const id of G.GUN_IDS)G.VM.ensure(id);await G.AssetVM.loadAll();G.startGame({...G.UI.opts,mode:'training',quality:'medium'});G.paused=true;G.UI.showPause(false)});
+ const p=f.page;await p.evaluate(async()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=cb=>cb.name==='frame'?0:raf(cb);G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};for(const id of G.GUN_IDS)G.VM.ensure(id);await G.AssetVM.loadAll();await G.startGame({...G.UI.opts,mode:'training',quality:'medium'});G.paused=true;G.UI.showPause(false)});
  const report=await p.evaluate(()=>{
   const T=THREE,V=T.Vector3,out={guns:[],optics:[],reloads:[],failures:[]},a=G.Game.player,P=G.Player;
   const equip=(id,scope,parts)=>{const d=G.WEAPONS[id];a.weapons[d.cls]={id,mag:d.mag,scope,iron:!scope,attachments:parts};a.cur=d.cls;Object.assign(P,{raise:1,sw:null,reload:null,heal:null,ads:1,scopeView:0,landDip:0,camKick:0,cycleT:-1,pumpT:-1,sprinting:false});Object.assign(G.VM,{kick:0,kickV:0,kickRoll:0,sprint:0,camRX:0,camRY:0,camRZ:0});a.hspeed=0;G.FX.shakeAmt=0;for(let i=0;i<120;i++)P.updateCamera(1/60);G.vmScene.updateMatrixWorld(true);return G.VM.models[id]};

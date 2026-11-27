@@ -442,6 +442,7 @@ G.boot = async function () {
   progress(0.3, '렌더러 초기화 중...');
   G.Footsteps?.prefetch();
   renderer = G.renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance', stencil: false });
+  renderer.debug.checkShaderErrors = new URLSearchParams(location.search).get('shaderdebug') === '1'; // v108 동기 진단 조회는 검증 모드에서만
   renderer.setPixelRatio(outputPixelRatio());
   renderer.setSize(innerWidth, innerHeight);
   G.GraphicsRecovery.init(renderer);
@@ -492,7 +493,8 @@ G.boot = async function () {
   camera.position.set(450, 160, 450); camera.lookAt(0, 20, 0);
   progress(0.97, '셰이더 컴파일 중...');
   await new Promise(r => setTimeout(r, 30));
-  renderer.compile(scene, camera);
+  await prepareShaders(scene, camera);
+  await prepareShaders(G.vmScene, G.vmCamera, true);
   renderer.shadowMap.needsUpdate = true;
   // 레이트레이싱을 켜 두었으면 로딩 화면에서 모듈을 받고 장면까지 미리 컴파일한다
   if (G.RT) {
@@ -511,6 +513,7 @@ G.boot = async function () {
     if (G.Game.state === 'playing' && !G.Input.locked && !G.Settings?.open && !G.Attachments?.open && !G.Armory?.open && !G.TrainingRecords?.open) G.resume();
   });
   G.onLockChange = (locked) => {
+    if(G.preparing){if(!locked)G.prepUnlocked=true;return;} // v108 준비 중 잠금 해제로 게임이 진행되지 않게 한다
     if (G.Game.spectating && !locked) { G.Game.stopSpectate(); return; }
     if (G.Game.state !== 'playing') return;
     if(G.Attachments?.open||G.Armory?.open||G.TrainingRecords?.open){G.paused=true;G.UI.showPause(false);return;}
@@ -659,8 +662,8 @@ function applyQuality(q) {
 // 한 프레임 그리기: 후처리를 쓰면 composer, 아니면 화면에 바로 (본 장면 → 1인칭 총)
 const _db = new THREE.Vector2();
 function usePost() { const Q = QUALITY[G.quality]; return !Q || Q.post; }
-function renderFrame(dt) {
-  if (G.GraphicsRecovery.lost) return;
+function renderFrame(dt, preparing=false) {
+  if (G.GraphicsRecovery.lost || (G.preparing&&!preparing)) return;
   // The catalogue draws its own preview on demand over the last game frame.
   if (G.Armory?.open) return;
   // 레이트레이싱 (설정에서 켰고 지원되는 기기일 때)
@@ -713,9 +716,35 @@ function onResize() {
   if (G.quality) DRS.reset(outputPixelRatio());
 }
 
-// 매치 시작 시 사용될 셰이더를 미리 컴파일해 첫 사용 시 끊김을 없앤다
-function warmup() {
+// v108 컴파일 완료와 첫 사용의 유니폼 조회까지 시작 화면에서 끝낸다.
+function prepareTarget(viewmodel) {
+  if(!usePost()||(viewmodel&&G.RT?.drawing()))return null; // v108 직접 출력·RT의 출력 형식도 맞춘다
+  return viewmodel?nativeVM.target:composer.renderTarget1;
+}
+async function prepareShaders(root, cam, viewmodel=false, targetScene=root) {
+  const prep=G.RenderPrep;await prep.waitSafe();await prep.gpuIdle();await prep.waitSafe();
+  const previous=renderer.getRenderTarget();
+  try{renderer.setRenderTarget(prepareTarget(viewmodel));renderer.compile(root,cam,targetScene)}
+  finally{renderer.setRenderTarget(previous)}
+  // v108 양면 투명 재질은 앞·뒷면 프로그램을 모두 기다린다.
+  const programs=new Set();root.traverse(o=>{for(const m of [].concat(o.material||[]))for(const p of renderer.properties.get(m).programs?.values()||[])programs.add(p)});
+  const started=performance.now();
+  for(const p of programs)while(!p.isReady()){if(G.GraphicsRecovery.lost)throw Error('그래픽 연결이 끊겼습니다');if(performance.now()-started>60000)throw Error('셰이더 준비를 완료하지 못했습니다');await prep.turn(8)}
+  await prep.waitSafe();
+  const debug=renderer.debug.checkShaderErrors;renderer.debug.checkShaderErrors=true;
+  try{for(const p of programs)p.getUniforms()}
+  finally{renderer.debug.checkShaderErrors=debug}
+  await prep.gpuIdle();
+}
+
+// v108 필요한 인벤토리만 받고 GPU 업로드를 프레임 사이에 나눠 끝낸다.
+async function warmup() {
   const started=performance.now(),heap=performance.memory?.usedJSHeapSize||null; // v107 시작 정지·메모리 계측
+  const prep=G.RenderPrep,requests=[];
+  for(const w of Object.values(G.Game.player.weapons))if(w){G.VM.ensure(w.id);requests.push(G.AssetVM?.request(w.id))}
+  // v108 선택 자산의 응답이 늦으면 기존 모델로 시작하고 다음 안전한 시점에 준비한다.
+  let timer;await Promise.race([Promise.allSettled(requests),new Promise(resolve=>{timer=setTimeout(resolve,10000)})]);clearTimeout(timer);
+  if(G.GraphicsRecovery.lost)throw Error('그래픽 연결이 끊겼습니다');
   const shown = [];
   const show = o => { if (o && !o.visible) { o.visible = true; shown.push(o); } };
   const temp = [];
@@ -725,64 +754,91 @@ function warmup() {
   const m0 = G.Game.actors[0].model;
   m0.showChute(true); m0.showChute(false); show(m0.chute);
   for (const k of G.THROW_ORDER) { const t = G.Guns.throwModel(k, false); t.position.copy(camera.position); scene.add(t); temp.push(t); }
-  for (const w of Object.values(G.Game.player.weapons)) if (w) { const g = G.Guns.tpModel(w.id); g.position.copy(camera.position); scene.add(g); temp.push(g); G.VM.ensure(w.id); G.AssetVM?.request(w.id); }
+  for (const w of Object.values(G.Game.player.weapons)) if (w) { const g = G.Guns.tpModel(w.id); g.position.copy(camera.position); scene.add(g); temp.push(g); }
   if (G.Game.zone) show(G.Game.zone.mesh);
   for (const k in G.VM.models) show(G.VM.models[k].root);
-  // Visibility inside a model encodes optics, magazines and alternate hands.
-  // Compiling its root must not reveal those hidden alternatives.
-  // 실제 HDR 출력과 같은 상태에서 준비해 첫 사격 때 출력 색공간 변형이 다시 만들어지지 않게 한다.
-  const previous = renderer.getRenderTarget();
-  const compileStarted=performance.now();
-  try {
-    renderer.setRenderTarget(composer.renderTarget1); renderer.compile(scene, camera);
-    renderer.setRenderTarget(nativeVM.target); renderer.compile(G.vmScene, G.vmCamera);
-  } finally { renderer.setRenderTarget(previous); }
-  const compileMs=performance.now()-compileStarted;
-  // v67 처음 보는 텍스처를 GPU 로 올리느라 게임 중에 멈칫하던 것 (숲에 처음 들어갈 때 등) → 판이 시작되면
-  //  여유 프레임에서 한 장씩 올린다 (한 번에 올리면 저사양에서 시작 화면이 수 초 멈춘다)
+  // v108 조준경·탄창·대체 손의 내부 가시성은 그대로 둔다.
   const texs = new Set();
   for (const root of [scene, G.vmScene]) root.traverse(o => {
     if (!o.material) return;
     for (const m of [].concat(o.material)) for (const k in m) { const v = m[k]; if (v && v.isTexture && !v.isRenderTargetTexture && v.image) texs.add(v); }
   });
   G.prewarmTex = [...texs].filter(t => !renderer.properties.get(t).__webglInit);
-  for (const o of shown) o.visible = false;
-  for (const t of temp) scene.remove(t);
-  G.VM.set(null);
-  G.warmupStats={ms:performance.now()-started,compileMs,heapBefore:heap,heapAfter:performance.memory?.usedJSHeapSize||null,viewmodels:Object.keys(G.VM.models).length,texturesQueued:G.prewarmTex.length};
+  const queued=G.prewarmTex.length;let compileMs;
+  try{
+    document.getElementById('loadText').textContent='장면을 준비하는 중...';
+    await prep.textures(G.prewarmTex);G.prewarmTex=[];
+    document.getElementById('loadText').textContent='그래픽을 준비하는 중...';
+    const t=performance.now();await prepareShaders(scene,camera);await prepareShaders(G.vmScene,G.vmCamera,true);compileMs=performance.now()-t;
+    for(const native of[G.M4Viewmodel,G.G17Pilot])if(native?.ready&&native.pivot)await G.prepareViewmodel(native.pivot); // v108 수송기에서 시작해도 착지 전 손·총 버퍼를 준비한다
+  }finally{
+    for (const o of shown) o.visible = false;
+    for (const t of temp) scene.remove(t);
+    G.VM.set(null);
+  }
+  document.getElementById('loadText').textContent='첫 화면 준비 중...';
+  G.Player.update(0);G.Game.syncModels(0);G.World.update(0,camera.position,camera);G.RoomLighting?.update(0,camera.position);G.Weather.update(0);
+  renderer.shadowMap.needsUpdate=true;
+  if(G.Perf)G.Perf.withoutRecording(()=>renderFrame(0,true));else renderFrame(0,true);
+  await prep.gpuIdle();
+  G.warmupStats={ms:performance.now()-started,compileMs,heapBefore:heap,heapAfter:performance.memory?.usedJSHeapSize||null,viewmodels:Object.keys(G.VM.models).length,texturesQueued:queued,texturesRemaining:G.prewarmTex.length};
 }
 
-G.prepareViewmodel = root => {
-  if (G.GraphicsRecovery.lost) return Promise.resolve();
-  const previous = renderer.getRenderTarget();
-  try { renderer.setRenderTarget(G.RT?.drawing() ? null : nativeVM.target); return renderer.compileAsync(root, G.vmCamera, G.vmScene); }
-  finally { renderer.setRenderTarget(previous); }
+G.prepareViewmodel = async root => {
+  if (G.GraphicsRecovery.lost) throw Error('그래픽 연결이 끊겼습니다');
+  await prepareShaders(root,G.vmCamera,true,G.vmScene);
+  await G.RenderPrep.waitSafe();
+  const target=prepareTarget(true)?new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType,samples:QualitySamples(G.msaaSamples)}):null,previous=renderer.getRenderTarget(),parent=root.parent,index=parent?.children.indexOf(root),moved=parent!==G.vmScene;
+  const viewport=renderer.getViewport(new THREE.Vector4()),scissor=renderer.getScissor(new THREE.Vector4()),scissorTest=renderer.getScissorTest();
+  if(moved)G.vmScene.add(root);
+  const visible=G.vmScene.children.map(o=>[o,o.visible]);
+  try{
+    try{
+      for(const [o]of visible)if(!o.isLight)o.visible=o===root;
+      root.visible=true;renderer.setRenderTarget(target);renderer.setViewport(0,0,1,1);renderer.setScissor(0,0,1,1);renderer.setScissorTest(true);renderer.render(G.vmScene,G.vmCamera);
+    }finally{
+      for(const [o,on]of visible)o.visible=on;
+      if(moved){G.vmScene.remove(root);if(parent){parent.add(root);parent.children.splice(parent.children.indexOf(root),1);parent.children.splice(index,0,root)}}
+      renderer.setRenderTarget(previous);
+      renderer.setViewport(viewport);renderer.setScissor(scissor);renderer.setScissorTest(scissorTest);
+    }
+    await G.RenderPrep.gpuIdle();
+  }finally{target?.dispose()}
 };
 G.startGame = function (opts) {
-  if (G.GraphicsRecovery.lost) return;
-  G.Audio.init();
-  G.UI.hideMenu();
-  document.getElementById('results').classList.add('hidden');
-  G.Player.sens = opts.sens;
-  DRS.target = opts.fpsTarget || 120;
-  G.qualityMode = opts.quality;
-  let q = resolveQuality(opts.quality);
-  Auto.failed={};Auto.slowT=0;Auto.trial=false;
-  if(opts.quality==='auto'){try{const saved=localStorage.getItem('lz_auto_tier'),i=TIERS.indexOf(saved);if(i>=0&&i<Auto.max){q=TIERS[i+1];Auto.tier=q;Auto.trial=true;}}catch(e){}}
-  Auto.downN = 0; Auto.upT = 0; Auto.lastChange = performance.now();
-  if (G.quality !== q) applyQuality(q);
-  else DRS.reset(basePixelRatio(G.quality));
-  G.World.setTimeOfDay(opts.tod);
-  G.Game.start(opts);
-  warmup();
-  G.qualityTransition('판 시작',6);
-  G.paused = false;
-  G.Input.lock();
-  // 레이트레이싱: 새 판의 장면을 로딩 화면에서 미리 컴파일 (게임 중 멈춤 없음)
-  if (G.RT) { G.RT.invalidate(); G.RT.prepare(); }
+  if (G.GraphicsRecovery.lost) return Promise.resolve(false);
+  if(G.preparing)return G.startReady;
+  G.Audio.init(); // v108 오디오·포인터 잠금은 클릭의 사용자 동작 안에서 요청한다
+  G.preparing=true;G.prepUnlocked=false;G.paused=true;G.Input.reset();G.Input.lock();
+  const loading=document.getElementById('loading');loading.classList.remove('hidden');document.getElementById('loadText').textContent='게임을 준비하는 중...';document.getElementById('loadFill').style.width='100%';
+  G.startReady=(async()=>{
+    try{
+      await G.RenderPrep.turn(30);await G.RenderPrep.gpuIdle();
+      G.UI.hideMenu();
+      document.getElementById('results').classList.add('hidden');
+      G.Player.sens = opts.sens;
+      DRS.target = opts.fpsTarget || 120;
+      G.qualityMode = opts.quality;
+      let q = resolveQuality(opts.quality);
+      Auto.failed={};Auto.slowT=0;Auto.trial=false;
+      if(opts.quality==='auto'){try{const saved=localStorage.getItem('lz_auto_tier'),i=TIERS.indexOf(saved);if(i>=0&&i<Auto.max){q=TIERS[i+1];Auto.tier=q;Auto.trial=true;}}catch(e){}}
+      Auto.downN = 0; Auto.upT = 0; Auto.lastChange = performance.now();
+      if (G.quality !== q) applyQuality(q);
+      else DRS.reset(basePixelRatio(G.quality));
+      G.World.setTimeOfDay(opts.tod);
+      G.Game.start(opts);
+      await warmup();
+      // 레이트레이싱: 새 판의 장면을 로딩 화면에서 미리 컴파일 (게임 중 멈춤 없음)
+      if (G.RT) { G.RT.invalidate(); await G.RT.prepare(); }
+      G.qualityTransition('판 시작',6);G.Input.reset();last=performance.now();
+      G.paused=G.prepUnlocked;G.UI.showPause(G.paused);return true;
+    }catch(e){
+      console.error(e);if(!G.GraphicsRecovery.lost){G.Game.cleanup();G.Input.unlock();G.UI.showMenu();G.UI.toast('게임 준비에 실패했습니다 · 다시 시도하세요');}return false;
+    }finally{G.preparing=false;if(!G.GraphicsRecovery.lost)loading.classList.add('hidden');}
+  })();return G.startReady;
 };
 G.resume = function () {
-  if (G.GraphicsRecovery.lost) return;
+  if (G.GraphicsRecovery.lost || G.preparing) return;
   G.Audio.init();
   G.UI.showPause(false);
   G.paused = false;
@@ -805,7 +861,7 @@ function frame(now) {
   const ms = now - last;
   let dt = ms / 1000;
   last = now;
-  if (G.GraphicsRecovery.lost) return;
+  if (G.GraphicsRecovery.lost || G.preparing || (G.RenderPrep.running && G.RenderPrep.safe())) return;
   if (dt > 0.05) dt = 0.05;
   if (dt <= 0) dt = 0.001;
   frameNo++;
@@ -839,9 +895,6 @@ function frame(now) {
   // 그림자 맵 갱신 주기: 중간·높음은 2프레임마다(느리면 매 프레임), 낮음은 3프레임마다, 최저는 그림자 없음
   const se = (QUALITY[G.quality] || QUALITY.high).shEvery;
   if (se && (frameNo % se === 0 || (se === 2 && ms > 14))) renderer.shadowMap.needsUpdate = true;
-  // 여유가 있을 때만 남은 텍스처를 한 장 준비한다.
-  const prepIdle = G.paused || Game.state === 'menu' || (!G.Input.lmb && G.Player.ads < .1 && !G.Player.reload && G.Player.time - G.Player.lastShot > .3 && ms < 22);
-  if (prepIdle && performance.now() - tUpd < 4 && G.prewarmTex?.length) { try { renderer.initTexture(G.prewarmTex.pop()); } catch (e) { /* 무시 */ } }
   const updMs = performance.now() - tUpd;
   if (G.Perf) G.Perf.frameStart();
   if (G.SessionPerf?.recording) G.SessionPerf.renderStart = performance.now();

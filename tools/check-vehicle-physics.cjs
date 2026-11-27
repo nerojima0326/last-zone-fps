@@ -80,7 +80,7 @@ const output=path.resolve(process.env.REPORT||'/tmp/lz-vehicle-physics.json');
      return old.map(v=>{const home=v.home,kind=v.kind,ok=V.respawn(v),fresh=V.list.find(v=>v.home===home);return {kind,ok,homeMatches:!!fresh&&fresh.kind===home.kind,hp:fresh?.hp,maxHp:fresh?.maxHp,tires:fresh?.wheels.every(w=>w.hp===36&&!w.flat)};});
     });for(const r of respawn)assert(r.ok&&r.homeMatches&&r.hp===r.maxHp&&r.tires,'훈련장 차종 재생성 '+r.kind);
     report.range.push({visit,initial,rows,respawn});
-    if(visit<2)await p.evaluate(()=>{G.toMenu();G.startGame({...G.UI.opts,mode:'training',quality:'low'});G.paused=true;G.UI.showPause(false);G.Input.locked=true;});
+    if(visit<2)await p.evaluate(async ()=>{G.toMenu();await G.startGame({...G.UI.opts,mode:'training',quality:'low'});G.paused=true;G.UI.showPause(false);G.Input.locked=true;});
    }
   }
   report.errors=f.errors;fs.writeFileSync(output,JSON.stringify(report,null,2)+'\n');

@@ -13,7 +13,7 @@ if(mode==='before')for(const name of['index.html','js/vehicles.js','js/world.js'
   await p.route(u=>u.hostname==='127.0.0.1'&&(u.pathname==='/'||old[u.pathname.slice(1)]!==undefined),r=>{const name=new URL(r.request().url()).pathname.slice(1)||'index.html';return r.fulfill({body:old[name],contentType:name.endsWith('.html')?'text/html':'application/javascript'})});
  }});
  try{
-  const p=f.page;fs.mkdirSync(out,{recursive:true});await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.waitForFunction(()=>G.Training.active);
+  const p=f.page;fs.mkdirSync(out,{recursive:true});await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>(!G.preparing&&G.Training.active));
   await p.evaluate(()=>{
    G.paused=true;G.Input.unlock();G.UI.showPause(false);G.__apply('medium');G.setRenderResolution('100');G.VM.set(null);G.VM.update(0,{hideVM:true,ads:0,raise:1,reload:null,moving:0,landDip:0,phase:0});
    const floor=new THREE.Mesh(new THREE.PlaneGeometry(32,32).rotateX(-Math.PI/2),new THREE.MeshStandardMaterial({color:0x596066,roughness:.92}));floor.position.y=300;floor.receiveShadow=true;G.scene.add(floor);const grid=new THREE.GridHelper(32,32,0x444a50,0x525960);grid.position.y=300.003;G.scene.add(grid);window.__vehicleFloor=floor;window.__height=G.World.heightAt;G.World.heightAt=()=>300;

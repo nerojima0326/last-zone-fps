@@ -7,9 +7,9 @@ const fs=require('fs'),path=require('path'),fixture=require('./optimize/browser-
  const f=await fixture({viewport:{width:960,height:600}}),out=process.env.KNIFE_SHOTS||'/tmp/lz-knife-capture';
  try{
   fs.mkdirSync(out,{recursive:true});const p=f.page;
-  await p.evaluate(()=>{
+  await p.evaluate(async ()=>{
    const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);
-   G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};G.startGame({...G.UI.opts,mode:'training',quality:'medium'});G.paused=true;G.UI.showPause(false);
+   G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};await G.startGame({...G.UI.opts,mode:'training',quality:'medium'});G.paused=true;G.UI.showPause(false);
    window.knifeCapture=(id,kind,t,dt=1/60,variant=0)=>{
     const P=G.Player,a=P.a,d=G.Knives.catalog[id];Object.assign(a,{cur:'melee',knife:id,state:'ground',alive:true,knocked:false,hspeed:0,crouch:false,prone:false});
     Object.assign(P,{sw:null,reload:null,heal:null,throwSt:null,revive:null,vehicle:null,sprinting:false,ads:0,scopeView:0,raise:1,landDip:0,knifeSeen:id});G.Input.reset();

@@ -15,7 +15,7 @@ function native(row){assert(row.mobile);assert(Math.abs(row.rendererPR-row.dpr*r
  try{
   await page.evaluate(()=>{window.__lzRAF=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:window.__lzRAF(fn);G.onLockChange=()=>{};G.Input.unlock();G.UI.showPause(false)});
   report.menu=await snapshot(page);native(report.menu);await page.screenshot({path:path.join(out,'menu.png'),timeout:90000});
-  await page.evaluate(()=>{G.startGame({...G.UI.opts,mode:'training'});G.paused=true;G.UI.showPause(false);for(let i=0;i<3;i++){G.Player.update(1/60);G.Input.endFrame()}});
+  await page.evaluate(async ()=>{await G.startGame({...G.UI.opts,mode:'training'});G.paused=true;G.UI.showPause(false);for(let i=0;i<3;i++){G.Player.update(1/60);G.Input.endFrame()}});
   report.training=await snapshot(page);native(report.training);assert(report.training.gpu.estimatedBytes<550*1048576,'모바일 그래픽 저장소 예산 초과');assert.equal(report.training.imageLimit,512);assert(report.training.resized>30);
   await page.screenshot({path:path.join(out,'training.png'),timeout:90000});console.log('PASS S24 FE 세로 화면·실제 출력 픽셀·모바일 저장소 예산');
   await page.evaluate(()=>{G.paused=false;G.Input.locked=true});await page.waitForFunction(()=>document.getElementById('touchUI').classList.contains('show'),null,{timeout:5000,polling:50});
@@ -60,17 +60,17 @@ function native(row){assert(row.mobile);assert(Math.abs(row.rendererPR-row.dpr*r
   });assert.deepEqual(report.textures,{image:[512,256],shared:true,compressed:[512,512,2],data:[1024,1024]});
   await page.evaluate(()=>{window.requestAnimationFrame=fn=>fn.name==='frame'?0:window.__lzRAF(fn);G.Perf.toggle(true);G.Perf.frameStart();G.renderNow();G.Perf.frameEnd(16.7,0);G.Perf.gpuWait();window.__lzLost=G.renderer.getContext().getExtension('WEBGL_lose_context');if(!window.__lzLost)throw Error('컨텍스트 손실 검사 확장 없음');window.__lzLost.loseContext()});
   await page.waitForFunction(()=>G.GraphicsRecovery.lost,null,{timeout:10000,polling:50});
-  const lost=await page.evaluate(()=>{const time=G.Game.time,player=G.Player.a,render=G.renderer.render;let calls=0;G.renderer.render=()=>calls++;try{G.resume();G.renderNow();G.startGame({...G.UI.opts,mode:'training'})}finally{G.renderer.render=render}return{paused:G.paused,loading:!document.getElementById('loading').classList.contains('hidden'),time,renders:calls,samePlayer:G.Player.a===player}});assert(lost.paused&&lost.loading&&lost.samePlayer);assert.equal(lost.renders,0);
+  const lost=await page.evaluate(async ()=>{const time=G.Game.time,player=G.Player.a,render=G.renderer.render;let calls=0;G.renderer.render=()=>calls++;try{G.resume();G.renderNow();await G.startGame({...G.UI.opts,mode:'training'})}finally{G.renderer.render=render}return{paused:G.paused,loading:!document.getElementById('loading').classList.contains('hidden'),time,renders:calls,samePlayer:G.Player.a===player}});assert(lost.paused&&lost.loading&&lost.samePlayer);assert.equal(lost.renders,0);
   await page.waitForTimeout(150);assert.equal(await page.evaluate(()=>G.Game.time),lost.time);await page.evaluate(()=>window.__lzLost.restoreContext());
   await page.waitForFunction(()=>!G.GraphicsRecovery.lost&&G.GraphicsRecovery.recoveries===1,null,{timeout:20000,polling:50});
   report.recovery=await page.evaluate(()=>{G.Perf.toggle(false);G.renderNow();G.Perf.gpuWait();const gl=G.renderer.getContext();return{paused:G.paused,pauseMenu:!document.getElementById('pause').classList.contains('hidden'),loading:!document.getElementById('loading').classList.contains('hidden'),recoveries:G.GraphicsRecovery.recoveries,error:gl.getError()}});
   assert(report.recovery.paused&&report.recovery.pauseMenu&&!report.recovery.loading);assert.equal(report.recovery.error,0);
   const stable=await snapshot(page);native(stable);assert(stable.gpu.estimatedBytes<550*1048576);report.restored=stable;
   await page.screenshot({path:path.join(out,'restored.png'),timeout:90000});
-  await page.evaluate(()=>{G.resume();if(G.paused)throw Error('복구 후 재개 실패');G.toMenu();G.startGame({...G.UI.opts,mode:'training'});G.paused=true;G.UI.showPause(false);for(let i=0;i<3;i++){G.Player.update(1/60);G.Input.endFrame()}});
+  await page.evaluate(async ()=>{G.resume();if(G.paused)throw Error('복구 후 재개 실패');G.toMenu();await G.startGame({...G.UI.opts,mode:'training'});G.paused=true;G.UI.showPause(false);for(let i=0;i<3;i++){G.Player.update(1/60);G.Input.endFrame()}});
   report.reentry=await snapshot(page);native(report.reentry);assert(report.reentry.gpu.estimatedBytes<550*1048576);
-  const landing=await page.evaluate(()=>{
-   G.toMenu();G.startGame({...G.UI.opts,mode:'battle',players:40});G.paused=true;G.UI.showPause(false);
+  const landing=await page.evaluate(async ()=>{
+   G.toMenu();await G.startGame({...G.UI.opts,mode:'battle',players:40});G.paused=true;G.UI.showPause(false);
    const a=G.Player.a;G.Game.updatePlane(8);G.Game.jump(a);let steps=0;
    // 지형 고도에 따라 자동 낙하산 착지가 20초를 넘을 수 있다.
    while(a.state!=='ground'&&steps++<900){G.Game.time+=1/30;G.Game.updatePlane(1/30);G.Player.update(1/30);G.UI.update(1/30);G.Input.endFrame()}

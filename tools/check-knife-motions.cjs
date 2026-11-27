@@ -11,8 +11,8 @@ const installGeometry=require('./hand-geometry.cjs'),bvhDir=path.dirname(path.di
  }});
  try{
   fs.mkdirSync(out,{recursive:true});const p=f.page;
-  await p.evaluate(()=>{
-   const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};G.startGame({...G.UI.opts,mode:'training',quality:'medium'});G.paused=true;G.UI.showPause(false);
+  await p.evaluate(async ()=>{
+   const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};await G.startGame({...G.UI.opts,mode:'training',quality:'medium'});G.paused=true;G.UI.showPause(false);
    window.knifeDuration=(id,kind)=>{const d=G.Knives.catalog[id];return kind==='draw'?d.draw:kind==='slash'?d.duration:d.inspect};
    window.knifePose=(id,kind,t,dt=1/60,variant=0)=>{
     const P=G.Player,a=P.a;Object.assign(a,{cur:'melee',knife:id,state:'ground',alive:true,knocked:false,hspeed:0,crouch:false,prone:false});Object.assign(P,{sw:null,reload:null,heal:null,throwSt:null,revive:null,vehicle:null,sprinting:false,ads:0,scopeView:0,raise:1,landDip:0,knifeSeen:id});G.Input.reset();

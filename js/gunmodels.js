@@ -28,9 +28,10 @@ function centerOf(o) { return new THREE.Box3().setFromObject(o).getCenter(new V3
 
 // v61 같은 GLB 를 여러 곳(1인칭 팩 · 3인칭)에서 쓸 때 한 번만 내려받는다 (해석은 쓰는 곳마다 따로 — 서로 장면을 바꾸므로)
 const _bin = {};
-G.loadGLB = G.loadGLB || function (loader, url) {
+G.loadGLB = G.loadGLB || function (loader, url, defer=false) {
   const p = _bin[url] || (_bin[url] = fetch(url).then(r => { if (!r.ok) throw Error(url + ' ' + r.status); return r.arrayBuffer(); }));
-  return p.then(buf => loader.parseAsync(buf, url.replace(/[^/]*$/, '')));
+  // v108 플레이 중 요청은 압축 데이터만 받고 해석·이미지 생성도 안전한 시점까지 미룬다.
+  return p.then(buf => {const parse=()=>loader.parseAsync(buf,url.replace(/[^/]*$/,''));return defer?G.RenderPrep.run(parse):parse();});
 };
 const GM = G.GunModels = {
   swapSrc: {},

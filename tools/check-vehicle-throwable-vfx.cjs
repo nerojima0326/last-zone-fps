@@ -8,7 +8,7 @@ const out=process.env.REPORT||'/tmp/lz-v84-vehicle-vfx.json';
  const f=await fixture({viewport:{width:640,height:360}}),p=f.page,report={};
  try{
   await p.waitForFunction(()=>G.ThrowableVFX.fireState!=='loading');
-  await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.waitForFunction(()=>G.Training.active);
+  await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>(!G.preparing&&G.Training.active));
   await p.evaluate(()=>{G.paused=true;G.Input.unlock();G.UI.showPause(false)});
   report.vehicles=await p.evaluate(()=>{
    const V=G.Vehicles,W=G.World,owner=G.Game.player,def=G.WEAPONS.ar7,rows=[];

@@ -11,7 +11,7 @@ const out=process.env.REPORT||'/tmp/lz-v80-combat-environment.json';
  try{
   const page=f.page;page.setDefaultTimeout(180000);
   await page.evaluate(()=>{window.requestAnimationFrame=()=>0;G.onLockChange=()=>{};G.Input.unlock()});
-  await page.waitForTimeout(80);await page.click('#trainBtn');await page.waitForFunction(()=>G.Training.active);
+  await page.waitForTimeout(80);await page.click('#trainBtn');await page.evaluate(()=>G.startReady);await page.waitForFunction(()=>(!G.preparing&&G.Training.active));
   await page.evaluate(()=>{
    G.paused=true;G.Input.unlock();G.UI.showPause(false);G.Audio.init();
    window.V80Lab={colliders:[],add(...args){const b=G.World.addCollider(...args,true);this.colliders.push(b);return b},clear(){for(const b of this.colliders)G.World.removeCollider(b);this.colliders.length=0;G.Acoustics.reset()}};

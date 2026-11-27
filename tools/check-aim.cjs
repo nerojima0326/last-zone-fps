@@ -129,9 +129,9 @@ function checkAim() {
     await page.addInitScript(() => localStorage.setItem('lastzone_opts', JSON.stringify({ quality: 'potato', qv: 2, players: 24, loadout: 'all', fpsTarget: 60 })));
     await page.goto(`http://127.0.0.1:${server.address().port}/`, { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => window.G?.UI && document.querySelector('#loading.hidden'), null, { timeout: 180000 });
-    await page.click('#trainBtn');
-    await page.evaluate(async () => { for (const id of G.GUN_IDS) G.VM.ensure(id); await G.AssetVM.loadAll(); });
-    await page.waitForFunction(() => G.Training.active && Object.keys(G.AssetVM.PACKS).every(k => G.AssetVM.packs[k]?.ready), null, { timeout: 240000 });
+    await page.click('#trainBtn');await page.evaluate(()=>G.startReady);
+    await page.evaluate(async () => { G.paused=true;for (const id of G.GUN_IDS) G.VM.ensure(id); await G.AssetVM.loadAll(); });
+    await page.waitForFunction(() => (!G.preparing&&G.Training.active) && Object.keys(G.AssetVM.PACKS).every(k => G.AssetVM.packs[k]?.ready), null, { timeout: 240000 });
     await page.evaluate(() => {
       const a = G.Game.player, R = G.World.range;
       a.cur = 'rifle'; a.weapons.rifle.iron = true; a.weapons.rifle.scope = null;

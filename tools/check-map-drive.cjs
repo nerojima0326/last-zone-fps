@@ -6,7 +6,7 @@ const assert=require('assert'),fs=require('fs'),fixture=require('./optimize/brow
 (async()=>{
  const f=await fixture({viewport:{width:640,height:360},route:async p=>{if(process.env.MAP_FALLBACK==='1')await p.route('**/vendor/ez-tree.es.js',r=>r.abort())}});
  try{
-  const p=f.page;await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.waitForFunction(()=>G.Training.active);
+  const p=f.page;await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>(!G.preparing&&G.Training.active));
   console.log('맵·훈련장 준비');
   const report=await p.evaluate(()=>{
    G.paused=true;G.Input.unlock();G.UI.showPause(false);const W=G.World,T=THREE,U=G.U,V=G.Vehicles,r=U.mulberry32(8702),check=(ok,m)=>{if(!ok)throw Error(m)};

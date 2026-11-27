@@ -9,8 +9,11 @@ const P=G.ThrowableVFX={
   loadFire(){
     // 로딩을 기다리지 않아 시작 화면을 막지 않는다. 누락 시 내장 불꽃으로 복귀한다.
     this.fireState='loading';new T.TextureLoader().load('assets/textures/vfx/pool-fire-v85.webp',tex=>{
-      tex.colorSpace=T.SRGBColorSpace;tex.wrapS=tex.wrapT=T.ClampToEdgeWrapping;G.TextureQuality?.texture(tex);
-      this.spriteMaterial.uniforms.fireMap.value=tex;this.spriteMaterial.uniforms.fireReady.value=1;G.renderer?.initTexture(tex);this.fireState='ready';
+      // v108 늦게 받은 효과 이미지도 플레이 중 업로드·교체를 미룬다.
+      G.RenderPrep.run(async()=>{
+        tex.colorSpace=T.SRGBColorSpace;tex.wrapS=tex.wrapT=T.ClampToEdgeWrapping;G.TextureQuality?.texture(tex);G.renderer.initTexture(tex);await G.RenderPrep.gpuIdle();
+        this.spriteMaterial.uniforms.fireMap.value=tex;this.spriteMaterial.uniforms.fireReady.value=1;this.fireState='ready';
+      }).catch(()=>{tex.dispose();this.fireState='fallback'});
     },undefined,()=>{this.fireState='fallback'});
   },
   atlas(){

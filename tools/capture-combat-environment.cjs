@@ -9,7 +9,7 @@ const out=process.argv[2]||'/tmp/lz-v80-captures';fs.mkdirSync(out,{recursive:tr
  try{
   const page=f.page;
   await page.evaluate(()=>{window.requestAnimationFrame=()=>0;G.onLockChange=()=>{};G.Input.unlock()});await page.waitForTimeout(80);
-  await page.click('#trainBtn');await page.waitForFunction(()=>G.Training.active);
+  await page.click('#trainBtn');await page.evaluate(()=>G.startReady);await page.waitForFunction(()=>(!G.preparing&&G.Training.active));
   const capture=async name=>{
    const data=await page.evaluate(()=>{G.renderer.shadowMap.needsUpdate=true;G.renderNow();return G.renderer.domElement.toDataURL('image/png').split(',')[1]});
    fs.writeFileSync(path.join(out,name+'.png'),Buffer.from(data,'base64'));

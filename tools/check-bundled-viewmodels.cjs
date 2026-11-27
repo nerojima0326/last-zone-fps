@@ -62,8 +62,8 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
       assert(!bundled.find(g => g.id === 'm1014').parts.includes('pump'), 'Semi-auto shotgun must use a fixed fore-end');
       if (!visit) { await page.reload({ waitUntil: 'domcontentloaded', timeout: 180000 }); await ready(); }
     }
-    await page.click('#trainBtn');
-    await page.waitForFunction(() => G.Game.training && G.Training.active, null, { timeout: 30000 });
+    await page.click('#trainBtn');await page.evaluate(()=>G.startReady);
+    await page.waitForFunction(() => G.Game.training && (!G.preparing&&G.Training.active), null, { timeout: 30000 });
     // v51: 총기별 실사 장전 팩은 시작을 막지 않고 뒤에서 받는다
     await page.waitForFunction(() => Object.keys(G.AssetVM.PACKS).every(k => G.AssetVM.packs[k]?.ready), null, { timeout: 240000, polling: 500 });
     const gameplay = await page.evaluate(expected => {

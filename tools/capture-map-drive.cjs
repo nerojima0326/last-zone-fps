@@ -7,7 +7,7 @@ const out=process.argv[2]||'/tmp/lz-v87-drive';
 (async()=>{
  fs.mkdirSync(path.join(out,'frames'),{recursive:true});const f=await fixture({viewport:{width:800,height:450}});
  try{
-  const p=f.page;await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.waitForFunction(()=>G.Training.active);
+  const p=f.page;await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>(!G.preparing&&G.Training.active));
   await p.evaluate(()=>{
    const T=THREE,W=G.World;G.paused=true;G.UI.showPause(false);G.Input.unlock();G.__apply('medium');G.setRenderResolution('100');G.VM.set(null);
    for(const o of G.scene.children)if(!o.isLight&&o!==W.sky)o.visible=false;

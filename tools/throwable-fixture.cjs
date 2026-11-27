@@ -8,8 +8,8 @@ module.exports=async function throwableFixture(base,options={}){
   if(base)await p.route('**/*',r=>{const u=new URL(r.request().url()),file=u.pathname==='/'?'index.html':u.pathname.slice(1);if(u.hostname!=='127.0.0.1'||!(file==='index.html'||file==='version.txt'||/^js\/.*\.js$/.test(file)))return r.fallback();if(!cache.has(file))try{cache.set(file,cp.execFileSync('git',['show',base+':'+file],{cwd:root,stdio:['ignore','pipe','ignore']}))}catch(e){cache.set(file,null)}return cache.get(file)?r.fulfill({body:cache.get(file),contentType:file.endsWith('.js')?'application/javascript':file.endsWith('.html')?'text/html':'text/plain'}):r.fallback();});
  }});
  if(options.proceduralArms)await f.page.evaluate(()=>G.RealArms.dispose());
- await f.page.evaluate(()=>{
-  G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};G.startGame({...G.UI.opts,mode:'training',quality:'low'});G.paused=true;G.UI.showPause(false);G.Input.locked=true;
+ await f.page.evaluate(async ()=>{
+  G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};await G.startGame({...G.UI.opts,mode:'training',quality:'low'});G.paused=true;G.UI.showPause(false);G.Input.locked=true;
   const P=G.Player,a=P.a;window.throwVideo={t:0,kind:'frag',under:false,rows:[],initial:a.pos.clone()};
   throwVideo.start=(kind,under=false)=>{
    P.abortThrow();G.Throwables.reset();G.FX.reset();G.Input.reset();Object.assign(P,{sw:null,reload:null,heal:null,revive:null,melee:null,vehicle:null,ads:0,scopeView:0,sprinting:false,raise:1,landDip:0,flashAmt:0,throwKind:kind});Object.assign(a,{cur:'pistol',state:'ground',alive:true,knocked:false,crouch:false,prone:false,hp:100});a.pos.copy(throwVideo.initial);a.vel.set(0,0,0);for(const k of G.THROW_ORDER)a.throwables[k]=9;

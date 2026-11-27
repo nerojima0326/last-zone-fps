@@ -6,7 +6,7 @@ const assert=require('assert'),fs=require('fs'),fixture=require('./optimize/brow
 (async()=>{
  const f=await fixture({viewport:{width:800,height:450}}),p=f.page,report={};
  try{
-  await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.waitForFunction(()=>G.Training.active);
+  await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>(!G.preparing&&G.Training.active));
   console.log('훈련장 준비');
   report.tests=await p.evaluate(()=>{
    const V=G.Vehicles,W=G.World,H=G.VehicleWheels,B=G.Ballistics,T=THREE,owner=G.Game.player,rows=[],guns=[],height=W.heightAt,models=V.models,ownerPos=owner.pos.clone();

@@ -74,7 +74,7 @@ const shots=path.resolve(process.env.PLANE_SHOTS||path.join(require('os').tmpdir
    else await page.evaluate(()=>G.disposePlane(planeStudio.plane));
   }
   assert(report.after.meshes<report.before.meshes,'세부 모델을 병합해야 함');assert(report.after.triangles<50000,'기체 삼각형 예산 초과');
-  await page.evaluate(()=>{planeStudio.stage.remove();planeStudio.renderer.dispose();G.UI.opts.renderResolution='100';G.startGame({...G.UI.opts,quality:'medium',players:4,size:2,loadout:'all'});G.paused=true;G.UI.hideMenu()});
+  await page.evaluate(async ()=>{planeStudio.stage.remove();planeStudio.renderer.dispose();G.UI.opts.renderResolution='100';await G.startGame({...G.UI.opts,quality:'medium',players:4,size:2,loadout:'all'});G.paused=true;G.UI.hideMenu()});
   await page.addStyleTag({content:'#hud{visibility:hidden!important}'});
   report.game=await page.evaluate(()=>{
    const p=G.Game.plane;p.start.set(0,0,0);p.dir.set(0,0,-1);p.t=0;p.mesh.rotation.set(0,0,0);G.Game.updatePlane(0);G.Player.updatePlane(0);

@@ -19,7 +19,7 @@ if(mode==='before')for(const file of['index.html',...cp.execFileSync('git',['ls-
   const p=f.page;fs.mkdirSync(out,{recursive:true});
   if(mode!=='before')await p.waitForFunction(()=>!G.ThrowableVFX?.fireState||G.ThrowableVFX.fireState!=='loading');
   await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});
-  await p.waitForTimeout(60);await p.click('#trainBtn');await p.waitForFunction(()=>G.Training.active);
+  await p.waitForTimeout(60);await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>(!G.preparing&&G.Training.active));
   await p.evaluate(()=>{
    G.paused=true;G.Input.unlock();G.UI.showPause(false);G.__apply('medium');G.setRenderResolution('100');G.VM.set(null);
    G.VM.update(0,{hideVM:true,ads:0,raise:1,reload:null,moving:0,landDip:0,phase:0});const r=G.World.range;window.__blastPoint=new THREE.Vector3(r.x+23,r.y+.12,r.line-17);

@@ -15,7 +15,7 @@ const out=process.argv[2]||'/tmp/lz-v80-benchmark';fs.mkdirSync(out,{recursive:t
   }});
   try{
    await f.page.evaluate(()=>{window.requestAnimationFrame=()=>0;G.onLockChange=()=>{};G.Input.unlock()});await f.page.waitForTimeout(80);
-   await f.page.click('#trainBtn');await f.page.waitForFunction(()=>G.Training.active);
+   await f.page.click('#trainBtn');await f.page.waitForFunction(()=>(!G.preparing&&G.Training.active));
    if(!camera)camera=await f.page.evaluate(()=>{
     const W=G.World,R=G.RoomLighting,T=THREE;
     for(const w of W.windows){

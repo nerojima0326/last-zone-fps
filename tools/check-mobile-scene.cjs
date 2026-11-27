@@ -9,7 +9,7 @@ async function setup(p){await p.addInitScript(()=>{const raf=requestAnimationFra
 (async()=>{
  fs.mkdirSync(out,{recursive:true});const report={},f=await fixture({...mobile,liveDRS:true,initialOptions:{quality:'potato',players:40},route:setup});
  try{
-  const p=f.page;await p.evaluate(()=>{G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};G.startGame({...G.UI.opts,mode:'training',quality:'potato'});G.paused=true;G.UI.showPause(false);G.Settings.data.visual.grain=0;G.refreshVisuals();});
+  const p=f.page;await p.evaluate(async ()=>{G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};await G.startGame({...G.UI.opts,mode:'training',quality:'potato'});G.paused=true;G.UI.showPause(false);G.Settings.data.visual.grain=0;G.refreshVisuals();});
   report.models=await p.evaluate(()=>({batches:G.MobileWorld.batches.length,ao:{applied:G.StaticAO.applied,rejected:G.StaticAO.rejected},soldiers:G.Soldiers.templates.map(t=>t.tris),branches:Object.keys(G.Veg.mobileBranches).length,terrain:{...G.MobileWorld.terrainStats},colliders:G.World.boxes.length,footprints:G.World.footprints.length}));
   fs.writeFileSync(path.join(out,'checks.json'),JSON.stringify(report,null,2)+'\n');
   assert(report.models.batches>300);assert.equal(report.models.ao.rejected,0);assert(report.models.soldiers.every(t=>t<15000));assert.equal(report.models.branches,9);assert(report.models.terrain.reduced>0);

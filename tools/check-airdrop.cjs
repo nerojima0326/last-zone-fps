@@ -17,10 +17,10 @@ const shots = path.resolve(process.env.AIR_SHOTS_DIR || path.join(require('os').
   }});
   const { page } = f, report = {};
   try {
-    await page.evaluate(() => {
+    await page.evaluate(async () => {
       window.requestAnimationFrame = () => 0; G.onLockChange = () => {}; G.Input.unlock(); G.Input.lock = () => {};
       G.UI.opts.renderResolution = '100';
-      G.startGame({ ...G.UI.opts, quality: 'medium', players: 4, size: 2, loadout: 'all' }); G.paused = true;
+      await G.startGame({ ...G.UI.opts, quality: 'medium', players: 4, size: 2, loadout: 'all' }); G.paused = true;
       const p = G.Game.plane;
       p.start.set(0,0,0); p.dir.set(0,0,-1); p.t = 0; p.mesh.rotation.set(0,0,0); G.Game.updatePlane(0);
     });

@@ -9,13 +9,13 @@ function rss(pid){try{const s=fs.readFileSync('/proc/'+pid+'/status','utf8');ret
 const save=()=>{fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFileSync(output,JSON.stringify(report,null,2)+'\n');};
 (async()=>{
  for(const mode of ['training','match']){
-  const f=await fixture({liveDRS:true,viewport,browserArgs:['--enable-precise-memory-info'],initialOptions:{quality,players:40,loadout:'all',renderResolution:'auto'},route:async page=>{
+  const f=await fixture({shaderDebug:false,liveDRS:true,viewport,browserArgs:['--enable-precise-memory-info'],initialOptions:{quality,players:40,loadout:'all',renderResolution:'auto'},route:async page=>{
    await page.addInitScript(()=>{
     let seed=107;Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
     window.liveRun={active:false,frames:[],tasks:[],states:[],drs:0,simulation:0};
-    new PerformanceObserver(list=>{if(liveRun.active)for(const e of list.getEntries())liveRun.tasks.push({at:e.startTime-liveRun.started,ms:e.duration});}).observe({type:'longtask',buffered:true});
+    new PerformanceObserver(list=>{if(liveRun.active)for(const e of list.getEntries())if(e.startTime>=liveRun.started)liveRun.tasks.push({at:e.startTime-liveRun.started,ms:e.duration});}).observe({type:'longtask',buffered:true});
     const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>raf(now=>{
-     const live=window.liveRun,active=live.active&&fn.name==='frame',start=performance.now();fn(now);
+     const live=window.liveRun,active=live.active&&fn.name==='frame'&&!G.preparing,start=performance.now();fn(now);
      if(active){live.frames.push({at:performance.now()-live.started,ms:live.last?now-live.last:null,cpuMs:performance.now()-start,paused:G.paused,state:G.Game.player?.state,scale:G.DRS.scale});live.last=now;}
     });
    });
@@ -24,7 +24,7 @@ const save=()=>{fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFile
   async function memory(){const [heap,processes]=await Promise.all([cdp.send('Runtime.getHeapUsage'),system.send('SystemInfo.getProcessInfo')]);const renderers=processes.processInfo.filter(r=>r.type==='renderer').map(r=>({pid:r.id,rss:rss(r.id)}));return{heap:heap.usedSize,heapTotal:heap.totalSize,backing:heap.backingStorageSize||0,rendererRss:renderers.reduce((n,r)=>n+(r.rss||0),0),renderers};}
   try{
    session.before=await memory();
-   session.start=await p.evaluate(({mode,quality})=>{
+   session.start=await p.evaluate(async ({mode,quality})=>{
     const L=liveRun;L.active=true;L.started=performance.now();L.mode=mode;G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{G.Input.locked=true;};document.activeElement?.blur();
     const setup=G.Game.start;G.Game.start=function(opts){const at=performance.now(),heapBefore=performance.memory?.usedJSHeapSize;try{return setup.call(this,opts);}finally{L.setupStats={ms:performance.now()-at,heapBefore,heapAfter:performance.memory?.usedJSHeapSize};}};
     const drs=G.DRS.frame;G.DRS.frame=function(...args){L.drs++;return drs.apply(this,args);};
@@ -41,7 +41,7 @@ const save=()=>{fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFile
      const state=this.player?.state;if(state!==L.states.at(-1)?.state)L.states.push({state,gameTime:this.time,wallMs:performance.now()-L.started});
      if(mode==='match'&&state==='ground'){key('KeyW',false);key('ShiftLeft',false);}
     };
-    const start=performance.now();G.startGame({...G.UI.opts,mode:mode==='training'?'training':undefined,quality,players:40,renderResolution:'auto'});const callMs=performance.now()-start;
+    const start=performance.now();const ready=await G.startGame({...G.UI.opts,mode:mode==='training'?'training':undefined,quality,players:40,renderResolution:'auto'});if(!ready)throw Error('판 시작 준비 실패');const callMs=performance.now()-start;L.started=performance.now();L.tasks=[];
     if(mode==='match'){key('KeyW',true);key('ShiftLeft',true);}G.UI.showPause(false);
     return{callMs,setup:L.setupStats,warmup:G.warmupStats,paused:G.paused,resolution:G.renderResolutionInfo(),viewmodels:Object.keys(G.VM.models).length};
    },{mode,quality});

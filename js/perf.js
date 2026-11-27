@@ -97,6 +97,11 @@
     else if (P.sync) { gpuWait(); P.acc[P.cur] = (P.acc[P.cur] || 0) + performance.now() - P.t0; }
     P.cur = null;
   }
+  // v108 시작 준비의 그리기는 플레이 프레임·GPU 기록에 섞지 않는다.
+  P.withoutRecording = function (draw) {
+    const on=P.on;closeCur();P.on=false;
+    try{return draw()}finally{P.on=on}
+  };
   P.seg = function (name) {
     if (!P.on) return;
     closeCur();

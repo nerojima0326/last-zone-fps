@@ -11,7 +11,7 @@ const out=process.env.REPORT||'/tmp/lz-v81-reticle.json';
   await p.evaluate(()=>{
    const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);
    G.onLockChange=()=>{};G.Input.unlock();
-  });await p.waitForTimeout(100);await p.click('#trainBtn');await p.waitForFunction(()=>G.Training.active);
+  });await p.waitForTimeout(100);await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>(!G.preparing&&G.Training.active));
   const result=await p.evaluate(()=>{
    G.paused=true;G.Input.unlock();G.UI.showPause(false);G.__apply('low');G.setRenderResolution('67');
    const inst=G.Game.player.weapons.rifle;G.Game.player.cur='rifle';inst.scope='reddot';G.VM.set(inst.id);

@@ -9,7 +9,7 @@ for(const asset of manifest.files)assert.equal(crypto.createHash('sha256').updat
 (async()=>{
  const f=await fixture({viewport:{width:960,height:600},route:async page=>{if(fallback)await page.route('**/assets/models/knives/**',r=>r.fulfill({status:404,body:''}))}}),{page}=f,report={};
  try{
-  await page.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};G.UI.opts.renderResolution='100';G.startGame({...G.UI.opts,mode:'training',quality:'medium',players:4,loadout:'all'});G.paused=true;G.UI.showPause(false)});
+  await page.evaluate(async ()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};G.UI.opts.renderResolution='100';await G.startGame({...G.UI.opts,mode:'training',quality:'medium',players:4,loadout:'all'});G.paused=true;G.UI.showPause(false)});
   report.assets=await page.evaluate(()=>({version:LZ_BUILD,loaded:G.Knives.loaded,motion:!!G.Knives.motion,ready:G.Knives.ready,guns:G.GUN_IDS.length,ids:G.Knives.ids,sourceClips:Object.values(G.Knives.motion||{}).map(c=>c.sourceClip)}));
   assert.equal(report.assets.guns,30);assert.equal(report.assets.ids.length,6);assert.equal(report.assets.loaded,fallback?0:6);assert.equal(report.assets.motion,!fallback);
   report.assets.maxNormalTangentDot=await page.evaluate(()=>{let max=0;for(const root of Object.values(G.Knives.templates))root.traverse(o=>{const n=o.geometry?.attributes.normal,t=o.geometry?.attributes.tangent;if(n&&t)for(let i=0;i<n.count;i++)max=Math.max(max,Math.abs(n.getX(i)*t.getX(i)+n.getY(i)*t.getY(i)+n.getZ(i)*t.getZ(i)))});return max});
