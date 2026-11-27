@@ -114,7 +114,8 @@ const C=G.VehicleCabin={
   const needle=new T.Mesh(t.needleGeo,this.material);needle.name='속도계 바늘';needle.position.set(s.hip[0],s.dash+.05,s.front+.323);root.add(needle);
   v.mesh.add(root);v.cabin={root,column,wheel,needle,profile:s,angle:0};G.RT?.invalidate();return v.cabin;
  },
- animate(v){const c=this.ensure(v);c.angle=-(v.steer||0)*.72;c.wheel.rotation.z=c.angle;c.needle.rotation.z=-2.25+U.clamp(Math.hypot(v.speed,v.lat||0)/28,0,1)*4.5;return c;},
+ // v107 운전자를 향하는 +Z축: 왼쪽 입력은 핸들과 양손을 반시계 방향으로 돌린다.
+ animate(v){const c=this.ensure(v);c.angle=(v.steer||0)*.72;c.wheel.rotation.z=c.angle;c.needle.rotation.z=-2.25+U.clamp(Math.hypot(v.speed,v.lat||0)/28,0,1)*4.5;return c;},
  grip(v,i,out){const c=v.cabin,s=c.profile,angle=(i===0?Math.PI*.76:Math.PI*.24)+c.angle;return out.set(Math.cos(angle)*.219,Math.sin(angle)*.219,.015).applyEuler(euler.set(-.43,0,0)).add(p.fromArray(s.wheel));},
  pose(m,v,first){
   const c=this.animate(v),s=c.profile;G.HitResponse?.restore(m);G.Knives?.handTP(m,false);
