@@ -97,17 +97,26 @@ function clusterGeometry(key,parts){
 // v108 라디오·공조·수납·도어·기어 레버는 정적 메시 하나에 구워 자원을 재사용한다.
 function interiorDetails(key,parts){
  const s=profiles[key],classic=key==='izh',dark=0x171d1f,plastic=classic?0x514a3c:0x394347,metal=classic?0xb4ad98:0x8a969b,z=s.front+.31;
+ const mounts=[],triangles=n=>parts.slice(0,n).reduce((sum,g)=>sum+(g.index?.count||g.attributes.position.count)/3,0);
+ // v108 검사에서 실제 병합 메시의 부품·몸체 범위를 추적한다. 렌더 그룹은 나누지 않는다.
+ const mark=(name,start,core=start)=>mounts.push({name,range:[triangles(start),triangles(parts.length)],core:[triangles(core),triangles(core+1)]});
  const paint=(g,c,r=.8,m=.05)=>parts.push(finish(G.cg(g,c),r,m)),bx=(w,h,d,x,y,z,c,r,m)=>paint(new T.BoxGeometry(w,h,d).translate(x,y,z),c,r,m);
  const panel=(w,h,d,x,y,z,c)=>paint(new T.ExtrudeGeometry(rounded(w,h,.012),{depth:d,bevelEnabled:true,bevelSize:.003,bevelThickness:.002,bevelSegments:1,curveSegments:2,steps:1}).translate(x,y,z-d),c);
  const knob=(x,y,z,r=.019)=>{paint(new T.CylinderGeometry(r,r,.025,12).rotateX(Math.PI/2).translate(x,y,z),dark,.62,.12);bx(.003,r*.60,.002,x,y+r*.37,z+.014,0xc4c0a8);};
- panel(.29,.16,.075,.105,s.dash-.027,z,plastic);bx(.257,.128,.008,.105,s.dash-.027,z+.003,dark);
+ // v108 E2200 원본 대시보드의 기울기와 공조 패널 사이를 연결하는 공용 받침이다.
+ if(key==='e2200')panel(.32,.28,.10,.105,s.dash-.082,z-.013,plastic);
+ let first=parts.length;panel(.29,.16,.075,.105,s.dash-.027,z,plastic);bx(.257,.128,.008,.105,s.dash-.027,z+.003,dark);
  bx(.159,.036,.007,.105,s.dash+.005,z+.010,classic?0x7e775c:0x365954);
  for(let i=0;i<8;i++)bx(.002,i%2?.013:.023,.002,.038+i*.019,s.dash+.005,z+.015,classic?0xd1c7a2:0x8bc2a9);
  knob(-.004,s.dash-.058,z+.013,.017);knob(.214,s.dash-.058,z+.013,.017);
  for(let i=0;i<4;i++)bx(.025,.014,.012,.046+i*.039,s.dash-.062,z+.010,0x536064);
+ mark('radio',first);first=parts.length;
  panel(.29,.066,.050,.105,s.dash-.155,z-.008,plastic);for(let i=0;i<3;i++)knob(.018+i*.086,s.dash-.155,z+.002,.021);
- const hazard=new T.Shape();hazard.moveTo(-.011,-.007);hazard.lineTo(.011,-.007);hazard.lineTo(0,.012);hazard.closePath();paint(new T.ShapeGeometry(hazard).translate(.275,s.dash+.004,z+.011),0xb3503e,.74,.03);
- const gloveX=s.width*.325;panel(.26,.15,.028,gloveX,s.dash-.045,z-.040,plastic);bx(.09,.012,.012,gloveX,s.dash-.018,z-.009,metal,.42,.45);
+ mark('climate',first);first=parts.length;
+ // v108 비상등을 라디오 프레임에 고정하고 표시는 버튼 표면에서 0.6mm만 띄운다.
+ bx(.029,.032,.007,.220,s.dash+.004,z+.004,dark);
+ const symbol=parts.length,hazard=new T.Shape();hazard.moveTo(-.011,-.007);hazard.lineTo(.011,-.007);hazard.lineTo(0,.012);hazard.closePath();paint(new T.ShapeGeometry(hazard).translate(.220,s.dash+.004,z+.0081),0xb3503e,.74,.03);mark('hazard',first);mark('hazard-symbol',symbol);first=parts.length;
+ const gloveX=s.width*.325;panel(.26,.15,key==='e2200'?.050:.028,gloveX,s.dash-.045,z-.040,plastic);bx(.09,.012,.012,gloveX,s.dash-.018,z-.009,metal,.42,.45);mark('glovebox',first);
  for(const side of[-1,1]){
   const x=side*(s.width/2-.034),doorZ=s.hip[2]-.04;
   bx(.018,.20,.43,x,s.floor+.29,doorZ,plastic);bx(.024,.018,.40,x-side*.011,s.floor+.395,doorZ,0x6a6d62);
@@ -127,6 +136,8 @@ function interiorDetails(key,parts){
  for(let i=-1;i<=1;i++)bx(.0015,.001,.023,gearX+i*.010,s.floor+.416,gearZ-.052,0xd0c5a4);
  bx(.025,.001,.0015,gearX,s.floor+.416,gearZ-.052,0xd0c5a4);
  for(let i=-5;i<=5;i++)bx(.051,.003,.012,i*s.width*.073,s.dash+.175,s.front+.10,0x10191a);
+
+ return mounts;
 }
 const C=G.VehicleCabin={
  profiles,wheelSpecs,templates:new Map(),glass:null,repairs:new WeakMap(),
@@ -210,11 +221,11 @@ const C=G.VehicleCabin={
    for(let i=0;i<4;i++)bx(.13,.007,.022,x,s.dash+.016+i*.018,s.front+.292,0x626a6b);
   }
   for(const side of[-1,1])bx(.075,.035,.13,s.hip[0]+side*.10,s.floor+.07,s.wheel[2]-.12,0x1b2020);
-  interiorDetails(key,parts);
+  const mounts=interiorDetails(key,parts);
   const gauges=clusterGeometry(key,parts),staticGeo=G.mergeGeo(parts.map(g=>g.attributes.lzFinish?g:finish(g)));for(const g of parts)g.dispose();
   const wheelGeo=wheelGeometry(key);this.material||=cabinMaterial();
   this.needleMaterial||=luminousMaterial('계기판 바늘',.35);this.lampMaterial||=luminousMaterial('계기판 표시등',1);this.lampGeo||=G.cg(new T.CircleGeometry(.008,12),0xffffff);
-  const out={staticGeo,wheelGeo,...gauges};this.templates.set(key,out);return out;
+  const out={staticGeo,wheelGeo,mounts,...gauges};this.templates.set(key,out);return out;
  },
  ensure(v){
   if(v.cabin)return v.cabin;
