@@ -136,7 +136,11 @@ function interiorDetails(key,parts){
  for(let i=-1;i<=1;i++)bx(.0015,.001,.023,gearX+i*.010,s.floor+.416,gearZ-.052,0xd0c5a4);
  bx(.025,.001,.0015,gearX,s.floor+.416,gearZ-.052,0xd0c5a4);
  for(let i=-5;i<=5;i++)bx(.051,.003,.012,i*s.width*.073,s.dash+.175,s.front+.10,0x10191a);
-
+ if(key==='e2200'){
+  // v108 원본 미러 면 둘레만 감싸 기존 거울·지지대를 그대로 사용한다.
+  const frame=rounded(.240,.102,.018);frame.holes.push(rounded(.210,.072,.011));
+  paint(new T.ExtrudeGeometry(frame,{depth:.014,bevelEnabled:true,bevelSize:.002,bevelThickness:.002,bevelSegments:1,curveSegments:4,steps:1}).translate(.002,1.73264,-1.58524),0x1d272b,.62,.12);
+ }
  return mounts;
 }
 const C=G.VehicleCabin={
@@ -149,7 +153,10 @@ const C=G.VehicleCabin={
   if(key==='izh')this.openWindows(v,v.mesh.getObjectByName('body'));
   if(key==='e2200')v.mesh.getObjectByName('body')?.traverse(o=>{if(o.isMesh&&o.material.name==='Interior')this.removeWheel(v,o);});
   v.mesh.traverse(o=>{if(!o.isMesh)return;
-   const swap=m=>{if(!(key==='porter'&&m.name==='Material_87'||key==='e2200'&&m.name==='Glass'))return m;
+   const swap=m=>{
+    // v108 순백·거칠기 0의 미러 반사를 억제한다. 별도 렌더 패스·텍스처는 만들지 않는다.
+    if(key==='e2200'&&m.name==='Mirrors'){this.mirrors||=new Map();if(!this.mirrors.has(m)){const mirror=m.clone();mirror.name='차량 미러';mirror.color.setHex(0x839da4);mirror.roughness=.16;mirror.metalness=.92;mirror.envMapIntensity=.45;this.mirrors.set(m,mirror);}return this.mirrors.get(m);}
+    if(!(key==='porter'&&m.name==='Material_87'||key==='e2200'&&m.name==='Glass'))return m;
     this.glass||=new Map();if(!this.glass.has(key))this.glass.set(key,new T.MeshStandardMaterial({name:'차량 창유리',color:0x9eb9c2,transparent:true,opacity:.14,roughness:.12,metalness:.12,depthWrite:false,side:T.DoubleSide,forceSinglePass:true,envMapIntensity:.8}));return this.glass.get(key);};
    o.material=Array.isArray(o.material)?o.material.map(swap):swap(o.material);
    if((Array.isArray(o.material)?o.material:[o.material]).some(m=>m.name==='차량 창유리'))o.castShadow=false;
