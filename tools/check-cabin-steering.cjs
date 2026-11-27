@@ -4,7 +4,7 @@ require('./artifact-paths.cjs');
 // v107 실제 A/D·터치 입력 0.5초와 차체·앞바퀴·실내 핸들·손의 방향을 함께 검사한다.
 const fs=require('fs'),assert=require('assert'),fixture=require('./vehicle-physics-fixture.cjs');
 const mobile=process.env.CABIN_MOBILE==='1',output=process.env.REPORT||'/tmp/lz-cabin-steering.json';
-(async()=>{const f=await fixture(process.env.BASELINE_CABIN,mobile?{viewport:{width:844,height:390},contextOptions:{hasTouch:true,isMobile:true,userAgent:'Mozilla/5.0 (Linux; Android 14; SM-S721B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36'}}:{}),p=f.page,report={mobile,rows:[],failures:[]};
+(async()=>{const f=await fixture(process.env.BASELINE_CABIN,mobile?{viewport:{width:844,height:390},contextOptions:{hasTouch:true,isMobile:true,userAgent:'Mozilla/5.0 (Linux; Android 14; SM-S721B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36'}}:{}),p=f.page,report={mobile,rows:[],visibility:[],failures:[]};
  await p.evaluate(require('./cabin-occlusion.cjs'));
  await p.evaluate(()=>{const S=G.Soldiers,templates=S.templates,old=G.Player.a.model;S.templates=[templates.find(t=>/ranger/.test(t.name))||templates[0]];const m=new G.CharacterModel({outfit:{top:0x4a5236,pants:0x3e4430,gear:0x2f3324},skin:0xd8a77f});S.templates=templates;G.Player.a.model=m;G.scene.add(m.root);old.dispose();});
  const tick=()=>p.evaluate(()=>{for(let i=0;i<30;i++){G.Player.update(1/60);G.Game.syncModels(1/60);G.Input.endFrame();}});
@@ -31,6 +31,11 @@ const mobile=process.env.CABIN_MOBILE==='1',output=process.env.REPORT||'/tmp/lz-
     if(row.occlusion&&row.occlusion.fraction>.025)fail('팔의 계기판 픽셀 가림 2.5% 초과');
     if(view==='first'&&!(row.topX*sign<0))fail('운전석에서 본 핸들 윗점의 좌우 이동');
     if(mobile)await cdp.send('Input.dispatchTouchEvent',{type:'touchCancel',touchPoints:[]});else{await p.keyboard.up(key);await p.keyboard.up('w');}
+   }
+   // v108 정지·양쪽 기계적 최대 조향도 실제 팔 마스크로 검사한다.
+   for(const steer of[0,1,-1]){
+    const row=await p.evaluate(steer=>{const v=steerTest.v,P=G.Player;G.Input.reset();P.vehicleView='first';P.vehicleLookYaw=0;P.vehicleLookPitch=-.22;v.pos.set(0,300,0);Object.assign(v,{yaw:0,steer,speed:0,lat:0,pitch:0,roll:0});G.Vehicles.place(v,1);for(let i=0;i<20;i++)G.Game.syncModels(1/60);G.VehicleCabin.camera(P,1);return{steer,wheelAngle:v.cabin.wheel.rotation.z,occlusion:measureCabinOcclusion(v,P.a.model)};},steer);
+    report.visibility.push({kind,...row});if(row.occlusion.fraction>.025)report.failures.push({kind,reason:'정지·최대 조향 계기판 가림',...row});
    }
    await p.evaluate(()=>{const V=G.Vehicles,v=steerTest.v;V.exit(G.Player,true);V.unblock(v);G.scene.remove(v.mesh);V.list.splice(V.list.indexOf(v),1);G.VehicleWheels.dispose(v);});
   }

@@ -23,6 +23,8 @@ const root=path.resolve(__dirname,'..');if(out===root||out.startsWith(root+path.
    for(const [state,key]of[['stopped',null],['left','a'],['right-fast','d']]){
     await p.evaluate(moving=>{const v=cabinShot.v;G.Input.reset();v.pos.copy(cabinShot.start);Object.assign(v,{yaw:0,steer:0,steerAngle:0,yawRate:0,speed:moving?18:0,lat:0,pitch:0,roll:0,driftBlend:0,verticalSpeed:0,displayRpm:800});G.Vehicles.place(v,1);G.VehicleWheels.sync(v);for(let i=0;i<20;i++){if(!moving)G.Player.update(1/60);G.Game.syncModels(1/60);}G.VehicleCabin.camera(G.Player,1);},!!key);
     if(key){await p.keyboard.down('w');await p.keyboard.down(key);await p.keyboard.down('Shift');await p.evaluate(()=>{for(let i=0;i<30;i++){G.Player.update(1/60);G.Game.syncModels(1/60);G.Input.endFrame();}});await p.keyboard.up(key);await p.keyboard.up('w');await p.keyboard.up('Shift');}
+    // v108 같은 차체 위치·최대 조향으로 전후 화면을 비교한다.
+    await p.evaluate(key=>{const v=cabinShot.v;v.pos.copy(cabinShot.start);v.yaw=0;v.steer=key==='a'?1:key==='d'?-1:0;G.Vehicles.place(v,1);G.VehicleWheels.sync(v);for(let i=0;i<20;i++)G.Game.syncModels(1/60);G.VehicleCabin.camera(G.Player,1);},key);
     await take(kind,state);
    }
    await p.evaluate(()=>{const v=cabinShot.v,s=G.VehicleCabin.profile(v),T=THREE;G.Player.vehicleView='third';G.Game.syncModels(1/60);v.mesh.updateMatrixWorld(true);G.camera.position.set(-2.2,s.eye[1]+.3,s.wheel[2]-1.8).applyMatrix4(v.mesh.matrixWorld);G.camera.lookAt(new T.Vector3(s.hip[0],s.dash+.1,s.wheel[2]).applyMatrix4(v.mesh.matrixWorld));G.camera.fov=55;G.camera.updateProjectionMatrix();});await take(kind,'outside');
