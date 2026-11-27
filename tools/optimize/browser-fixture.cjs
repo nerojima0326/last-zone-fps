@@ -15,7 +15,7 @@ module.exports = async function fixture(opts = {}) {
   let browser;
   try {
     browser = await chromium.launch({ executablePath: process.env.CHROME_BIN, headless: true,
-      args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+      args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', ...(opts.browserArgs || [])] });
     const page = await browser.newPage({ ...opts.contextOptions, viewport: opts.viewport || { width: 960, height: 540 }, deviceScaleFactor: opts.deviceScaleFactor || 1 });
     const errors = [], requests = [];
     page.on('pageerror', e => errors.push(e.message));

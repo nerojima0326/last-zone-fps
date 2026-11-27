@@ -10,7 +10,7 @@ permissions:
 jobs:
   browser:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -18,87 +18,34 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22'
-      - name: Install test dependencies
+      - name: 고정 버전 검사 환경 준비
         run: |
           if ! command -v ffmpeg >/dev/null 2>&1; then
             sudo apt-get update
             sudo apt-get install -y ffmpeg
           fi
-          npm install --prefix "$RUNNER_TEMP/lz-tests" --no-audit --no-fund playwright@1.62.1 three@0.160.0 three-mesh-bvh@0.7.8
-          "$RUNNER_TEMP/lz-tests/node_modules/.bin/playwright" install --with-deps chromium
-          echo "NODE_PATH=$RUNNER_TEMP/lz-tests/node_modules" >> "$GITHUB_ENV"
-          echo "THREE_DIR=$RUNNER_TEMP/lz-tests/node_modules/three" >> "$GITHUB_ENV"
-      - name: Check ADS, distance zero and all-weapon recoil motion
-        run: node tools/check-aim.cjs
-      - name: 부착물 형상·접면·광축·미리보기
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: 전체 게임 검사
+        env:
+          CHECK_OUT: ${{ runner.temp }}/last-zone-checks
+        run: npm run check
+      - name: 대체 자원 경로 검사
+        env:
+          THREE_DIR: ${{ github.workspace }}/node_modules/three
         run: |
-          node tools/check-attachments.cjs
-          node tools/check-scope-models.mjs
-          node tools/check-primary-scopes.cjs
-      - name: Check startup ordering and delayed or missing assets
-        run: node tools/check-startup.cjs
-      - name: 모바일 해상도·메모리·터치·그래픽 복구 검사
-        run: node tools/check-mobile-stability.cjs
-      - name: 투척 손·안전핀·방출·착지 연막 검사
-        run: |
-          node tools/check-throwable-motion.cjs
-          THROW_FALLBACK=1 node tools/check-throwable-motion.cjs
-          node tools/check-smoke-trail.cjs
-      - name: 신규 총기 원본 모션·기존 손·조준·탄약 검사
-        run: |
-          node tools/check-expanded-motion.cjs
           MOTION_FALLBACK=1 node tools/check-expanded-motion.cjs
-          node tools/check-classic-hands.cjs
-      - name: 훈련 기록·프레임 측정·봇 재조준·자세 복귀 검사
-        run: node tools/check-session-polish.cjs
-      - name: 차량 내구도·투척 충돌·폭발 효과 풀 검사
-        run: node tools/check-vehicle-throwable-vfx.cjs
-      - name: 바퀴 굴림·조향·타이어 피격·재생성 검사
-        run: node tools/check-vehicle-wheels.cjs
-      - name: 차량 운전 자세·내부 시점·V키·터치·하차 복귀 검사
-        run: |
-          node tools/check-vehicle-cabin.cjs
-          CABIN_MOBILE=1 node tools/check-vehicle-cabin.cjs
-      - name: Space 드리프트·Shift 가속·터치·타이어 자국 검사
-        run: |
-          node tools/check-driving-controls.cjs
-          node tools/check-driving-input.cjs
-          DRIVE_MOBILE=1 node tools/check-driving-input.cjs
-          SHOTS="$RUNNER_TEMP/타이어-자국.png" node tools/capture-skid-trails.cjs after
-      - name: 맵 배치·수면 일치·고저차 주행 검사
-        run: |
-          node tools/check-map-hydrology.cjs
-          node tools/check-map-drive.cjs
-          node tools/check-vehicle-physics.cjs
-          VEHICLE_FALLBACK=1 node tools/check-vehicle-physics.cjs
-      - name: 칼 모델·모션·타격·누락 복귀 검사
-        run: |
-          node tools/check-knives.cjs
+          THROW_FALLBACK=1 node tools/check-throwable-motion.cjs
           KNIFE_FALLBACK=1 node tools/check-knives.cjs
-      - name: 화염 텍스처·무대기 로딩·누락 복귀 검사
-        run: node tools/check-fire-flipbook.cjs
-      - name: Check all weapon grips and hand animation
-        run: node tools/check-hand-poses.cjs
-      - name: Import bundled models
-        run: |
-          node tools/check-glock-import.mjs assets/models/viewmodels/glock17.fbx
-          node tools/check-m4-model.mjs assets/models/viewmodels/m4_animations.zip
-      - name: Exercise the shipped game and asset fallback
-        run: |
-          node tools/check-weapon-catalog.cjs
-          node tools/check-training-range.cjs
           RANGE_FALLBACK=1 node tools/check-training-range.cjs
-          node tools/check-bundled-viewmodels.cjs
-          node tools/check-combat.cjs
-      - name: Check reload animation and audio
-        run: |
-          node tools/check-original-weapon-audio.cjs
-          node tools/check-reloads.cjs
-          node tools/check-clearance.cjs
-          node tools/check-weapon-audio.cjs
-      - name: Check acoustics, hit reactions, weapon obstruction and environment detail
-        run: node tools/check-combat-environment.cjs
-      - name: Check native output, fixed resolution, MSAA and texture filtering
-        run: |
-          node tools/check-render-clarity.cjs
-          node tools/check-native-reticle.cjs
+          VEHICLE_FALLBACK=1 node tools/check-vehicle-physics.cjs
+          DRIVE_MOBILE=1 node tools/check-driving-input.cjs
+          CABIN_MOBILE=1 node tools/check-vehicle-cabin.cjs
+          SHOTS="$RUNNER_TEMP/last-zone-checks/skid-trails.png" node tools/capture-skid-trails.cjs after
+      - name: 검사 기록 보관
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-checks
+          path: ${{ runner.temp }}/last-zone-checks
+          retention-days: 7

@@ -1,0 +1,20 @@
+{
+  "name": "last-zone-fps",
+  "private": true,
+  "description": "LAST ZONE 개발·브라우저 검사 환경",
+  "scripts": {
+    "check": "node tools/run-checks.cjs",
+    "check:live": "node tools/check-live-session.cjs"
+  },
+  "engines": { "node": ">=22" },
+  "devDependencies": {
+    "@gltf-transform/core": "4.3.0",
+    "@gltf-transform/extensions": "4.3.0",
+    "@gltf-transform/functions": "4.3.0",
+    "meshoptimizer": "0.24.0",
+    "playwright": "1.62.1",
+    "sharp": "0.35.5",
+    "three": "0.160.0",
+    "three-mesh-bvh": "0.7.8"
+  }
+}
