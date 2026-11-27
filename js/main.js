@@ -666,7 +666,7 @@ function applyQuality(q) {
 const _db = new THREE.Vector2();
 function usePost() { const Q = QUALITY[G.quality]; return !Q || Q.post; }
 function renderFrame(dt, preparing=false) {
-  if (G.GraphicsRecovery.lost || (G.preparing&&!preparing)) return;
+  if (G.GraphicsRecovery.isLost() || (G.preparing&&!preparing)) return;
   // The catalogue draws its own preview on demand over the last game frame.
   if (G.Armory?.open) return;
   // 레이트레이싱 (설정에서 켰고 지원되는 기기일 때)
@@ -715,7 +715,7 @@ G.releaseGraphicsTargets = () => {
 };
 
 function onResize() {
-  if (G.GraphicsRecovery.lost) return;
+  if (G.GraphicsRecovery.isLost()) return;
   const out = outputPixelRatio();
   if (Math.abs(renderer.getPixelRatio() - out) > .001) renderer.setPixelRatio(out);
   renderer.setSize(innerWidth, innerHeight);
@@ -739,7 +739,7 @@ async function prepareShaders(root, cam, viewmodel=false, targetScene=root) {
   // v108 양면 투명 재질은 앞·뒷면 프로그램을 모두 기다린다.
   const programs=new Set();root.traverse(o=>{for(const m of [].concat(o.material||[]))for(const p of renderer.properties.get(m).programs?.values()||[])programs.add(p)});
   const started=performance.now();
-  for(const p of programs)for(;;){if(G.GraphicsRecovery.lost||epoch!==G.GraphicsRecovery.epoch)throw Error('그래픽 연결이 끊겼습니다');if(p.isReady())break;if(performance.now()-started>60000)throw Error('셰이더 준비를 완료하지 못했습니다');await prep.turn(8)}
+  for(const p of programs)for(;;){if(G.GraphicsRecovery.isLost()||epoch!==G.GraphicsRecovery.epoch)throw Error('그래픽 연결이 끊겼습니다');if(p.isReady())break;if(performance.now()-started>60000)throw Error('셰이더 준비를 완료하지 못했습니다');await prep.turn(8)}
   await prep.waitSafe();
   if(epoch!==G.GraphicsRecovery.epoch)throw Error('그래픽 연결이 끊겼습니다'); // v108 복구 전 프로그램은 조회하지 않는다
   const debug=renderer.debug.checkShaderErrors;renderer.debug.checkShaderErrors=true;
@@ -755,7 +755,7 @@ async function warmup() {
   for(const w of Object.values(G.Game.player.weapons))if(w){G.VM.ensure(w.id);requests.push(G.AssetVM?.request(w.id))}
   // v108 선택 자산의 응답이 늦으면 기존 모델로 시작하고 다음 안전한 시점에 준비한다.
   let timer;await Promise.race([Promise.allSettled(requests),new Promise(resolve=>{timer=setTimeout(resolve,10000)})]);clearTimeout(timer);
-  if(G.GraphicsRecovery.lost)throw Error('그래픽 연결이 끊겼습니다');
+  if(G.GraphicsRecovery.isLost())throw Error('그래픽 연결이 끊겼습니다');
   const shown = [];
   const show = o => { if (o && !o.visible) { o.visible = true; shown.push(o); } };
   const temp = [];
@@ -796,7 +796,7 @@ async function warmup() {
 }
 
 G.prepareViewmodel = async root => {
-  if (G.GraphicsRecovery.lost) throw Error('그래픽 연결이 끊겼습니다');
+  if (G.GraphicsRecovery.isLost()) throw Error('그래픽 연결이 끊겼습니다');
   await prepareShaders(root,G.vmCamera,true,G.vmScene);
   await G.RenderPrep.waitSafe();
   const target=prepareTarget(true)?new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType,samples:QualitySamples(G.msaaSamples)}):null,previous=renderer.getRenderTarget(),parent=root.parent,index=parent?.children.indexOf(root),moved=parent!==G.vmScene;
@@ -819,7 +819,7 @@ G.prepareViewmodel = async root => {
 };
 G.startGame = function (opts) {
   if(G.preparing)return G.startReady;
-  if (G.GraphicsRecovery.lost) return Promise.resolve(false);
+  if (G.GraphicsRecovery.isLost()) return Promise.resolve(false);
   G.Audio.init(); // v108 오디오·포인터 잠금은 클릭의 사용자 동작 안에서 요청한다
   G.preparing=true;G.prepUnlocked=false;G.warmupStats=null;G.paused=true;G.Input.reset();G.Input.lock();
   const loading=document.getElementById('loading');loading.classList.remove('hidden');document.getElementById('loadText').textContent='게임을 준비하는 중...';document.getElementById('loadFill').style.width='100%';
@@ -847,12 +847,12 @@ G.startGame = function (opts) {
       G.qualityTransition('판 시작',6);G.Input.reset();last=performance.now();
       G.paused=G.prepUnlocked;G.UI.showPause(G.paused);return true;
     }catch(e){
-      console.error(e);if(!G.GraphicsRecovery.lost){G.Game.cleanup();G.Input.unlock();G.UI.showMenu();G.UI.toast('게임 준비에 실패했습니다 · 다시 시도하세요');}return false;
-    }finally{G.preparing=false;if(!G.GraphicsRecovery.lost)loading.classList.add('hidden');}
+      console.error(e);G.Game.cleanup();G.Input.unlock();G.UI.showMenu();if(!G.GraphicsRecovery.isLost())G.UI.toast('게임 준비에 실패했습니다 · 다시 시도하세요');return false;
+    }finally{G.preparing=false;if(!G.GraphicsRecovery.isLost())loading.classList.add('hidden');}
   })();return G.startReady;
 };
 G.resume = function () {
-  if (G.GraphicsRecovery.lost || G.preparing) return;
+  if (G.GraphicsRecovery.isLost() || G.preparing) return;
   G.Audio.init();
   G.UI.showPause(false);
   G.paused = false;
@@ -875,7 +875,7 @@ function frame(now) {
   const ms = now - last;
   let dt = ms / 1000;
   last = now;
-  if (G.GraphicsRecovery.lost || G.preparing || (G.RenderPrep.running && G.RenderPrep.safe())) return;
+  if (G.GraphicsRecovery.isLost() || G.preparing || (G.RenderPrep.running && G.RenderPrep.safe())) return;
   if (dt > 0.05) dt = 0.05;
   if (dt <= 0) dt = 0.001;
   frameNo++;

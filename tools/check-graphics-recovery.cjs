@@ -37,6 +37,16 @@ function save(){fs.mkdirSync(path.dirname(out),{recursive:true});fs.writeFileSyn
   await p.waitForFunction(()=>!G.RenderPrep.running&&!G.RenderPrep.jobs.length,null,{timeout:90000});
   report.queue=await p.evaluate(()=>({fire:G.ThrowableVFX.fireState,remaining:G.RenderPrep.jobs.length}));assert.equal(report.queue.fire,'ready','복구 때문에 지연 효과 자산을 영구 실패 처리하면 안 됨');
   await p.evaluate(()=>{
+   const C=window.pendingRecovery={calls:0,events:[]},gl=G.renderer.getContext(),ext=gl.getExtension('WEBGL_lose_context');
+   G.renderer.domElement.addEventListener('webglcontextlost',()=>{C.events.push('손실');setTimeout(()=>ext.restoreContext(),250)},{once:true});
+   G.renderer.domElement.addEventListener('webglcontextrestored',()=>C.events.push('복구'),{once:true});
+   C.pending=G.GraphicsRecovery.prepare(async()=>{if(++C.calls===1){ext.loseContext();C.immediate={nativeLost:gl.isContextLost(),flag:G.GraphicsRecovery.lost}}await G.RenderPrep.gpuIdle()});
+   C.pending.then(()=>{C.ready=true;C.done=true},e=>{C.error=e.message;C.done=true});
+  });
+  await p.waitForFunction(()=>pendingRecovery.done,null,{timeout:60000});
+  report.pendingEvent=await p.evaluate(()=>({ready:pendingRecovery.ready,calls:pendingRecovery.calls,error:pendingRecovery.error,immediate:pendingRecovery.immediate,events:pendingRecovery.events,errorCode:G.renderer.getContext().getError()}));
+  const n=report.pendingEvent;assert(n.immediate.nativeLost&&!n.immediate.flag,'실제 손실과 알림 이벤트 사이 구간 재현');assert(n.ready&&!n.error);assert.equal(n.calls,2);assert.deepEqual(n.events,['손실','복구']);assert.equal(n.errorCode,0);
+  await p.evaluate(()=>{
    const C=window.matchRecovery={events:[],starts:0,losses:0},ext=G.renderer.getContext().getExtension('WEBGL_lose_context'),start=G.Game.start;
    if(!document.documentElement.classList.contains('mobile')){
     G.Input.lock=function(){this.locked=true;G.onLockChange?.(true)};
@@ -63,6 +73,6 @@ function save(){fs.mkdirSync(path.dirname(out),{recursive:true});fs.writeFileSyn
   report.resume=await p.evaluate(()=>{G.paused=true;return{time:G.Game.time,weapon:G.VM.cur,error:G.renderer.getContext().getError()}});assert.equal(report.resume.error,0);
   report.reentry=await p.evaluate(async()=>{G.toMenu();const ready=await G.startGame({...G.UI.opts,mode:'training'});G.paused=true;return{ready,preparing:G.preparing,loading:!document.getElementById('loading').classList.contains('hidden'),error:G.renderer.getContext().getError()}});assert(report.reentry.ready&&!report.reentry.preparing&&!report.reentry.loading);assert.equal(report.reentry.error,0,'복구 후 퇴장·재입장 때 이전 GPU 객체 사용');
   report.failurePropagation=await p.evaluate(async()=>{let calls=0;try{await G.GraphicsRecovery.prepare(()=>{calls++;throw Error('일반 준비 오류 검사')})}catch(e){return{calls,message:e.message}}});assert.deepEqual(report.failurePropagation,{calls:1,message:'일반 준비 오류 검사'});
-  assert.deepEqual(f.errors,[]);report.errors=f.errors;save();console.log('PASS 부팅 2회·판 준비 2회 연결 손실·중복 초기화 없음·준비 완료 전 재개 차단·지연 자산·재개');
+  assert.deepEqual(f.errors,[]);report.errors=f.errors;save();console.log('PASS 부팅·판 준비·손실 알림 전 구간 복구·중복 초기화 없음·준비 완료 전 재개 차단·지연 자산·재입장');
  }catch(e){report.failure=e.stack;report.errors=f.errors;save();throw e}finally{await f.close()}
 })().catch(e=>{console.error(e);process.exitCode=1});

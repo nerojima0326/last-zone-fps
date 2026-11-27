@@ -4,13 +4,14 @@
 const G=window.G,$=id=>document.getElementById(id);
 G.GraphicsRecovery={
  lost:false,booted:false,recoveries:0,epoch:0,waiters:[],
+ isLost(){return this.lost||!!G.renderer?.getContext().isContextLost();}, // v108 알림 이벤트보다 먼저 끊긴 연결도 확인한다
  // v108 초기화는 유지하고 끊긴 GPU 준비만 복구 뒤 다시 수행한다.
- wait(){return this.lost?new Promise(resolve=>this.waiters.push(resolve)):Promise.resolve();},
+ wait(){return this.isLost()?new Promise(resolve=>this.waiters.push(resolve)):Promise.resolve();},
  async prepare(task){
   for(;;){
    await this.wait();const epoch=this.epoch;
-   try{const result=await task();if(!this.lost&&epoch===this.epoch)return result;}
-   catch(e){if(!this.lost&&epoch===this.epoch)throw e;}
+   try{const result=await task();if(!this.isLost()&&epoch===this.epoch)return result;}
+   catch(e){if(!this.isLost()&&epoch===this.epoch)throw e;}
   }
  },
  init(renderer){
@@ -34,7 +35,7 @@ G.GraphicsRecovery={
  },
  bootComplete(){
   this.booted=true;
-  if(this.lost){$('loadText').textContent='그래픽 연결을 복구하는 중...';return;}
+  if(this.isLost()){$('loadText').textContent='그래픽 연결을 복구하는 중...';return;}
   $('loading').classList.add('hidden');G.paused=false;G.UI.showMenu();
  }
 };
