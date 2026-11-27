@@ -125,7 +125,7 @@ const C=G.VehicleCabin={
   if(m.soldier){G.Soldiers.drive(m.soldier,m);hip.copy(m.soldier.X[m.soldier.T.hipIdx||0]);}
   else {hip.set(0,.95,0);for(let i=0;i<2;i++)this.proceduralArm(m,i,this.grip(v,i,target).sub(p.fromArray(s.hip)).add(hip));}
   m.root.quaternion.copy(v.mesh.quaternion);m.root.position.fromArray(s.hip).sub(hip).applyMatrix4(v.mesh.matrixWorld);
-  this.hideHead(m,first);m.root.updateMatrixWorld(true);
+  this.hideHead(m,first);this.hideBody(m,first);m.root.updateMatrixWorld(true);
  },
  driverIK(sd,m){
   const v=m.driving,s=this.profile(v),origin=sd.X[sd.T.hipIdx||0],hands=this.handData(m,sd);
@@ -185,7 +185,25 @@ const C=G.VehicleCabin={
   for(const r of state.meshes)r.mesh.frustumCulled=hide?false:r.culled;
   state.hidden=hide;
  },
- release(m){if(!m)return;this.hideHead(m,false);for(const hand of m.driverGrip||[]){if(!hand)continue;hand.wrist.quaternion.copy(hand.bind);for(const f of hand.fingers)f.bone.quaternion.copy(f.bind);}m.driving=null;m.motion=null;},
+ // v107 내부 시점은 팔 삼각형만 그린다. 몸통 뼈를 줄이면 자식인 팔도 찌그러진다.
+ hideBody(m,hide){
+  if(!m.driverBody&&hide){
+   const sd=m.soldier,roots=sd?sd.T.entries.flatMap((e,i)=>['armL','armR'].includes(e.key)?[sd.bones[i]]:[]):[m.armL,m.armR],bones=new Set();
+   for(const root of roots)root.traverse(b=>bones.add(b));
+   m.driverBody=m.meshes.filter(mesh=>mesh.isSkinnedMesh).map(mesh=>{
+    const original=mesh.geometry,g=original.clone(),si=g.attributes.skinIndex,sw=g.attributes.skinWeight,keep=[],groups=[];
+    const arm=new Uint8Array(si.count);for(let i=0;i<si.count;i++){let weight=0;for(let k=0;k<4;k++)if(bones.has(mesh.skeleton.bones[si.getComponent(i,k)]))weight+=sw.getComponent(i,k);arm[i]=weight>=.5?1:0;}
+    for(const group of g.groups.length?g.groups:[{start:0,count:g.index?.count||si.count,materialIndex:0}]){
+     const start=keep.length;for(let i=group.start;i<group.start+group.count;i+=3){const tri=[0,1,2].map(k=>g.index?g.index.getX(i+k):i+k);if(tri.every(v=>arm[v]))keep.push(...tri);}groups.push({start,count:keep.length-start,materialIndex:group.materialIndex});
+    }
+    g.setIndex(keep);g.clearGroups();for(const group of groups)g.addGroup(group.start,group.count,group.materialIndex);
+    return{mesh,original,arms:g};
+   });
+  }
+  for(const row of m.driverBody||[])row.mesh.geometry=hide?row.arms:row.original;
+ },
+ dispose(m){for(const row of m.driverBody||[])row.arms.dispose();m.driverBody=null;},
+ release(m){if(!m)return;this.hideHead(m,false);this.hideBody(m,false);for(const hand of m.driverGrip||[]){if(!hand)continue;hand.wrist.quaternion.copy(hand.bind);for(const f of hand.fingers)f.bone.quaternion.copy(f.bind);}m.driving=null;m.motion=null;},
  enter(P,v){this.ensure(v);P.vehicleView||='third';P.vehicleLookYaw=0;P.vehicleLookPitch=-.12;P.vehicleNear=G.camera.near;},
  leave(P){if(!P)return;if(P.a?.model)this.release(P.a.model);if(P.vehicleNear!==undefined){G.camera.near=P.vehicleNear;G.camera.updateProjectionMatrix();delete P.vehicleNear;}},
  toggle(P){P.vehicleView=P.vehicleView==='first'?'third':'first';P.vehicleLookYaw=0;P.vehicleLookPitch=-.12;P.orbitYaw=P.vehicle.yaw;P.orbitPitch=-.22;},

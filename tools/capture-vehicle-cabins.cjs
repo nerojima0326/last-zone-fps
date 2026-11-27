@@ -1,7 +1,9 @@
 // 실제 캐릭터·차량 실내를 같은 조명에서 촬영하고 훈련장의 내부 시점도 저장한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./vehicle-physics-fixture.cjs');
 const out=path.resolve(process.env.SHOTS||'/workspace/artifacts/v104-cabins');
-(async()=>{const f=await fixture();try{
+(async()=>{const f=await fixture(process.env.BASELINE);try{
+ // v107 전후 비교는 동일한 캐릭터와 색을 사용한다.
+ await f.page.evaluate(()=>{const S=G.Soldiers,templates=S.templates,old=G.Player.a.model;S.templates=[templates.find(t=>/ranger/.test(t.name))||templates[0]];const m=new G.CharacterModel({outfit:{top:0x4a5236,pants:0x3e4430,gear:0x2f3324},skin:0xd8a77f});S.templates=templates;G.Player.a.model=m;G.scene.add(m.root);old.dispose();});
  const data=await f.page.evaluate(()=>{
   const T=THREE,V=G.Vehicles,P=G.Player,a=P.a,m=a.model,W=G.World,methods={height:W.heightAt,water:W.waterAt},rows=[],pics=[],R=G.renderer;
   W.heightAt=()=>300;W.waterAt=()=>-100;G.VM.set(null);R.setPixelRatio(1);R.setSize(960,540,false);R.toneMappingExposure=.85;
@@ -24,7 +26,7 @@ const out=path.resolve(process.env.SHOTS||'/workspace/artifacts/v104-cabins');
   }finally{W.heightAt=methods.height;W.waterAt=methods.water;road.geometry.dispose();road.material.dispose();paintGeo.dispose();paintMat.dispose();}
   // 별도 조명 검사용 장면에 이어 실제 훈련장에서도 게임 렌더 경로를 사용한다.
   const v=V.list.find(v=>v.kind==='izh');V.enter(P,v);P.vehicleView='first';G.Input.reset();
-  for(let i=0;i<60;i++){P.update(1/60);G.Game.syncModels(1/60);G.Input.endFrame();}
+  for(let i=0;i<60;i++){P.update(1/60);G.Game.syncModels(1/60);G.Input.endFrame();}P.vehicleLookPitch=-.42;G.VehicleCabin.camera(P,1/60);G.Game.syncModels(1/60);
   G.setRenderResolution('100');W.update(0,G.camera.position,G.camera);G.UI.update(1/60);G.renderNow();G.Perf.gpuWait();pics.push({kind:'training',view:'inside',image:R.domElement.toDataURL('image/png').split(',')[1]});
   // 시점마다 새로 보이는 맵 자원의 지연 업로드를 제외하고, 같은 차량·캐릭터의 재탑승만 측정한다.
   const proof=new T.Scene();proof.add(new T.HemisphereLight(0xffffff,0x667066,2),v.mesh,m.root);
