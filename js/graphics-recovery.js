@@ -16,6 +16,8 @@ G.GraphicsRecovery={
  init(renderer){
   renderer.domElement.addEventListener('webglcontextlost',event=>{
    event.preventDefault();this.lost=true;this.epoch++;G.Perf?.contextLost();G.paused=true;G.Input?.reset();G.Input?.unlock();G.Footsteps?.stop();
+   if(G.preparing)G.prepUnlocked=true; // v108 시작 중 복구 뒤에는 준비 완료 후 직접 재개한다
+   G.releaseGraphicsTargets?.();
    if(G.World.envRT){G.World.envRT.dispose();G.World.envRT=null;} // v108 이전 컨텍스트의 삭제 핸들을 복구 뒤 사용하지 않는다
    $('loading').classList.remove('hidden');$('loadText').textContent='그래픽 연결을 복구하는 중...';
   });
