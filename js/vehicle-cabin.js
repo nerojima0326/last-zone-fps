@@ -11,8 +11,38 @@ const profiles={
  izh:{hip:[-.36,.60,.06],eye:[-.36,1.31,.10],wheel:[-.36,.93,-.19],floor:.20,roof:1.55,back:.47,front:-.77,width:1.22,dash:.91},
  fallback:{hip:[-.42,.73,.48],eye:[-.42,1.44,.52],wheel:[-.42,1.04,.23],floor:.36,roof:1.70,back:1.35,front:-.48,width:1.64,dash:1.02}
 };
+// v107 림 표면의 손바닥 접촉 반지름과 앞면 깊이를 모델·IK가 함께 사용한다.
+const wheelSpecs={
+ porter:{grip:.235,z:.008,tube:.014,bulge:0,segments:56,pad:[.142,.105],spokes:3},
+ e2200:{grip:.219,z:.015,tube:.021,bulge:.10,segments:56,pad:[.158,.118],spokes:3},
+ izh:{grip:.219,z:.006,tube:.011,bulge:0,segments:56,pad:[.073,.073],spokes:2},
+ fallback:{grip:.219,z:.014,tube:.020,bulge:.08,segments:56,pad:[.155,.112],spokes:3}
+};
+function finish(g,roughness=.78,metalness=.08){const n=g.attributes.position.count,values=new Float32Array(n*2);for(let i=0;i<n;i++){values[i*2]=roughness;values[i*2+1]=metalness;}g.setAttribute('lzFinish',new T.BufferAttribute(values,2));return g;}
+function cabinMaterial(){
+ const mat=new T.MeshStandardMaterial({name:'차량 실내',vertexColors:true,roughness:1,metalness:1});
+ // v107 고무·패드·크롬을 한 메시 안에서 구분해 재질별 그리기 호출을 늘리지 않는다.
+ mat.onBeforeCompile=shader=>{shader.vertexShader=shader.vertexShader.replace('#include <common>','#include <common>\nattribute vec2 lzFinish; varying vec2 vLzFinish;').replace('#include <begin_vertex>','#include <begin_vertex>\nvLzFinish = lzFinish;');shader.fragmentShader=shader.fragmentShader.replace('#include <common>','#include <common>\nvarying vec2 vLzFinish;').replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nroughnessFactor = vLzFinish.x;').replace('#include <metalnessmap_fragment>','#include <metalnessmap_fragment>\nmetalnessFactor = vLzFinish.y;');};
+ mat.customProgramCacheKey=()=> '차량 실내 표면 v107';return mat;
+}
+function rounded(w,h,r){const s=new T.Shape(),x=-w/2,y=-h/2;s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.quadraticCurveTo(x+w,y,x+w,y+r);s.lineTo(x+w,y+h-r);s.quadraticCurveTo(x+w,y+h,x+w-r,y+h);s.lineTo(x+r,y+h);s.quadraticCurveTo(x,y+h,x,y+h-r);s.lineTo(x,y+r);s.quadraticCurveTo(x,y,x+r,y);return s;}
+function wheelGeometry(key){
+ const s=wheelSpecs[key],parts=[],paint=(g,c,r,m)=>{const out=finish(G.cg(g,c),r,m);parts.push(out);return out;},thickness=s.tube*(1+s.bulge),radius=s.grip-Math.sqrt(thickness*thickness-s.z*s.z);
+ const rim=new T.TorusGeometry(radius,s.tube,10,s.segments),pos=rim.attributes.position;
+ for(let i=0;i<pos.count;i++){const x=pos.getX(i),y=pos.getY(i),angle=Math.atan2(y,x),distance=Math.hypot(x,y),gap=a=>Math.atan2(Math.sin(angle-a),Math.cos(angle-a)),scale=1+s.bulge*Math.max(...[.24,.76].map(a=>Math.exp(-((gap(Math.PI*a)/.19)**2))));const radial=radius+(distance-radius)*scale;pos.setXYZ(i,x*radial/distance,y*radial/distance,pos.getZ(i)*scale);}
+ rim.computeVertexNormals();paint(rim,key==='izh'?0x302d27:0x242a2b,.88,.02);
+ const depth=.032,pad=new T.ExtrudeGeometry(rounded(...s.pad,key==='izh'?.025:.030),{depth,bevelEnabled:true,bevelSize:.005,bevelThickness:.004,bevelSegments:1,curveSegments:3,steps:1}).translate(0,-.012,-depth/2+.016);
+ for(const angle of s.spokes===2?[.08,Math.PI-.08]:[.08,Math.PI-.08,-Math.PI/2]){
+  const shape=new T.Shape();shape.moveTo(.035,-.029);shape.lineTo(radius-.002,-.022);shape.lineTo(radius-.002,.022);shape.lineTo(.035,.040);shape.closePath();
+  const g=new T.ExtrudeGeometry(shape,{depth:.024,bevelEnabled:true,bevelSize:.003,bevelThickness:.003,bevelSegments:1,curveSegments:1,steps:1}).translate(0,0,-.012).rotateZ(angle);paint(g,key==='izh'?0xbcc0b7:0x50595c,key==='izh'?.25:.52,key==='izh'?.85:.35);
+ }
+ paint(pad,key==='izh'?0x41413c:0x303739,.78,.03);
+ if(key==='izh')paint(new T.TorusGeometry(.128,.0055,6,40).translate(0,0,.020),0xd4d8d1,.22,.9);
+ const stripe=new T.TorusGeometry(radius,s.tube+.0007,6,4,.045).rotateZ(Math.PI/2-.0225);paint(stripe,key==='izh'?0xd8c99e:0xc8b59a,.73,.03);
+ const geometry=G.mergeGeo(parts);for(const g of parts)g.dispose();return geometry;
+}
 const C=G.VehicleCabin={
- profiles,templates:new Map(),glass:null,repairs:new WeakMap(),
+ profiles,wheelSpecs,templates:new Map(),glass:null,repairs:new WeakMap(),
  profile(v){return profiles[v.cabinKind||v.kind]||profiles.fallback;},
  // 원본의 유리 재질만 바꾼다. 불투명한 차체는 그대로 둔다.
  glazing(v){
@@ -98,12 +128,9 @@ const C=G.VehicleCabin={
    const angle=2.25-i*4.5/16,g=G.bx(.008,.022,.008,0,0,0,i>13?0xb4583b:0xc2cfbf);
    g.rotateZ(angle).translate(s.hip[0]+Math.sin(angle)*.078,s.dash+.05+Math.cos(angle)*.078,s.front+.313);parts.push(g);
   }
-  const staticGeo=G.mergeGeo(parts);for(const g of parts)g.dispose();
-  const wheelParts=[cg(new T.TorusGeometry(.205,.018,8,40),0x202727),cg(new T.CylinderGeometry(.056,.056,.05,16).rotateX(Math.PI/2),0x384143)];
-  for(const angle of[.14,Math.PI-.14,-Math.PI/2]){const g=G.bx(.14,.036,.026,0,0,0,0x4a5455);g.rotateZ(angle).translate(Math.cos(angle)*.115,Math.sin(angle)*.115,0);wheelParts.push(g);}
-  const wheelGeo=G.mergeGeo(wheelParts);for(const g of wheelParts)g.dispose();
-  this.material||=new T.MeshStandardMaterial({name:'차량 실내',vertexColors:true,roughness:.78,metalness:.08});
-  const needleGeo=G.bx(.009,.077,.009,0,.027,0,0xde7d55),out={staticGeo,wheelGeo,needleGeo};this.templates.set(key,out);return out;
+  const staticGeo=G.mergeGeo(parts.map(g=>finish(g)));for(const g of parts)g.dispose();
+  const wheelGeo=wheelGeometry(key);this.material||=cabinMaterial();
+  const needleGeo=finish(G.bx(.009,.077,.009,0,.027,0,0xde7d55)),out={staticGeo,wheelGeo,needleGeo};this.templates.set(key,out);return out;
  },
  ensure(v){
   if(v.cabin)return v.cabin;
@@ -112,11 +139,11 @@ const C=G.VehicleCabin={
   const column=new T.Group();column.position.fromArray(s.wheel);column.rotation.x=-.43;root.add(column);
   const wheel=new T.Mesh(t.wheelGeo,this.material);wheel.name='조향 핸들';wheel.castShadow=wheel.receiveShadow=true;column.add(wheel);
   const needle=new T.Mesh(t.needleGeo,this.material);needle.name='속도계 바늘';needle.position.set(s.hip[0],s.dash+.05,s.front+.323);root.add(needle);
-  v.mesh.add(root);v.cabin={root,column,wheel,needle,profile:s,angle:0};G.RT?.invalidate();return v.cabin;
+  v.mesh.add(root);v.cabin={root,column,wheel,needle,profile:s,wheelSpec:wheelSpecs[key],angle:0};G.RT?.invalidate();return v.cabin;
  },
  // v107 운전자를 향하는 +Z축: 왼쪽 입력은 핸들과 양손을 반시계 방향으로 돌린다.
  animate(v){const c=this.ensure(v);c.angle=(v.steer||0)*.72;c.wheel.rotation.z=c.angle;c.needle.rotation.z=-2.25+U.clamp(Math.hypot(v.speed,v.lat||0)/28,0,1)*4.5;return c;},
- grip(v,i,out){const c=v.cabin,s=c.profile,angle=(i===0?Math.PI*.76:Math.PI*.24)+c.angle;return out.set(Math.cos(angle)*.219,Math.sin(angle)*.219,.015).applyEuler(euler.set(-.43,0,0)).add(p.fromArray(s.wheel));},
+ grip(v,i,out){const c=v.cabin,s=c.profile,w=c.wheelSpec,angle=(i===0?Math.PI*.76:Math.PI*.24)+c.angle;return out.set(Math.cos(angle)*w.grip,Math.sin(angle)*w.grip,w.z).applyEuler(euler.set(-.43,0,0)).add(p.fromArray(s.wheel));},
  pose(m,v,first){
   const c=this.animate(v),s=c.profile;G.HitResponse?.restore(m);G.Knives?.handTP(m,false);
   m.driving=v;m.motion=null;m.ikGun=null;m.setLOD(false);m.setGun(null);m.showChute(false);m.airGear.visible=false;
