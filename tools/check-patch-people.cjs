@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // Checks the optional historical Patch previews and isolation from the current game.
 // Optional: CHROME_BIN, THREE_DIR, SHOTS; npm install playwright.
 const fs=require('fs'),path=require('path'),http=require('http'),assert=require('assert');

@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 벽 충돌·부분 접지·절벽 접근·공중 관성과 훈련장의 모든 차종을 검사한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./vehicle-physics-fixture.cjs');
 const output=path.resolve(process.env.REPORT||'/tmp/lz-vehicle-physics.json');

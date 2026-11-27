@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v107 실제 훈련장·동일 출발점에서 정지/A/D 고속·외부·밤 운전석을 촬영한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./vehicle-physics-fixture.cjs');
 const out=path.resolve(process.env.SHOTS||'/tmp/last-zone-cabins'),mobile=process.env.CABIN_MOBILE==='1',viewport=mobile?{width:844,height:390}:{width:1280,height:720};

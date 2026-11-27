@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 동일한 옵션으로 변경 전/후 미리보기와 실제 1인칭 화면을 저장한다.
 const fs=require('fs'),path=require('path'),fixture=require('./optimize/browser-fixture.cjs');
 (async()=>{const f=await fixture({viewport:{width:1100,height:700},route:async p=>{if(process.env.BASELINE_DIR)await p.route('http://127.0.0.1:*/**',route=>{const url=new URL(route.request().url()),rel=url.pathname==='/'?'index.html':url.pathname.slice(1),file=path.join(process.env.BASELINE_DIR,rel);return fs.existsSync(file)?route.fulfill({contentType:rel.endsWith('.html')?'text/html':'application/javascript',body:fs.readFileSync(file)}):route.continue()})}});try{

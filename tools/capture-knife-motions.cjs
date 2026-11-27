@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 칼별 꺼내기·두 공격·검사를 실제 게임 리그로 렌더링한다.
 const fs=require('fs'),path=require('path'),fixture=require('./optimize/browser-fixture.cjs');
 (async()=>{

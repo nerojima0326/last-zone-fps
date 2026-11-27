@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 실제 게임의 수송기를 여러 각도에서 촬영하고 메시·강하문·팬·정리를 확인한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),{execFileSync}=require('child_process');
 const fixture=require('./optimize/browser-fixture.cjs');

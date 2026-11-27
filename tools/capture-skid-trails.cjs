@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 같은 바퀴 경로에서 실제 자국을 확대 렌더링하고 GPU에서 가장자리·시간 감쇠를 확인한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./vehicle-physics-fixture.cjs');
 const mode=process.argv[2]||'after',file=path.resolve(process.env.SHOTS||'/workspace/artifacts/v103-skids-'+mode+'.png');

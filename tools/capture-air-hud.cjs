@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v108 동일 위치의 상공 시야 8장과 네 해상도·네 상태 HUD를 촬영한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./air-hud-fixture.cjs');
 const out=path.resolve(process.env.SHOTS||'/tmp/lz-air-hud'),set=process.env.CAPTURE_SET||'all',rows=[];

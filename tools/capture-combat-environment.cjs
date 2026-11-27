@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // Reproducible close views of the actual runtime shaders, rigs and effects.
 const fs=require('fs'),path=require('path'),fixture=require('./optimize/browser-fixture.cjs');
 const out=process.argv[2]||'/tmp/lz-v80-captures';fs.mkdirSync(out,{recursive:true});

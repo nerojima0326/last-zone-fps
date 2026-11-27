@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v107 실제 속도·입력·체력·밤 상태, 숫자 가림과 계기판의 그리기·텍스처 비용을 검사한다.
 const fs=require('fs'),assert=require('assert'),fixture=require('./vehicle-physics-fixture.cjs');
 const mobile=process.env.CABIN_MOBILE==='1',viewport=mobile?{width:844,height:390}:{width:1280,height:720};

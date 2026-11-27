@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 같은 카메라·중립 재질·자세에서 원본과 모바일 군인의 외곽·관절을 촬영한다.
 const fs=require('fs'),path=require('path'),fixture=require('./optimize/browser-fixture.cjs');
 (async()=>{

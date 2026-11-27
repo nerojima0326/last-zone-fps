@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v82와 작업 트리의 훈련장 HUD를 같은 위치·해상도에서 저장한다.
 const fs=require('fs'),cp=require('child_process'),path=require('path'),assert=require('assert'),fixture=require('./optimize/browser-fixture.cjs');
 const mode=process.argv[2]||'after',out=process.argv[3]||'/tmp/lz-v83-capture',base='a758fec49ba8265ab02b14da5963a40300bab735',old={};

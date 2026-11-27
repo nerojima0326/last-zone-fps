@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v78: rendering contracts, asset residency, real LOD selection and fallbacks.
 const assert = require('assert'), fs = require('fs'), path = require('path');
 const fixture = require('./optimize/browser-fixture.cjs');

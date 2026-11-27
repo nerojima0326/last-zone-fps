@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 아틀라스 실내용·보간·늦은 로딩·누락 복귀와 실제 화염 수명을 검사한다.
 const assert=require('assert'),fs=require('fs'),path=require('path'),cp=require('child_process'),crypto=require('crypto'),fixture=require('./optimize/browser-fixture.cjs');
 const root=path.resolve(__dirname,'..'),file=path.join(root,'assets/textures/vfx/pool-fire-v85.webp'),meta=require('../assets/textures/vfx/pool-fire-v85.json'),hash=b=>crypto.createHash('sha256').update(b).digest('hex'),report={};

@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v107 실제 훈련장의 AR-7 표면과 원인별 대조 화면. 큰 이미지는 외부 폴더에만 저장한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./expanded-motion-fixture.cjs');
 const out=path.resolve(process.env.SHOTS||'/tmp/lz-weapon-surface');

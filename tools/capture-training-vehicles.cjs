@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 실제 훈련장의 모든 차종·주차선·차종 표지를 촬영한다.
 const fs=require('fs'),path=require('path'),fixture=require('./vehicle-physics-fixture.cjs');
 const output=path.resolve(process.env.SHOTS||'/workspace/artifacts/v102-training-vehicles.png');

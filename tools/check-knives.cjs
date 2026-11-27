@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 실제 게임의 칼 장착·모션·타격·가림·전환과 누락 에셋 복귀를 검사한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),crypto=require('crypto'),fixture=require('./optimize/browser-fixture.cjs');
 const out=path.resolve(process.env.KNIFE_SHOTS||'/tmp/lz-v90-knives'),fallback=process.env.KNIFE_FALLBACK==='1';

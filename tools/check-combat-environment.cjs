@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // Runs the shipped game: wall/window/floor acoustics, all-weapon clearance,
 // directional reactions, surface shaders, bounded decals/fragments/window light.
 const assert=require('assert'),fs=require('fs'),path=require('path');

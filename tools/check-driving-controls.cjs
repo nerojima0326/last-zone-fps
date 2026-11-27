@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 세 차종·대체 차량의 Space 전용 드리프트, Shift 가속과 자국 연결·고정 풀을 확인한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./vehicle-physics-fixture.cjs');
 const output=path.resolve(process.env.REPORT||'/tmp/lz-driving-controls.json');

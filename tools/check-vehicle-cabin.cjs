@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 실제 F·V 입력, 좌석·손·발, 경사면 카메라와 하차·재입장 복귀를 검사한다.
 const fs=require('fs'),assert=require('assert'),fixture=require('./vehicle-physics-fixture.cjs');
 const mobile=process.env.CABIN_MOBILE==='1',output=process.env.REPORT||'/tmp/lz-vehicle-cabin.json';

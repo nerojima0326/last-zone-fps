@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 실제 탄도·연기 입자·착지 분사·벽/천장·품질별 예산을 브라우저에서 확인한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./throwable-fixture.cjs');
 const output=path.resolve(process.env.REPORT||'/tmp/lz-smoke-trail.json');

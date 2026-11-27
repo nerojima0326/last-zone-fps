@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 같은 사격장·카메라·시각에서 기준 커밋과 현재 투척 효과를 비교한다.
 const fs=require('fs'),cp=require('child_process'),path=require('path'),fixture=require('./optimize/browser-fixture.cjs');
 const mode=process.argv[2]||'after',out=process.argv[3]||'/tmp/lz-v84-vfx',close=process.env.VFX_CLOSE==='1';

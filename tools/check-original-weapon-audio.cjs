@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 const assert=require('assert'),crypto=require('crypto'),fs=require('fs'),path=require('path');
 const D=require('../js/weapon-sound-design.js');
 const manifest=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/audio/weapons/manifest.json'),'utf8'));

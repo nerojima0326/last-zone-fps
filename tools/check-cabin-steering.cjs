@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v107 실제 A/D·터치 입력 0.5초와 차체·앞바퀴·실내 핸들·손의 방향을 함께 검사한다.
 const fs=require('fs'),assert=require('assert'),fixture=require('./vehicle-physics-fixture.cjs');
 const mobile=process.env.CABIN_MOBILE==='1',output=process.env.REPORT||'/tmp/lz-cabin-steering.json';

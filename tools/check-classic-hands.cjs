@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 게임과 독립 장전 화면이 같은 기존 장갑·소매를 쓰는지 브라우저에서 검사한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./expanded-motion-fixture.cjs');
 const report=path.resolve(process.env.REPORT||'/tmp/lz-classic-hands.json'),shots=process.env.SHOTS;

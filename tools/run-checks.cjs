@@ -9,7 +9,7 @@ const only=process.env.CHECK_ONLY?.split(','),selected=only?files.filter(f=>only
 if(only&&selected.length!==only.length)throw Error('알 수 없는 검사 이름입니다.');
 const extra={'check-m4-model.mjs':['assets/models/viewmodels/m4_animations.zip'],'check-glock-import.mjs':['assets/models/viewmodels/glock17.fbx']};
 const chrome=process.env.CHROME_BIN||['/usr/bin/chromium','/usr/bin/chromium-browser','/usr/bin/google-chrome'].find(p=>fs.existsSync(p));
-const env={...process.env,THREE_DIR:process.env.THREE_DIR||path.join(root,'node_modules/three'),...(chrome?{CHROME_BIN:chrome}:{})};
+const env={...process.env,NODE_OPTIONS:(process.env.NODE_OPTIONS||'')+' --require '+JSON.stringify(path.join(root,'tools/artifact-paths.cjs')),THREE_DIR:process.env.THREE_DIR||path.join(root,'node_modules/three'),...(chrome?{CHROME_BIN:chrome}:{})};
 function save(){
  const report={version:fs.readFileSync(path.join(root,'version.txt'),'utf8').trim(),complete:results.length===selected.length,scope:only?'선택 검사':'전체 검사',checks:results};
  fs.writeFileSync(path.join(out,'results.json'),JSON.stringify(report,null,2)+'\n');

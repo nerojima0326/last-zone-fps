@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v107 이후 병합 보고서에는 장전 관통 검사를 반드시 기록한다.
 const fs=require('fs'),path=require('path'),assert=require('assert');
 const dir=path.resolve(__dirname,'../docs/validation'),rows=[];

@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v83: 실제 게임에서 기록·프레임 측정·전환·봇 재조준·입자 재사용을 검사한다.
 const assert=require('assert'),fs=require('fs'),path=require('path'),fixture=require('./optimize/browser-fixture.cjs');
 const out=process.env.REPORT||'/tmp/lz-v83-session-checks.json';

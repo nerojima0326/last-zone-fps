@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 실제 키보드와 모바일 다중 터치로 운전 조작을 확인한다.
 const fs=require('fs'),assert=require('assert'),fixture=require('./vehicle-physics-fixture.cjs');
 const mobile=process.env.DRIVE_MOBILE==='1',output=process.env.REPORT||'/tmp/lz-driving-input.json';

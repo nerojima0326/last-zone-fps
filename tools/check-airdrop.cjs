@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 실제 브라우저에서 수송기 이탈·강하 입력·전개·착지와 캐릭터 뼈대를 검증한다.
 const assert = require('assert'), fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
 const fixture = require('./optimize/browser-fixture.cjs');

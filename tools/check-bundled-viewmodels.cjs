@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // CHROME_BIN and THREE_DIR are optional. No manual file selection or cached models.
 const fs = require('fs'), http = require('http'), path = require('path'), assert = require('assert');
 const { chromium } = require('playwright');

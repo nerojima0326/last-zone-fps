@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // Real game ADS regression. Optional: CHROME_BIN, THREE_DIR, SHOTS, REPORT, BASELINE_VM.
 const fs = require('fs'), http = require('http'), path = require('path'), assert = require('assert');
 const { chromium } = require('playwright');

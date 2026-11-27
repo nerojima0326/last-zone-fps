@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // Actual menu/training flows for the expanded roster. Optional SHOTS directory.
 const fs = require('fs'), http = require('http'), path = require('path'), assert = require('assert');
 const { chromium } = require('playwright');

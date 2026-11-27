@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // npm i playwright; npx playwright install chromium
 // Optional: THREE_DIR, CHROME_BIN, BASELINE_PLAYER (legacy studio), REPORT, RENDER_AUDIO.
 const fs=require('fs'),http=require('http'),path=require('path'),assert=require('assert');

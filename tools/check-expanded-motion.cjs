@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 신규 15정의 실제 장전·탄 수·기존 장갑·작동부·조준 광축을 검사한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./expanded-motion-fixture.cjs');
 const report=path.resolve(process.env.REPORT||'/tmp/lz-v99-motion-checks.json');

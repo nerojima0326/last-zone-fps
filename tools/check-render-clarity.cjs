@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v81: 실제 브라우저에서 네이티브 출력, 고정 해상도, MSAA, 후처리·텍스처 계약을 확인한다.
 const assert=require('assert'),fs=require('fs'),fixture=require('./optimize/browser-fixture.cjs');
 const out=process.env.REPORT||'/tmp/lz-v81-render-check.json';

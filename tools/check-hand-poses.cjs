@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // CHROME_BIN, THREE_DIR, REPORT and BASELINE_HANDS=1 are optional.
 const fs = require('fs'), http = require('http'), path = require('path'), assert = require('assert');
 const { chromium } = require('playwright');

@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v107 실제 훈련장의 같은 장전 프레임을 저장소 밖에 촬영한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./expanded-motion-fixture.cjs');
 const out=path.resolve(process.env.SHOTS||'/tmp/lz-reload-clearance');

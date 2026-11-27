@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 모바일 맵의 실제 픽셀 보존, 경량 모델·확대 LOD·자동 품질·누락 복귀를 검사한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./optimize/browser-fixture.cjs');
 const out=path.resolve(process.env.MOBILE_SHOTS||'/tmp/lz-mobile-checks');

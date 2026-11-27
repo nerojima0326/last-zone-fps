@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 수정 전 커밋과 작업 트리를 각각 실행해 손 동작·공중 연막을 비교할 원본 프레임을 만든다.
 const fs=require('fs'),path=require('path'),fixture=require('./throwable-fixture.cjs');
 const mode=process.argv[2]||'after',out=path.resolve(process.env.THROW_SHOTS||'/tmp/lz-v98-video'),base=process.env.THROW_BASE||'4a5a0136569f10a6807eb24d2059efed6e79897f',fps=30;

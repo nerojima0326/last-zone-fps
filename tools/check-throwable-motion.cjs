@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 실제 장갑 관통·손 고정·투척 이벤트·연막의 바닥/지붕/수면 동작을 검사한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./throwable-fixture.cjs'),geometry=require('./hand-geometry.cjs');
 const out=path.resolve(process.env.THROW_CHECKS||'/tmp/lz-v98-checks');

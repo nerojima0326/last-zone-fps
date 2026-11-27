@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 실제 장갑·칼 삼각형, 칼끝 연속성, 칼별 궤적 차이를 검사한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./optimize/browser-fixture.cjs');
 const installGeometry=require('./hand-geometry.cjs'),bvhDir=path.dirname(path.dirname(require.resolve('three-mesh-bvh')));

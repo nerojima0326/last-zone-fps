@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v79 integration: real material classification, distance/foot contacts, poses,
 // bounded samples, bot wall/cover behavior, settings and complementary LODs.
 const assert=require('assert'),fs=require('fs'),path=require('path'),crypto=require('crypto');

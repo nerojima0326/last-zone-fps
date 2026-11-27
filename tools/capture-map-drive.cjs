@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 게임의 운전 입력·추적 카메라로 12m 낙차를 주행한다. 고정 간격 영상이며 실제 FPS 측정이 아니다.
 const fs=require('fs'),path=require('path'),cp=require('child_process'),fixture=require('./optimize/browser-fixture.cjs');
 const out=process.argv[2]||'/tmp/lz-v87-drive';

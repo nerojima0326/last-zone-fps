@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 1번 슬롯의 조준경 제한을 인벤토리·입력·실제 장착 화면에서 확인한다.
 const fs=require('fs'),assert=require('assert'),fixture=require('./optimize/browser-fixture.cjs');
 (async()=>{const f=await fixture({viewport:{width:1100,height:700}});try{const p=f.page;await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=cb=>cb.name==='frame'?0:raf(cb);G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};G.startGame({...G.UI.opts,mode:'training',quality:'potato'});G.paused=true;G.UI.showPause(false)});const report=await p.evaluate(()=>{

@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // S24 FE 화면 조건에서 메모리·조작·회전·품질·컨텍스트 복구를 실제 WebGL로 검사한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./optimize/browser-fixture.cjs'),gpu=require('./optimize/gpu-allocations.cjs');
 const out=path.resolve(process.env.MOBILE_SHOTS||'/tmp/lz-v91-mobile');

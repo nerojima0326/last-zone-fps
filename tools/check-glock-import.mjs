@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+import './artifact-paths.cjs';
 // THREE_DIR points to Three.js r160; pass the locally licensed glock17.fbx as argv[2].
 // Geometry/animation checks only: texture loading is stubbed, without WebGL rendering.
 import fs from 'node:fs';import vm from 'node:vm';import path from 'node:path';import {fileURLToPath,pathToFileURL} from 'node:url';

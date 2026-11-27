@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 장면 해상도를 바꿔도 HUD·2D 스코프·1인칭 조준경의 네이티브 픽셀을 유지한다.
 const assert=require('assert'),fs=require('fs'),path=require('path'),fixture=require('./optimize/browser-fixture.cjs');
 const out=process.env.REPORT||'/tmp/lz-v81-reticle.json';

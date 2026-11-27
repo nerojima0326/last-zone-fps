@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 실제 수면 삼각형이 수역 밖에 떠 있는지, 그 위치의 물리 수위와 맞는지 검사한다. GPU 없이 실행한다.
 const fs=require('fs'),path=require('path'),vm=require('vm'),cp=require('child_process'),T=require('three'),assert=require('assert');
 const root=path.resolve(__dirname,'..'),base='cc88b96bd30ff88ec424d97e748fecfa2d28b4b5';

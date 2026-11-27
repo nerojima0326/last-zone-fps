@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 같은 차종·카메라에서 바퀴 굴림과 타이어 파손 전후를 저장한다.
 const fs=require('fs'),path=require('path'),cp=require('child_process'),fixture=require('./optimize/browser-fixture.cjs');
 const mode=process.argv[2]||'after',out=process.argv[3]||'/tmp/lz-v86-capture',base='401a95292dae33004113cb06264fcebba1934177',old={};

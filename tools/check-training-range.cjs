@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // CHROME_BIN, THREE_DIR, SHOTS and RANGE_FALLBACK=1 are optional.
 // Runs the real game: training entry, pickups, shooting, cover collision and repeat entry.
 const fs = require('fs'), http = require('http'), path = require('path'), assert = require('assert');

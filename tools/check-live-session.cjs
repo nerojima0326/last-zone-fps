@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v107 일시정지·고정 시간 전진 없이 실제 프레임으로 훈련과 수송기→착지를 검사한다.
 const fs=require('fs'),path=require('path'),os=require('os'),assert=require('assert'),fixture=require('./optimize/browser-fixture.cjs');
 const output=path.resolve(process.env.REPORT||path.join(os.tmpdir(),'last-zone-live-session.json')),report={renderer:'SwiftShader 소프트웨어 렌더러, 실제 휴대폰 FPS가 아님',sessions:[]};

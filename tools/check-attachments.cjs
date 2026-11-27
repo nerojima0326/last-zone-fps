@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 부착물의 실제 메시·광축·움직이는 부품 연결을 브라우저에서 확인한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./optimize/browser-fixture.cjs');
 (async()=>{const f=await fixture({viewport:{width:1100,height:700}});try{

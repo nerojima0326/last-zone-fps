@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 경량화가 뼈의 위치·피부 가중치·모델 크기를 훼손하지 않았는지 원본과 비교한다.
 const fs=require('fs'),path=require('path'),crypto=require('crypto'),assert=require('assert'),T=require('three');
 const {NodeIO}=require('@gltf-transform/core'),{ALL_EXTENSIONS}=require('@gltf-transform/extensions'),{MeshoptDecoder}=require('meshoptimizer');
