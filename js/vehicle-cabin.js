@@ -94,6 +94,40 @@ function clusterGeometry(key,parts){
  if(key==='e2200')add(new T.BoxGeometry(.075,.028,.012).translate(lampX,lampY,z+.002),0x101719,.85,.02);
  return{faceGeo,needleGeo,atlas,dialMaterial,gauges,lamps,cluster:{x,y,z,radius:r,scale,spacing:Math.abs(gauges[0].dx)*scale,maxKph:gauges[0].max,maxRpm:7000}};
 }
+// v108 라디오·공조·수납·도어·기어 레버는 정적 메시 하나에 구워 자원을 재사용한다.
+function interiorDetails(key,parts){
+ const s=profiles[key],classic=key==='izh',dark=0x171d1f,plastic=classic?0x514a3c:0x394347,metal=classic?0xb4ad98:0x8a969b,z=s.front+.31;
+ const paint=(g,c,r=.8,m=.05)=>parts.push(finish(G.cg(g,c),r,m)),bx=(w,h,d,x,y,z,c,r,m)=>paint(new T.BoxGeometry(w,h,d).translate(x,y,z),c,r,m);
+ const panel=(w,h,d,x,y,z,c)=>paint(new T.ExtrudeGeometry(rounded(w,h,.012),{depth:d,bevelEnabled:true,bevelSize:.003,bevelThickness:.002,bevelSegments:1,curveSegments:2,steps:1}).translate(x,y,z-d),c);
+ const knob=(x,y,z,r=.019)=>{paint(new T.CylinderGeometry(r,r,.025,12).rotateX(Math.PI/2).translate(x,y,z),dark,.62,.12);bx(.003,r*.60,.002,x,y+r*.37,z+.014,0xc4c0a8);};
+ panel(.29,.16,.075,.105,s.dash-.027,z,plastic);bx(.257,.128,.008,.105,s.dash-.027,z+.003,dark);
+ bx(.159,.036,.007,.105,s.dash+.005,z+.010,classic?0x7e775c:0x365954);
+ for(let i=0;i<8;i++)bx(.002,i%2?.013:.023,.002,.038+i*.019,s.dash+.005,z+.015,classic?0xd1c7a2:0x8bc2a9);
+ knob(-.004,s.dash-.058,z+.013,.017);knob(.214,s.dash-.058,z+.013,.017);
+ for(let i=0;i<4;i++)bx(.025,.014,.012,.046+i*.039,s.dash-.062,z+.010,0x536064);
+ panel(.29,.066,.050,.105,s.dash-.155,z-.008,plastic);for(let i=0;i<3;i++)knob(.018+i*.086,s.dash-.155,z+.002,.021);
+ const hazard=new T.Shape();hazard.moveTo(-.011,-.007);hazard.lineTo(.011,-.007);hazard.lineTo(0,.012);hazard.closePath();paint(new T.ShapeGeometry(hazard).translate(.275,s.dash+.004,z+.011),0xb3503e,.74,.03);
+ const gloveX=s.width*.325;panel(.26,.15,.028,gloveX,s.dash-.045,z-.040,plastic);bx(.09,.012,.012,gloveX,s.dash-.018,z-.009,metal,.42,.45);
+ for(const side of[-1,1]){
+  const x=side*(s.width/2-.034),doorZ=s.hip[2]-.04;
+  bx(.018,.20,.43,x,s.floor+.29,doorZ,plastic);bx(.024,.018,.40,x-side*.011,s.floor+.395,doorZ,0x6a6d62);
+  const speaker=new T.CircleGeometry(.067,16).rotateY(-side*Math.PI/2).translate(x-side*.015,s.floor+.23,doorZ-.26);paint(speaker,dark);
+  paint(new T.TorusGeometry(.071,.004,4,20).rotateY(-side*Math.PI/2).translate(x-side*.018,s.floor+.23,doorZ-.26),metal,.5,.35);
+  for(let i=-3;i<=3;i++)bx(.005,.002,Math.sqrt(.061*.061-(i*.016)**2)*2,x-side*.020,s.floor+.23+i*.016,doorZ-.26,0x59615d);
+  if(classic){paint(new T.CylinderGeometry(.012,.012,.027,8).rotateZ(Math.PI/2).translate(x-side*.025,s.floor+.47,doorZ+.07),metal,.4,.5);bx(.018,.018,.085,x-side*.043,s.floor+.47,doorZ+.10,metal,.4,.5);paint(new T.SphereGeometry(.016,8,5).translate(x-side*.045,s.floor+.47,doorZ+.145),dark);}
+  else{for(let i=0;i<2;i++)bx(.025,.009,.027,x-side*.026,s.dash-.051,doorZ-.015+i*.045,i?0x5c6668:0x8a9692);}
+  bx(.023,.043,.039,side*(Math.abs(s.hip[0])-.20),s.hip[1]-.025,s.hip[2]+.06,0x332d29);bx(.019,.008,.025,side*(Math.abs(s.hip[0])-.20),s.hip[1]-.001,s.hip[2]+.06,0xa65d4b);
+  for(let i=0;i<6;i++)bx(.20,.003,.008,side*Math.abs(s.hip[0]),s.floor+.032,s.wheel[2]+.03+i*.033,0x48504b);
+ }
+ const gearX=.115,gearZ=s.hip[2]-.30;
+ paint(new T.CylinderGeometry(.034,.080,.085,8).translate(gearX,s.floor+.095,gearZ),dark);
+ for(let i=0;i<3;i++)paint(new T.TorusGeometry(.067-i*.012,.005,4,12).rotateX(Math.PI/2).translate(gearX,s.floor+.071+i*.025,gearZ),0x3a423e);
+ paint(new T.CylinderGeometry(.009,.012,.27,8).rotateX(-.20).translate(gearX,s.floor+.25,gearZ-.025),metal,.38,.55);
+ paint(new T.SphereGeometry(.032,10,6).scale(1,.8,1).translate(gearX,s.floor+.39,gearZ-.052),classic?0x554330:dark,.58,.12);
+ for(let i=-1;i<=1;i++)bx(.0015,.001,.023,gearX+i*.010,s.floor+.416,gearZ-.052,0xd0c5a4);
+ bx(.025,.001,.0015,gearX,s.floor+.416,gearZ-.052,0xd0c5a4);
+ for(let i=-5;i<=5;i++)bx(.051,.003,.012,i*s.width*.073,s.dash+.175,s.front+.10,0x10191a);
+}
 const C=G.VehicleCabin={
  profiles,wheelSpecs,templates:new Map(),glass:null,repairs:new WeakMap(),
  profile(v){return profiles[v.cabinKind||v.kind]||profiles.fallback;},
@@ -176,6 +210,7 @@ const C=G.VehicleCabin={
    for(let i=0;i<4;i++)bx(.13,.007,.022,x,s.dash+.016+i*.018,s.front+.292,0x626a6b);
   }
   for(const side of[-1,1])bx(.075,.035,.13,s.hip[0]+side*.10,s.floor+.07,s.wheel[2]-.12,0x1b2020);
+  interiorDetails(key,parts);
   const gauges=clusterGeometry(key,parts),staticGeo=G.mergeGeo(parts.map(g=>g.attributes.lzFinish?g:finish(g)));for(const g of parts)g.dispose();
   const wheelGeo=wheelGeometry(key);this.material||=cabinMaterial();
   this.needleMaterial||=luminousMaterial('계기판 바늘',.35);this.lampMaterial||=luminousMaterial('계기판 표시등',1);this.lampGeo||=G.cg(new T.CircleGeometry(.008,12),0xffffff);

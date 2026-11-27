@@ -16,7 +16,7 @@ const mobile=process.env.CABIN_MOBILE==='1',output=process.env.REPORT||'/tmp/lz-
    for(const view of ['first','third'])for(const [key,sign]of [['a',1],['d',-1]]){
     await p.evaluate(view=>{const v=steerTest.v,P=G.Player;G.Input.reset();P.vehicleView=view;P.vehicleLookYaw=0;P.vehicleLookPitch=-.22;v.pos.set(0,300,0);Object.assign(v,{yaw:0,steer:0,steerAngle:0,yawRate:0,speed:18,lat:0,pitch:0,roll:0,driftBlend:0});G.Vehicles.place(v,1);G.VehicleWheels.sync(v);G.Game.syncModels(1/60);},view);
     if(mobile){
-     const box=await p.locator('#touchUI [data-id="stick"]').boundingBox(),x=box.x+box.width/2,y=box.y+box.height/2,r=box.width/2;
+     const stick=p.locator('#touchUI [data-id="stick"]');await stick.waitFor({state:'visible'});const box=await stick.boundingBox(),x=box.x+box.width/2,y=box.y+box.height/2,r=box.width/2;
      const point=(x,y)=>({id:1,x,y,radiusX:2,radiusY:2,force:1});await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[point(x,y)]});await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[point(x-sign*r*.7,y-r*.7)]});
      await p.waitForFunction(key=>G.Input.down(key)&&G.Input.down('KeyW'),key==='a'?'KeyA':'KeyD');
     }else{await p.keyboard.down('w');await p.keyboard.down(key);}
