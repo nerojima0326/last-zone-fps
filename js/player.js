@@ -748,6 +748,7 @@ const P = G.Player = {
       cam.rotation.y += (Math.cos(t * 0.7) * 0.6 + Math.sin(t * 1.9) * 0.3) * amp;
     }
     G.vmCamera.fov = U.lerp(54, 46, this.ads); G.vmCamera.updateProjectionMatrix();
+    cam.updateMatrixWorld(); // v108 현재 시점으로 총구·차폐를 계산한다
     // 뷰모델
     const showVM = !a.knocked && a.cur !== null;
     G.VM.set(showVM ? a.gunId(a.cur) : null);
