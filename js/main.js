@@ -711,6 +711,7 @@ function onResize() {
 
 // 매치 시작 시 사용될 셰이더를 미리 컴파일해 첫 사용 시 끊김을 없앤다
 function warmup() {
+  const started=performance.now(),heap=performance.memory?.usedJSHeapSize||null; // v107 시작 정지·메모리 계측
   const shown = [];
   const show = o => { if (o && !o.visible) { o.visible = true; shown.push(o); } };
   const temp = [];
@@ -727,10 +728,12 @@ function warmup() {
   // Compiling its root must not reveal those hidden alternatives.
   // 실제 HDR 출력과 같은 상태에서 준비해 첫 사격 때 출력 색공간 변형이 다시 만들어지지 않게 한다.
   const previous = renderer.getRenderTarget();
+  const compileStarted=performance.now();
   try {
     renderer.setRenderTarget(composer.renderTarget1); renderer.compile(scene, camera);
     renderer.setRenderTarget(nativeVM.target); renderer.compile(G.vmScene, G.vmCamera);
   } finally { renderer.setRenderTarget(previous); }
+  const compileMs=performance.now()-compileStarted;
   // v67 처음 보는 텍스처를 GPU 로 올리느라 게임 중에 멈칫하던 것 (숲에 처음 들어갈 때 등) → 판이 시작되면
   //  여유 프레임에서 한 장씩 올린다 (한 번에 올리면 저사양에서 시작 화면이 수 초 멈춘다)
   const texs = new Set();
@@ -742,6 +745,7 @@ function warmup() {
   for (const o of shown) o.visible = false;
   for (const t of temp) scene.remove(t);
   G.VM.set(null);
+  G.warmupStats={ms:performance.now()-started,compileMs,heapBefore:heap,heapAfter:performance.memory?.usedJSHeapSize||null,viewmodels:Object.keys(G.VM.models).length,texturesQueued:G.prewarmTex.length};
 }
 
 G.prepareViewmodel = root => {

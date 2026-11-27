@@ -84,6 +84,7 @@ const W=G.VehicleWheels={
     const driver=v.driver;if(driver?.isPlayer)G.UI.toast('타이어 파손! 속도와 접지력이 감소합니다.');
     if(!v.driver&&v.grounded!==false){const parked=!!v.box;if(parked)G.Vehicles.unblock(v);G.Vehicles.place(v,1);this.sync(v);if(parked)G.Vehicles.block(v)}return true;
   },
-  dispose(v){for(const g of v.ownedGeometries||[])g.dispose();for(const m of v.ownedMaterials||[])m.dispose();v.ownedGeometries=[];v.ownedMaterials=[]}
+  // v107 차량 재생성 때 표시등의 인스턴스 버퍼도 반납한다.
+  dispose(v){G.VehicleCabin?.disposeVehicle?.(v);for(const g of v.ownedGeometries||[])g.dispose();for(const m of v.ownedMaterials||[])m.dispose();v.ownedGeometries=[];v.ownedMaterials=[]}
 };
 })();

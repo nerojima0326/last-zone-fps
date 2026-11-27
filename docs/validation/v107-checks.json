@@ -1,0 +1,443 @@
+{
+  "version": 107,
+  "baseCommit": "b375107e4b419193e3b03c94ddf572bdd1a15fac",
+  "functionalCommit": "0f39db456fd07d77b7a18e8caabc4c03e341baab",
+  "at": "2026-11-27T04:20:01.597724+00:00",
+  "method": "항목별 수정 후 14개 검사와 나머지 33개 순차 검사. 실시간 계측의 변수명 충돌을 수정한 뒤 재실행한 최종 결과.",
+  "counts": {
+    "통과": 47,
+    "실패": 0,
+    "못 돌림": 0,
+    "대기": 0
+  },
+  "checks": [
+    {
+      "name": "check-aim.cjs",
+      "command": "node tools/check-aim.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": null,
+      "reason": "항목별 수정 후 실행",
+      "log": "/workspace/artifacts/v107/03-surface/check-aim.log"
+    },
+    {
+      "name": "check-airdrop.cjs",
+      "command": "node tools/check-airdrop.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 43.7,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-airdrop/console.log"
+    },
+    {
+      "name": "check-attachments.cjs",
+      "command": "node tools/check-attachments.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 30.1,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-attachments/console.log"
+    },
+    {
+      "name": "check-bundled-viewmodels.cjs",
+      "command": "node tools/check-bundled-viewmodels.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 146.6,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-bundled-viewmodels/console.log"
+    },
+    {
+      "name": "check-classic-hands.cjs",
+      "command": "node tools/check-classic-hands.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": null,
+      "reason": "항목별 수정 후 실행",
+      "log": "/workspace/artifacts/v107/01-clearance/checks/check-classic-hands.log"
+    },
+    {
+      "name": "check-clearance.cjs",
+      "command": "node tools/check-clearance.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": null,
+      "reason": "항목별 수정 후 실행",
+      "log": "/workspace/artifacts/v107/01-clearance/after.log"
+    },
+    {
+      "name": "check-combat-environment.cjs",
+      "command": "node tools/check-combat-environment.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 41.4,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-combat-environment/console.log"
+    },
+    {
+      "name": "check-combat.cjs",
+      "command": "node tools/check-combat.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 49.5,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-combat/console.log"
+    },
+    {
+      "name": "check-driving-controls.cjs",
+      "command": "node tools/check-driving-controls.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 18,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-driving-controls/console.log"
+    },
+    {
+      "name": "check-driving-input.cjs",
+      "command": "node tools/check-driving-input.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 14.1,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-driving-input/console.log"
+    },
+    {
+      "name": "check-expanded-motion.cjs",
+      "command": "node tools/check-expanded-motion.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": null,
+      "reason": "항목별 수정 후 실행",
+      "log": "/workspace/artifacts/v107/01-clearance/checks/check-expanded-motion.log"
+    },
+    {
+      "name": "check-fire-flipbook.cjs",
+      "command": "node tools/check-fire-flipbook.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 51.3,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-fire-flipbook/console.log"
+    },
+    {
+      "name": "check-gameplay-polish.cjs",
+      "command": "node tools/check-gameplay-polish.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 45.8,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-gameplay-polish/console.log"
+    },
+    {
+      "name": "check-glock-import.mjs",
+      "command": "node tools/check-glock-import.mjs assets/models/viewmodels/glock17.fbx",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 0.6,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/05-runner-smoke/check-glock-import/console.log"
+    },
+    {
+      "name": "check-hand-poses.cjs",
+      "command": "node tools/check-hand-poses.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 142.1,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-hand-poses/console.log"
+    },
+    {
+      "name": "check-knife-motions.cjs",
+      "command": "node tools/check-knife-motions.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 59.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-knife-motions/console.log"
+    },
+    {
+      "name": "check-knife-touch.cjs",
+      "command": "node tools/check-knife-touch.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 23.5,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-knife-touch/console.log"
+    },
+    {
+      "name": "check-knives.cjs",
+      "command": "node tools/check-knives.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 50.4,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-knives/console.log"
+    },
+    {
+      "name": "check-live-session.cjs",
+      "command": "node tools/check-live-session.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 115.6,
+      "reason": "계측 변수명 수정 후 재검사",
+      "log": "/workspace/artifacts/v107/rechecks/check-live-session/console.log",
+      "previousAttempt": {
+        "status": "실패",
+        "reason": "ReferenceError: Cannot access 'memory' before initialization",
+        "log": "/workspace/artifacts/v107/full-checks/check-live-session/console.log"
+      }
+    },
+    {
+      "name": "check-m4-model.mjs",
+      "command": "node tools/check-m4-model.mjs assets/models/viewmodels/m4_animations.zip",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 0.8,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/05-runner-smoke/check-m4-model/console.log"
+    },
+    {
+      "name": "check-map-drive.cjs",
+      "command": "node tools/check-map-drive.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 38.6,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-map-drive/console.log"
+    },
+    {
+      "name": "check-map-hydrology.cjs",
+      "command": "node tools/check-map-hydrology.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 6.4,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-map-hydrology/console.log"
+    },
+    {
+      "name": "check-mobile-models.cjs",
+      "command": "node tools/check-mobile-models.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 0.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-mobile-models/console.log"
+    },
+    {
+      "name": "check-mobile-scene.cjs",
+      "command": "node tools/check-mobile-scene.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 119,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-mobile-scene/console.log"
+    },
+    {
+      "name": "check-mobile-stability.cjs",
+      "command": "node tools/check-mobile-stability.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 135.3,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-mobile-stability/console.log"
+    },
+    {
+      "name": "check-native-reticle.cjs",
+      "command": "node tools/check-native-reticle.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 31.5,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-native-reticle/console.log"
+    },
+    {
+      "name": "check-original-weapon-audio.cjs",
+      "command": "node tools/check-original-weapon-audio.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 3.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-original-weapon-audio/console.log"
+    },
+    {
+      "name": "check-patch-people.cjs",
+      "command": "node tools/check-patch-people.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": null,
+      "reason": "항목별 수정 후 실행",
+      "log": "/workspace/artifacts/v107/04-tools/after.log"
+    },
+    {
+      "name": "check-plane-model.cjs",
+      "command": "node tools/check-plane-model.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 29.8,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-plane-model/console.log"
+    },
+    {
+      "name": "check-primary-scopes.cjs",
+      "command": "node tools/check-primary-scopes.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 21.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-primary-scopes/console.log"
+    },
+    {
+      "name": "check-quality-performance.cjs",
+      "command": "node tools/check-quality-performance.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 49.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-quality-performance/console.log"
+    },
+    {
+      "name": "check-reloads.cjs",
+      "command": "node tools/check-reloads.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": null,
+      "reason": "항목별 수정 후 실행",
+      "log": "/workspace/artifacts/v107/01-clearance/checks/check-reloads.log"
+    },
+    {
+      "name": "check-render-clarity.cjs",
+      "command": "node tools/check-render-clarity.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": null,
+      "reason": "항목별 수정 후 실행",
+      "log": "/workspace/artifacts/v107/03-surface/check-render-clarity.log"
+    },
+    {
+      "name": "check-scope-models.mjs",
+      "command": "node tools/check-scope-models.mjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 1,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/05-runner-smoke/check-scope-models/console.log"
+    },
+    {
+      "name": "check-session-polish.cjs",
+      "command": "node tools/check-session-polish.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 38.1,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-session-polish/console.log"
+    },
+    {
+      "name": "check-smoke-trail.cjs",
+      "command": "node tools/check-smoke-trail.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 15.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-smoke-trail/console.log"
+    },
+    {
+      "name": "check-startup.cjs",
+      "command": "node tools/check-startup.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 40.5,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-startup/console.log"
+    },
+    {
+      "name": "check-throwable-motion.cjs",
+      "command": "node tools/check-throwable-motion.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 18.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-throwable-motion/console.log"
+    },
+    {
+      "name": "check-training-range.cjs",
+      "command": "node tools/check-training-range.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 68,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-training-range/console.log"
+    },
+    {
+      "name": "check-validation-reports.cjs",
+      "command": "node tools/check-validation-reports.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 0,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/05-runner-smoke/check-validation-reports/console.log"
+    },
+    {
+      "name": "check-vehicle-cabin.cjs",
+      "command": "node tools/check-vehicle-cabin.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": null,
+      "reason": "항목별 수정 후 실행",
+      "log": "/workspace/artifacts/v107/02-cabin/check.log"
+    },
+    {
+      "name": "check-vehicle-physics.cjs",
+      "command": "node tools/check-vehicle-physics.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 17.4,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-vehicle-physics/console.log"
+    },
+    {
+      "name": "check-vehicle-throwable-vfx.cjs",
+      "command": "node tools/check-vehicle-throwable-vfx.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 30.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-vehicle-throwable-vfx/console.log"
+    },
+    {
+      "name": "check-vehicle-wheels.cjs",
+      "command": "node tools/check-vehicle-wheels.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 25.8,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-vehicle-wheels/console.log"
+    },
+    {
+      "name": "check-weapon-audio.cjs",
+      "command": "node tools/check-weapon-audio.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 37,
+      "reason": "",
+      "log": "/workspace/artifacts/v107/full-checks/check-weapon-audio/console.log"
+    },
+    {
+      "name": "check-weapon-catalog.cjs",
+      "command": "node tools/check-weapon-catalog.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": null,
+      "reason": "항목별 수정 후 실행",
+      "log": "/workspace/artifacts/v107/03-surface/check-weapon-catalog.log"
+    },
+    {
+      "name": "check-weapon-surface.cjs",
+      "command": "node tools/check-weapon-surface.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": null,
+      "reason": "항목별 수정 후 실행",
+      "log": "/workspace/artifacts/v107/03-surface/after-check.log"
+    }
+  ]
+}

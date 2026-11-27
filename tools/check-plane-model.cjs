@@ -1,7 +1,7 @@
 // 실제 게임의 수송기를 여러 각도에서 촬영하고 메시·강하문·팬·정리를 확인한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),{execFileSync}=require('child_process');
 const fixture=require('./optimize/browser-fixture.cjs');
-const shots=path.resolve(__dirname,'../docs/validation/v89');
+const shots=path.resolve(process.env.PLANE_SHOTS||path.join(require('os').tmpdir(),'last-zone-plane')); // v107 외부 산출물
 (async()=>{
  const f=await fixture({viewport:{width:960,height:600}}),{page}=f,report={};
  try{

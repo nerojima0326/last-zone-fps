@@ -13,7 +13,8 @@ import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 window.THREE={...T,GLTFLoader,FBXLoader,mergeGeometries,MeshoptDecoder,SkeletonUtils};
 try{
  const version=await fetch('version.txt',{cache:'no-store'});if(!version.ok)throw Error('버전 정보를 불러올 수 없습니다');window.LZ_BUILD=(await version.text()).trim();
- for(const name of ['core','weapon-catalog','gunlib','weapon-expansion-models','gunmodels','weapons','character','soldiers','patch-characters'])await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='js/'+name+'.js?v='+encodeURIComponent(window.LZ_BUILD);s.onload=resolve;s.onerror=reject;document.body.append(s);});
+ // v107 캐릭터가 사용하는 강하 자세·낙하산 팽창 모듈을 게임과 같이 준비한다.
+ for(const name of ['core','weapon-catalog','gunlib','weapon-expansion-models','gunmodels','weapons','airborne','character','soldiers','patch-characters'])await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='js/'+name+'.js?v='+encodeURIComponent(window.LZ_BUILD);s.onload=resolve;s.onerror=reject;document.body.append(s);});
  const G=window.G,renderer=new T.WebGLRenderer({antialias:true});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.toneMapping=T.ACESFilmicToneMapping;document.body.append(renderer.domElement);
  const scene=new T.Scene();scene.background=new T.Color(0x26333f);
  scene.add(new T.HemisphereLight(0xe4edff,0x5e4d34,2));const sun=new T.DirectionalLight(0xffe8cf,3);sun.position.set(-3,5,-4);scene.add(sun);

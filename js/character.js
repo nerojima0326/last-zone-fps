@@ -268,6 +268,7 @@ class CharacterModel {
   }
   dispose() {
     if(this.driving)G.VehicleCabin.release(this);
+    G.VehicleCabin?.dispose(this); // v107 운전석 전용 팔 메시 해제
     if (!this.soldier) for (const m of this.meshes) m.geometry.dispose();
     else {
       this.body.geometry.dispose();

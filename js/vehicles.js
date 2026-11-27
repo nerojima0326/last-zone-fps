@@ -168,7 +168,7 @@ const Vh = G.Vehicles = {
   },
   newVehicle(x, y, z, yaw, extra) {
     if (!this.geo) { this.geo = build(); this.mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.7, metalness: 0.2 }); }
-    const v = Object.assign({ kind: U.pick(KINDS), pos: new V3(x, y, z), yaw, speed: 0, lat: 0, steer: 0, pitch: 0, roll: 0, driver: null, box: null, hitT: new Map(), noiseT: 0, hp: HP, dead: false, burnT: 0, smokeT: 0, lastHit: null, skid: [null, null] }, extra || {});
+    const v = Object.assign({ kind: U.pick(KINDS), pos: new V3(x, y, z), yaw, speed: 0, lat: 0, steer: 0, pitch: 0, roll: 0, driver: null, box: null, hitT: new Map(), noiseT: 0, hp: HP, maxHp: HP, displayRpm: 0, dead: false, burnT: 0, smokeT: 0, lastHit: null, skid: [null, null] }, extra || {});
     if (!v.home) v.home = { x, z, yaw };
     v.home.kind = v.kind;
     v.mesh = this.makeMesh(v);
@@ -410,6 +410,9 @@ const Vh = G.Vehicles = {
     if (v.dead) { thr = 0; st = 0; brake = true; hand = false; }
     v.handbrake=!!hand;
     v.boosting=!!boost&&grounded&&traction>0&&thr>0&&v.speed>=0&&!brake&&!hand&&!v.dead&&wet<=.3;
+    // v107 변속기 시뮬레이션 대신 속도대·가속 입력으로 표시용 회전수를 부드럽게 추정한다.
+    v.throttle=thr;const kph=Math.hypot(v.speed,v.lat||0)*3.6,gear=Math.min(4,Math.floor(kph/24)),rpm=v.dead?0:800+(kph-gear*24)*70+gear*180+Math.max(0,thr)*(v.boosting?2200:1250);
+    v.displayRpm=U.damp(v.displayRpm||0,U.clamp(rpm,0,6500),thr>0?6:3,dt);
     const punctures=v.wheelDamage||0,top = (wet > 0.5 ? 4 : v.boosting?BOOST:MAX)*Math.max(.38,1-punctures*.15),power=v.boosting?1.35:1;
     // 많이 부서지면 힘이 빠진다
     const weak = (v.hp < HP * 0.3 ? 0.65 : 1)*Math.pow(.88,punctures);

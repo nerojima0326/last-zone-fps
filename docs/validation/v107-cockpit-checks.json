@@ -1,0 +1,292 @@
+{
+  "version": 107,
+  "baseline": "eaf46b2",
+  "scope": "운전석 후속 작업: 기존 차량 검사 6종·새 검사 3종·장전 관통·보고서 규칙",
+  "environment": "Chromium headless · SwiftShader · PC 1280×720 / 모바일 Chrome 터치 844×390. 실기기 FPS 측정 아님.",
+  "build": {
+    "version": "107",
+    "BUILD": "107"
+  },
+  "checks": [
+    {
+      "name": "check-cabin-instruments.cjs",
+      "command": "node tools/check-cabin-instruments.cjs",
+      "status": "통과",
+      "seconds": 20.4,
+      "reason": ""
+    },
+    {
+      "name": "check-cabin-model.cjs",
+      "command": "node tools/check-cabin-model.cjs",
+      "status": "통과",
+      "seconds": 14.2,
+      "reason": ""
+    },
+    {
+      "name": "check-cabin-steering.cjs",
+      "command": "node tools/check-cabin-steering.cjs",
+      "status": "통과",
+      "seconds": 17,
+      "reason": ""
+    },
+    {
+      "name": "check-clearance.cjs",
+      "command": "node tools/check-clearance.cjs",
+      "status": "통과",
+      "seconds": 7.1,
+      "reason": ""
+    },
+    {
+      "name": "check-driving-controls.cjs",
+      "command": "node tools/check-driving-controls.cjs",
+      "status": "통과",
+      "seconds": 15.5,
+      "reason": ""
+    },
+    {
+      "name": "check-driving-input.cjs",
+      "command": "node tools/check-driving-input.cjs",
+      "status": "통과",
+      "seconds": 17.1,
+      "reason": ""
+    },
+    {
+      "name": "check-mobile-scene.cjs",
+      "command": "node tools/check-mobile-scene.cjs",
+      "status": "통과",
+      "seconds": 130.2,
+      "reason": ""
+    },
+    {
+      "name": "check-validation-reports.cjs",
+      "command": "node tools/check-validation-reports.cjs",
+      "status": "통과",
+      "seconds": 0,
+      "reason": ""
+    },
+    {
+      "name": "check-vehicle-cabin.cjs",
+      "command": "node tools/check-vehicle-cabin.cjs",
+      "status": "통과",
+      "seconds": 31.4,
+      "reason": ""
+    },
+    {
+      "name": "check-vehicle-physics.cjs",
+      "command": "node tools/check-vehicle-physics.cjs",
+      "status": "통과",
+      "seconds": 19.9,
+      "reason": ""
+    },
+    {
+      "name": "check-vehicle-wheels.cjs",
+      "command": "node tools/check-vehicle-wheels.cjs",
+      "status": "통과",
+      "seconds": 30.4,
+      "reason": ""
+    }
+  ],
+  "extraChecks": [
+    {
+      "name": "모바일 계기판",
+      "command": "CABIN_MOBILE=1 node tools/check-cabin-instruments.cjs",
+      "status": "통과"
+    },
+    {
+      "name": "모바일 조향",
+      "command": "CABIN_MOBILE=1 node tools/check-cabin-steering.cjs",
+      "status": "통과"
+    },
+    {
+      "name": "모바일 다중 터치",
+      "command": "DRIVE_MOBILE=1 node tools/check-driving-input.cjs",
+      "status": "통과"
+    },
+    {
+      "name": "모바일 F/V·승하차",
+      "command": "CABIN_MOBILE=1 node tools/check-vehicle-cabin.cjs",
+      "status": "통과"
+    },
+    {
+      "name": "PC 실제 훈련장 캡처",
+      "command": "SHOTS=/tmp/cabins node tools/capture-vehicle-cabins.cjs",
+      "status": "통과"
+    },
+    {
+      "name": "모바일 실제 훈련장 캡처",
+      "command": "CABIN_MOBILE=1 SHOTS=/tmp/cabins-mobile node tools/capture-vehicle-cabins.cjs",
+      "status": "통과"
+    }
+  ],
+  "measurements": [
+    {
+      "kind": "porter",
+      "wheelTriangles": 1376,
+      "wheelGripRadiusMm": 235,
+      "rimContactGapMm": 0.3842294357056589,
+      "rigCases": 15,
+      "maxPalmTargetErrorMm": 0.00010644302471489827,
+      "cabinDrawCallsBefore": 3,
+      "cabinDrawCallsAfter": 6,
+      "extraLights": 0,
+      "dynamicCanvasDraws": 0,
+      "textureUploadsDuringAnimation": 0,
+      "mobileTexture": [
+        512,
+        256
+      ],
+      "mobileProjectedMinLabelPx": 8.704890323209053,
+      "mobileBlockedLabelCenters": [
+        0,
+        0,
+        0
+      ],
+      "vehicleBufferDisposed": true
+    },
+    {
+      "kind": "e2200",
+      "wheelTriangles": 1376,
+      "wheelGripRadiusMm": 219,
+      "rimContactGapMm": 0.8097260536563746,
+      "rigCases": 15,
+      "maxPalmTargetErrorMm": 0.00009632569505269392,
+      "cabinDrawCallsBefore": 3,
+      "cabinDrawCallsAfter": 6,
+      "extraLights": 0,
+      "dynamicCanvasDraws": 0,
+      "textureUploadsDuringAnimation": 0,
+      "mobileTexture": [
+        512,
+        256
+      ],
+      "mobileProjectedMinLabelPx": 9.858097594892783,
+      "mobileBlockedLabelCenters": [
+        0,
+        0,
+        0
+      ],
+      "vehicleBufferDisposed": true
+    },
+    {
+      "kind": "izh",
+      "wheelTriangles": 1828,
+      "wheelGripRadiusMm": 219,
+      "rimContactGapMm": 0.44008296769069977,
+      "rigCases": 15,
+      "maxPalmTargetErrorMm": 0.00010574965831214027,
+      "cabinDrawCallsBefore": 3,
+      "cabinDrawCallsAfter": 6,
+      "extraLights": 0,
+      "dynamicCanvasDraws": 0,
+      "textureUploadsDuringAnimation": 0,
+      "mobileTexture": [
+        512,
+        256
+      ],
+      "mobileProjectedMinLabelPx": 8.5680453968643,
+      "mobileBlockedLabelCenters": [
+        0,
+        0,
+        0
+      ],
+      "vehicleBufferDisposed": true
+    },
+    {
+      "kind": "fallback",
+      "wheelTriangles": 1376,
+      "wheelGripRadiusMm": 219,
+      "rimContactGapMm": 0.7364312976800083,
+      "rigCases": 15,
+      "maxPalmTargetErrorMm": 0.00010245821347401463,
+      "cabinDrawCallsBefore": 3,
+      "cabinDrawCallsAfter": 6,
+      "extraLights": 0,
+      "dynamicCanvasDraws": 0,
+      "textureUploadsDuringAnimation": 0,
+      "mobileTexture": [
+        512,
+        256
+      ],
+      "mobileProjectedMinLabelPx": 8.51347861741972,
+      "mobileBlockedLabelCenters": [
+        0,
+        0,
+        0
+      ],
+      "vehicleBufferDisposed": true
+    }
+  ],
+  "captures": [
+    {
+      "kind": "desktop",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "requiredScreens": 12,
+      "totalScreens": 20,
+      "fastSpeedKph": [
+        {
+          "kind": "porter",
+          "kph": 76.63109206870806
+        },
+        {
+          "kind": "e2200",
+          "kph": 76.6423583792439
+        },
+        {
+          "kind": "izh",
+          "kph": 76.64180221244997
+        },
+        {
+          "kind": "fallback",
+          "kph": 76.64660178140278
+        }
+      ],
+      "repeatEntryResourceGrowth": {
+        "geometries": 0,
+        "textures": 0
+      },
+      "errors": []
+    },
+    {
+      "kind": "mobile",
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "requiredScreens": 12,
+      "totalScreens": 20,
+      "fastSpeedKph": [
+        {
+          "kind": "porter",
+          "kph": 76.63109206870806
+        },
+        {
+          "kind": "e2200",
+          "kph": 76.6423583792439
+        },
+        {
+          "kind": "izh",
+          "kph": 76.64180221244997
+        },
+        {
+          "kind": "fallback",
+          "kph": 76.64660178140278
+        }
+      ],
+      "repeatEntryResourceGrowth": {
+        "geometries": 0,
+        "textures": 0
+      },
+      "errors": []
+    }
+  ],
+  "artifacts": "/workspace/artifacts/v107-cockpit",
+  "notes": [
+    "핸들 모델·계기판은 절차적으로 생성했으며 외부 다운로드를 하지 않았다.",
+    "RPM은 실제 변속기 시뮬레이션이 아닌 입력·속도 기반 표시값이다. 연료 잔량 상태는 기존 코드에 없다.",
+    "숫자 높이는 기하 투영 추정치이며 전체 원본 화면도 직접 확인했다.",
+    "새 PNG 원본은 저장소 밖에 저장하고 작은 JPG 한 장만 저장소에 남겼다."
+  ]
+}

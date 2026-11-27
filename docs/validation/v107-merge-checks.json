@@ -1,0 +1,369 @@
+{
+  "version": 107,
+  "mainBefore": "b375107e4b419193e3b03c94ddf572bdd1a15fac",
+  "pagesBefore": "b375107e4b419193e3b03c94ddf572bdd1a15fac",
+  "testedFeature": "9ed859c7a900412ba5ce91f2dfba164ead2d8028",
+  "sourceBranch": "fix/v107-quality-regressions",
+  "command": "CHECK_OUT=/tmp/last-zone-v107-merge npm run check",
+  "scope": "전체 검사",
+  "complete": true,
+  "environment": "로컬 Chromium / SwiftShader. 실기기 FPS 측정은 아니다.",
+  "checks": [
+    {
+      "name": "check-aim.cjs",
+      "command": "node tools/check-aim.cjs",
+      "status": "통과",
+      "seconds": 92.9,
+      "reason": ""
+    },
+    {
+      "name": "check-airdrop.cjs",
+      "command": "node tools/check-airdrop.cjs",
+      "status": "통과",
+      "seconds": 41.6,
+      "reason": ""
+    },
+    {
+      "name": "check-attachments.cjs",
+      "command": "node tools/check-attachments.cjs",
+      "status": "통과",
+      "seconds": 29.9,
+      "reason": ""
+    },
+    {
+      "name": "check-bundled-viewmodels.cjs",
+      "command": "node tools/check-bundled-viewmodels.cjs",
+      "status": "통과",
+      "seconds": 151.9,
+      "reason": ""
+    },
+    {
+      "name": "check-cabin-instruments.cjs",
+      "command": "node tools/check-cabin-instruments.cjs",
+      "status": "통과",
+      "seconds": 17.7,
+      "reason": ""
+    },
+    {
+      "name": "check-cabin-model.cjs",
+      "command": "node tools/check-cabin-model.cjs",
+      "status": "통과",
+      "seconds": 16.5,
+      "reason": ""
+    },
+    {
+      "name": "check-cabin-steering.cjs",
+      "command": "node tools/check-cabin-steering.cjs",
+      "status": "통과",
+      "seconds": 19.2,
+      "reason": ""
+    },
+    {
+      "name": "check-classic-hands.cjs",
+      "command": "node tools/check-classic-hands.cjs",
+      "status": "통과",
+      "seconds": 47.7,
+      "reason": ""
+    },
+    {
+      "name": "check-clearance.cjs",
+      "command": "node tools/check-clearance.cjs",
+      "status": "통과",
+      "seconds": 8.4,
+      "reason": ""
+    },
+    {
+      "name": "check-combat-environment.cjs",
+      "command": "node tools/check-combat-environment.cjs",
+      "status": "통과",
+      "seconds": 44.3,
+      "reason": ""
+    },
+    {
+      "name": "check-combat.cjs",
+      "command": "node tools/check-combat.cjs",
+      "status": "통과",
+      "seconds": 50.8,
+      "reason": ""
+    },
+    {
+      "name": "check-driving-controls.cjs",
+      "command": "node tools/check-driving-controls.cjs",
+      "status": "통과",
+      "seconds": 15.8,
+      "reason": ""
+    },
+    {
+      "name": "check-driving-input.cjs",
+      "command": "node tools/check-driving-input.cjs",
+      "status": "통과",
+      "seconds": 14.4,
+      "reason": ""
+    },
+    {
+      "name": "check-expanded-motion.cjs",
+      "command": "node tools/check-expanded-motion.cjs",
+      "status": "통과",
+      "seconds": 21.3,
+      "reason": ""
+    },
+    {
+      "name": "check-fire-flipbook.cjs",
+      "command": "node tools/check-fire-flipbook.cjs",
+      "status": "통과",
+      "seconds": 54.2,
+      "reason": ""
+    },
+    {
+      "name": "check-gameplay-polish.cjs",
+      "command": "node tools/check-gameplay-polish.cjs",
+      "status": "통과",
+      "seconds": 44.4,
+      "reason": ""
+    },
+    {
+      "name": "check-glock-import.mjs",
+      "command": "node tools/check-glock-import.mjs assets/models/viewmodels/glock17.fbx",
+      "status": "통과",
+      "seconds": 1.3,
+      "reason": ""
+    },
+    {
+      "name": "check-hand-poses.cjs",
+      "command": "node tools/check-hand-poses.cjs",
+      "status": "통과",
+      "seconds": 141,
+      "reason": ""
+    },
+    {
+      "name": "check-knife-motions.cjs",
+      "command": "node tools/check-knife-motions.cjs",
+      "status": "통과",
+      "seconds": 53.3,
+      "reason": ""
+    },
+    {
+      "name": "check-knife-touch.cjs",
+      "command": "node tools/check-knife-touch.cjs",
+      "status": "통과",
+      "seconds": 24.4,
+      "reason": ""
+    },
+    {
+      "name": "check-knives.cjs",
+      "command": "node tools/check-knives.cjs",
+      "status": "통과",
+      "seconds": 50.7,
+      "reason": ""
+    },
+    {
+      "name": "check-live-session.cjs",
+      "command": "node tools/check-live-session.cjs",
+      "status": "통과",
+      "seconds": 115,
+      "reason": ""
+    },
+    {
+      "name": "check-m4-model.mjs",
+      "command": "node tools/check-m4-model.mjs assets/models/viewmodels/m4_animations.zip",
+      "status": "통과",
+      "seconds": 0.8,
+      "reason": ""
+    },
+    {
+      "name": "check-map-drive.cjs",
+      "command": "node tools/check-map-drive.cjs",
+      "status": "통과",
+      "seconds": 39.9,
+      "reason": ""
+    },
+    {
+      "name": "check-map-hydrology.cjs",
+      "command": "node tools/check-map-hydrology.cjs",
+      "status": "통과",
+      "seconds": 6.2,
+      "reason": ""
+    },
+    {
+      "name": "check-mobile-models.cjs",
+      "command": "node tools/check-mobile-models.cjs",
+      "status": "통과",
+      "seconds": 0.2,
+      "reason": ""
+    },
+    {
+      "name": "check-mobile-scene.cjs",
+      "command": "node tools/check-mobile-scene.cjs",
+      "status": "통과",
+      "seconds": 117.9,
+      "reason": ""
+    },
+    {
+      "name": "check-mobile-stability.cjs",
+      "command": "node tools/check-mobile-stability.cjs",
+      "status": "통과",
+      "seconds": 135.5,
+      "reason": ""
+    },
+    {
+      "name": "check-native-reticle.cjs",
+      "command": "node tools/check-native-reticle.cjs",
+      "status": "통과",
+      "seconds": 31.6,
+      "reason": ""
+    },
+    {
+      "name": "check-original-weapon-audio.cjs",
+      "command": "node tools/check-original-weapon-audio.cjs",
+      "status": "통과",
+      "seconds": 3,
+      "reason": ""
+    },
+    {
+      "name": "check-patch-people.cjs",
+      "command": "node tools/check-patch-people.cjs",
+      "status": "통과",
+      "seconds": 95.6,
+      "reason": ""
+    },
+    {
+      "name": "check-plane-model.cjs",
+      "command": "node tools/check-plane-model.cjs",
+      "status": "통과",
+      "seconds": 31.4,
+      "reason": ""
+    },
+    {
+      "name": "check-primary-scopes.cjs",
+      "command": "node tools/check-primary-scopes.cjs",
+      "status": "통과",
+      "seconds": 21.5,
+      "reason": ""
+    },
+    {
+      "name": "check-quality-performance.cjs",
+      "command": "node tools/check-quality-performance.cjs",
+      "status": "통과",
+      "seconds": 49.7,
+      "reason": ""
+    },
+    {
+      "name": "check-reloads.cjs",
+      "command": "node tools/check-reloads.cjs",
+      "status": "통과",
+      "seconds": 45.9,
+      "reason": ""
+    },
+    {
+      "name": "check-render-clarity.cjs",
+      "command": "node tools/check-render-clarity.cjs",
+      "status": "통과",
+      "seconds": 133,
+      "reason": ""
+    },
+    {
+      "name": "check-scope-models.mjs",
+      "command": "node tools/check-scope-models.mjs",
+      "status": "통과",
+      "seconds": 0.9,
+      "reason": ""
+    },
+    {
+      "name": "check-session-polish.cjs",
+      "command": "node tools/check-session-polish.cjs",
+      "status": "통과",
+      "seconds": 39.2,
+      "reason": ""
+    },
+    {
+      "name": "check-smoke-trail.cjs",
+      "command": "node tools/check-smoke-trail.cjs",
+      "status": "통과",
+      "seconds": 14.8,
+      "reason": ""
+    },
+    {
+      "name": "check-startup.cjs",
+      "command": "node tools/check-startup.cjs",
+      "status": "통과",
+      "seconds": 44.9,
+      "reason": ""
+    },
+    {
+      "name": "check-throwable-motion.cjs",
+      "command": "node tools/check-throwable-motion.cjs",
+      "status": "통과",
+      "seconds": 19.1,
+      "reason": ""
+    },
+    {
+      "name": "check-training-range.cjs",
+      "command": "node tools/check-training-range.cjs",
+      "status": "통과",
+      "seconds": 71,
+      "reason": ""
+    },
+    {
+      "name": "check-validation-reports.cjs",
+      "command": "node tools/check-validation-reports.cjs",
+      "status": "통과",
+      "seconds": 0,
+      "reason": ""
+    },
+    {
+      "name": "check-vehicle-cabin.cjs",
+      "command": "node tools/check-vehicle-cabin.cjs",
+      "status": "통과",
+      "seconds": 27.3,
+      "reason": ""
+    },
+    {
+      "name": "check-vehicle-physics.cjs",
+      "command": "node tools/check-vehicle-physics.cjs",
+      "status": "통과",
+      "seconds": 17.1,
+      "reason": ""
+    },
+    {
+      "name": "check-vehicle-throwable-vfx.cjs",
+      "command": "node tools/check-vehicle-throwable-vfx.cjs",
+      "status": "통과",
+      "seconds": 29.5,
+      "reason": ""
+    },
+    {
+      "name": "check-vehicle-wheels.cjs",
+      "command": "node tools/check-vehicle-wheels.cjs",
+      "status": "통과",
+      "seconds": 28.1,
+      "reason": ""
+    },
+    {
+      "name": "check-weapon-audio.cjs",
+      "command": "node tools/check-weapon-audio.cjs",
+      "status": "통과",
+      "seconds": 37.4,
+      "reason": ""
+    },
+    {
+      "name": "check-weapon-catalog.cjs",
+      "command": "node tools/check-weapon-catalog.cjs",
+      "status": "통과",
+      "seconds": 72.6,
+      "reason": ""
+    },
+    {
+      "name": "check-weapon-surface.cjs",
+      "command": "node tools/check-weapon-surface.cjs",
+      "status": "통과",
+      "seconds": 26.5,
+      "reason": ""
+    }
+  ],
+  "notes": [
+    "신규 총기 6종 손 관통·캐릭터 미리보기·M4 법선 복사·검사 환경 수정과 차량 내부 몸·핸들·계기판 개선을 통합했다.",
+    "장전 관통 기준 작동 중 3mm, 복귀 중 10mm를 완화하지 않았다.",
+    "원본 PNG·영상과 전체 실행 로그는 저장소 밖 /workspace/artifacts/v107-merge 에 보관한다.",
+    "전체 실행 후 보고서 추가만 했으며 게임 실행 파일은 검사한 수정본과 같다."
+  ]
+}

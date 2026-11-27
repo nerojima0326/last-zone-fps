@@ -447,7 +447,8 @@ const AV = G.AssetVM = {
           (lo > C.fold.y ? up : rest).push(i, i + 1, i + 2);
         }
         if (!up.length) continue;
-        const sub = ids => { const g = new T.BufferGeometry(); for (const [k, a] of Object.entries(src.attributes)) { const out = new a.array.constructor(ids.length * a.itemSize); for (let i = 0; i < ids.length; i++) for (let j = 0; j < a.itemSize; j++) out[i * a.itemSize + j] = a.array[ids[i] * a.itemSize + j]; g.setAttribute(k, new T.BufferAttribute(out, a.itemSize, a.normalized)); } g.computeBoundingSphere(); return g; };
+        // v107 교체 총기의 가늠자 분리도 인터리브 속성 간격을 보존한다.
+        const sub = ids => { const g = new T.BufferGeometry(); for (const [k, a] of Object.entries(src.attributes)) { const stride = a.isInterleavedBufferAttribute ? a.data.stride : a.itemSize, offset = a.isInterleavedBufferAttribute ? a.offset : 0, out = new a.array.constructor(ids.length * a.itemSize); for (let i = 0; i < ids.length; i++) for (let j = 0; j < a.itemSize; j++) out[i * a.itemSize + j] = a.array[ids[i] * stride + offset + j]; g.setAttribute(k, new T.BufferAttribute(out, a.itemSize, a.normalized)); } g.computeBoundingSphere(); return g; };
         const part = o.clone(false); part.name = o.name + '_sight'; part.geometry = sub(up); o.geometry = sub(rest);
         o.parent.add(part); foldParts.push(part);
       }

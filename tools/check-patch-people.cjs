@@ -65,6 +65,9 @@ const mime={'.html':'text/html','.js':'application/javascript','.jpg':'image/jpe
   const fallback=await page.evaluate(()=>{ReloadStudio.pause();ReloadStudio.select('ar7');ReloadStudio.seek(.5);return {ready:G.PatchCharacters.armsReady,imported:!!G.VM.models.ar7.armL.skinSource};});
   assert.equal(fallback.ready,false);assert.equal(fallback.imported,false);await page.unroute('**/assets/patch/people/**');console.log('Missing-file fallback: PASS');
   await page.addInitScript(()=>localStorage.setItem('lastzone_opts',JSON.stringify({quality:'potato',qv:2,tod:'day',players:4,loadout:'all',fpsTarget:60})));
+  // v107 나머지 도구 페이지도 실제로 열어 모듈 의존성과 렌더 경로를 확인한다.
+  await page.goto(base+'/tools/viewer.html?m=rifle');await page.waitForFunction(()=>window.info?.meshes.length>0,null,{timeout:60000});
+  await page.goto(base+'/tools/guns/build.html');await page.waitForFunction(()=>window.__ready,null,{timeout:60000});await page.evaluate(()=>LZ.show('g18'));console.log('PASS 모델 뷰어·총기 제작 도구');
   const patchRequests=[];page.on('request',r=>{if(r.url().includes('/assets/patch/people/'))patchRequests.push(r.url())});
   await page.goto(base+'/index.html');await page.waitForFunction(()=>window.G?.UI&&document.querySelector('#menu:not(.hidden)'),null,{timeout:180000});
   assert(await page.evaluate(()=>!G.Soldiers.patch&&!G.PatchCharacters),'Preview overrode the game rigs');
