@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v107 실제 훈련장·동일 출발점에서 정지/A/D 고속·외부·밤 운전석을 촬영한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./vehicle-physics-fixture.cjs');
 const out=path.resolve(process.env.SHOTS||'/tmp/last-zone-cabins'),mobile=process.env.CABIN_MOBILE==='1',viewport=mobile?{width:844,height:390}:{width:1280,height:720};
@@ -9,6 +12,7 @@ const root=path.resolve(__dirname,'..');if(out===root||out.startsWith(root+path.
    window.cabinShot={models:G.Vehicles.models,course:G.World.course};G.VM.set(null);G.setRenderResolution(scale);G.World.setTimeOfDay('day');
   },process.env.CABIN_SCALE||'100');
   const take=async(kind,state)=>{
+   if(process.env.CABIN_SHOT_STATES&&!process.env.CABIN_SHOT_STATES.split(',').includes(state))return;
    const row=await p.evaluate(()=>{
     const v=cabinShot.v,P=G.Player,R=G.renderer;G.World.update(0,G.camera.position,G.camera);G.UI.update(1/60);G.renderNow();G.Perf.gpuWait();
     const c=v.cabin;return{speed:Math.hypot(v.speed,v.lat||0)*3.6,steer:v.steer,wheelAngle:c.wheel.rotation.z,rpm:c.rpm??null,eye:G.camera.position.toArray(),view:P.vehicleView,lookPitch:P.vehicleLookPitch,resolution:G.renderResolutionInfo(),image:R.domElement.toDataURL('image/png').split(',')[1]};
@@ -20,7 +24,15 @@ const root=path.resolve(__dirname,'..');if(out===root||out.startsWith(root+path.
    for(const [state,key]of[['stopped',null],['left','a'],['right-fast','d']]){
     await p.evaluate(moving=>{const v=cabinShot.v;G.Input.reset();v.pos.copy(cabinShot.start);Object.assign(v,{yaw:0,steer:0,steerAngle:0,yawRate:0,speed:moving?18:0,lat:0,pitch:0,roll:0,driftBlend:0,verticalSpeed:0,displayRpm:800});G.Vehicles.place(v,1);G.VehicleWheels.sync(v);for(let i=0;i<20;i++){if(!moving)G.Player.update(1/60);G.Game.syncModels(1/60);}G.VehicleCabin.camera(G.Player,1);},!!key);
     if(key){await p.keyboard.down('w');await p.keyboard.down(key);await p.keyboard.down('Shift');await p.evaluate(()=>{for(let i=0;i<30;i++){G.Player.update(1/60);G.Game.syncModels(1/60);G.Input.endFrame();}});await p.keyboard.up(key);await p.keyboard.up('w');await p.keyboard.up('Shift');}
+    // v108 같은 차체 위치·최대 조향으로 전후 화면을 비교한다.
+    await p.evaluate(key=>{const v=cabinShot.v;v.pos.copy(cabinShot.start);v.yaw=0;v.steer=key==='a'?1:key==='d'?-1:0;G.Vehicles.place(v,1);G.VehicleWheels.sync(v);for(let i=0;i<20;i++)G.Game.syncModels(1/60);G.VehicleCabin.camera(G.Player,1);},key);
     await take(kind,state);
+    // v108 세부 촬영은 정면 시야와 독립적으로 문·센터 콘솔을 둘러본다.
+    if(state==='stopped'&&process.env.CABIN_DETAIL_SHOTS==='1'){
+     for(const [name,yaw,pitch]of[['detail',-.60,-.56],['door',.85,-.62]]){await p.evaluate(({yaw,pitch})=>{G.Player.vehicleLookYaw=yaw;G.Player.vehicleLookPitch=pitch;G.VehicleCabin.camera(G.Player,1);},{yaw,pitch});await take(kind,name);}
+     await p.evaluate(()=>{G.Player.vehicleLookYaw=0;G.Player.vehicleLookPitch=-.22;G.VehicleCabin.camera(G.Player,1);});
+    }
+
    }
    await p.evaluate(()=>{const v=cabinShot.v,s=G.VehicleCabin.profile(v),T=THREE;G.Player.vehicleView='third';G.Game.syncModels(1/60);v.mesh.updateMatrixWorld(true);G.camera.position.set(-2.2,s.eye[1]+.3,s.wheel[2]-1.8).applyMatrix4(v.mesh.matrixWorld);G.camera.lookAt(new T.Vector3(s.hip[0],s.dash+.1,s.wheel[2]).applyMatrix4(v.mesh.matrixWorld));G.camera.fov=55;G.camera.updateProjectionMatrix();});await take(kind,'outside');
    await p.evaluate(()=>{const v=cabinShot.v;G.World.setTimeOfDay('night');v.hp=v.maxHp?v.maxHp*.2:320;v.handbrake=true;G.Player.vehicleView='first';G.Player.vehicleLookYaw=0;G.VehicleCabin.camera(G.Player,1);G.Game.syncModels(1/60);});await take(kind,'night');

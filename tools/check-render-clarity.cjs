@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v81: 실제 브라우저에서 네이티브 출력, 고정 해상도, MSAA, 후처리·텍스처 계약을 확인한다.
 const assert=require('assert'),fs=require('fs'),fixture=require('./optimize/browser-fixture.cjs');
 const out=process.env.REPORT||'/tmp/lz-v81-render-check.json';
@@ -42,11 +45,12 @@ const out=process.env.REPORT||'/tmp/lz-v81-render-check.json';
     let time=performance.now()+100000;G.DRS.checkT=0;
     for(let i=0;i<30;i++)G.DRS.frame(time+=501,40);
     const down=G.quality;
-    for(let i=0;i<55;i++)G.DRS.frame(time+=501,1000/60);
+    // v108 15초 무렵 한 단계 복귀, 27초 무렵 다음 단계 복귀를 각각 확인한다.
+    let firstUp;for(let i=0;i<55;i++){G.DRS.frame(time+=501,1000/60);if(i===29)firstUp=G.quality;}
     const up=G.quality;G.paused=true;G.Game.state='menu';G.qualityMode='manual';
-    return{down,up,scale:G.DRS.scale};
+    return{down,firstUp,up,scale:G.DRS.scale};
    });
-   assert.equal(governed.down,'potato');assert.equal(governed.up,'low');assert.equal(governed.scale,.75);
+   assert.equal(governed.down,'potato');assert.equal(governed.firstUp,'low');assert.equal(governed.up,'medium');assert.equal(governed.scale,.75);
    // 메뉴·모달 양쪽 설정과 저장값이 같은 해상도를 사용한다.
    await p.click('[data-tab="gfx"]');await p.click('[data-opt="renderResolution"] [data-v="75"]');
    await p.click('#settingsBtn');await p.selectOption('#setRenderResolution','67');

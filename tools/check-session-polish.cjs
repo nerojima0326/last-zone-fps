@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v83: 실제 게임에서 기록·프레임 측정·전환·봇 재조준·입자 재사용을 검사한다.
 const assert=require('assert'),fs=require('fs'),path=require('path'),fixture=require('./optimize/browser-fixture.cjs');
 const out=process.env.REPORT||'/tmp/lz-v83-session-checks.json';
@@ -6,7 +9,7 @@ const out=process.env.REPORT||'/tmp/lz-v83-session-checks.json';
  try{
   await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});
   await p.click('#trainingHistoryBtn');assert(await p.locator('#trainingRecordPanel').isVisible());assert(await p.locator('#recordStart').isDisabled());await p.click('#recordClose');
-  await p.click('#trainBtn');await p.waitForFunction(()=>G.Training.active);
+  await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>(!G.preparing&&G.Training.active));
   await p.evaluate(async()=>{G.paused=true;G.Input.unlock();G.UI.showPause(false);const a=G.Game.player;a.give('ar7');a.cur='rifle';G.VM.set('ar7');await Promise.all(Object.values(a.weapons).filter(Boolean).map(w=>G.AssetVM.request(w.id)))});
   report.renderPrep=await p.evaluate(async()=>{
    const P=G.RenderPrep,root=new THREE.Group(),tex=new THREE.DataTexture(new Uint8Array(16).fill(255),2,2);tex.needsUpdate=true;
@@ -78,7 +81,11 @@ const out=process.env.REPORT||'/tmp/lz-v83-session-checks.json';
    const R=G.TrainingRecords,T=G.Training,P=G.Player,a=G.Game.player,dir=new THREE.Vector3(0,0,-1),r=R.run;R.history=[];
    const check=(ok,msg)=>{if(!ok)throw Error(msg)};
    check(r?.distance===25&&!R.open&&!G.paused,'측정 시작/닫기');
-   P.updateCamera(1/60);const def=G.WEAPONS.ar7,inst=a.weapons[a.cur],mag=inst.mag;P.fire(def,inst,P.time);check(inst.mag===mag-1&&r.shots===1,'실제 발사 집계');G.Ballistics.reset();
+   // v108 실제 1인칭의 꺼내기 동작을 마친 뒤 발사를 검사한다.
+   for(let n=0;n<90;n++)P.updateCamera(1/60);
+   check(new THREE.Vector3().setFromMatrixPosition(G.camera.matrixWorld).distanceTo(G.camera.position)<1e-6,'이동한 시점의 행렬 갱신');
+   const def=G.WEAPONS.ar7,inst=a.weapons[a.cur],mag=inst.mag;P.fire(def,inst,P.time);
+   check(inst.mag===mag-1&&r.shots===1,'실제 발사 집계 '+JSON.stringify({before:mag,after:inst.mag,shots:r.shots,blocked:G.WeaponObstruction.blocked,local:G.WeaponObstruction.local.toArray(),mode:P.camMode}));G.Ballistics.reset();
    r.elapsed=1;const shot=T.onShot();for(let i=0;i<3;i++)T.onHit({target:r.target,head:i===2},10,r.target.root.position,dir,shot);T.flush();
    const other=T.targets.find(t=>t!==r.target);T.onHit({target:other,head:false},1,other.root.position,dir,shot);T.flush();check(r.hits===1&&r.heads===1,'동일 발사/다른 표적');
    r.elapsed=1.4;T.onHit({target:r.target,head:false},100,r.target.root.position,dir,T.onShot());T.flush();check(r.downs===1&&Math.abs(r.ttks[0]-.4)<1e-8,'첫 명중부터 처치 시간');
@@ -105,7 +112,7 @@ const out=process.env.REPORT||'/tmp/lz-v83-session-checks.json';
   });
   const pending=p.waitForEvent('download');await p.evaluate(()=>document.getElementById('setPerfSave').click());const download=await pending;
   const saved=JSON.parse(fs.readFileSync(await download.path(),'utf8'));assert.equal(download.suggestedFilename(),'last-zone-performance.json');assert.equal(saved.frames,60);assert.equal(saved.frameMs.length,60);report.download={frames:saved.frames,filename:download.suggestedFilename()};
-  for(let i=0;i<2;i++){await p.evaluate(()=>G.toMenu());await p.click('#trainBtn');await p.waitForFunction(()=>G.Game.training&&G.Training.active);await p.evaluate(()=>{G.paused=true;G.Input.unlock();G.UI.showPause(false)});assert(await p.locator('#trainingRecordPanel').isHidden())}
+  for(let i=0;i<2;i++){await p.evaluate(()=>G.toMenu());await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>G.Game.training&&(!G.preparing&&G.Training.active));await p.evaluate(()=>{G.paused=true;G.Input.unlock();G.UI.showPause(false)});assert(await p.locator('#trainingRecordPanel').isHidden())}
   report.reentry=2;
   await p.reload();await p.waitForFunction(()=>window.G?.TrainingRecords?.panel&&document.querySelector('#menu:not(.hidden)'),null,{timeout:240000});
   assert.equal(await p.evaluate(()=>G.TrainingRecords.history.length),2);

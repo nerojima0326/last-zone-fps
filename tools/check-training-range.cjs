@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // CHROME_BIN, THREE_DIR, SHOTS and RANGE_FALLBACK=1 are optional.
 // Runs the real game: training entry, pickups, shooting, cover collision and repeat entry.
 const fs = require('fs'), http = require('http'), path = require('path'), assert = require('assert');
@@ -19,7 +22,7 @@ async function checkBindings(page) {
   assert(await page.locator('#settingsPanel').isHidden());
 }
 
-function checkTrainingLifecycle() {
+async function checkTrainingLifecycle() {
   const { Game, Training, Vehicles, World, Player } = G;
   const check = (ok, message) => { if (!ok) throw Error(message); };
   const v = Vehicles.list[0];
@@ -43,7 +46,7 @@ function checkTrainingLifecycle() {
   check(Training.items.length === slots && Training.items.filter(it => it.kind === kind).length === 1, 'Pickup retained stale table entries');
   check(pickup(), 'Pickup before range exit');
   const opts = { ...G.UI.opts, mode: 'training' };
-  G.toMenu(); G.startGame(opts); G.paused = true;
+  G.toMenu(); await G.startGame(opts); G.paused = true;
   Game.time += 0.5; Training.update(0);
   check(Training.items.filter(it => it.kind === kind).length === 1, 'Old range respawn leaked into a new session');
   const shot = Training.onShot(), target = Training.targets[0];
@@ -166,8 +169,8 @@ function checkMatchLifecycle() {
     await page.waitForFunction(() => window.G && G.UI && document.querySelector('#menu:not(.hidden)'), null, { timeout: 180000 });
     console.log('Full game menu ready');
     await checkBindings(page);
-    await page.click('#trainBtn');
-    await page.waitForFunction(() => G.Game.training && G.Training.active, null, { timeout: 30000 });
+    await page.click('#trainBtn');await page.evaluate(()=>G.startReady);
+    await page.waitForFunction(() => G.Game.training && (!G.preparing&&G.Training.active), null, { timeout: 30000 });
     await page.evaluate(() => { G.Input.unlock(); });
     await page.waitForTimeout(150);
     await page.evaluate(() => { G.paused = true; G.UI.showPause(false); G.scene.updateMatrixWorld(true); });
@@ -253,7 +256,7 @@ function checkMatchLifecycle() {
       await page.evaluate(() => { window.requestAnimationFrame = window.__rangeTestRAF; });
     }
     await page.evaluate(() => { G.toMenu(); G.vmScene.visible = true; });
-    await page.click('#trainBtn');
+    await page.click('#trainBtn');await page.evaluate(()=>G.startReady);
     // 총기 장전 팩(v51)을 뒤에서 받는 동안에도 훈련장 재입장이 끝날 때까지 기다린다
     await page.waitForFunction(() => G.Game.training && G.Training.targets.length > 0, null, { timeout: 30000, polling: 200 }).catch(async e=>{
       const state=await page.evaluate(()=>({state:G.Game.state,training:G.Game.training,active:G.Training.active,targets:G.Training.targets.length,paused:G.paused,menu:document.getElementById('menu').className,loading:document.getElementById('loadText').textContent}));
@@ -265,7 +268,7 @@ function checkMatchLifecycle() {
     assert.equal(repeated.targets, loaded.targets); assert.equal(repeated.groups, 1);
     await page.evaluate(() => G.toMenu());
     await page.click('button.mode[data-size="2"]');
-    await page.click('#startBtn');
+    await page.click('#startBtn');await page.evaluate(()=>G.startReady);
     await page.evaluate(checkMatchLifecycle);
     assert.equal(errors.length, 0, errors.join('\n'));
     console.log('PASS:', JSON.stringify({ ...loaded, checks, repeated, errors, assets: assetResponses }));

@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // Reproducible close views of the actual runtime shaders, rigs and effects.
 const fs=require('fs'),path=require('path'),fixture=require('./optimize/browser-fixture.cjs');
 const out=process.argv[2]||'/tmp/lz-v80-captures';fs.mkdirSync(out,{recursive:true});
@@ -6,7 +9,7 @@ const out=process.argv[2]||'/tmp/lz-v80-captures';fs.mkdirSync(out,{recursive:tr
  try{
   const page=f.page;
   await page.evaluate(()=>{window.requestAnimationFrame=()=>0;G.onLockChange=()=>{};G.Input.unlock()});await page.waitForTimeout(80);
-  await page.click('#trainBtn');await page.waitForFunction(()=>G.Training.active);
+  await page.click('#trainBtn');await page.evaluate(()=>G.startReady);await page.waitForFunction(()=>(!G.preparing&&G.Training.active));
   const capture=async name=>{
    const data=await page.evaluate(()=>{G.renderer.shadowMap.needsUpdate=true;G.renderNow();return G.renderer.domElement.toDataURL('image/png').split(',')[1]});
    fs.writeFileSync(path.join(out,name+'.png'),Buffer.from(data,'base64'));

@@ -8,8 +8,15 @@ const _f = new V3(), _r = new V3(), _c = new V3(), _e = new V3(), _d = new V3();
 const _support = new V3();
 const _wheelRay=new THREE.Ray(),_wheelBox=new THREE.Box3(),_vehicleInv=new THREE.Matrix4(),_contact=new V3(),_axis=new V3();
 const _contactPose=new THREE.Quaternion();
-const HALF_L = 1.9, HALF_W = 0.95, MAX = 21, BOOST = 28, REV = 6;
-const HP = 1600;                // 모든 차량 내구도를 5배로 상향한다. 탑승자 피해·폭발 지연은 유지한다.
+const HALF_L = 1.9, HALF_W = 0.95, REV = 6;
+const HP = 1600;
+// v108 속도(m/s)·가속·조향·질량(t)·내구도·계기 눈금을 차종별로 공유한다.
+const TUNING = {
+  porter: { max:18.5, boost:23, accel:5.2, steer:.48, response:5.4, yawResponse:9, mass:2.6, hp:2400, dial:100 },
+  e2200: { max:22, boost:29, accel:7.1, steer:.52, response:6.3, yawResponse:11, mass:1.9, hp:1900, dial:120 },
+  izh: { max:26, boost:34, accel:9, steer:.61, response:8, yawResponse:15, mass:1.3, hp:1400, dial:140 },
+  fallback: { max:21, boost:28, accel:9.5, steer:.55, response:7, yawResponse:12, mass:1.7, hp:1600, dial:120 }
+};
 const RESPAWN = 25;             // 폭발한 차는 잔해로 이 시간(초)만큼 남았다가, 처음 놓였던 자리에 새 차로 다시 나온다
 // v53 실사 차량 (Sketchfab CC-BY-4.0, tools/vehicles/build-real.cjs): 현대 포터 II 탑차 · 마쓰다 E2200 트럭 · IZH-2715 픽업
 const NAMES = { porter: '포터 II 탑차', e2200: 'E2200 트럭', izh: 'IZH-2715 픽업' };
@@ -44,6 +51,8 @@ function build() {
 
 const Vh = G.Vehicles = {
   list: [], geo: null, mat: null, models: {}, kinds: KINDS,
+  tuning: TUNING,
+  spec(v) { return TUNING[v.cabinKind || v.kind] || TUNING.fallback; },
   nameOf(kind) { return NAMES[kind] || '차량'; },
   // Kenney Car Kit 모델 (없으면 예전 지프 상자 모델)
   async load() {
@@ -168,10 +177,11 @@ const Vh = G.Vehicles = {
   },
   newVehicle(x, y, z, yaw, extra) {
     if (!this.geo) { this.geo = build(); this.mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.7, metalness: 0.2 }); }
-    const v = Object.assign({ kind: U.pick(KINDS), pos: new V3(x, y, z), yaw, speed: 0, lat: 0, steer: 0, pitch: 0, roll: 0, driver: null, box: null, hitT: new Map(), noiseT: 0, hp: HP, maxHp: HP, displayRpm: 0, dead: false, burnT: 0, smokeT: 0, lastHit: null, skid: [null, null] }, extra || {});
+    const v = Object.assign({ kind: U.pick(KINDS), pos: new V3(x, y, z), yaw, speed: 0, lat: 0, steer: 0, pitch: 0, roll: 0, driver: null, box: null, hitT: new Map(), noiseT: 0, hp: HP, maxHp: HP, fuel: 1, engineHeat: .35, displayRpm: 0, dead: false, burnT: 0, smokeT: 0, lastHit: null, skid: [null, null] }, extra || {});
     if (!v.home) v.home = { x, z, yaw };
     v.home.kind = v.kind;
     v.mesh = this.makeMesh(v);
+    v.maxHp=this.spec(v).hp;if(extra?.hp===undefined)v.hp=v.maxHp;
     G.VehicleCabin.glazing(v);
     G.VehicleWheels.setup(v);
     G.scene.add(v.mesh);
@@ -359,14 +369,14 @@ const Vh = G.Vehicles = {
     if (!v.driver) return;
     P.sprinting = false; P.ads = 0; P.scopeView = 0;
     // 소리: 엔진 + 주변 봇이 듣는다
-    G.Audio.setLoop('engine', 0.32 + Math.abs(v.speed) / MAX * 0.25);
-    G.Audio.setLoopRate('engine', 0.7 + Math.abs(v.speed) / MAX * 1.1);
+    G.Audio.setLoop('engine', 0.32 + Math.abs(v.speed) / this.spec(v).max * 0.25);
+    G.Audio.setLoopRate('engine', 0.7 + Math.abs(v.speed) / this.spec(v).max * 1.1);
     v.noiseT -= dt;
     if (v.noiseT <= 0) { v.noiseT = 1; G.Game.onNoise(v.pos, 45 + Math.abs(v.speed) * 2.5, a); }
     // 흙먼지
     if (Math.abs(v.speed) > 7 && Math.random() < dt * 14) G.FX.dust(_c.copy(v.pos).addScaledVector(_f, -1.7 * Math.sign(v.speed)), 1, 0, 0.3, 0, 0.5, 0.45, 0.36, 1.4);
     // 내리기
-    const hpP = Math.round(v.hp / HP * 100);
+    const hpP = Math.round(v.hp / (v.maxHp||HP) * 100);
     P.prompt = '<kbd>' + G.Settings.label('KeyF') + '</kbd> 내리기 · <kbd>' + G.Settings.label('Space') + '</kbd> 드리프트 · <kbd>'+G.Settings.label('ShiftLeft')+'</kbd> 가속 · <b>' + Math.round(Math.hypot(v.speed, v.lat) * 3.6) + '</b> km/h · 차량 ' + (v.burnT > 0 ? '<b style="color:#ff5a3c">불붙음!</b>' : '<b' + (hpP < 30 ? ' style="color:#ff8a3c"' : '') + '>' + hpP + '%</b>') + (v.wheelDamage?' · <b style="color:#ffb45e">타이어 파손 '+v.wheelDamage+'/4</b>':'') + (v.drift ? ' · <b style="color:#ffd23f">드리프트</b>' : v.boosting?' · <b style="color:#ffd23f">가속 중</b>':''); P.lootTarget = null; P.reviveTarget = null;
     P.prompt+=' · <kbd>'+G.Settings.label('KeyV')+'</kbd> '+(P.vehicleView==='first'?'외부 시점':'내부 시점');
     if (I.hit('KeyF')) { this.exit(P); return; }
@@ -403,35 +413,38 @@ const Vh = G.Vehicles = {
     for(let i=0;i<parts;i++){this.stepPhysics(v,a,h,thr,st,brake,hand,boost);if(v.driver!==a)break}
   },
   stepPhysics(v, a, dt, thr, st, brake, hand, boost) {
-    const W = G.World;
+    const W = G.World, spec=this.spec(v);
     const grounded=v.grounded!==false;
     const traction=grounded?U.clamp((v.groundContacts??(v.wheels?.length||4))/(v.wheels?.length||4),0,1):0;
     const wet = W.waterAt(v.pos.x, v.pos.z) - Math.max(W.heightAt(v.pos.x, v.pos.z),v.pos.y);
+    if(v.fuel<=0)thr=0; // v108 연료계는 실제 잔량을 표시한다.
+    if(v.driver&&!v.dead)v.fuel=Math.max(0,(v.fuel??1)-dt*(.000012+Math.max(0,thr)*.000035)*(boost?1.5:1));
+    v.engineHeat=U.damp(v.engineHeat??.35,v.dead?0:.35+Math.abs(thr)*.23+(boost?.12:0)+(1-v.hp/(v.maxHp||HP))*.20,.15,dt);
     if (v.dead) { thr = 0; st = 0; brake = true; hand = false; }
     v.handbrake=!!hand;
     v.boosting=!!boost&&grounded&&traction>0&&thr>0&&v.speed>=0&&!brake&&!hand&&!v.dead&&wet<=.3;
     // v107 변속기 시뮬레이션 대신 속도대·가속 입력으로 표시용 회전수를 부드럽게 추정한다.
     v.throttle=thr;const kph=Math.hypot(v.speed,v.lat||0)*3.6,gear=Math.min(4,Math.floor(kph/24)),rpm=v.dead?0:800+(kph-gear*24)*70+gear*180+Math.max(0,thr)*(v.boosting?2200:1250);
     v.displayRpm=U.damp(v.displayRpm||0,U.clamp(rpm,0,6500),thr>0?6:3,dt);
-    const punctures=v.wheelDamage||0,top = (wet > 0.5 ? 4 : v.boosting?BOOST:MAX)*Math.max(.38,1-punctures*.15),power=v.boosting?1.35:1;
+    const punctures=v.wheelDamage||0,top = (wet > 0.5 ? 4 : v.boosting?spec.boost:spec.max)*Math.max(.38,1-punctures*.15),power=v.boosting?1.35:1;
     // 많이 부서지면 힘이 빠진다
-    const weak = (v.hp < HP * 0.3 ? 0.65 : 1)*Math.pow(.88,punctures);
+    const weak = (v.hp < (v.maxHp||HP) * 0.3 ? 0.65 : 1)*Math.pow(.88,punctures);
     if(!grounded){v.speed*=Math.exp(-.025*dt);v.lat*=Math.exp(-.025*dt)}
     else if (hand) {
       // 꺾으면서 당기면 뒷바퀴만 미끄러진다: 거의 감속하지 않고, 가속 페달을 밟고 있으면 속도를 유지
       if (Math.abs(st) > 0.2 && Math.abs(v.speed) > 6) {
         v.speed = approach(v.speed, 0, 1.8 * traction * dt);
-        if (thr > 0 && v.speed > 0 && v.speed < top) v.speed = Math.min(top, v.speed + 6 * weak * traction * (1 - v.speed / (top + 4)) * dt);
+        if (thr > 0 && v.speed > 0 && v.speed < top) v.speed = Math.min(top, v.speed + spec.accel*.63 * weak * traction * (1 - v.speed / (top + 4)) * dt);
       } else v.speed = approach(v.speed, 0, 16 * traction * dt);
     }
     else if (brake) v.speed = approach(v.speed, 0, 26 * traction * dt);
-    else if (thr > 0) {if(v.speed<0)v.speed=approach(v.speed,0,22*traction*dt);else if(v.speed<top)v.speed=Math.min(top,v.speed+9.5*weak*power*traction*(1-v.speed/(top+4))*dt);}
+    else if (thr > 0) {if(v.speed<0)v.speed=approach(v.speed,0,22*traction*dt);else if(v.speed<top)v.speed=Math.min(top,v.speed+spec.accel*weak*power*traction*(1-v.speed/(top+4))*dt);}
     else if (thr < 0) v.speed = v.speed > 0.5 ? approach(v.speed, 0, 20 * traction * dt) : Math.max(-REV*Math.max(.45,1-punctures*.14), v.speed - 6*Math.pow(.88,punctures)*traction * dt);
     else v.speed = approach(v.speed, 0, (2.2 + Math.abs(v.speed) * 0.12)*traction * dt);
     // Shift를 놓아도 속도를 잘라 내지 않는다. 정상 속도까지 부드럽게 돌아온다.
     if (grounded&&v.speed > top) v.speed = approach(v.speed, top, (wet>.5||punctures?14:4) * dt);
-    v.steer = U.damp(v.steer, st, 7, dt);
-    const lock = 0.55 / (1 + Math.abs(v.speed) * 0.06);v.steerAngle=v.steer*lock;
+    v.steer = U.damp(v.steer, st, spec.response, dt);
+    const lock = spec.steer / (1 + Math.abs(v.speed) * 0.06);v.steerAngle=v.steer*lock;
     // 지금 속도 (세계 좌표)
     _f.set(-Math.sin(v.yaw), 0, -Math.cos(v.yaw)); _r.set(Math.cos(v.yaw), 0, -Math.sin(v.yaw));
     _vel.copy(_f).multiplyScalar(v.speed).addScaledVector(_r, v.lat || 0);
@@ -441,7 +454,7 @@ const Vh = G.Vehicles = {
     if (slide) yawRate *= 1.25;
     else if(grounded){const limit=(wet>.3?5:10)/Math.max(3,Math.abs(v.speed));yawRate=U.clamp(yawRate,-limit,limit);}
     // 접지가 끊기면 핸들은 차체를 돌리지 못한다. 도약 직전의 각운동량은 공중에서도 이어진다.
-    v.yawRate=grounded?U.damp(v.yawRate||0,yawRate*traction,12,dt):(v.yawRate||0)*Math.exp(-.35*dt);
+    v.yawRate=grounded?U.damp(v.yawRate||0,yawRate*traction,spec.yawResponse,dt):(v.yawRate||0)*Math.exp(-.35*dt);
     v.yaw += v.yawRate * dt;
     // 새 방향으로 속도 나누기
     _f.set(-Math.sin(v.yaw), 0, -Math.cos(v.yaw)); _r.set(Math.cos(v.yaw), 0, -Math.sin(v.yaw));
@@ -465,7 +478,7 @@ const Vh = G.Vehicles = {
     if (collision.hit) {
       // 세게 들이받은 순간에만 한 번 다친다
       const hitV = collision.impact;
-      if (!v.bump && hitV > 9) { if (a.isPlayer) G.FX.shake(0.3); G.Audio.impact(v.pos, 'metal'); G.Game.damage(a, Math.min(30, (hitV - 9) * 2.2), null, 'fall', false, a.pos, null); this.damage(v, (hitV - 9) * 6, null, 'crash'); }
+      if (!v.bump && hitV > 9) { if (a.isPlayer) G.FX.shake(0.3); G.Audio.impact(v.pos, 'metal'); G.Game.damage(a, Math.min(30, (hitV - 9) * 2.2/Math.sqrt(spec.mass/1.7)), null, 'fall', false, a.pos, null); this.damage(v, (hitV - 9) * 6, null, 'crash'); }
     }
     v.speed=_vel.dot(_f);v.lat=_vel.dot(_r);v.bump = collision.hit;
     const lim = W.HALF - 6;
@@ -484,7 +497,7 @@ const Vh = G.Vehicles = {
         if ((v.hitT.get(t) || -9) > now - 0.7) continue;
         v.hitT.set(t, now);
         t.chest(_c);
-        G.Game.damage(t, Math.abs(v.speed) * 7, a, 'vehicle', false, _c, _f);
+        G.Game.damage(t, Math.abs(v.speed) * 7 * spec.mass/1.7, a, 'vehicle', false, _c, _f);
         G.FX.blood(_c, _f.x * s, 0.3, _f.z * s, 8); G.Audio.impact(_c, 'flesh');
         t.vel.x += _f.x * v.speed * 0.6; t.vel.z += _f.z * v.speed * 0.6; t.vel.y = 3.5;
         v.speed *= 0.82;
@@ -536,6 +549,7 @@ const Vh = G.Vehicles = {
   damage(v, amt, by, kind) {
     if (!v || v.dead || amt <= 0) return;
     if (by) v.lastHit = by;
+    if(kind==='crash')amt*=Math.sqrt(this.spec(v).mass/1.7); // v108 무거운 차는 충돌 에너지가 크고 내구도도 높다.
     v.hp -= amt;
     if (v.hp <= 0 && !v.burnT) {
       v.hp = 0;
@@ -602,7 +616,7 @@ const Vh = G.Vehicles = {
   burnFx(v, dt) {
     if (v.pos.distanceTo(G.camera.position) > 220) return;
     const e = this.engine(v, _c);
-    const hpK = v.hp / HP;
+    const hpK = v.hp / (v.maxHp||HP);
     if (v.dead) {
       if (v.wreckT < 14) {         // 남은 불
         if (Math.random() < dt * 26) this.flame(this.center(v, _e).add(_o.set((Math.random() - 0.5) * v.dim.hw, 0.2, (Math.random() - 0.5) * v.dim.hl)), 0.8);
@@ -627,7 +641,7 @@ const Vh = G.Vehicles = {
   freeNear(a, r) {
     let best = null, bd = r;
     for (const v of this.list) {
-      if (v.driver || v.dead || v.hp < HP * 0.3 || v.wheelDamage>2 || (v.claim && v.claim !== a && v.claim.alive)) continue;
+      if (v.driver || v.dead || v.hp < (v.maxHp||HP) * 0.3 || v.wheelDamage>2 || (v.claim && v.claim !== a && v.claim.alive)) continue;
       if (G.World.waterAt(v.pos.x, v.pos.z) - Math.max(G.World.heightAt(v.pos.x, v.pos.z),v.pos.y) > 0.3) continue;
       const d = Math.hypot(v.pos.x - a.pos.x, v.pos.z - a.pos.z);
       if (d < bd && Math.abs(v.pos.y - a.pos.y) < 3) { bd = d; best = v; }
@@ -698,8 +712,8 @@ const Vh = G.Vehicles = {
       bot.vT = 0; bot.vLast.copy(v.pos);
     }
     // 봇은 너무 빨리 몰지 않고, 앞이 막히거나 크게 꺾을 때는 속도를 줄인다 (들이받아 다치지 않게)
-    const slow = (Math.abs(diff) > 0.8 && v.speed > 9) || (blocked && v.speed > 7);
-    if (thr > 0 && v.speed > 15) thr = 0;
+    const cruise=this.spec(v).max*.7,slow = (Math.abs(diff) > 0.8 && v.speed > cruise*.6) || (blocked && v.speed > cruise*.47);
+    if (thr > 0 && v.speed > cruise) thr = 0;
     this.step(v, a, dt, slow ? 0 : thr, st, slow);
     return false;
   },
@@ -722,11 +736,11 @@ const Vh = G.Vehicles = {
     if (G.Audio.ctx) {
       let near = null, nd = 120;
       for (const v of this.list) if (v.driver && !v.driver.isPlayer) { const d = v.pos.distanceTo(G.camera.position); if (d < nd) { nd = d; near = v; } }
-      if (near) { G.Audio.setLoop('engineBot', 0.5 + Math.abs(near.speed) / MAX * 0.3, near.pos, 14); G.Audio.setLoopRate('engineBot', 0.7 + Math.abs(near.speed) / MAX * 1.1); }
+      if (near) { G.Audio.setLoop('engineBot', 0.5 + Math.abs(near.speed) / this.spec(near).max * 0.3, near.pos, 14); G.Audio.setLoopRate('engineBot', 0.7 + Math.abs(near.speed) / this.spec(near).max * 1.1); }
       else G.Audio.setLoop('engineBot', 0);
     }
     for (const v of this.list) {
-      if (v.hp < HP * 0.55 || v.dead) this.burnFx(v, dt);
+      if (v.hp < (v.maxHp||HP) * 0.55 || v.dead) this.burnFx(v, dt);
       if (v.burnT > 0) {
         v.burnT -= dt;
         if (v.burnT <= 0) this.explode(v);

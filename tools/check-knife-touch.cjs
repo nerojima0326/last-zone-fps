@@ -1,10 +1,13 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 모바일 터치로 칼 장착·검사·검사 중 공격·종류 변경을 실제 입력 경로에서 확인한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./optimize/browser-fixture.cjs');
 (async()=>{
  const f=await fixture({viewport:{width:960,height:540},query:'touch=1',contextOptions:{isMobile:true,hasTouch:true}});
  try{
   const p=f.page;
-  await p.evaluate(()=>{window.requestAnimationFrame=()=>0;G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};G.startGame({...G.UI.opts,mode:'training',quality:'low',players:4,loadout:'all'});G.paused=false;G.UI.showPause(false);G.Input.locked=true});
+  await p.evaluate(async ()=>{window.requestAnimationFrame=()=>0;G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};await G.startGame({...G.UI.opts,mode:'training',quality:'low',players:4,loadout:'all'});G.paused=false;G.UI.showPause(false);G.Input.locked=true});
   const touch=(id,frames)=>p.evaluate(({id,frames})=>{
    const el=document.querySelector('#touchUI [data-id="'+id+'"]');if(!el)throw Error('터치 버튼 없음 '+id);
    const r=el.getBoundingClientRect(),t=new Touch({identifier:11,target:el,clientX:r.x+r.width/2,clientY:r.y+r.height/2});

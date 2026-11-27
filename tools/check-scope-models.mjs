@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+import './artifact-paths.cjs';
 // 1mm 복셀로 본체-받침 연결을 검사하고, 렌즈 접안부가 총몸에 가려지는지 확인한다.
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import{pathToFileURL,fileURLToPath}from'node:url';import{createRequire}from'node:module';import{loadAttachmentFixtures}from'./model-test-helpers.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),T=await import(pathToFileURL(path.join(process.env.THREE_DIR,'build/three.module.js')).href),check=createRequire(import.meta.url)('./scope-geometry.cjs');globalThis.window={};const G={},Loader=await loadAttachmentFixtures(T,G,root),ids=['micro','reddot','holo','x2','x4','x8'],report={current:[],fallback:[],baseline:[],failures:[]};

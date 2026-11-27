@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v107 핸들 예산·림 접촉·차종별 공유 템플릿을 실제 렌더러에서 검사한다.
 const fs=require('fs'),assert=require('assert'),fixture=require('./vehicle-physics-fixture.cjs');
 (async()=>{const f=await fixture();try{

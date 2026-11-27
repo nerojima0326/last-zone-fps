@@ -167,7 +167,8 @@ const AV = G.AssetVM = {
         if (T.MeshoptDecoder) gl.setMeshoptDecoder(T.MeshoptDecoder);
         try {
           const v = '?v=' + (window.LZ_BUILD || '');
-          this.install(P, await G.loadGLB(gl, 'assets/models/viewmodels/' + PACKS[key].file + '.glb' + v));
+          const model=await G.loadGLB(gl, 'assets/models/viewmodels/' + PACKS[key].file + '.glb' + v,true);
+          await G.RenderPrep.run(()=>this.install(P,model)); // v108 이동 중 늦게 도착한 모델도 설치를 미룬다
         } catch (e) { P.failed = true; console.warn('[AssetVM] ' + key + ' 팩 실패', e); }
       })();
     }
@@ -177,7 +178,7 @@ const AV = G.AssetVM = {
     if (!P.swapPending[id]) P.swapPending[id] = (async () => {
       const gl = new T.GLTFLoader();
       if (T.MeshoptDecoder) gl.setMeshoptDecoder(T.MeshoptDecoder);
-      try { this.installSwap(P, id, await G.loadGLB(gl, SWAP[id].file + '?v=' + (window.LZ_BUILD || ''))); }
+      try { const model=await G.loadGLB(gl, SWAP[id].file + '?v=' + (window.LZ_BUILD || ''),true);await G.RenderPrep.run(()=>this.installSwap(P,id,model)); }
       catch (e) { P.swapFailed[id] = true; console.warn('[AssetVM] ' + id + ' 총 모델 실패 — 팩 총을 쓴다', e); }
     })();
     await P.swapPending[id];

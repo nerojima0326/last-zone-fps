@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v107 실제 30정의 표시 메시 법선과 M4 가늠자 분리 전후 속성 보존을 검사한다.
 const fs=require('fs'),assert=require('assert'),fixture=require('./expanded-motion-fixture.cjs');
 (async()=>{const f=await fixture({base:process.env.BASELINE});try{

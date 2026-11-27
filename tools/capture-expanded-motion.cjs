@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 신규 15정의 조준·실제 장전 상태를 같은 시각에 촬영한다.
 const fs=require('fs'),path=require('path'),fixture=require('./expanded-motion-fixture.cjs');
 const mode=process.argv[2]||'after',out=path.resolve(process.env.GUN_SHOTS||'/tmp/lz-v99-motion'),base='d0d18317c3726787f712728b3b60a842ef77aa4e';

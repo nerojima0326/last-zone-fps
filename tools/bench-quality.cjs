@@ -26,7 +26,7 @@ const fs=require('fs'),path=require('path'),fixture=require('./optimize/browser-
    rt.dispose();R.setRenderTarget(null);return rows;
   });
   await f.page.evaluate(()=>{if(G.LODFade)G.LODFade.enabled.value=1;document.getElementById('trainBtn').click();G.onLockChange=()=>{};G.Input.unlock();G.paused=true;G.UI.showPause(false)});
-  await f.page.waitForFunction(()=>G.Training.active);
+  await f.page.waitForFunction(()=>(!G.preparing&&G.Training.active));
   await f.page.evaluate(()=>{G.__apply('low');G.DRS.scale=.55;G.DRS.apply(true);G.Player.raise=1;for(let i=0;i<120;i++)G.Player.updateCamera(1/60)});
   result.training=[];
   for(const native of [false,true]){

@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 실제 브라우저에서 로딩 순서·모델 준비·지연/누락 복구를 확인한다.
 const assert=require('assert'),fs=require('fs'),fixture=require('./optimize/browser-fixture.cjs');
 const out=process.env.REPORT||'/tmp/lz-v82-startup-checks.json';
@@ -25,13 +28,13 @@ assert(bakedChunks>300,'맵 전체의 정적 음영 데이터가 필요함');
   assert.equal(f.requests.filter(u=>u==='/assets/models/viewmodels/m4.glb').length,1);
   assert.equal(f.requests.filter(u=>u==='/assets/models/viewmodels/glock17.glb').length,1);
   await page.evaluate(()=>{G.onLockChange=()=>{};G.Input.unlock();window.requestAnimationFrame=()=>0});
-  await page.click('#trainBtn');await page.waitForFunction(()=>G.Training.active);
+  await page.click('#trainBtn');await page.evaluate(()=>G.startReady);await page.waitForFunction(()=>(!G.preparing&&G.Training.active));
   report.training=await page.evaluate(()=>{
    G.Input.unlock();G.paused=true;G.UI.showPause(false);
    for(let i=0;i<30;i++)G.Player.updateCamera(1/60);G.renderNow();
-   return{active:G.Training.active,weapon:G.VM.cur,m4:G.M4Viewmodel.ready,mag:G.Game.player.weapons.rifle.mag};
+   return{active:G.Training.active,weapon:G.VM.cur,m4:G.M4Viewmodel.ready,mag:G.Game.player.weapons.rifle.mag,audio:G.Audio.ctx.state};
   });
-  assert(report.training.active&&report.training.m4);assert.equal(report.training.weapon,'ar7');assert(report.training.mag>0);
+  assert(report.training.active&&report.training.m4);assert.equal(report.training.weapon,'ar7');assert(report.training.mag>0);assert.equal(report.training.audio,'running','v108 시작 준비 후에도 클릭으로 허용한 오디오가 재생되어야 함');
   assert.deepEqual(f.errors,[]);
  }finally{release();if(!f)f=await pending;await f.close()}
  console.log('PASS 지연 모델: 맵과 병렬 준비·준비 전 메뉴 차단·단일 다운로드·즉시 훈련 진입');

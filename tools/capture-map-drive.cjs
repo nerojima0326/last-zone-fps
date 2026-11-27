@@ -1,10 +1,13 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 게임의 운전 입력·추적 카메라로 12m 낙차를 주행한다. 고정 간격 영상이며 실제 FPS 측정이 아니다.
 const fs=require('fs'),path=require('path'),cp=require('child_process'),fixture=require('./optimize/browser-fixture.cjs');
 const out=process.argv[2]||'/tmp/lz-v87-drive';
 (async()=>{
  fs.mkdirSync(path.join(out,'frames'),{recursive:true});const f=await fixture({viewport:{width:800,height:450}});
  try{
-  const p=f.page;await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.waitForFunction(()=>G.Training.active);
+  const p=f.page;await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>(!G.preparing&&G.Training.active));
   await p.evaluate(()=>{
    const T=THREE,W=G.World;G.paused=true;G.UI.showPause(false);G.Input.unlock();G.__apply('medium');G.setRenderResolution('100');G.VM.set(null);
    for(const o of G.scene.children)if(!o.isLight&&o!==W.sky)o.visible=false;

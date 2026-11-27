@@ -8,8 +8,8 @@ const out=path.resolve(process.env.MOBILE_SHOTS||'/tmp/lz-mobile-scene'),base=pr
   if(base)await page.route('**/*',r=>{const u=new URL(r.request().url()),name=u.pathname==='/'?'/index.html':u.pathname;if(u.hostname!=='127.0.0.1'||!(/^\/js\/.*\.js$/.test(name)||['/index.html','/version.txt'].includes(name)))return r.fallback();if(!cache.has(name))try{cache.set(name,execFileSync('git',['show',base+':'+name.slice(1)],{cwd:path.resolve(__dirname,'..'),stdio:['ignore','pipe','ignore']}))}catch(e){cache.set(name,null)}const body=cache.get(name);return body?r.fulfill({contentType:name.endsWith('.js')?'application/javascript':name.endsWith('.html')?'text/html':'text/plain',body}):r.fallback();});
  }}),report={source:base||'작업 트리',environment:'Chromium / SwiftShader · 모바일 화면 에뮬레이션',frames,runs:[],errors:f.errors};
  try{
-  const p=f.page;await p.evaluate(()=>{
-   G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};G.startGame({...G.UI.opts,mode:'training',quality:'low',players:40});G.paused=true;G.UI.showPause(false);G.DRS.frame=()=>{};
+  const p=f.page;await p.evaluate(async ()=>{
+   G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};await G.startGame({...G.UI.opts,mode:'training',quality:'low',players:40});G.paused=true;G.UI.showPause(false);G.DRS.frame=()=>{};
    for(let i=0;i<30;i++){G.Player.update(1/60);G.Input.endFrame()}
    const W=G.World,city=W.towns.find(t=>t.type==='city'),trees=G.Veg.variants.flatMap(v=>v.kind==='bush'?[]:v.items.map((_,i)=>[v.mats[i*16+12],v.mats[i*16+14]]));let forest=[100,100],best=0;
    for(let i=0;i<trees.length;i+=7){const [x,z]=trees[i];if(W.towns.some(t=>Math.hypot(x-t.x,z-t.z)<t.r+35))continue;const count=trees.filter(t=>(t[0]-x)**2+(t[1]-z)**2<1600).length;if(count>best){best=count;forest=[x,z]}}

@@ -462,3 +462,14 @@ html.mobile #weaponPanel #slots { justify-content: center; }
 #setMsg { min-height: 20px; margin: 8px 0; color: #ff9b7a; font-size: 13px; }
 @media (max-width: 700px) { #setKeys { grid-template-columns: 1fr; } .set-row { flex-wrap: wrap; } .set-row .range input { width: 140px; } }
 html.mobile #setKeys, html.mobile #setKeysSec, html.mobile #setMsg { display: none; }
+
+/* v108 강하 안내·좁은 창 무기 칸을 독립된 영역에 둔다. */
+#hud.airborne #weaponPanel { display: none; }
+#planeHint { width: min(640px, calc(100vw - 420px)); max-width: calc(100vw - 28px); line-height: 1.5; }
+#planeHint small { white-space: normal; overflow-wrap: normal; word-break: keep-all; }
+#planeHint:empty { display: none; }
+#slots .slot { min-width: 0; max-width: 92px; flex: 0 1 auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media(max-width:700px) { #planeHint { width: calc(100vw - 200px); font-size: 14px; bottom: 110px; } #planeHint small { font-size: 11px; letter-spacing: 0; } }
+
+/* v108 지형 위에서도 강하 정보 대비를 유지한다. */
+#hud.airborne #planeHint { box-sizing: border-box; padding: 9px 12px; border-radius: 6px; background: rgba(5,12,18,.74); border: 1px solid rgba(255,255,255,.2); }

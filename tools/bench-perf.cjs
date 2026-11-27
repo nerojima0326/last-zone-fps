@@ -30,7 +30,7 @@ const SCENES = (process.env.SCENES || 'forest,vista,combat').split(',');
   await page.goto(`http://127.0.0.1:${server.address().port}/index.html?perf=1`);
   await page.waitForFunction(() => window.G && G.UI && document.querySelector('#menu:not(.hidden)'), null, { timeout: 240000 });
   await page.evaluate(() => document.getElementById('trainBtn').click());
-  await page.waitForFunction(() => G.Game.training && G.Training.active, null, { timeout: 120000 });
+  await page.waitForFunction(() => G.Game.training && (!G.preparing&&G.Training.active), null, { timeout: 120000 });
   await page.waitForTimeout(3000);
   await page.evaluate(() => {
     G.Input.unlock(); G.onLockChange = () => {}; G.paused = true; G.UI.showPause(false);

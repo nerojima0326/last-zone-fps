@@ -242,6 +242,9 @@ const UI = G.UI = {
     const Game = G.Game;
     if (Game.state !== 'playing' && Game.state !== 'ended') return;
     const P = G.Player, a = Game.player, el = this.el, cam = G.camera;
+    // v108 강하 안내를 우선하고 착지 시 무기 HUD를 복원한다.
+    document.getElementById('hud').classList.toggle('airborne',a.alive&&['plane','freefall','chute'].includes(a.state));
+    if(!this.airLayout){this.airLayout=true;const fit=()=>{const right=document.getElementById('topRight').getBoundingClientRect(),room=right.width?2*(right.left-innerWidth/2-14):innerWidth*.42;document.getElementById('compass').style.width=Math.max(96,Math.min(560,innerWidth*.42,room))+'px';};new ResizeObserver(fit).observe(document.getElementById('topRight'));window.addEventListener('resize',fit);fit();}
     if (!G.paused && G.Input.hit('KeyM') && Game.state === 'playing') { this.mapOpen = !this.mapOpen; el.bigWrap.classList.toggle('on', this.mapOpen); }
     this.set('alive', el.alive, Game.aliveCount());
     this.set('teams', el.teams, Game.teamsAlive());
@@ -290,7 +293,7 @@ const UI = G.UI = {
         slots += '<div class="slot' + (w ? ' has' : '') + (a.cur === k ? ' cur' : '') + '"><span class="k">' + G.Settings.label('Digit' + (i + 1)) + '</span>' + (w ? G.WEAPONS[w.id].short : G.CLASS_NAMES[k]) + '</div>';
       });
       slots += '<div class="slot' + (a.throwCount() ? ' has' : '') + (a.cur === 'throw' ? ' cur' : '') + '"><span class="k">' + G.Settings.label('Digit4') + '</span>' + G.THROW_NAMES[tk] + ' <span class="cnt">' + a.throwables[tk] + '</span></div>';
-      slots += '<div class="slot has'+(a.cur==='melee'?' cur':'')+'"><span class="k">'+G.Settings.label('Digit5')+'</span>'+G.Knives.catalog[a.knife].short+'</div>';
+      slots += '<div class="slot has'+(a.cur==='melee'?' cur':'')+'"><span class="k">'+G.Settings.label('Digit5')+'</span>'+'나이프</div>';
       el.slots.innerHTML = slots;
     }
     this.drawCook(a, P);

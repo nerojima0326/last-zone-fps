@@ -13,7 +13,7 @@ const base='b5b7241',out=process.argv[2]||'/tmp/lz-v79-bench';fs.mkdirSync(out,{
   }});
   try{
    await f.page.evaluate(()=>{window.requestAnimationFrame=()=>0;document.getElementById('trainBtn').click();G.onLockChange=()=>{};G.Input.unlock();G.paused=true;G.UI.showPause(false)});
-   await f.page.waitForFunction(()=>G.Training.active);
+   await f.page.waitForFunction(()=>(!G.preparing&&G.Training.active));
    await f.page.evaluate(()=>{
     G.__apply('low');G.DRS.scale=1;G.DRS.apply(true);
     const a=G.Game.player;a.yaw=0;a.pitch=0;a.cur='rifle';G.Player.ads=0;G.Player.raise=1;

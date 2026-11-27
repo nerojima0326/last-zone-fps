@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // Actual menu/training flows for the expanded roster. Optional SHOTS directory.
 const fs = require('fs'), http = require('http'), path = require('path'), assert = require('assert');
 const { chromium } = require('playwright');
@@ -56,7 +59,7 @@ assert.equal(Object.keys(catalog).length, 15, 'Expansion must add 15 weapons');
     if (process.env.SHOTS) await page.screenshot({ path: path.join(process.env.SHOTS, 'armory-mobile.png') });
     await page.click('#armoryClose'); await page.setViewportSize({ width: 1440, height: 900 });
     console.log('Catalogue filters, search, models and mobile layout checked');
-    await page.click('#trainBtn'); await page.waitForFunction(() => G.Training.active, null, { timeout: 90000 });
+    await page.click('#trainBtn');await page.evaluate(()=>G.startReady); await page.waitForFunction(() => (!G.preparing&&G.Training.active), null, { timeout: 90000 });
     const layout = await page.evaluate(() => {
       const ids = G.Training.items.filter(i => G.WEAPONS[i.kind]?.cls).map(i => i.kind);
       const random = Math.random, kinds = new Set();

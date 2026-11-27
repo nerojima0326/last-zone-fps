@@ -616,9 +616,16 @@ const Game = G.Game = {
     G.Input.unlock(); G.Audio.stopLoops();
   },
   onShot(shooter, def) {
-    const range = def.key === 'kr98' || def.key === 'mk14' ? 200 : def.cls === 'rifle' ? 130 : def.cls === 'shotgun' ? 100 : 75;
+    const range = this.shotNoiseRange(def);
     const suppressed = shooter.weapons[shooter.cur]?.attachments?.muzzle === 'suppressor';
     this.onNoise(shooter.pos, range * (suppressed ? 0.48 : 1), shooter);
+  },
+  // v108 이름 대신 총기 계열·탄종을 사용해 신규 저격총도 같은 청취 거리를 갖는다.
+  shotNoiseRange(def) {
+    if(['sniper','dmr'].includes(def.family)||def.cls==='rifle'&&['762','300'].includes(def.ammo))return 200;
+    if(def.family==='lmg')return 160;
+    if(def.family==='smg'||def.cls==='shotgun')return 100;
+    return def.cls==='rifle'?130:75;
   },
   onNoise(pos, range, owner) {
     for (const a of this.actors) {

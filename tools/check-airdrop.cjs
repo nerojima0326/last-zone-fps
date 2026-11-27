@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 실제 브라우저에서 수송기 이탈·강하 입력·전개·착지와 캐릭터 뼈대를 검증한다.
 const assert = require('assert'), fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
 const fixture = require('./optimize/browser-fixture.cjs');
@@ -14,10 +17,10 @@ const shots = path.resolve(process.env.AIR_SHOTS_DIR || path.join(require('os').
   }});
   const { page } = f, report = {};
   try {
-    await page.evaluate(() => {
+    await page.evaluate(async () => {
       window.requestAnimationFrame = () => 0; G.onLockChange = () => {}; G.Input.unlock(); G.Input.lock = () => {};
       G.UI.opts.renderResolution = '100';
-      G.startGame({ ...G.UI.opts, quality: 'medium', players: 4, size: 2, loadout: 'all' }); G.paused = true;
+      await G.startGame({ ...G.UI.opts, quality: 'medium', players: 4, size: 2, loadout: 'all' }); G.paused = true;
       const p = G.Game.plane;
       p.start.set(0,0,0); p.dir.set(0,0,-1); p.t = 0; p.mesh.rotation.set(0,0,0); G.Game.updatePlane(0);
     });

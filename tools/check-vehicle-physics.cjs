@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 벽 충돌·부분 접지·절벽 접근·공중 관성과 훈련장의 모든 차종을 검사한다.
 const fs=require('fs'),path=require('path'),assert=require('assert'),fixture=require('./vehicle-physics-fixture.cjs');
 const output=path.resolve(process.env.REPORT||'/tmp/lz-vehicle-physics.json');
@@ -74,10 +77,10 @@ const output=path.resolve(process.env.REPORT||'/tmp/lz-vehicle-physics.json');
     const respawn=await p.evaluate(()=>{
      const V=G.Vehicles,P=G.Player,C=G.World.course;P.a.pos.set(C.x1-10,G.World.heightAt(C.x1-10,C.z0+10),C.z0+10);G.Input.reset();
      const old=V.list.slice();for(const v of old)V.explode(v);
-     return old.map(v=>{const home=v.home,kind=v.kind,ok=V.respawn(v),fresh=V.list.find(v=>v.home===home);return {kind,ok,homeMatches:!!fresh&&fresh.kind===home.kind,hp:fresh?.hp,tires:fresh?.wheels.every(w=>w.hp===36&&!w.flat)};});
-    });for(const r of respawn)assert(r.ok&&r.homeMatches&&r.hp===1600&&r.tires,'훈련장 차종 재생성 '+r.kind);
+     return old.map(v=>{const home=v.home,kind=v.kind,ok=V.respawn(v),fresh=V.list.find(v=>v.home===home);return {kind,ok,homeMatches:!!fresh&&fresh.kind===home.kind,hp:fresh?.hp,maxHp:fresh?.maxHp,tires:fresh?.wheels.every(w=>w.hp===36&&!w.flat)};});
+    });for(const r of respawn)assert(r.ok&&r.homeMatches&&r.hp===r.maxHp&&r.tires,'훈련장 차종 재생성 '+r.kind);
     report.range.push({visit,initial,rows,respawn});
-    if(visit<2)await p.evaluate(()=>{G.toMenu();G.startGame({...G.UI.opts,mode:'training',quality:'low'});G.paused=true;G.UI.showPause(false);G.Input.locked=true;});
+    if(visit<2)await p.evaluate(async ()=>{G.toMenu();await G.startGame({...G.UI.opts,mode:'training',quality:'low'});G.paused=true;G.UI.showPause(false);G.Input.locked=true;});
    }
   }
   report.errors=f.errors;fs.writeFileSync(output,JSON.stringify(report,null,2)+'\n');

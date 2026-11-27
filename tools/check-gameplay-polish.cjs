@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v79 integration: real material classification, distance/foot contacts, poses,
 // bounded samples, bot wall/cover behavior, settings and complementary LODs.
 const assert=require('assert'),fs=require('fs'),path=require('path'),crypto=require('crypto');
@@ -134,7 +137,7 @@ const fixture=require('./optimize/browser-fixture.cjs');
   await f.page.click('#settingsBtn');await f.page.locator('#setGrain').evaluate(el=>{el.value='.4';el.dispatchEvent(new Event('input',{bubbles:true}))});await f.page.locator('#setShadows').evaluate(el=>{el.value='.65';el.dispatchEvent(new Event('input',{bubbles:true}))});
   result.settings=await f.page.evaluate(()=>JSON.parse(localStorage.lastzone_settings).visual);
   assert.equal(result.settings.grain,.4);assert.equal(result.settings.shadows,.65);
-  await f.page.click('#setClose');await f.page.evaluate(()=>document.getElementById('trainBtn').click());await f.page.waitForFunction(()=>G.Training.active);
+  await f.page.click('#setClose');await f.page.evaluate(()=>document.getElementById('trainBtn').click());await f.page.waitForFunction(()=>(!G.preparing&&G.Training.active));
   await f.page.evaluate(()=>{G.onLockChange=()=>{};G.Input.unlock();G.paused=true;G.UI.showPause(false);G.Player.raise=1;for(let i=0;i<120;i++)G.Player.updateCamera(1/60);G.__apply('medium');G.World.update(1/60,G.camera.position,G.camera);G.renderNow()});
   fs.mkdirSync(path.dirname(out),{recursive:true});await f.page.screenshot({path:path.join(path.dirname(out),'v79-training.png')});
   await f.page.evaluate(()=>{

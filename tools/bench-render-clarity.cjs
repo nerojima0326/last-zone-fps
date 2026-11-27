@@ -16,7 +16,7 @@ fs.mkdirSync(out,{recursive:true});
   await page.evaluate(()=>{
    const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);
    G.onLockChange=()=>{};G.Input.unlock();G.qualityMode='manual';
-  });await page.waitForTimeout(100);await page.click('#trainBtn');await page.waitForFunction(()=>G.Training.active);
+  });await page.waitForTimeout(100);await page.click('#trainBtn');await page.evaluate(()=>G.startReady);await page.waitForFunction(()=>(!G.preparing&&G.Training.active));
   await page.evaluate(()=>{G.paused=true;G.Input.unlock();G.UI.showPause(false);G.VM.set(null)});
   const cases=await page.evaluate(()=>{
    const T=THREE,W=G.World,rows=[],center=b=>new T.Vector3((b.minX+b.maxX)/2,(b.minY+b.maxY)/2,(b.minZ+b.maxZ)/2);

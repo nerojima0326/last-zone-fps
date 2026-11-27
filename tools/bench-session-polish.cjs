@@ -8,7 +8,7 @@ const old={};if(mode==='before')for(const file of ['index.html',...cp.execFileSy
   await p.route(u=>u.hostname==='127.0.0.1'&&(u.pathname==='/'||old[u.pathname.slice(1)]!==undefined),r=>{const file=new URL(r.request().url()).pathname.slice(1)||'index.html';return r.fulfill({body:old[file],contentType:file.endsWith('.html')?'text/html':'application/javascript'})});
  }});
  try{
-  const p=f.page;await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.waitForTimeout(80);await p.click('#trainBtn');await p.waitForFunction(()=>G.Training.active);
+  const p=f.page;await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.waitForTimeout(80);await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>(!G.preparing&&G.Training.active));
   const report=await p.evaluate(async()=>{
    G.paused=true;G.Input.unlock();G.UI.showPause(false);G.VM.set(null);
    await Promise.all(Object.values(G.Game.player.weapons).filter(Boolean).map(w=>G.AssetVM.request(w.id)));

@@ -1,6 +1,9 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 1번 슬롯의 조준경 제한을 인벤토리·입력·실제 장착 화면에서 확인한다.
 const fs=require('fs'),assert=require('assert'),fixture=require('./optimize/browser-fixture.cjs');
-(async()=>{const f=await fixture({viewport:{width:1100,height:700}});try{const p=f.page;await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=cb=>cb.name==='frame'?0:raf(cb);G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};G.startGame({...G.UI.opts,mode:'training',quality:'potato'});G.paused=true;G.UI.showPause(false)});const report=await p.evaluate(()=>{
+(async()=>{const f=await fixture({viewport:{width:1100,height:700}});try{const p=f.page;await p.evaluate(async ()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=cb=>cb.name==='frame'?0:raf(cb);G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};await G.startGame({...G.UI.opts,mode:'training',quality:'potato'});G.paused=true;G.UI.showPause(false)});const report=await p.evaluate(()=>{
  const results=[],failures=[],require=(ok,message)=>{if(!ok)failures.push(message)},create=()=>new G.Actor({id:800,name:'조준경 검사',team:0,isPlayer:true});
  for(const id of G.GUN_CLASSES.rifle){const d=G.WEAPONS[id],a=create();require(!d.scopes.includes('x8'),id+' 호환 목록');require(!G.Attachments.options(d).optic.some(([t])=>t==='x8'),id+' 부착물 선택');a.give(id,0,'x8');require(a.weapons.rifle.scope===null&&a.scopes.x8===1,id+' 지급 시 회수');
   const before=JSON.stringify(a.scopes);require(!G.Attachments.change(a,a.weapons.rifle,'optic','x8'),id+' 직접 장착 차단');require(JSON.stringify(a.scopes)===before,id+' 거부 시 수량 보존');a.autoScope('rifle');require(a.weapons.rifle.scope!=='x8'&&a.scopes.x8===1,id+' 자동 장착 차단');

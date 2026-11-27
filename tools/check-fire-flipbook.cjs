@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 아틀라스 실내용·보간·늦은 로딩·누락 복귀와 실제 화염 수명을 검사한다.
 const assert=require('assert'),fs=require('fs'),path=require('path'),cp=require('child_process'),crypto=require('crypto'),fixture=require('./optimize/browser-fixture.cjs');
 const root=path.resolve(__dirname,'..'),file=path.join(root,'assets/textures/vfx/pool-fire-v85.webp'),meta=require('../assets/textures/vfx/pool-fire-v85.json'),hash=b=>crypto.createHash('sha256').update(b).digest('hex'),report={};
@@ -13,7 +16,7 @@ for(let f=0;f<16;f++){
   const coverage=visible/(size*size);assert(coverage>.025&&coverage<.8,'분리 가능한 불꽃 본체와 배경이 모두 있어야 함');assert(transparent>size*size*.15);assert(edge<size,'이웃 프레임으로 불꽃이 잘리면 안 됨');frames.push({frame:f,coverage,edge,hash:hash(tile)});
 }assert.equal(new Set(frames.map(f=>f.hash)).size,16);report.atlas={...meta,framesChecked:frames};
 const enter=async p=>{
- await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.waitForFunction(()=>G.Training.active);await p.evaluate(()=>{G.paused=true;G.Input.unlock();G.UI.showPause(false);G.__apply('medium');G.VM.set(null)});
+ await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>(!G.preparing&&G.Training.active));await p.evaluate(()=>{G.paused=true;G.Input.unlock();G.UI.showPause(false);G.__apply('medium');G.VM.set(null)});
 };
 (async()=>{
  let release;const held=new Promise(r=>{release=r}),f=await fixture({viewport:{width:640,height:360},route:async p=>p.route('**/assets/textures/vfx/pool-fire-v85.webp',async r=>{await held;await r.fulfill({body:data,contentType:'image/webp'})})});

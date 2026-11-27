@@ -1,0 +1,592 @@
+{
+  "version": 108,
+  "mainBefore": "4b5e027bc62da9f4128a5617661e8017d888979f",
+  "pagesBefore": "4b5e027bc62da9f4128a5617661e8017d888979f",
+  "testedFeature": "5b16313e1c7869af37bb0a392bca06f7e1c1c839",
+  "testedFeatureTree": "7263288fb847633e30f939deb95169848affc76f",
+  "sourceBranch": "fix/v108-world-hud-driving",
+  "command": "CHECK_OUT=/workspace/artifacts/v108-recovery-fixes/final-checks npm run check",
+  "scope": "전체 검사",
+  "complete": true,
+  "environment": "Chromium / SwiftShader. 모바일은 Android 사용자 에이전트·터치·화면 모사 조건이다.",
+  "recordedAt": "2026-11-28T03:06:14.013232+09:00",
+  "checks": [
+    {
+      "name": "check-aim.cjs",
+      "command": "node tools/check-aim.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 98,
+      "reason": ""
+    },
+    {
+      "name": "check-air-hud.cjs",
+      "command": "node tools/check-air-hud.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 27.1,
+      "reason": ""
+    },
+    {
+      "name": "check-air-visibility.cjs",
+      "command": "node tools/check-air-visibility.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 31,
+      "reason": ""
+    },
+    {
+      "name": "check-airdrop.cjs",
+      "command": "node tools/check-airdrop.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 46.1,
+      "reason": ""
+    },
+    {
+      "name": "check-artifact-paths.cjs",
+      "command": "node tools/check-artifact-paths.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 0.7,
+      "reason": ""
+    },
+    {
+      "name": "check-attachments.cjs",
+      "command": "node tools/check-attachments.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 48.5,
+      "reason": ""
+    },
+    {
+      "name": "check-auto-quality.cjs",
+      "command": "node tools/check-auto-quality.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 36.2,
+      "reason": ""
+    },
+    {
+      "name": "check-bundled-viewmodels.cjs",
+      "command": "node tools/check-bundled-viewmodels.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 140.7,
+      "reason": ""
+    },
+    {
+      "name": "check-cabin-instruments.cjs",
+      "command": "node tools/check-cabin-instruments.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 32.6,
+      "reason": ""
+    },
+    {
+      "name": "check-cabin-model.cjs",
+      "command": "node tools/check-cabin-model.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 28.3,
+      "reason": ""
+    },
+    {
+      "name": "check-cabin-mounts.cjs",
+      "command": "node tools/check-cabin-mounts.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 29.8,
+      "reason": ""
+    },
+    {
+      "name": "check-cabin-steering.cjs",
+      "command": "node tools/check-cabin-steering.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 29.3,
+      "reason": ""
+    },
+    {
+      "name": "check-classic-hands.cjs",
+      "command": "node tools/check-classic-hands.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 59.9,
+      "reason": ""
+    },
+    {
+      "name": "check-clearance.cjs",
+      "command": "node tools/check-clearance.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 7.2,
+      "reason": ""
+    },
+    {
+      "name": "check-combat-environment.cjs",
+      "command": "node tools/check-combat-environment.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 50.1,
+      "reason": ""
+    },
+    {
+      "name": "check-combat.cjs",
+      "command": "node tools/check-combat.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 61.4,
+      "reason": ""
+    },
+    {
+      "name": "check-driving-controls.cjs",
+      "command": "node tools/check-driving-controls.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 30.6,
+      "reason": ""
+    },
+    {
+      "name": "check-driving-input.cjs",
+      "command": "node tools/check-driving-input.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 28.8,
+      "reason": ""
+    },
+    {
+      "name": "check-expanded-motion.cjs",
+      "command": "node tools/check-expanded-motion.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 37.7,
+      "reason": ""
+    },
+    {
+      "name": "check-fire-flipbook.cjs",
+      "command": "node tools/check-fire-flipbook.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 64.4,
+      "reason": ""
+    },
+    {
+      "name": "check-gameplay-polish.cjs",
+      "command": "node tools/check-gameplay-polish.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 50.5,
+      "reason": ""
+    },
+    {
+      "name": "check-glock-import.mjs",
+      "command": "node tools/check-glock-import.mjs assets/models/viewmodels/glock17.fbx",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 0.5,
+      "reason": ""
+    },
+    {
+      "name": "check-graphics-recovery.cjs",
+      "command": "node tools/check-graphics-recovery.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 47.1,
+      "reason": ""
+    },
+    {
+      "name": "check-hand-poses.cjs",
+      "command": "node tools/check-hand-poses.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 147.4,
+      "reason": ""
+    },
+    {
+      "name": "check-knife-motions.cjs",
+      "command": "node tools/check-knife-motions.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 61.2,
+      "reason": ""
+    },
+    {
+      "name": "check-knife-touch.cjs",
+      "command": "node tools/check-knife-touch.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 27.8,
+      "reason": ""
+    },
+    {
+      "name": "check-knives.cjs",
+      "command": "node tools/check-knives.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 60.9,
+      "reason": ""
+    },
+    {
+      "name": "check-live-session.cjs",
+      "command": "node tools/check-live-session.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 130.5,
+      "reason": ""
+    },
+    {
+      "name": "check-m4-model.mjs",
+      "command": "node tools/check-m4-model.mjs assets/models/viewmodels/m4_animations.zip",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 0.9,
+      "reason": ""
+    },
+    {
+      "name": "check-map-drive.cjs",
+      "command": "node tools/check-map-drive.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 46,
+      "reason": ""
+    },
+    {
+      "name": "check-map-hydrology.cjs",
+      "command": "node tools/check-map-hydrology.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 6.5,
+      "reason": ""
+    },
+    {
+      "name": "check-mobile-models.cjs",
+      "command": "node tools/check-mobile-models.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 0.2,
+      "reason": ""
+    },
+    {
+      "name": "check-mobile-scene.cjs",
+      "command": "node tools/check-mobile-scene.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 132,
+      "reason": ""
+    },
+    {
+      "name": "check-mobile-stability.cjs",
+      "command": "node tools/check-mobile-stability.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 160.7,
+      "reason": ""
+    },
+    {
+      "name": "check-native-reticle.cjs",
+      "command": "node tools/check-native-reticle.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 39.1,
+      "reason": ""
+    },
+    {
+      "name": "check-original-weapon-audio.cjs",
+      "command": "node tools/check-original-weapon-audio.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 3.4,
+      "reason": ""
+    },
+    {
+      "name": "check-patch-people.cjs",
+      "command": "node tools/check-patch-people.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 106.3,
+      "reason": ""
+    },
+    {
+      "name": "check-plane-model.cjs",
+      "command": "node tools/check-plane-model.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 34.1,
+      "reason": ""
+    },
+    {
+      "name": "check-primary-scopes.cjs",
+      "command": "node tools/check-primary-scopes.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 28.6,
+      "reason": ""
+    },
+    {
+      "name": "check-quality-performance.cjs",
+      "command": "node tools/check-quality-performance.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 66.2,
+      "reason": ""
+    },
+    {
+      "name": "check-reloads.cjs",
+      "command": "node tools/check-reloads.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 46.6,
+      "reason": ""
+    },
+    {
+      "name": "check-render-clarity.cjs",
+      "command": "node tools/check-render-clarity.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 137.6,
+      "reason": ""
+    },
+    {
+      "name": "check-render-prep.cjs",
+      "command": "node tools/check-render-prep.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 68.3,
+      "reason": ""
+    },
+    {
+      "name": "check-scope-models.mjs",
+      "command": "node tools/check-scope-models.mjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 1,
+      "reason": ""
+    },
+    {
+      "name": "check-session-polish.cjs",
+      "command": "node tools/check-session-polish.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 46.2,
+      "reason": ""
+    },
+    {
+      "name": "check-shot-hearing.cjs",
+      "command": "node tools/check-shot-hearing.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 28.8,
+      "reason": ""
+    },
+    {
+      "name": "check-smoke-trail.cjs",
+      "command": "node tools/check-smoke-trail.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 29.4,
+      "reason": ""
+    },
+    {
+      "name": "check-spectator-prep.cjs",
+      "command": "node tools/check-spectator-prep.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 29.8,
+      "reason": ""
+    },
+    {
+      "name": "check-startup.cjs",
+      "command": "node tools/check-startup.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 48,
+      "reason": ""
+    },
+    {
+      "name": "check-throwable-motion.cjs",
+      "command": "node tools/check-throwable-motion.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 33.9,
+      "reason": ""
+    },
+    {
+      "name": "check-training-range.cjs",
+      "command": "node tools/check-training-range.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 104.8,
+      "reason": ""
+    },
+    {
+      "name": "check-validation-reports.cjs",
+      "command": "node tools/check-validation-reports.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 0,
+      "reason": ""
+    },
+    {
+      "name": "check-vehicle-cabin.cjs",
+      "command": "node tools/check-vehicle-cabin.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 35.8,
+      "reason": ""
+    },
+    {
+      "name": "check-vehicle-physics.cjs",
+      "command": "node tools/check-vehicle-physics.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 32,
+      "reason": ""
+    },
+    {
+      "name": "check-vehicle-throwable-vfx.cjs",
+      "command": "node tools/check-vehicle-throwable-vfx.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 36.2,
+      "reason": ""
+    },
+    {
+      "name": "check-vehicle-tuning.cjs",
+      "command": "node tools/check-vehicle-tuning.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 31,
+      "reason": ""
+    },
+    {
+      "name": "check-vehicle-wheels.cjs",
+      "command": "node tools/check-vehicle-wheels.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 28.7,
+      "reason": ""
+    },
+    {
+      "name": "check-weapon-audio.cjs",
+      "command": "node tools/check-weapon-audio.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 44.1,
+      "reason": ""
+    },
+    {
+      "name": "check-weapon-catalog.cjs",
+      "command": "node tools/check-weapon-catalog.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 82,
+      "reason": ""
+    },
+    {
+      "name": "check-weapon-surface.cjs",
+      "command": "node tools/check-weapon-surface.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 45.6,
+      "reason": ""
+    }
+  ],
+  "commits": [
+    {
+      "sha": "bc34dbeee4867b7a09ae4382cda92634ae60af9d",
+      "subject": "강하 고도에 맞춰 안개와 섬 원거리 시야 복원 (v108)"
+    },
+    {
+      "sha": "a31e78c2b8cefa5257e975f434d0421cd0c27226",
+      "subject": "검사 산출물의 과거 검증 자료 덮어쓰기·삭제 차단 (v108)"
+    },
+    {
+      "sha": "b3384f1535b91b3a925126d97d33718388242974",
+      "subject": "강하 안내와 무기 HUD·나침반의 좁은 화면 겹침 수정 (v108)"
+    },
+    {
+      "sha": "759a7e6de59e31970240ede9125613c0ce741071",
+      "subject": "9시·3시 미끄럼 그립으로 운전 팔의 계기판 가림 제거 (v108)"
+    },
+    {
+      "sha": "74f76eb162641dbf763350dd3a38fc0b7a2449f8",
+      "subject": "무기 계열·탄종으로 신규 저격총의 봇 청취 거리 통일 (v108)"
+    },
+    {
+      "sha": "ff69e177d4259e85d9996c4f246504feca22457d",
+      "subject": "봇의 주먹 비상 공격과 플레이어 전용 칼 경로 확인 기록 (v108)"
+    },
+    {
+      "sha": "ee8e87c79b53ba3be027cafe4e0aefeb5681ca1d",
+      "subject": "차종별 계기판과 실제 연료·수온 바늘을 공유 자원으로 구현 (v108)"
+    },
+    {
+      "sha": "8982eba15af4b6584a7c14acc3952edd6201e017",
+      "subject": "차종별 가속·최고속도·조향·질량·내구도를 물리와 봇에 연결 (v108)"
+    },
+    {
+      "sha": "2a75b4805f2c3cb72814fef069afcd1e2e676c0b",
+      "subject": "정지·최대 조향의 계기판 픽셀 가림과 같은 위치 촬영 검사 보강 (v108)"
+    },
+    {
+      "sha": "3e2ad6d9585a76cc4e26a1d25725e3c5d5ef4f5b",
+      "subject": "초기·착지 부하와 단발 정지를 제외하고 자동 품질 회복·재시험 개선 (v108)"
+    },
+    {
+      "sha": "a64b196d74c7c0c1e469711d07176be1cb010bf8",
+      "subject": "검증된 수정 묶음의 빌드 번호를 v108로 갱신"
+    },
+    {
+      "sha": "61a34ca42d08833ffe232a619f02b911a6c693cc",
+      "subject": "계기판 크기·높이를 줄이고 모바일 숫자 가독성 유지 (v108)"
+    },
+    {
+      "sha": "674ebaecd611d8e04712c6347d1c8dc440f9053b",
+      "subject": "공유 메시로 차량 라디오·공조·도어·기어 등 실내 디테일 보강 (v108)"
+    },
+    {
+      "sha": "9aec7a3325fe891b6c654475a78d5dd77feca503",
+      "subject": "공조·수납 받침과 비상등 버튼을 밀착하고 장착 검사 추가 (v108)"
+    },
+    {
+      "sha": "f4bd36173802d9cb8d03f92fe5ae7684f5436063",
+      "subject": "숫자 가림 검사에 원본 차체·전체 실내와 가림막 검출 추가 (v108)"
+    },
+    {
+      "sha": "3be1c9ea8379d037a2038a27c55cd92587ee21c0",
+      "subject": "미러의 백색 반사를 완화하고 원본 면에 테두리 추가 (v108)"
+    },
+    {
+      "sha": "60b50d1e428d2b6c447772a99af11450dc3add89",
+      "subject": "이동한 카메라 행렬을 갱신해 총구 차폐 판정 수정 (v108)"
+    },
+    {
+      "sha": "436dc1b2db26152416e1358e739c70f6b1fd9e6f",
+      "subject": "플레이 중 GPU 준비를 미루고 판 시작 전 자원 준비 완료 보장 (v108)"
+    },
+    {
+      "sha": "1f497b3645db6118bf21cd1468b22cf93e6ec540",
+      "subject": "초기 그래픽 연결 복구 뒤 준비 재시도와 환경맵 재생성 (v108)"
+    },
+    {
+      "sha": "8712e4f10f864c51c197ff6a8c07d6cb29c5a539",
+      "subject": "판 준비 중 연결 손실에도 준비 완료 뒤 재개하고 렌더 타깃 정리 (v108)"
+    },
+    {
+      "sha": "e32a5ac776aeb46a59d114e65ec3b508490976f3",
+      "subject": "관전 중 총기 팩 준비를 보류해 화면 진행 정지 방지 (v108)"
+    },
+    {
+      "sha": "5b16313e1c7869af37bb0a392bca06f7e1c1c839",
+      "subject": "손실 알림 전 실제 WebGL 상태를 확인해 준비 중단 방지 (v108)"
+    }
+  ],
+  "notes": [
+    "전체 60개 검사를 통과한 5b16313을 병합한다. 병합 준비 뒤 게임 실행 파일은 검사본과 바이트 단위로 같다.",
+    "병합 문서 두 개만 추가했으며 새 검사 파일 추가나 런타임 변경이 없다.",
+    "작동 중 3mm·복귀 중 10mm의 장전 관통 기준을 완화하지 않았다.",
+    "초기 로딩·판 준비·관전과 손실 알림 전 상태 경합의 실제 WebGL 회귀 검사, 모바일 복구·재입장, 비일시정지 경기 착지 검사를 포함한다.",
+    "검증 PNG·동영상·원본 로그는 저장소 밖에 보관한다. 기존 검증 미디어와 Git 히스토리는 정리하지 않는다."
+  ]
+}

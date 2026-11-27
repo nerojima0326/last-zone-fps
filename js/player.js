@@ -41,6 +41,7 @@ const P = G.Player = {
   lookY() { return G.Input.mdy * (this.invertY ? -1 : 1); },
   update(dt) {
     const a = this.a;
+    if(this.autoVehicle!==this.vehicle){if(this.vehicle)G.qualityTransition?.('차량 탑승',3);this.autoVehicle=this.vehicle;} // v108 초기 준비 제외
     this.time += dt;
     if (!a.alive || a.knocked || a.state !== 'ground' || this.vehicle) { this.melee = null; a.melee = null; this.knifeSeen = null; }
     G.lodZoom = 1;
@@ -120,6 +121,7 @@ const P = G.Player = {
   },
   onLand() {
     const a = this.a;
+    G.qualityTransition?.('착지',3); // v108 착지 부하를 품질 하향 판단에서 제외
     a.pitch = 0; this.camY = a.pos.y + a.eyeH();
     a.cur = a.bestGun();
     this.raise = 0; this.sw = { t: 0.2, to: a.cur };
@@ -746,6 +748,7 @@ const P = G.Player = {
       cam.rotation.y += (Math.cos(t * 0.7) * 0.6 + Math.sin(t * 1.9) * 0.3) * amp;
     }
     G.vmCamera.fov = U.lerp(54, 46, this.ads); G.vmCamera.updateProjectionMatrix();
+    cam.updateMatrixWorld(); // v108 현재 시점으로 총구·차폐를 계산한다
     // 뷰모델
     const showVM = !a.knocked && a.cur !== null;
     G.VM.set(showVM ? a.gunId(a.cur) : null);

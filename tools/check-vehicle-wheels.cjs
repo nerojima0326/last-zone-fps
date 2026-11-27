@@ -1,9 +1,12 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 실제 차량·총탄으로 굴림 거리, 조향, 타이어 파손, 가림과 재생성을 검사한다.
 const assert=require('assert'),fs=require('fs'),fixture=require('./optimize/browser-fixture.cjs');
 (async()=>{
  const f=await fixture({viewport:{width:800,height:450}}),p=f.page,report={};
  try{
-  await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.waitForFunction(()=>G.Training.active);
+  await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>(!G.preparing&&G.Training.active));
   console.log('훈련장 준비');
   report.tests=await p.evaluate(()=>{
    const V=G.Vehicles,W=G.World,H=G.VehicleWheels,B=G.Ballistics,T=THREE,owner=G.Game.player,rows=[],guns=[],height=W.heightAt,models=V.models,ownerPos=owner.pos.clone();
@@ -30,11 +33,11 @@ const assert=require('assert'),fs=require('fs'),fixture=require('./optimize/brow
      rows.push({kind,axes,rolling,steer:front.map(w=>w.steer),pops,bodyHP:v.hp,geometries:geos});remove(v);
     }
     for(const kind of['porter','e2200','izh','fallback'])for(const def of G.GUN_IDS.map(id=>G.WEAPONS[id])){
-     const v=make(kind),w=v.wheels[0];let shots=0;while(!w.flat&&shots<16){const a=aim(v,w);shot(def,a.o,a.d);shots++}check(w.flat&&v.hp===1600,kind+' '+def.key+' 총기 타이어 피해 오류: 차체 '+v.hp+' 타이어 '+w.hp+' 발수 '+shots);guns.push({kind,gun:def.key,shots});remove(v);
+     const v=make(kind),w=v.wheels[0];let shots=0;while(!w.flat&&shots<16){const a=aim(v,w);shot(def,a.o,a.d);shots++}check(w.flat&&v.hp===v.maxHp,kind+' '+def.key+' 총기 타이어 피해 오류: 차체 '+v.hp+' 타이어 '+w.hp+' 발수 '+shots);guns.push({kind,gun:def.key,shots});remove(v);
     }
     const v=make('izh'),w=v.wheels[0],a=aim(v,w),mid=a.o.clone().addScaledVector(a.d,2),wall=W.addCollider(mid.x-.12,299.5,mid.z-.8,mid.x+.12,302,mid.z+.8,'hard',true);
-    try{shot(G.WEAPONS.ar7,a.o,a.d);check(w.hp===36&&v.hp===1600,'벽 뒤 차량이 피해를 받음')}finally{W.removeCollider(wall)}
-    const center=w.o.getWorldPosition(new T.Vector3()),roof=center.clone().add(new T.Vector3(0,4,0)),down=new T.Vector3(0,-1,0),cover=V.rayHit(roof,down,10);check(cover&&!cover.wheel,'차체를 통과해 타이어를 맞힘');shot(G.WEAPONS.ar7,roof,down);check(w.hp===36&&v.hp<1600,'지붕 피격 피해 분리 오류');
+    try{shot(G.WEAPONS.ar7,a.o,a.d);check(w.hp===36&&v.hp===v.maxHp,'벽 뒤 차량이 피해를 받음')}finally{W.removeCollider(wall)}
+    const center=w.o.getWorldPosition(new T.Vector3()),roof=center.clone().add(new T.Vector3(0,4,0)),down=new T.Vector3(0,-1,0),cover=V.rayHit(roof,down,10);check(cover&&!cover.wheel,'차체를 통과해 타이어를 맞힘');shot(G.WEAPONS.ar7,roof,down);check(w.hp===36&&v.hp<v.maxHp,'지붕 피격 피해 분리 오류');
     let tilted=0;W.heightAt=(x,z)=>300+.10*x+.08*z;v.yaw=.7;V.place(v,1);v.steerAngle=.3;V.wheelAnim(v,1/60);for(const wheel of v.wheels){const a=aim(v,wheel),h=V.rayHit(a.o,a.d,10);check(h?.wheel===wheel,'경사·조향 상태의 바퀴 판정 오류');tilted++}W.heightAt=()=>300;remove(v);
     const handling=[];
     for(const flats of[0,1,2,4]){
@@ -42,7 +45,7 @@ const assert=require('assert'),fs=require('fs'),fixture=require('./optimize/brow
      for(let i=0;i<600;i++)V.step(v,owner,1/60,1,0,false,false);handling.push({flats,speed:v.speed,gripDamage:v.wheelDamage});v.driver=null;owner.pos.copy(ownerPos);remove(v);
     }check(handling[0].speed>handling[1].speed&&handling[1].speed>handling[2].speed&&handling[2].speed>handling[3].speed,'파손 개수에 따른 속도 저하 오류');
     const driven=make('izh');V.enter(G.Player,driven);driven.speed=8;G.Input.keys.KeyW=true;V.drive(G.Player,1/60);let a3=aim(driven,driven.wheels[0]);shot(G.WEAPONS.ar7,a3.o,a3.d);shot(G.WEAPONS.ar7,a3.o,a3.d);V.drive(G.Player,1/60);const driverHUD=G.Player.prompt.includes('타이어 파손 1/4');check(driven.wheels[0].flat&&driverHUD&&G.Player.vehicle===driven,'탑승 중 타이어 파손·안내 누락');G.Input.reset();V.exit(G.Player,true);owner.pos.copy(ownerPos);remove(driven);
-    const respawn=make('porter');const a2=aim(respawn,respawn.wheels[0]);H.damage(respawn,respawn.wheels[0],100,owner,a2.o,a2.d);V.explode(respawn);check(V.respawn(respawn),'차량 재생성 실패');const fresh=V.list.find(n=>n.home===respawn.home);check(fresh.hp===1600&&fresh.wheels.every(w=>!w.flat&&w.hp===36&&w.radius===w.r),'재생성 후 타이어 복구 실패');remove(fresh);G.FX.reset();
+    const respawn=make('porter');const a2=aim(respawn,respawn.wheels[0]);H.damage(respawn,respawn.wheels[0],100,owner,a2.o,a2.d);V.explode(respawn);check(V.respawn(respawn),'차량 재생성 실패');const fresh=V.list.find(n=>n.home===respawn.home);check(fresh.hp===fresh.maxHp&&fresh.wheels.every(w=>!w.flat&&w.hp===36&&w.radius===w.r),'재생성 후 타이어 복구 실패');remove(fresh);G.FX.reset();
     return{rows,guns,wall:true,roof:true,tilted,handling,driverHUD,respawn:true};
    }finally{W.heightAt=height;V.models=models;owner.pos.copy(ownerPos);B.reset()}
   });

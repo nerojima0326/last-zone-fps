@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 변경 전·후의 같은 실제 궤적을 렌더링한다. 영상은 1배속이며 성능 측정용은 아니다.
 const fs=require('fs'),path=require('path'),cp=require('child_process'),fixture=require('./throwable-fixture.cjs');
 const mode=process.argv[2]||'after',out=path.resolve(process.env.SMOKE_SHOTS||'/tmp/lz-v101-smoke-video'),base=process.env.SMOKE_BASE||'23341e70be77f0fb0eee902cbd88f98b7140befc',fps=15;

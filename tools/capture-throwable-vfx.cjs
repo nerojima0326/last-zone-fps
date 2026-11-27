@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 같은 사격장·카메라·시각에서 기준 커밋과 현재 투척 효과를 비교한다.
 const fs=require('fs'),cp=require('child_process'),path=require('path'),fixture=require('./optimize/browser-fixture.cjs');
 const mode=process.argv[2]||'after',out=process.argv[3]||'/tmp/lz-v84-vfx',close=process.env.VFX_CLOSE==='1';
@@ -16,7 +19,7 @@ if(mode==='before')for(const file of['index.html',...cp.execFileSync('git',['ls-
   const p=f.page;fs.mkdirSync(out,{recursive:true});
   if(mode!=='before')await p.waitForFunction(()=>!G.ThrowableVFX?.fireState||G.ThrowableVFX.fireState!=='loading');
   await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});
-  await p.waitForTimeout(60);await p.click('#trainBtn');await p.waitForFunction(()=>G.Training.active);
+  await p.waitForTimeout(60);await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>(!G.preparing&&G.Training.active));
   await p.evaluate(()=>{
    G.paused=true;G.Input.unlock();G.UI.showPause(false);G.__apply('medium');G.setRenderResolution('100');G.VM.set(null);
    G.VM.update(0,{hideVM:true,ads:0,raise:1,reload:null,moving:0,landDip:0,phase:0});const r=G.World.range;window.__blastPoint=new THREE.Vector3(r.x+23,r.y+.12,r.line-17);

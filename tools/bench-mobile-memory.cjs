@@ -14,7 +14,7 @@ if(base){
  try{
   const {page}=f;await page.evaluate(()=>{window.requestAnimationFrame=()=>0;G.onLockChange=()=>{};G.Input.unlock();G.Input.lock=()=>{};G.UI.showPause(false)});
   for(const stage of ['menu','training']){
-   if(stage==='training')await page.evaluate(()=>{G.startGame({...G.UI.opts,mode:'training'});G.paused=true;G.UI.showPause(false);for(let i=0;i<3;i++){G.Player.update(1/60);G.Input.endFrame()}});
+   if(stage==='training')await page.evaluate(async ()=>{await G.startGame({...G.UI.opts,mode:'training'});G.paused=true;G.UI.showPause(false);for(let i=0;i<3;i++){G.Player.update(1/60);G.Input.endFrame()}});
    report[stage]=await page.evaluate(()=>{G.UI.update(1/60);G.renderNow();G.Perf.gpuWait();const c=G.renderer.domElement,r=c.getBoundingClientRect(),rt=G.composerRT(),vm=G.viewmodelRT();return{build:LZ_BUILD,viewport:[document.documentElement.clientWidth,document.documentElement.clientHeight],dpr:devicePixelRatio,stage:[innerWidth,innerHeight],stageScale:__stageScale,canvas:[c.width,c.height],display:[r.width,r.height],rendererPR:G.renderer.getPixelRatio(),scene:[rt.width,rt.height,rt.samples],viewmodel:[vm.width,vm.height,vm.samples],gpu:__lzGpuAlloc.snapshot()}});
    await page.screenshot({path:path.join(out,stage+'.png'),timeout:90000});console.log(stage,Math.round(report[stage].gpu.estimatedBytes/1048576)+' MiB');
   }

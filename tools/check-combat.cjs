@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // npm i playwright; npx playwright install chromium
 // Optional: THREE_DIR, CHROME_BIN, SHOTS (screenshot directory).
 const fs=require('fs'),http=require('http'),path=require('path'),assert=require('assert');
@@ -15,7 +18,7 @@ await page.route(/fonts\.(googleapis|gstatic)\.com/,r=>r.fulfill({contentType:'t
 await page.goto(`http://127.0.0.1:${server.address().port}/index.html`);
 await page.waitForFunction(()=>window.G&&G.UI&&G.Game&&document.querySelector('#menu:not(.hidden)'),null,{timeout:180000});
 console.log('Full game menu ready');
-await page.click('#trainBtn');
+await page.click('#trainBtn');await page.evaluate(()=>G.startReady);
 await page.waitForFunction(()=>G.Game.training&&G.Game.state==='playing',null,{timeout:30000});
 await page.evaluate(()=>{const a=G.Game.player;a.cur='rifle';a.weapons.rifle={id:'ar7',mag:30};G.VM.set('ar7');G.Player.reload=null;G.Player.cycleT=-1;G.Player.pumpT=-1;});
 const lootChecks=await page.evaluate(()=>{

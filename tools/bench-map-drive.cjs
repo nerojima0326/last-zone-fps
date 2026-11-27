@@ -16,7 +16,7 @@ if(mode==='before')for(const file of ['index.html',...cp.execFileSync('git',['ls
  }});
  try{
   const p=f.page;await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});
-  await p.click('#trainBtn');await p.waitForFunction(()=>G.Training.active);await p.evaluate(()=>{G.paused=true;G.Input.unlock();G.UI.showPause(false);G.VM.set(null)});
+  await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>(!G.preparing&&G.Training.active));await p.evaluate(()=>{G.paused=true;G.Input.unlock();G.UI.showPause(false);G.VM.set(null)});
   const report={mode,base,version:await p.evaluate(()=>LZ_BUILD),viewport:[640,360],renderer:'Chromium / SwiftShader',note:'소프트웨어 렌더러의 통제 실험. 하드웨어 GPU FPS 또는 실제 플레이어 체감의 측정값이 아님.',stages:await p.evaluate(()=>__mapTimes)};
   report.map=await p.evaluate(()=>{
    const W=G.World,trees=G.Veg.variants.filter(v=>v.kind!=='bush').flatMap(v=>v.items),cells=new Map();let crowded=0,minimum=Infinity;

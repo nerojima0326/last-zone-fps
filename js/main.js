@@ -262,7 +262,6 @@ const TIER_NAME = { potato: '최저', low: '낮음', medium: '중간', high: '�
 const Auto = { downN: 0, upT: 0, lastChange: -1e9, lastUp: -1e9, failed: {}, max: 3, start: 'high' };
 function guessTier() {
   const mobile=document.documentElement.classList.contains('mobile');
-  try { const s = localStorage.getItem('lz_auto_tier'); if (s && QUALITY[s]) return mobile&&TIERS.indexOf(s)>1?'low':s; } catch (e) { /* 무시 */ }
   let s = '';
   try {
     const gl = renderer.getContext(), ext = gl.getExtension('WEBGL_debug_renderer_info');
@@ -277,27 +276,30 @@ function guessTier() {
 }
 function resolveQuality(opt) {
   if (opt !== 'auto') return QUALITY[opt] ? opt : 'high';
-  if (!Auto.guessed) { Auto.guessed = true; Auto.start = guessTier(); Auto.max = Math.min(3, TIERS.indexOf(Auto.start) + 1); }
+  if (!Auto.guessed) {
+    Auto.guessed=true;Auto.start=guessTier();Auto.max=Math.min(3,TIERS.indexOf(Auto.start)+1);
+    // v108 저장된 낮은 단계가 하드웨어의 회복 상한까지 낮추지는 않는다.
+    try{const s=localStorage.getItem('lz_auto_tier');if(QUALITY[s])Auto.start=document.documentElement.classList.contains('mobile')&&TIERS.indexOf(s)>1?'low':s;}catch(e){}
+  }
   return Auto.tier || Auto.start;
 }
-function autoGovern(now, fps, drs) {
-  if (G.qualityMode !== 'auto') return;
-  const ti = TIERS.indexOf(G.quality);
-  const hz = 1000 / drs.refresh;
-  // 내려가기: 60fps 아래인데 해상도를 이미 최저로 낮췄거나, 아주 느릴 때
-  if (fps < 57 && (drs.fixed || drs.scale <= drs.minScale + 0.01 || fps < 42)) Auto.downN++; else Auto.downN = Math.max(0, Auto.downN - 1);
-  if (ti > 0 && Auto.downN >= (fps < 42 ? 3 : 6) && now - Auto.lastChange > 3000) {
-    if (now - Auto.lastUp < 30000) Auto.failed[G.quality] = true;   // 방금 올렸다가 버티지 못하면 다시 올리지 않는다
-    Auto.downN = 0; Auto.upT = 0; Auto.lastChange = now;
-    setTier(TIERS[ti - 1]);
-    return;
+// v108 일시적인 긴 작업과 지속적인 저성능을 구분한다.
+G.qualityTransition=(reason,seconds=3)=>{const now=performance.now();Auto.ignoreUntil=now+seconds*1000;Auto.slowT=0;Auto.upT=0;Auto.hitchT=0;Auto.sampleAt=now;Auto.reason=reason;DRS.acc=DRS.cnt=0;DRS.checkT=now;};
+G.autoQualityInfo=()=>({tier:G.quality,maxTier:TIERS[Auto.max],graceUntil:Auto.ignoreUntil||0,reason:Auto.reason||'',slowSeconds:Auto.slowT||0,healthySeconds:Auto.upT,trial:!!Auto.trial});
+function autoGovern(now,fps,drs) {
+  if(G.qualityMode!=='auto')return;
+  const elapsed=Math.min(1,Math.max(0,(now-(Auto.sampleAt??now-500))/1000));Auto.sampleAt=now;
+  if(now<(Auto.ignoreUntil||0)){Auto.slowT=0;Auto.upT=0;return;}
+  const ti=TIERS.indexOf(G.quality),hz=1000/drs.refresh,slow=fps<57&&(drs.fixed||drs.scale<=drs.minScale+.01||fps<42);
+  Auto.slowT=slow?(Auto.slowT||0)+elapsed:Math.max(0,(Auto.slowT||0)-elapsed*2);
+  if(ti>0&&Auto.slowT>=(fps<42?4:7)&&now-Auto.lastChange>3000){
+    if(now-Auto.lastUp<30000)Auto.failed[G.quality]=true;
+    Auto.slowT=0;Auto.upT=0;Auto.lastChange=now;Auto.trial=false;setTier(TIERS[ti-1]);return;
   }
-  // 올라가기: 해상도 100%로 화면 주사율을 꽉 채운 채 25초 버티면 한 단계 위를 시험
-  if ((drs.fixed || drs.scale >= drs.maxScale) && fps >= Math.min(hz, drs.target) - 3) Auto.upT += 0.5; else Auto.upT = 0;
-  if (ti < Auto.max && Auto.upT >= 25 && now - Auto.lastChange > 20000 && !Auto.failed[TIERS[ti + 1]]) {
-    Auto.upT = 0; Auto.lastChange = Auto.lastUp = now;
-    setTier(TIERS[ti + 1]);
-  }
+  const healthy=(drs.fixed||drs.scale>=drs.maxScale*.9)&&fps>=Math.min(hz,drs.target)-4;
+  Auto.upT=healthy?Auto.upT+elapsed:Math.max(0,Auto.upT-elapsed*2);
+  if(Auto.trial&&Auto.upT>=10){Auto.trial=false;try{localStorage.setItem('lz_auto_tier',G.quality);}catch(e){}}
+  if(ti<Auto.max&&Auto.upT>=12&&now-Auto.lastChange>15000&&!Auto.failed[TIERS[ti+1]]){Auto.upT=0;Auto.lastChange=Auto.lastUp=now;setTier(TIERS[ti+1]);}
 }
 function setTier(q) {
   Auto.tier = q;
@@ -401,7 +403,9 @@ const DRS = {
     if (rt !== !!this.rtWas) { this.rtWas = rt; this.apply(true); }
     if (rt) { this.acc = 0; this.cnt = 0; return; }
     // 실제 10FPS 이하도 자동 품질 조절 대상이다. 숨긴 탭·긴 중단만 제외한다.
-    if (document.hidden || ms > 1000) return;
+    if(document.hidden){this.acc=this.cnt=0;Auto.slowT=Auto.upT=0;return;}
+    if(ms>700){Auto.hitchT=(Auto.hitchT||0)+ms;if(Auto.hitchT<3000){this.acc=this.cnt=0;Auto.slowT=0;Auto.sampleAt=now;Auto.ignoreUntil=Math.max(Auto.ignoreUntil||0,now+1500);return;}}
+    else Auto.hitchT=Math.max(0,(Auto.hitchT||0)-ms*2);
     this.acc += ms; this.cnt++;
     if (now - this.checkT < 500) return;
     this.checkT = now;
@@ -438,6 +442,7 @@ G.boot = async function () {
   progress(0.3, '렌더러 초기화 중...');
   G.Footsteps?.prefetch();
   renderer = G.renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance', stencil: false });
+  renderer.debug.checkShaderErrors = new URLSearchParams(location.search).get('shaderdebug') === '1'; // v108 동기 진단 조회는 검증 모드에서만
   renderer.setPixelRatio(outputPixelRatio());
   renderer.setSize(innerWidth, innerHeight);
   G.GraphicsRecovery.init(renderer);
@@ -480,6 +485,7 @@ G.boot = async function () {
   G.TrainingRecords?.initUI();
   G.WeaponFinish?.root(G.vmScene);
   if(G.Attachments)G.Attachments.initUI();
+  await G.GraphicsRecovery.wait(); // v108 연결 복구 전에는 환경맵을 만들지 않는다
   G.World.setTimeOfDay(G.UI.opts.tod || 'day');
   G.Player.sens = G.UI.opts.sens;
   DRS.target = G.UI.opts.fpsTarget || 120;
@@ -488,15 +494,18 @@ G.boot = async function () {
   camera.position.set(450, 160, 450); camera.lookAt(0, 20, 0);
   progress(0.97, '셰이더 컴파일 중...');
   await new Promise(r => setTimeout(r, 30));
-  renderer.compile(scene, camera);
-  renderer.shadowMap.needsUpdate = true;
-  // 레이트레이싱을 켜 두었으면 로딩 화면에서 모듈을 받고 장면까지 미리 컴파일한다
-  if (G.RT) {
-    if (G.RT.wanted) progress(0.99, '레이트레이싱 준비 중...');
-    await G.RT.init();
-    if (G.RT.active()) { progress(0.99, '레이트레이싱 장면 준비 중... (몇 초 걸립니다)'); await G.RT.prepare('레이트레이싱 장면 준비 중... (몇 초 걸립니다)'); }
-    if (G.Settings) G.Settings.render();
-  }
+  let rtInitialized=false;
+  await G.GraphicsRecovery.prepare(async()=>{
+    await prepareShaders(scene, camera);
+    await prepareShaders(G.vmScene, G.vmCamera, true);
+    renderer.shadowMap.needsUpdate = true;
+    // 레이트레이싱을 켜 두었으면 로딩 화면에서 모듈을 받고 장면까지 미리 컴파일한다
+    if (G.RT) {
+      if(!rtInitialized){rtInitialized=true;if(G.RT.wanted)progress(0.99,'레이트레이싱 준비 중...');await G.RT.init();}
+      if (G.RT.active()) { progress(0.99, '레이트레이싱 장면 준비 중... (몇 초 걸립니다)'); await G.RT.prepare('레이트레이싱 장면 준비 중... (몇 초 걸립니다)'); }
+      if (G.Settings) G.Settings.render();
+    }
+  });
   progress(1, '완료');
   G.GraphicsRecovery.bootComplete();
   startAutoBench();
@@ -507,6 +516,7 @@ G.boot = async function () {
     if (G.Game.state === 'playing' && !G.Input.locked && !G.Settings?.open && !G.Attachments?.open && !G.Armory?.open && !G.TrainingRecords?.open) G.resume();
   });
   G.onLockChange = (locked) => {
+    if(G.preparing){if(!locked)G.prepUnlocked=true;return;} // v108 준비 중 잠금 해제로 게임이 진행되지 않게 한다
     if (G.Game.spectating && !locked) { G.Game.stopSpectate(); return; }
     if (G.Game.state !== 'playing') return;
     if(G.Attachments?.open||G.Armory?.open||G.TrainingRecords?.open){G.paused=true;G.UI.showPause(false);return;}
@@ -646,7 +656,7 @@ function applyQuality(q) {
   applyAniso(q);
   G.World.lodDist = Q.lod; G.World.terrDist = Q.terr; G.World.lodT = 0;
   if (G.World.setFogScale) G.World.setFogScale(Q.fog);
-  camera.far = Q.far; camera.updateProjectionMatrix();
+  camera.userData.groundFar=Q.far;camera.far = Q.far; camera.updateProjectionMatrix(); // v108 지상 시야와 강하 원거리 분리
   G.quality = q;
   DRS.reset(basePixelRatio(q));
   onResize();
@@ -655,8 +665,8 @@ function applyQuality(q) {
 // 한 프레임 그리기: 후처리를 쓰면 composer, 아니면 화면에 바로 (본 장면 → 1인칭 총)
 const _db = new THREE.Vector2();
 function usePost() { const Q = QUALITY[G.quality]; return !Q || Q.post; }
-function renderFrame(dt) {
-  if (G.GraphicsRecovery.lost) return;
+function renderFrame(dt, preparing=false) {
+  if (G.GraphicsRecovery.isLost() || (G.preparing&&!preparing)) return;
   // The catalogue draws its own preview on demand over the last game frame.
   if (G.Armory?.open) return;
   // 레이트레이싱 (설정에서 켰고 지원되는 기기일 때)
@@ -697,9 +707,15 @@ G.__apply = (q) => applyQuality(q);
 G.qualityShEvery = () => (QUALITY[G.quality] || QUALITY.high).shEvery;
 G.composerRT = () => (composer && usePost() && !(G.RT && G.RT.drawing())) ? composer.renderTarget1 : null;
 G.qualityLabel = () => (G.qualityMode === 'auto' ? '자동·' : '') + (TIER_NAME[G.quality] || '');
+// v108 크기 변경 때 이전 컨텍스트의 렌더 타깃을 삭제하지 않게 손실 중 정리한다.
+G.releaseGraphicsTargets = () => {
+  const targets=new Set([composer?.renderTarget1,composer?.renderTarget2,nativeVM?.target,presentation?.target,bloom?.renderTargetBright,...(bloom?.renderTargetsHorizontal||[]),...(bloom?.renderTargetsVertical||[]),G.World.sun?.shadow.map,G.World.sun?.shadow.mapPass]);
+  for(const target of targets)target?.dispose();
+  if(rtCapture){rtCapture.dispose();rtCapture=null;}
+};
 
 function onResize() {
-  if (G.GraphicsRecovery.lost) return;
+  if (G.GraphicsRecovery.isLost()) return;
   const out = outputPixelRatio();
   if (Math.abs(renderer.getPixelRatio() - out) > .001) renderer.setPixelRatio(out);
   renderer.setSize(innerWidth, innerHeight);
@@ -709,9 +725,37 @@ function onResize() {
   if (G.quality) DRS.reset(outputPixelRatio());
 }
 
-// 매치 시작 시 사용될 셰이더를 미리 컴파일해 첫 사용 시 끊김을 없앤다
-function warmup() {
+// v108 컴파일 완료와 첫 사용의 유니폼 조회까지 시작 화면에서 끝낸다.
+function prepareTarget(viewmodel) {
+  if(!usePost()||(viewmodel&&G.RT?.drawing()))return null; // v108 직접 출력·RT의 출력 형식도 맞춘다
+  return viewmodel?nativeVM.target:composer.renderTarget1;
+}
+async function prepareShaders(root, cam, viewmodel=false, targetScene=root) {
+  const prep=G.RenderPrep;await prep.waitSafe();await prep.gpuIdle();await prep.waitSafe();
+  const epoch=G.GraphicsRecovery.epoch;
+  const previous=renderer.getRenderTarget();
+  try{renderer.setRenderTarget(prepareTarget(viewmodel));renderer.compile(root,cam,targetScene)}
+  finally{renderer.setRenderTarget(previous)}
+  // v108 양면 투명 재질은 앞·뒷면 프로그램을 모두 기다린다.
+  const programs=new Set();root.traverse(o=>{for(const m of [].concat(o.material||[]))for(const p of renderer.properties.get(m).programs?.values()||[])programs.add(p)});
+  const started=performance.now();
+  for(const p of programs)for(;;){if(G.GraphicsRecovery.isLost()||epoch!==G.GraphicsRecovery.epoch)throw Error('그래픽 연결이 끊겼습니다');if(p.isReady())break;if(performance.now()-started>60000)throw Error('셰이더 준비를 완료하지 못했습니다');await prep.turn(8)}
+  await prep.waitSafe();
+  if(epoch!==G.GraphicsRecovery.epoch)throw Error('그래픽 연결이 끊겼습니다'); // v108 복구 전 프로그램은 조회하지 않는다
+  const debug=renderer.debug.checkShaderErrors;renderer.debug.checkShaderErrors=true;
+  try{for(const p of programs)p.getUniforms()}
+  finally{renderer.debug.checkShaderErrors=debug}
+  await prep.gpuIdle();
+}
+
+// v108 필요한 인벤토리만 받고 GPU 업로드를 프레임 사이에 나눠 끝낸다.
+async function warmup() {
   const started=performance.now(),heap=performance.memory?.usedJSHeapSize||null; // v107 시작 정지·메모리 계측
+  const prep=G.RenderPrep,requests=[];
+  for(const w of Object.values(G.Game.player.weapons))if(w){G.VM.ensure(w.id);requests.push(G.AssetVM?.request(w.id))}
+  // v108 선택 자산의 응답이 늦으면 기존 모델로 시작하고 다음 안전한 시점에 준비한다.
+  let timer;await Promise.race([Promise.allSettled(requests),new Promise(resolve=>{timer=setTimeout(resolve,10000)})]);clearTimeout(timer);
+  if(G.GraphicsRecovery.isLost())throw Error('그래픽 연결이 끊겼습니다');
   const shown = [];
   const show = o => { if (o && !o.visible) { o.visible = true; shown.push(o); } };
   const temp = [];
@@ -721,61 +765,94 @@ function warmup() {
   const m0 = G.Game.actors[0].model;
   m0.showChute(true); m0.showChute(false); show(m0.chute);
   for (const k of G.THROW_ORDER) { const t = G.Guns.throwModel(k, false); t.position.copy(camera.position); scene.add(t); temp.push(t); }
-  for (const w of Object.values(G.Game.player.weapons)) if (w) { const g = G.Guns.tpModel(w.id); g.position.copy(camera.position); scene.add(g); temp.push(g); G.VM.ensure(w.id); G.AssetVM?.request(w.id); }
+  for (const w of Object.values(G.Game.player.weapons)) if (w) { const g = G.Guns.tpModel(w.id); g.position.copy(camera.position); scene.add(g); temp.push(g); }
   if (G.Game.zone) show(G.Game.zone.mesh);
   for (const k in G.VM.models) show(G.VM.models[k].root);
-  // Visibility inside a model encodes optics, magazines and alternate hands.
-  // Compiling its root must not reveal those hidden alternatives.
-  // 실제 HDR 출력과 같은 상태에서 준비해 첫 사격 때 출력 색공간 변형이 다시 만들어지지 않게 한다.
-  const previous = renderer.getRenderTarget();
-  const compileStarted=performance.now();
-  try {
-    renderer.setRenderTarget(composer.renderTarget1); renderer.compile(scene, camera);
-    renderer.setRenderTarget(nativeVM.target); renderer.compile(G.vmScene, G.vmCamera);
-  } finally { renderer.setRenderTarget(previous); }
-  const compileMs=performance.now()-compileStarted;
-  // v67 처음 보는 텍스처를 GPU 로 올리느라 게임 중에 멈칫하던 것 (숲에 처음 들어갈 때 등) → 판이 시작되면
-  //  여유 프레임에서 한 장씩 올린다 (한 번에 올리면 저사양에서 시작 화면이 수 초 멈춘다)
+  // v108 조준경·탄창·대체 손의 내부 가시성은 그대로 둔다.
   const texs = new Set();
   for (const root of [scene, G.vmScene]) root.traverse(o => {
     if (!o.material) return;
     for (const m of [].concat(o.material)) for (const k in m) { const v = m[k]; if (v && v.isTexture && !v.isRenderTargetTexture && v.image) texs.add(v); }
   });
   G.prewarmTex = [...texs].filter(t => !renderer.properties.get(t).__webglInit);
-  for (const o of shown) o.visible = false;
-  for (const t of temp) scene.remove(t);
-  G.VM.set(null);
-  G.warmupStats={ms:performance.now()-started,compileMs,heapBefore:heap,heapAfter:performance.memory?.usedJSHeapSize||null,viewmodels:Object.keys(G.VM.models).length,texturesQueued:G.prewarmTex.length};
+  const queued=G.prewarmTex.length;let compileMs;
+  try{
+    document.getElementById('loadText').textContent='장면을 준비하는 중...';
+    await prep.textures(G.prewarmTex);G.prewarmTex=[];
+    document.getElementById('loadText').textContent='그래픽을 준비하는 중...';
+    const t=performance.now();await prepareShaders(scene,camera);await prepareShaders(G.vmScene,G.vmCamera,true);compileMs=performance.now()-t;
+    for(const native of[G.M4Viewmodel,G.G17Pilot])if(native?.ready&&native.pivot)await G.prepareViewmodel(native.pivot); // v108 수송기에서 시작해도 착지 전 손·총 버퍼를 준비한다
+  }finally{
+    for (const o of shown) o.visible = false;
+    for (const t of temp) scene.remove(t);
+    G.VM.set(null);
+  }
+  document.getElementById('loadText').textContent='첫 화면 준비 중...';
+  G.Player.update(0);G.Game.syncModels(0);G.World.update(0,camera.position,camera);G.RoomLighting?.update(0,camera.position);G.Weather.update(0);
+  renderer.shadowMap.needsUpdate=true;
+  if(G.Perf)G.Perf.withoutRecording(()=>renderFrame(0,true));else renderFrame(0,true);
+  await prep.gpuIdle();
+  G.warmupStats={ms:performance.now()-started,compileMs,heapBefore:heap,heapAfter:performance.memory?.usedJSHeapSize||null,viewmodels:Object.keys(G.VM.models).length,texturesQueued:queued,texturesRemaining:G.prewarmTex.length};
 }
 
-G.prepareViewmodel = root => {
-  if (G.GraphicsRecovery.lost) return Promise.resolve();
-  const previous = renderer.getRenderTarget();
-  try { renderer.setRenderTarget(G.RT?.drawing() ? null : nativeVM.target); return renderer.compileAsync(root, G.vmCamera, G.vmScene); }
-  finally { renderer.setRenderTarget(previous); }
+G.prepareViewmodel = async root => {
+  if (G.GraphicsRecovery.isLost()) throw Error('그래픽 연결이 끊겼습니다');
+  await prepareShaders(root,G.vmCamera,true,G.vmScene);
+  await G.RenderPrep.waitSafe();
+  const target=prepareTarget(true)?new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType,samples:QualitySamples(G.msaaSamples)}):null,previous=renderer.getRenderTarget(),parent=root.parent,index=parent?.children.indexOf(root),moved=parent!==G.vmScene;
+  const viewport=renderer.getViewport(new THREE.Vector4()),scissor=renderer.getScissor(new THREE.Vector4()),scissorTest=renderer.getScissorTest();
+  if(moved)G.vmScene.add(root);
+  const visible=G.vmScene.children.map(o=>[o,o.visible]);
+  const release=()=>target?.dispose();renderer.domElement.addEventListener('webglcontextlost',release,{once:true});
+  try{
+    try{
+      for(const [o]of visible)if(!o.isLight)o.visible=o===root;
+      root.visible=true;renderer.setRenderTarget(target);renderer.setViewport(0,0,1,1);renderer.setScissor(0,0,1,1);renderer.setScissorTest(true);renderer.render(G.vmScene,G.vmCamera);
+    }finally{
+      for(const [o,on]of visible)o.visible=on;
+      if(moved){G.vmScene.remove(root);if(parent){parent.add(root);parent.children.splice(parent.children.indexOf(root),1);parent.children.splice(index,0,root)}}
+      renderer.setRenderTarget(previous);
+      renderer.setViewport(viewport);renderer.setScissor(scissor);renderer.setScissorTest(scissorTest);
+    }
+    await G.RenderPrep.gpuIdle();
+  }finally{renderer.domElement.removeEventListener('webglcontextlost',release);release()}
 };
 G.startGame = function (opts) {
-  if (G.GraphicsRecovery.lost) return;
-  G.Audio.init();
-  G.UI.hideMenu();
-  document.getElementById('results').classList.add('hidden');
-  G.Player.sens = opts.sens;
-  DRS.target = opts.fpsTarget || 120;
-  G.qualityMode = opts.quality;
-  const q = resolveQuality(opts.quality);
-  Auto.downN = 0; Auto.upT = 0; Auto.lastChange = performance.now();
-  if (G.quality !== q) applyQuality(q);
-  else DRS.reset(basePixelRatio(G.quality));
-  G.World.setTimeOfDay(opts.tod);
-  G.Game.start(opts);
-  warmup();
-  G.paused = false;
-  G.Input.lock();
-  // 레이트레이싱: 새 판의 장면을 로딩 화면에서 미리 컴파일 (게임 중 멈춤 없음)
-  if (G.RT) { G.RT.invalidate(); G.RT.prepare(); }
+  if(G.preparing)return G.startReady;
+  if (G.GraphicsRecovery.isLost()) return Promise.resolve(false);
+  G.Audio.init(); // v108 오디오·포인터 잠금은 클릭의 사용자 동작 안에서 요청한다
+  G.preparing=true;G.prepUnlocked=false;G.warmupStats=null;G.paused=true;G.Input.reset();G.Input.lock();
+  const loading=document.getElementById('loading');loading.classList.remove('hidden');document.getElementById('loadText').textContent='게임을 준비하는 중...';document.getElementById('loadFill').style.width='100%';
+  G.startReady=(async()=>{
+    try{
+      await G.RenderPrep.turn(30);await G.GraphicsRecovery.prepare(()=>G.RenderPrep.gpuIdle());
+      G.UI.hideMenu();
+      document.getElementById('results').classList.add('hidden');
+      G.Player.sens = opts.sens;
+      DRS.target = opts.fpsTarget || 120;
+      G.qualityMode = opts.quality;
+      let q = resolveQuality(opts.quality);
+      Auto.failed={};Auto.slowT=0;Auto.trial=false;
+      if(opts.quality==='auto'){try{const saved=localStorage.getItem('lz_auto_tier'),i=TIERS.indexOf(saved);if(i>=0&&i<Auto.max){q=TIERS[i+1];Auto.tier=q;Auto.trial=true;}}catch(e){}}
+      Auto.downN = 0; Auto.upT = 0; Auto.lastChange = performance.now();
+      if (G.quality !== q) applyQuality(q);
+      else DRS.reset(basePixelRatio(G.quality));
+      G.World.setTimeOfDay(opts.tod);
+      G.Game.start(opts);
+      // v108 경기 초기화는 한 번만 하고 끊긴 GPU 준비가 끝날 때까지 시작을 보류한다.
+      await G.GraphicsRecovery.prepare(async()=>{
+        await warmup();
+        if (G.RT) { G.RT.invalidate(); await G.RT.prepare(); }
+      });
+      G.qualityTransition('판 시작',6);G.Input.reset();last=performance.now();
+      G.paused=G.prepUnlocked;G.UI.showPause(G.paused);return true;
+    }catch(e){
+      console.error(e);G.Game.cleanup();G.Input.unlock();G.UI.showMenu();if(!G.GraphicsRecovery.isLost())G.UI.toast('게임 준비에 실패했습니다 · 다시 시도하세요');return false;
+    }finally{G.preparing=false;if(!G.GraphicsRecovery.isLost())loading.classList.add('hidden');}
+  })();return G.startReady;
 };
 G.resume = function () {
-  if (G.GraphicsRecovery.lost) return;
+  if (G.GraphicsRecovery.isLost() || G.preparing) return;
   G.Audio.init();
   G.UI.showPause(false);
   G.paused = false;
@@ -798,7 +875,7 @@ function frame(now) {
   const ms = now - last;
   let dt = ms / 1000;
   last = now;
-  if (G.GraphicsRecovery.lost) return;
+  if (G.GraphicsRecovery.isLost() || G.preparing || (G.RenderPrep.running && G.RenderPrep.safe())) return;
   if (dt > 0.05) dt = 0.05;
   if (dt <= 0) dt = 0.001;
   frameNo++;
@@ -832,9 +909,6 @@ function frame(now) {
   // 그림자 맵 갱신 주기: 중간·높음은 2프레임마다(느리면 매 프레임), 낮음은 3프레임마다, 최저는 그림자 없음
   const se = (QUALITY[G.quality] || QUALITY.high).shEvery;
   if (se && (frameNo % se === 0 || (se === 2 && ms > 14))) renderer.shadowMap.needsUpdate = true;
-  // 여유가 있을 때만 남은 텍스처를 한 장 준비한다.
-  const prepIdle = G.paused || Game.state === 'menu' || (!G.Input.lmb && G.Player.ads < .1 && !G.Player.reload && G.Player.time - G.Player.lastShot > .3 && ms < 22);
-  if (prepIdle && performance.now() - tUpd < 4 && G.prewarmTex?.length) { try { renderer.initTexture(G.prewarmTex.pop()); } catch (e) { /* 무시 */ } }
   const updMs = performance.now() - tUpd;
   if (G.Perf) G.Perf.frameStart();
   if (G.SessionPerf?.recording) G.SessionPerf.renderStart = performance.now();

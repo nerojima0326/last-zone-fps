@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // npm i playwright; npx playwright install chromium
 // Optional: THREE_DIR, CHROME_BIN, BASELINE_PLAYER (legacy studio), REPORT, RENDER_AUDIO.
 const fs=require('fs'),http=require('http'),path=require('path'),assert=require('assert');
@@ -24,11 +27,11 @@ if(process.env.BASELINE_PLAYER){
  await page.addInitScript(()=>localStorage.setItem('lastzone_opts',JSON.stringify({quality:'potato',qv:2,players:24,loadout:'all',fpsTarget:60})));
  await page.goto(`http://127.0.0.1:${server.address().port}/`);
  await page.waitForFunction(()=>window.G?.UI&&document.querySelector('#loading.hidden'),null,{timeout:180000});
- await page.click('#trainBtn');
+ await page.click('#trainBtn');await page.evaluate(()=>G.startReady);
  // 음성과 애니메이션은 직접 진행하므로 준비 중 화면 렌더와의 경쟁을 피한다.
  await page.evaluate(()=>{G.onLockChange=()=>{};G.Input.unlock();G.paused=true;G.UI.showPause(false);window.requestAnimationFrame=()=>0});
  await page.evaluate(async()=>{for(const id of G.GUN_IDS)G.VM.ensure(id);await G.AssetVM.loadAll()});
- await page.waitForFunction(()=>G.Training.active&&G.M4Viewmodel.ready&&G.G17Pilot.ready&&Object.keys(G.AssetVM.PACKS).every(k=>G.AssetVM.packs[k]?.ready),null,{timeout:240000});
+ await page.waitForFunction(()=>(!G.preparing&&G.Training.active)&&G.M4Viewmodel.ready&&G.G17Pilot.ready&&Object.keys(G.AssetVM.PACKS).every(k=>G.AssetVM.packs[k]?.ready),null,{timeout:240000});
  await page.evaluate(()=>{G.onLockChange=()=>{};G.Input.unlock();G.paused=true;G.UI.showPause(false);window.requestAnimationFrame=()=>0;});
 }
 console.log('Audio scene loaded');

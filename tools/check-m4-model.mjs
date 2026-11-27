@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+import './artifact-paths.cjs';
 // THREE_DIR: official Three.js r160 checkout. argv[2]: locally licensed M4 ZIP.
 // Motion/geometry regression checks; browser QA additionally verifies decoded textures and IndexedDB.
 import fs from 'node:fs';import path from 'node:path';import vm from 'node:vm';import{fileURLToPath,pathToFileURL}from'node:url';

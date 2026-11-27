@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // Checks the optional historical Patch previews and isolation from the current game.
 // Optional: CHROME_BIN, THREE_DIR, SHOTS; npm install playwright.
 const fs=require('fs'),path=require('path'),http=require('http'),assert=require('assert');
@@ -71,7 +74,7 @@ const mime={'.html':'text/html','.js':'application/javascript','.jpg':'image/jpe
   const patchRequests=[];page.on('request',r=>{if(r.url().includes('/assets/patch/people/'))patchRequests.push(r.url())});
   await page.goto(base+'/index.html');await page.waitForFunction(()=>window.G?.UI&&document.querySelector('#menu:not(.hidden)'),null,{timeout:180000});
   assert(await page.evaluate(()=>!G.Soldiers.patch&&!G.PatchCharacters),'Preview overrode the game rigs');
-  await page.click('#trainBtn');await page.waitForFunction(()=>G.Game.training&&G.Training.active);
+  await page.click('#trainBtn');await page.evaluate(()=>G.startReady);await page.waitForFunction(()=>G.Game.training&&(!G.preparing&&G.Training.active));
   const game=await page.evaluate(()=>{G.Input.unlock();G.paused=true;return {build:window.LZ_BUILD,targets:G.Training.targets.filter(t=>!t.kh&&!t.zone).length,killhouse:G.Training.targets.filter(t=>t.kh).length,grenadeTargets:G.Training.targets.filter(t=>t.zone==='grenade').length,guns:G.Training.items.filter(i=>G.GUN_IDS.includes(i.kind)).length,arms:G.VM.models.ar7.armL.skinSource};});
   assert.equal(game.build,fs.readFileSync(path.join(root,'version.txt'),'utf8').trim());assert.equal(game.targets,14);assert.equal(game.guns,30);
   assert.equal(game.killhouse,11);assert.equal(game.grenadeTargets,3);

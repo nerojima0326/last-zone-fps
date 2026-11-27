@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 장면 해상도를 바꿔도 HUD·2D 스코프·1인칭 조준경의 네이티브 픽셀을 유지한다.
 const assert=require('assert'),fs=require('fs'),path=require('path'),fixture=require('./optimize/browser-fixture.cjs');
 const out=process.env.REPORT||'/tmp/lz-v81-reticle.json';
@@ -8,7 +11,7 @@ const out=process.env.REPORT||'/tmp/lz-v81-reticle.json';
   await p.evaluate(()=>{
    const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);
    G.onLockChange=()=>{};G.Input.unlock();
-  });await p.waitForTimeout(100);await p.click('#trainBtn');await p.waitForFunction(()=>G.Training.active);
+  });await p.waitForTimeout(100);await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>(!G.preparing&&G.Training.active));
   const result=await p.evaluate(()=>{
    G.paused=true;G.Input.unlock();G.UI.showPause(false);G.__apply('low');G.setRenderResolution('67');
    const inst=G.Game.player.weapons.rifle;G.Game.player.cur='rifle';inst.scope='reddot';G.VM.set(inst.id);

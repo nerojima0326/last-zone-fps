@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v78: rendering contracts, asset residency, real LOD selection and fallbacks.
 const assert = require('assert'), fs = require('fs'), path = require('path');
 const fixture = require('./optimize/browser-fixture.cjs');
@@ -31,7 +34,7 @@ const out = process.env.REPORT || '/tmp/lastzone-v78-quality.json';
     }));
     for(const row of result.lods){assert(row.counts[1]<row.counts[0]&&row.counts[2]<row.counts[1],row.id);assert(row.sizeError<.08,row.id+' LOD scale drift '+row.sizeError);assert.deepEqual(row.levels,[0,1,2,0],row.id+' zoom/hysteresis');}
     await f.page.evaluate(()=>document.getElementById('trainBtn').click());
-    await f.page.waitForFunction(()=>G.Training.active);
+    await f.page.waitForFunction(()=>(!G.preparing&&G.Training.active));
     await f.page.evaluate(async()=>{
       G.onLockChange=()=>{};G.Input.unlock();G.paused=true;G.UI.showPause(false);window.requestAnimationFrame=()=>0;
       await Promise.all(Object.values(G.Game.player.weapons).filter(Boolean).map(w=>G.AssetVM.request(w.id)));

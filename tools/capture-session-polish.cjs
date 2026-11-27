@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // v82와 작업 트리의 훈련장 HUD를 같은 위치·해상도에서 저장한다.
 const fs=require('fs'),cp=require('child_process'),path=require('path'),assert=require('assert'),fixture=require('./optimize/browser-fixture.cjs');
 const mode=process.argv[2]||'after',out=process.argv[3]||'/tmp/lz-v83-capture',base='a758fec49ba8265ab02b14da5963a40300bab735',old={};
@@ -8,7 +11,7 @@ if(mode==='before')for(const file of['index.html','css/style.css','css/mw.css',.
   await p.route(u=>u.hostname==='127.0.0.1'&&(u.pathname==='/'||old[u.pathname.slice(1)]!==undefined),r=>{const file=new URL(r.request().url()).pathname.slice(1)||'index.html';return r.fulfill({body:old[file],contentType:file.endsWith('.html')?'text/html':file.endsWith('.css')?'text/css':'application/javascript'})});
  }});
  try{
-  const p=f.page;fs.mkdirSync(out,{recursive:true});await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.waitForFunction(()=>G.Training.active);
+  const p=f.page;fs.mkdirSync(out,{recursive:true});await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>(!G.preparing&&G.Training.active));
   await p.evaluate(async()=>{G.paused=true;G.Input.unlock();G.UI.showPause(false);const a=G.Game.player;a.give('ar7');a.cur='rifle';G.VM.set('ar7');await G.AssetVM.request('ar7');a.pos.set(G.World.range.x,G.World.range.y,G.World.range.line+1);a.yaw=0;a.pitch=0;G.Player.raise=1;G.Player.sw=null;for(let i=0;i<120;i++)G.Player.updateCamera(1/60);G.__apply('medium');G.UI.update(0);G.Training.drawStats()});
   await p.addStyleTag({content:'#toast,#centerMsg,#fpsBox {visibility:hidden!important}'});
   const bounds=[];

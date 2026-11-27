@@ -1,0 +1,6 @@
+// v108 직접 실행·하위 프로세스·심볼릭 링크의 검증 자료 덮어쓰기를 차단한다.
+require('./artifact-paths.cjs');
+const fs=require('fs'),path=require('path'),os=require('os'),assert=require('assert'),cp=require('child_process');
+(async()=>{const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'lz-artifacts-')),docs=path.resolve(__dirname,'../docs/validation'),bad=path.join(docs,'.forbidden-v108.png');
+ assert.throws(()=>fs.writeFileSync(bad,'금지'),/저장소 밖/);assert.throws(()=>fs.mkdirSync(path.join(docs,'forbidden')),/저장소 밖/);assert.throws(()=>fs.createWriteStream(bad),/저장소 밖/);await assert.rejects(fs.promises.writeFile(bad,'금지'),/저장소 밖/);fs.symlinkSync(docs,path.join(tmp,'link'),'dir');assert.throws(()=>fs.writeFileSync(path.join(tmp,'link','bad.png'),'금지'),/저장소 밖/);
+ fs.writeFileSync(path.join(tmp,'allowed.txt'),'허용');assert.equal(fs.readFileSync(path.join(tmp,'allowed.txt'),'utf8'),'허용');assert(!fs.existsSync(bad));const child=cp.spawnSync(process.execPath,['--require',path.join(__dirname,'artifact-paths.cjs'),'-e',"require('fs').writeFileSync(process.argv[1],'금지')",bad],{encoding:'utf8'});assert.notEqual(child.status,0);assert(child.stderr.includes('저장소 밖'));console.log('PASS 검증 자료 쓰기·삭제·심볼릭 링크 보호와 외부 산출물 허용');})().catch(e=>{console.error(e);process.exitCode=1});

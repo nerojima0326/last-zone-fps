@@ -1,3 +1,6 @@
+
+// v108 기존 검증 자료 쓰기 보호.
+require('./artifact-paths.cjs');
 // 실제 탄도·차량 생명주기·투척 충돌·효과 풀·렌더 오류를 함께 검사한다.
 const assert=require('assert'),fs=require('fs'),fixture=require('./optimize/browser-fixture.cjs');
 const out=process.env.REPORT||'/tmp/lz-v84-vehicle-vfx.json';
@@ -5,7 +8,7 @@ const out=process.env.REPORT||'/tmp/lz-v84-vehicle-vfx.json';
  const f=await fixture({viewport:{width:640,height:360}}),p=f.page,report={};
  try{
   await p.waitForFunction(()=>G.ThrowableVFX.fireState!=='loading');
-  await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.waitForFunction(()=>G.Training.active);
+  await p.evaluate(()=>{const raf=requestAnimationFrame.bind(window);window.requestAnimationFrame=fn=>fn.name==='frame'?0:raf(fn);G.onLockChange=()=>{};G.Input.unlock()});await p.click('#trainBtn');await p.evaluate(()=>G.startReady);await p.waitForFunction(()=>(!G.preparing&&G.Training.active));
   await p.evaluate(()=>{G.paused=true;G.Input.unlock();G.UI.showPause(false)});
   report.vehicles=await p.evaluate(()=>{
    const V=G.Vehicles,W=G.World,owner=G.Game.player,def=G.WEAPONS.ar7,rows=[];
@@ -16,12 +19,12 @@ const out=process.env.REPORT||'/tmp/lz-v84-vehicle-vfx.json';
     while(!v.burnT&&shots<200){G.Ballistics.fire(owner,origin,direction,def,origin,false,{hit:false,head:false});for(let n=0;n<8&&G.Ballistics.list.length;n++)G.Ballistics.update(.01);shots++}
     if(!v.burnT)throw Error('실제 탄도가 차량에 맞지 않음 '+kind);
     const burn=v.burnT;V.explode(v);const before=V.list.length,respawned=V.respawn(v),next=V.list.find(o=>o.home===v.home);if(!respawned||!next)throw Error('차량 재생성 실패');
-    const restored=next.hp;remove(next);rows.push({kind,hp,shots,burn,respawned,restored,countStable:before===V.list.length+1});
+    const restored=next.hp,maxHp=V.spec(v).hp,expectedShots=Math.ceil(hp/(G.dmgAt(def,8)*.8));remove(next);rows.push({kind,hp,maxHp,expectedShots,shots,burn,respawned,restored,countStable:before===V.list.length+1});
    }
    const height=W.heightAt;let v;try{W.heightAt=()=>300;v=V.newVehicle(70,300,0,0,{kind:'izh'})}finally{W.heightAt=height}
-   const center=V.center(v,new THREE.Vector3());let grenades=0;while(!v.burnT&&grenades<20){V.blast(center,8,230,owner);grenades++}const blast={grenades,burn:v.burnT};remove(v);G.Ballistics.reset();G.FX.reset();return{rows,blast};
+   const center=V.center(v,new THREE.Vector3());let grenades=0;while(!v.burnT&&grenades<20){V.blast(center,8,230,owner);grenades++}const blast={grenades,expected:Math.ceil(v.maxHp/230),burn:v.burnT};remove(v);G.Ballistics.reset();G.FX.reset();return{rows,blast};
   });
-  for(const r of report.vehicles.rows){assert.equal(r.hp,1600);assert(r.shots>=80&&r.shots<=90);assert.equal(r.burn,2.4);assert.equal(r.restored,1600);assert(r.respawned&&r.countStable)}assert.equal(report.vehicles.blast.grenades,7);
+  for(const r of report.vehicles.rows){assert.equal(r.hp,r.maxHp);assert(r.shots>=r.expectedShots&&r.shots<=r.expectedShots+1);assert.equal(r.burn,2.4);assert.equal(r.restored,r.maxHp);assert(r.respawned&&r.countStable)}assert.equal(report.vehicles.blast.grenades,report.vehicles.blast.expected);
   report.collision=await p.evaluate(()=>{
    const T=G.Throwables,W=G.World,P=G.ThrowableVFX;T.reset();G.FX.reset();const floor=W.addCollider(-12,299.8,-12,12,300,12,'hard',true);
    G.camera.position.set(5,303,8);G.camera.lookAt(0,300,0);G.camera.updateMatrixWorld(true);

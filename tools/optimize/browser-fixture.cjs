@@ -30,7 +30,8 @@ module.exports = async function fixture(opts = {}) {
       if (!preserve || !localStorage.getItem('lastzone_opts')) localStorage.setItem('lastzone_opts', JSON.stringify({ quality: 'potato', qv: 2, players: 4, loadout: 'all', fpsTarget: 60, ...initial }));
     }, {preserve:!!opts.preserveOptions,initial:opts.initialOptions||{}});
     if (opts.route) await opts.route(page);
-    await page.goto('http://127.0.0.1:' + server.address().port + '/?' + (opts.query || ''));
+    // v108 일반 검사는 셰이더 진단을 유지하고 실제 성능 검사는 배포 설정으로 잰다.
+    await page.goto('http://127.0.0.1:' + server.address().port + '/?' + (opts.query || '') + (opts.shaderDebug===false?'':'&shaderdebug=1'));
     if (opts.expectBootError) await page.waitForFunction(() => document.getElementById('loadText')?.textContent.startsWith('오류:'), null, { timeout: 60000 });
     else {
       await page.waitForFunction(() => window.G?.VM && document.querySelector('#menu:not(.hidden)'), null, { timeout: 240000 });
