@@ -2394,9 +2394,23 @@ const W = G.World = {
   // 안개 배율 (저사양 단계는 시야 거리를 줄이는 대신 안개를 짙게)
   setFogScale(k) {
     this.fogK = k;
-    if (this.scene.fog) this.scene.fog.density = (this.fogD || 0.0014) * k;
+    this.applyAirFog();
     this.syncGrassLight();
-    if (G.FX && this.fogColor) G.FX.setFog(this.fogColor, (this.fogD || 0.0014) * k);
+  },
+  // v108 상공에서는 먼 지형을 읽고, 지상 날씨의 원래 안개로 부드럽게 돌아온다.
+  applyAirFog() {
+    const base=(this.fogD||.0014)*(this.fogK||1),density=U.lerp(base,Math.min(base,.00045),this.airView||0);
+    if(this.scene.fog)this.scene.fog.density=density;
+    if(this.grass)this.grass.material.uniforms.uFogD.value=density;
+    if(G.FX&&this.fogColor)G.FX.setFog(this.fogColor,density);
+  },
+  updateAirView(dt,camPos,cam) {
+    if(!cam)return;const state=G.Game?.player?.state,flying=G.Game?.state==='playing'&&['plane','freefall','chute'].includes(state),agl=Math.max(0,camPos.y-this.heightAt(camPos.x,camPos.z)),target=flying?THREE.MathUtils.smoothstep(agl,15,160):0;
+    this.airView=U.damp(this.airView||0,target,8,dt);
+    if(this.airView<.0001)this.airView=0;this.applyAirFog();
+    // v108 상세 건물·소품 LOD는 유지하고, 기존 건물 대역·성긴 지형의 원거리만 연다.
+    const ground=cam.userData.groundFar||cam.far,extent=HALF,far=Math.hypot(Math.abs(camPos.x)+extent,Math.abs(camPos.z)+extent,Math.max(0,camPos.y))+200,want=U.lerp(ground,Math.max(ground,far),this.airView);
+    if(this.airView===0?cam.far!==ground:Math.abs(cam.far-want)>.1){cam.far=want;cam.updateProjectionMatrix();}
   },
   // 풀 셰이더 조명을 해·하늘에 맞춘다
   syncGrassLight() {
@@ -2406,7 +2420,7 @@ const W = G.World = {
     u.uSunCol.value.copy(this.sun.color).multiplyScalar(this.sun.intensity * 0.62);
     u.uAmb.value.copy(this.hemi.color).multiplyScalar(this.hemi.intensity * 0.75);
     if (this.fogColor) u.uFogColor.value.copy(this.fogColor);
-    u.uFogD.value = (this.fogD || 0.0014) * (this.fogK || 1);
+    u.uFogD.value = this.scene.fog?.density || (this.fogD || 0.0014) * (this.fogK || 1);
   },
 
   /* -------------------------------------------------------------- */
@@ -2578,6 +2592,7 @@ const W = G.World = {
   },
 
   update(dt, camPos, cam) {
+    this.updateAirView(dt,camPos,cam);
     G.LODFade?.update(cam);
     this.time += dt;
     this.lodT = (this.lodT || 0) - dt;

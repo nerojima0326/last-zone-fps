@@ -646,7 +646,7 @@ function applyQuality(q) {
   applyAniso(q);
   G.World.lodDist = Q.lod; G.World.terrDist = Q.terr; G.World.lodT = 0;
   if (G.World.setFogScale) G.World.setFogScale(Q.fog);
-  camera.far = Q.far; camera.updateProjectionMatrix();
+  camera.userData.groundFar=Q.far;camera.far = Q.far; camera.updateProjectionMatrix(); // v108 지상 시야와 강하 원거리 분리
   G.quality = q;
   DRS.reset(basePixelRatio(q));
   onResize();
