@@ -2039,9 +2039,9 @@ const W = G.World = {
     material.customProgramCacheKey=()=>'inland-water87';
     const mesh=new THREE.Mesh(geo,material);mesh.name='호수·강 통합 수면';mesh.renderOrder=1;mesh.matrixAutoUpdate=false;mesh.receiveShadow=true;this.scene.add(mesh);this.inlandWater=mesh;
   },
-  setTimeOfDay(tod) {
+  setTimeOfDay(tod, restore=false) {
     if (tod === 'random') tod = U.pick(['day', 'day', 'sunset', 'night', 'fog', 'rain']);
-    if (this.tod === tod && this.envRT) return; // 같은 시간대면 환경맵 재생성(끊김) 생략
+    if (!restore && this.tod === tod && this.envRT) return; // v108 연결 복구 때는 같은 시간대도 환경맵을 다시 만든다
     this.tod = tod;
     // 시간대·날씨: 밤·안개·비는 사진 하늘 대신 계산한 하늘을 쓴다. vis = 봇 시야 배율
     const PRESET = {

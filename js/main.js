@@ -485,6 +485,7 @@ G.boot = async function () {
   G.TrainingRecords?.initUI();
   G.WeaponFinish?.root(G.vmScene);
   if(G.Attachments)G.Attachments.initUI();
+  await G.GraphicsRecovery.wait(); // v108 연결 복구 전에는 환경맵을 만들지 않는다
   G.World.setTimeOfDay(G.UI.opts.tod || 'day');
   G.Player.sens = G.UI.opts.sens;
   DRS.target = G.UI.opts.fpsTarget || 120;
@@ -493,16 +494,18 @@ G.boot = async function () {
   camera.position.set(450, 160, 450); camera.lookAt(0, 20, 0);
   progress(0.97, '셰이더 컴파일 중...');
   await new Promise(r => setTimeout(r, 30));
-  await prepareShaders(scene, camera);
-  await prepareShaders(G.vmScene, G.vmCamera, true);
-  renderer.shadowMap.needsUpdate = true;
-  // 레이트레이싱을 켜 두었으면 로딩 화면에서 모듈을 받고 장면까지 미리 컴파일한다
-  if (G.RT) {
-    if (G.RT.wanted) progress(0.99, '레이트레이싱 준비 중...');
-    await G.RT.init();
-    if (G.RT.active()) { progress(0.99, '레이트레이싱 장면 준비 중... (몇 초 걸립니다)'); await G.RT.prepare('레이트레이싱 장면 준비 중... (몇 초 걸립니다)'); }
-    if (G.Settings) G.Settings.render();
-  }
+  let rtInitialized=false;
+  await G.GraphicsRecovery.prepare(async()=>{
+    await prepareShaders(scene, camera);
+    await prepareShaders(G.vmScene, G.vmCamera, true);
+    renderer.shadowMap.needsUpdate = true;
+    // 레이트레이싱을 켜 두었으면 로딩 화면에서 모듈을 받고 장면까지 미리 컴파일한다
+    if (G.RT) {
+      if(!rtInitialized){rtInitialized=true;if(G.RT.wanted)progress(0.99,'레이트레이싱 준비 중...');await G.RT.init();}
+      if (G.RT.active()) { progress(0.99, '레이트레이싱 장면 준비 중... (몇 초 걸립니다)'); await G.RT.prepare('레이트레이싱 장면 준비 중... (몇 초 걸립니다)'); }
+      if (G.Settings) G.Settings.render();
+    }
+  });
   progress(1, '완료');
   G.GraphicsRecovery.bootComplete();
   startAutoBench();
@@ -723,14 +726,16 @@ function prepareTarget(viewmodel) {
 }
 async function prepareShaders(root, cam, viewmodel=false, targetScene=root) {
   const prep=G.RenderPrep;await prep.waitSafe();await prep.gpuIdle();await prep.waitSafe();
+  const epoch=G.GraphicsRecovery.epoch;
   const previous=renderer.getRenderTarget();
   try{renderer.setRenderTarget(prepareTarget(viewmodel));renderer.compile(root,cam,targetScene)}
   finally{renderer.setRenderTarget(previous)}
   // v108 양면 투명 재질은 앞·뒷면 프로그램을 모두 기다린다.
   const programs=new Set();root.traverse(o=>{for(const m of [].concat(o.material||[]))for(const p of renderer.properties.get(m).programs?.values()||[])programs.add(p)});
   const started=performance.now();
-  for(const p of programs)while(!p.isReady()){if(G.GraphicsRecovery.lost)throw Error('그래픽 연결이 끊겼습니다');if(performance.now()-started>60000)throw Error('셰이더 준비를 완료하지 못했습니다');await prep.turn(8)}
+  for(const p of programs)for(;;){if(G.GraphicsRecovery.lost||epoch!==G.GraphicsRecovery.epoch)throw Error('그래픽 연결이 끊겼습니다');if(p.isReady())break;if(performance.now()-started>60000)throw Error('셰이더 준비를 완료하지 못했습니다');await prep.turn(8)}
   await prep.waitSafe();
+  if(epoch!==G.GraphicsRecovery.epoch)throw Error('그래픽 연결이 끊겼습니다'); // v108 복구 전 프로그램은 조회하지 않는다
   const debug=renderer.debug.checkShaderErrors;renderer.debug.checkShaderErrors=true;
   try{for(const p of programs)p.getUniforms()}
   finally{renderer.debug.checkShaderErrors=debug}
