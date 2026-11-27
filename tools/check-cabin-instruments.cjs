@@ -16,7 +16,8 @@ const mobile=process.env.CABIN_MOBILE==='1',viewport=mobile?{width:844,height:39
     if(!c.cluster){rows.push(row);continue;}
     const samples=[];for(const kph of[0,30,60,90,120]){v.speed=kph/3.6;v.lat=0;C.animate(v);samples.push({kph,angle:c.needle.rotation.z,error:Math.abs(c.needle.rotation.z-(Math.PI*.75-Math.min(1,kph/c.cluster.maxKph)*Math.PI*1.5))});}row.speed=samples;
     v.speed=-Math.sqrt((60/3.6)**2-4**2);v.lat=4;C.animate(v);row.reverseLateralError=Math.abs(c.kph-60);
-    const rpm=boost=>{v.pos.set(0,300,0);Object.assign(v,{speed:18,lat:0,yaw:0,steer:0,displayRpm:800});for(let i=0;i<120;i++)V.stepPhysics(v,P.a,1/120,1,0,false,false,boost);C.animate(v);return c.rpm;};row.rpm={idle:800,throttle:rpm(false),boost:rpm(true)};
+    // v108 같은 속도대에서 입력만 비교해 가속 중 상향 변속의 RPM 하락을 분리한다.
+    const rpm=boost=>{v.pos.set(0,300,0);Object.assign(v,{speed:18,lat:0,yaw:0,steer:0,displayRpm:800});for(let i=0;i<120;i++){v.speed=18;V.stepPhysics(v,P.a,1/120,1,0,false,false,boost);}C.animate(v);return c.rpm;};row.rpm={idle:800,throttle:rpm(false),boost:rpm(true)};
     const running=row.rpm.boost;for(let i=0;i<120;i++)V.stepPhysics(v,P.a,1/120,0,0,false,false,false);C.animate(v);row.rpm.coast=c.rpm;row.rpm.running=running;
     v.hp=v.maxHp*.29;V.stepPhysics(v,P.a,1/120,0,0,false,true,false);C.animate(v);row.warning={engine:c.warning,handbrake:c.handbrake,colors:Array.from(c.lamps.instanceColor.array)};v.hp=v.maxHp;v.handbrake=false;C.animate(v);row.clear={engine:c.warning,handbrake:c.handbrake};
     const weather=W.weather,version=t.atlas.version,draws=t.atlas.userData.canvasDraws;W.weather='day';C.animate(v);const day=c.faces.material.emissiveIntensity;W.weather='night';C.animate(v);row.night={day,night:c.faces.material.emissiveIntensity,lightsBefore:lights,lightsAfter:lightCount()};W.weather=weather;

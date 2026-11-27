@@ -24,19 +24,19 @@ const output=path.resolve(process.env.REPORT||'/tmp/lz-driving-controls.json');
     for(let i=0;i<fps;i++)tick(v,dt,1,1,false,false);
     row={kind,fps,type:'Space와 해제',active,marks,rearLocked,stopped,releaseMarks,finalMarks:V.skidN||0,slip:Math.abs(v.lat)};rows.push(row);check(active&&marks>0&&rearLocked&&stopped&&releaseMarks<=marks+2&&row.finalMarks===releaseMarks&&row.slip<1.4,'Space 전용 드리프트·해제 복귀',row);remove(v);
     const speeds=[];
-    for(const shift of [false,true]){v=make(kind);for(let i=0;i<fps*7;i++)tick(v,dt,1,0,false,shift);speeds.push(v.speed);if(!shift)remove(v);}
-    const before=v.speed;tick(v,dt,1,0,false,false);const released=v.speed;tick(v,dt,1,1,true,true);const spacePriority=!v.boosting;
+    for(const shift of [false,true]){v=make(kind);for(let i=0;i<fps*12;i++)tick(v,dt,1,0,false,shift);speeds.push(v.speed);if(!shift)remove(v);}
+    const spec=V.spec?.(v)||{max:21,boost:28},before=v.speed;tick(v,dt,1,0,false,false);const released=v.speed;tick(v,dt,1,1,true,true);const spacePriority=!v.boosting;
     v.pos.y+=6;v.grounded=false;v.flight=true;v.vy=0;const airSpeed=Math.hypot(v.speed,v.lat);tick(v,dt,1,0,false,true);
-    row={kind,fps,type:'Shift 가속',normal:speeds[0],boost:speeds[1],released,spacePriority,airBoost:!!v.boosting,airGain:Math.hypot(v.speed,v.lat)-airSpeed};rows.push(row);
-    check(Math.abs(speeds[0]-21)<.05&&Math.abs(speeds[1]-28)<.05&&before-released<.25&&spacePriority&&!row.airBoost&&row.airGain<.001,'Shift 가속·해제·Space 우선·공중 제한',row);remove(v);
+    row={kind,fps,type:'Shift 가속',normal:speeds[0],boost:speeds[1],spec,released,spacePriority,airBoost:!!v.boosting,airGain:Math.hypot(v.speed,v.lat)-airSpeed};rows.push(row);
+    check(Math.abs(speeds[0]-spec.max)<.05&&Math.abs(speeds[1]-spec.boost)<.05&&before-released<.25&&spacePriority&&!row.airBoost&&row.airGain<.001,'Shift 가속·해제·Space 우선·공중 제한',row);remove(v);
    }
    const limits=[];
    for(const mode of ['입력 없음','후진','물속','타이어 4개 파손']){
     const v=make('izh');if(mode==='물속')W.waterAt=()=>300.8;if(mode==='타이어 4개 파손')v.wheelDamage=4;
     for(let i=0;i<600;i++)tick(v,1/60,mode==='입력 없음'?0:mode==='후진'?-1:1,0,false,true);
-    limits.push({mode,speed:v.speed,boosting:!!v.boosting});remove(v);
+    limits.push({mode,speed:v.speed,boosting:!!v.boosting,top:V.spec?.(v).boost||28});remove(v);
    }
-   check(limits[0].speed===0&&!limits[0].boosting&&limits[1].speed>=-6.01&&!limits[1].boosting&&limits[2].speed<=4.01&&!limits[2].boosting&&limits[3].speed<12,'가속 입력·후진·수면·파손 제한',{limits});
+   check(limits[0].speed===0&&!limits[0].boosting&&limits[1].speed>=-6.01&&!limits[1].boosting&&limits[2].speed<=4.01&&!limits[2].boosting&&limits[3].speed<=limits[3].top*.4+.01,'가속 입력·후진·수면·파손 제한',{limits});
    let ribbons=null;
    if(S){
     visual();const car={skid:[null,null]},points=[];

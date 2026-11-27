@@ -31,7 +31,9 @@ G.VehicleSuspension={
         if(v.pos.y-floor>.18)v.flight=true;v.grounded=!v.flight;
       }
     }
-    for(let i=0;i<parts;i++){v.springVelocity+=(-160*v.springOffset-22*v.springVelocity)*h;v.springOffset=U.clamp(v.springOffset+v.springVelocity*h,-.16,.05)}
+    // v108 질량에 따라 차체의 복귀 속도만 바꾼다. 자유낙하 중력·접지 기준은 공통이다.
+    const mass=(G.Vehicles.spec(v).mass||1.7)/1.7;
+    for(let i=0;i<parts;i++){v.springVelocity+=(-160/mass*v.springOffset-22/Math.sqrt(mass)*v.springVelocity)*h;v.springOffset=U.clamp(v.springOffset+v.springVelocity*h,-.16,.05)}
     if(Math.abs(v.springOffset)<.0001&&Math.abs(v.springVelocity)<.001)v.springOffset=v.springVelocity=0;
   }
 };
