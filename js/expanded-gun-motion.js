@@ -53,6 +53,12 @@ const M=G.ExpandedMotion={
   const d=profiles[m.id];if(!d||!m.keys.E)return;
   if(d.mechanism==='mp5')this.mp5Keys(m);
   const K=m.keys;
+  // v107 탄창에서 손을 뗄 때 먼저 왼쪽 아래로 빠진 뒤 총열 덮개를 다시 잡는다.
+  if(['v45','ms56','cx9','ar416','sr25','sm45'].includes(m.id)){
+   const S=K.Tac,t=S.T,at=t.seat+(K.st.magHold||.055),H=m.rest.mag.clone().add(K.grab),F=m.fore;
+   const home=S.k.find(([p])=>p>at+.04)?.[0]||.9,v=(p,x,y,z)=>p.clone().add(new V(x,y,z));
+   S.k=S.k.filter(([p])=>p<t.seat+.04||p>home).concat([[t.seat+.04,H],[at,v(H,-.075,-.045,.025)],[home,v(F,-.06,-.055,.035)]]).sort((a,b)=>a[0]-b[0]);
+  }
   if(m.id==='mg60')K.coverPrep={mag:orientation([1,0,0],[0,0,-1],new Q()),closed:orientation([0,-1,0],[1,0,-.2],new Q()),open:orientation(new V(0,-1,0).applyAxisAngle(new V(1,0,0),-1.35).toArray(),new V(1,0,-.2).applyAxisAngle(new V(1,0,0),-1.35).toArray(),new Q())};
   // 총기별 접촉 시각과 원본 시각을 잇는다. 실제 부품을 잡는 지점은 그대로 보존한다.
   for(const [mode,S]of [['empty',K.E],['tactical',K.Tac]]){
@@ -136,6 +142,10 @@ const M=G.ExpandedMotion={
    _q.fromArray(A,12).normalize();const blend=.38*weight*flight*(1-L.contactLock);_c.copy(L.palmTarget).normalize();_a.copy(L.palmTarget).applyQuaternion(_q);_b.copy(L.fingerTarget).applyQuaternion(_q);
    L.palmRef=L.palmTarget.lerp(_a,blend).normalize();L.fingerRef=L.fingerTarget.lerp(_b,blend).normalize();turn=Math.acos(U.clamp(_c.dot(L.palmTarget),-1,1));
    if(L.contactMode==='reach'||L.contactMode==='shellReach'){const grip=U.clamp(A[20],0,1);L.curlT=mix(.20,.78,grip);L.trigT=mix(.14,.65,grip);L.thumbT=mix(.22,.62,grip);}
+  }
+  // v107 긴 SR25 리시버 옆으로 탄입대를 향한다. 접촉 사건에서는 보정이 0이다.
+  if(m.id==='sr25'&&magazine&&r.empty&&L.contactMode==='reach'){
+   const lo=S.T.drop,hi=S.T.newMag,u=U.clamp((p-lo)/(hi-lo),0,1);L.tgt.x-=.035*Math.sin(Math.PI*u)**2;
   }
   m.reloadMotion={sourceClip:clip.sourceClip,source:data.sources[clip.source].author,time:t,weight,handDisplacement:displacement,wristTurn:turn,mechanism:d.mechanism};return true;
  }
