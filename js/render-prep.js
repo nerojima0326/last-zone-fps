@@ -4,7 +4,7 @@
 const G=window.G;
 const P=G.RenderPrep={
   jobs:[],scheduled:false,uploads:0,compiled:0,
-  safe(){return !!G.preparing||G.paused||G.Game?.state!=='playing'},
+  safe(){return !!G.preparing||G.paused||(G.Game?.state!=='playing'&&!G.Game?.spectating)}, // v108 관전도 진행 중인 경기로 취급한다
   turn(ms=0){return new Promise(resolve=>setTimeout(resolve,ms))},
   async waitSafe(){while(!this.safe()){if(G.GraphicsRecovery?.lost)throw Error('그래픽 연결이 끊겼습니다');await this.turn(100)}if(G.GraphicsRecovery?.lost)throw Error('그래픽 연결이 끊겼습니다')},
   async gpuIdle(){
