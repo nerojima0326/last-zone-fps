@@ -262,7 +262,6 @@ const TIER_NAME = { potato: '최저', low: '낮음', medium: '중간', high: '�
 const Auto = { downN: 0, upT: 0, lastChange: -1e9, lastUp: -1e9, failed: {}, max: 3, start: 'high' };
 function guessTier() {
   const mobile=document.documentElement.classList.contains('mobile');
-  try { const s = localStorage.getItem('lz_auto_tier'); if (s && QUALITY[s]) return mobile&&TIERS.indexOf(s)>1?'low':s; } catch (e) { /* 무시 */ }
   let s = '';
   try {
     const gl = renderer.getContext(), ext = gl.getExtension('WEBGL_debug_renderer_info');
@@ -277,27 +276,30 @@ function guessTier() {
 }
 function resolveQuality(opt) {
   if (opt !== 'auto') return QUALITY[opt] ? opt : 'high';
-  if (!Auto.guessed) { Auto.guessed = true; Auto.start = guessTier(); Auto.max = Math.min(3, TIERS.indexOf(Auto.start) + 1); }
+  if (!Auto.guessed) {
+    Auto.guessed=true;Auto.start=guessTier();Auto.max=Math.min(3,TIERS.indexOf(Auto.start)+1);
+    // v108 저장된 낮은 단계가 하드웨어의 회복 상한까지 낮추지는 않는다.
+    try{const s=localStorage.getItem('lz_auto_tier');if(QUALITY[s])Auto.start=document.documentElement.classList.contains('mobile')&&TIERS.indexOf(s)>1?'low':s;}catch(e){}
+  }
   return Auto.tier || Auto.start;
 }
-function autoGovern(now, fps, drs) {
-  if (G.qualityMode !== 'auto') return;
-  const ti = TIERS.indexOf(G.quality);
-  const hz = 1000 / drs.refresh;
-  // 내려가기: 60fps 아래인데 해상도를 이미 최저로 낮췄거나, 아주 느릴 때
-  if (fps < 57 && (drs.fixed || drs.scale <= drs.minScale + 0.01 || fps < 42)) Auto.downN++; else Auto.downN = Math.max(0, Auto.downN - 1);
-  if (ti > 0 && Auto.downN >= (fps < 42 ? 3 : 6) && now - Auto.lastChange > 3000) {
-    if (now - Auto.lastUp < 30000) Auto.failed[G.quality] = true;   // 방금 올렸다가 버티지 못하면 다시 올리지 않는다
-    Auto.downN = 0; Auto.upT = 0; Auto.lastChange = now;
-    setTier(TIERS[ti - 1]);
-    return;
+// v108 일시적인 긴 작업과 지속적인 저성능을 구분한다.
+G.qualityTransition=(reason,seconds=3)=>{const now=performance.now();Auto.ignoreUntil=now+seconds*1000;Auto.slowT=0;Auto.upT=0;Auto.hitchT=0;Auto.sampleAt=now;Auto.reason=reason;DRS.acc=DRS.cnt=0;DRS.checkT=now;};
+G.autoQualityInfo=()=>({tier:G.quality,maxTier:TIERS[Auto.max],graceUntil:Auto.ignoreUntil||0,reason:Auto.reason||'',slowSeconds:Auto.slowT||0,healthySeconds:Auto.upT,trial:!!Auto.trial});
+function autoGovern(now,fps,drs) {
+  if(G.qualityMode!=='auto')return;
+  const elapsed=Math.min(1,Math.max(0,(now-(Auto.sampleAt??now-500))/1000));Auto.sampleAt=now;
+  if(now<(Auto.ignoreUntil||0)){Auto.slowT=0;Auto.upT=0;return;}
+  const ti=TIERS.indexOf(G.quality),hz=1000/drs.refresh,slow=fps<57&&(drs.fixed||drs.scale<=drs.minScale+.01||fps<42);
+  Auto.slowT=slow?(Auto.slowT||0)+elapsed:Math.max(0,(Auto.slowT||0)-elapsed*2);
+  if(ti>0&&Auto.slowT>=(fps<42?4:7)&&now-Auto.lastChange>3000){
+    if(now-Auto.lastUp<30000)Auto.failed[G.quality]=true;
+    Auto.slowT=0;Auto.upT=0;Auto.lastChange=now;Auto.trial=false;setTier(TIERS[ti-1]);return;
   }
-  // 올라가기: 해상도 100%로 화면 주사율을 꽉 채운 채 25초 버티면 한 단계 위를 시험
-  if ((drs.fixed || drs.scale >= drs.maxScale) && fps >= Math.min(hz, drs.target) - 3) Auto.upT += 0.5; else Auto.upT = 0;
-  if (ti < Auto.max && Auto.upT >= 25 && now - Auto.lastChange > 20000 && !Auto.failed[TIERS[ti + 1]]) {
-    Auto.upT = 0; Auto.lastChange = Auto.lastUp = now;
-    setTier(TIERS[ti + 1]);
-  }
+  const healthy=(drs.fixed||drs.scale>=drs.maxScale*.9)&&fps>=Math.min(hz,drs.target)-4;
+  Auto.upT=healthy?Auto.upT+elapsed:Math.max(0,Auto.upT-elapsed*2);
+  if(Auto.trial&&Auto.upT>=10){Auto.trial=false;try{localStorage.setItem('lz_auto_tier',G.quality);}catch(e){}}
+  if(ti<Auto.max&&Auto.upT>=12&&now-Auto.lastChange>15000&&!Auto.failed[TIERS[ti+1]]){Auto.upT=0;Auto.lastChange=Auto.lastUp=now;setTier(TIERS[ti+1]);}
 }
 function setTier(q) {
   Auto.tier = q;
@@ -401,7 +403,9 @@ const DRS = {
     if (rt !== !!this.rtWas) { this.rtWas = rt; this.apply(true); }
     if (rt) { this.acc = 0; this.cnt = 0; return; }
     // 실제 10FPS 이하도 자동 품질 조절 대상이다. 숨긴 탭·긴 중단만 제외한다.
-    if (document.hidden || ms > 1000) return;
+    if(document.hidden){this.acc=this.cnt=0;Auto.slowT=Auto.upT=0;return;}
+    if(ms>700){Auto.hitchT=(Auto.hitchT||0)+ms;if(Auto.hitchT<3000){this.acc=this.cnt=0;Auto.slowT=0;Auto.sampleAt=now;Auto.ignoreUntil=Math.max(Auto.ignoreUntil||0,now+1500);return;}}
+    else Auto.hitchT=Math.max(0,(Auto.hitchT||0)-ms*2);
     this.acc += ms; this.cnt++;
     if (now - this.checkT < 500) return;
     this.checkT = now;
@@ -762,13 +766,16 @@ G.startGame = function (opts) {
   G.Player.sens = opts.sens;
   DRS.target = opts.fpsTarget || 120;
   G.qualityMode = opts.quality;
-  const q = resolveQuality(opts.quality);
+  let q = resolveQuality(opts.quality);
+  Auto.failed={};Auto.slowT=0;Auto.trial=false;
+  if(opts.quality==='auto'){try{const saved=localStorage.getItem('lz_auto_tier'),i=TIERS.indexOf(saved);if(i>=0&&i<Auto.max){q=TIERS[i+1];Auto.tier=q;Auto.trial=true;}}catch(e){}}
   Auto.downN = 0; Auto.upT = 0; Auto.lastChange = performance.now();
   if (G.quality !== q) applyQuality(q);
   else DRS.reset(basePixelRatio(G.quality));
   G.World.setTimeOfDay(opts.tod);
   G.Game.start(opts);
   warmup();
+  G.qualityTransition('판 시작',6);
   G.paused = false;
   G.Input.lock();
   // 레이트레이싱: 새 판의 장면을 로딩 화면에서 미리 컴파일 (게임 중 멈춤 없음)
