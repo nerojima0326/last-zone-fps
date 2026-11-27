@@ -168,7 +168,7 @@ const Vh = G.Vehicles = {
   },
   newVehicle(x, y, z, yaw, extra) {
     if (!this.geo) { this.geo = build(); this.mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.7, metalness: 0.2 }); }
-    const v = Object.assign({ kind: U.pick(KINDS), pos: new V3(x, y, z), yaw, speed: 0, lat: 0, steer: 0, pitch: 0, roll: 0, driver: null, box: null, hitT: new Map(), noiseT: 0, hp: HP, maxHp: HP, displayRpm: 0, dead: false, burnT: 0, smokeT: 0, lastHit: null, skid: [null, null] }, extra || {});
+    const v = Object.assign({ kind: U.pick(KINDS), pos: new V3(x, y, z), yaw, speed: 0, lat: 0, steer: 0, pitch: 0, roll: 0, driver: null, box: null, hitT: new Map(), noiseT: 0, hp: HP, maxHp: HP, fuel: 1, engineHeat: .35, displayRpm: 0, dead: false, burnT: 0, smokeT: 0, lastHit: null, skid: [null, null] }, extra || {});
     if (!v.home) v.home = { x, z, yaw };
     v.home.kind = v.kind;
     v.mesh = this.makeMesh(v);
@@ -407,6 +407,9 @@ const Vh = G.Vehicles = {
     const grounded=v.grounded!==false;
     const traction=grounded?U.clamp((v.groundContacts??(v.wheels?.length||4))/(v.wheels?.length||4),0,1):0;
     const wet = W.waterAt(v.pos.x, v.pos.z) - Math.max(W.heightAt(v.pos.x, v.pos.z),v.pos.y);
+    if(v.fuel<=0)thr=0; // v108 연료계는 실제 잔량을 표시한다.
+    if(v.driver&&!v.dead)v.fuel=Math.max(0,(v.fuel??1)-dt*(.000012+Math.max(0,thr)*.000035)*(boost?1.5:1));
+    v.engineHeat=U.damp(v.engineHeat??.35,v.dead?0:.35+Math.abs(thr)*.23+(boost?.12:0)+(1-v.hp/(v.maxHp||HP))*.20,.15,dt);
     if (v.dead) { thr = 0; st = 0; brake = true; hand = false; }
     v.handbrake=!!hand;
     v.boosting=!!boost&&grounded&&traction>0&&thr>0&&v.speed>=0&&!brake&&!hand&&!v.dead&&wet<=.3;
