@@ -144,7 +144,8 @@ const M=G.M4Viewmodel={ready:false,active:false,shotT:99,equipT:99,
    for(let j=0;j<3;j++){v.fromBufferAttribute(source.attributes.position,i+j).applyMatrix4(transform);top=Math.max(top,v.y);front=Math.max(front,v.z)}
    const target=top>5.2&&front<2?lists[1]:lists[0];target.push(i,i+1,i+2);
   }
-  const geometry=ids=>{const result=new T.BufferGeometry();for(const [name,a]of Object.entries(source.attributes)){const out=new a.array.constructor(ids.length*a.itemSize);for(let i=0;i<ids.length;i++)for(let j=0;j<a.itemSize;j++)out[i*a.itemSize+j]=a.array[ids[i]*a.itemSize+j];result.setAttribute(name,new T.BufferAttribute(out,a.itemSize,a.normalized))}result.computeBoundingSphere();return result};
+  // v107 압축 법선의 패딩·간격을 보존한다. 4바이트 법선을 3바이트씩 읽으면 삼각형이 반짝인다.
+  const geometry=ids=>{const result=new T.BufferGeometry();for(const [name,a]of Object.entries(source.attributes)){const stride=a.isInterleavedBufferAttribute?a.data.stride:a.itemSize,offset=a.isInterleavedBufferAttribute?a.offset:0,out=new a.array.constructor(ids.length*a.itemSize);for(let i=0;i<ids.length;i++)for(let j=0;j<a.itemSize;j++)out[i*a.itemSize+j]=a.array[ids[i]*stride+offset+j];result.setAttribute(name,new T.BufferAttribute(out,a.itemSize,a.normalized))}result.computeBoundingSphere();return result};
   const rear=body.clone(false);rear.name='M4RearSight';rear.geometry=geometry(lists[1]);body.parent.add(rear);body.geometry=geometry(lists[0]);source.dispose();return rear;
  },
  sample(name,p){
