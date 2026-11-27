@@ -42,16 +42,16 @@ function wheelGeometry(key){
  const geometry=G.mergeGeo(parts);for(const g of parts)g.dispose();return geometry;
 }
 const clusterSpecs={
- porter:{radius:.128,spacing:.140,up:.185,forward:.30},
- e2200:{radius:.124,spacing:.136,up:.235,forward:.40},
- izh:{radius:.128,spacing:.140,up:.210,forward:.20},
- fallback:{radius:.142,spacing:.154,up:.185,forward:.23}
+ porter:{radius:.128,spacing:.140,up:.175,forward:.30,scale:.76},
+ e2200:{radius:.124,spacing:.136,up:.210,forward:.40,scale:.75},
+ izh:{radius:.128,spacing:.140,up:.195,forward:.20,scale:.76},
+ fallback:{radius:.142,spacing:.154,up:.170,forward:.23,scale:.76}
 };
 const instrumentAtlases=new Map();
 // v108 큰 속도계·보조 계기·고전 연료계를 차종별 배치로 만든다.
 function gaugeLayout(key){
  const s=clusterSpecs[key],max=G.Vehicles?.tuning?.[key]?.dial||120;
- const g=(kind,dx,dy,r,cell)=>({kind,dx,dy,r,cell,font:['fuel','temp'].includes(kind)?104:88,labelRadius:['fuel','temp'].includes(kind)?158:168,max:kind==='speed'?max:kind==='rpm'?7000:1});
+ const g=(kind,dx,dy,r,cell)=>({kind,dx,dy,r,cell,font:['fuel','temp'].includes(kind)?132:key==='fallback'?116:108,labelRadius:['fuel','temp'].includes(kind)?158:168,max:kind==='speed'?max:kind==='rpm'?7000:1});
  if(key==='porter')return[g('speed',0,0,.15,[256,0,512]),g('fuel',-.237,-.012,.063,[0,128,256]),g('temp',.237,-.012,.063,[768,128,256])];
  if(key==='izh')return[g('speed',-.095,0,.145,[0,0,512]),g('fuel',.16,-.015,.093,[512,0,512])];
  return[g('speed',-s.spacing,0,s.radius,[0,0,512]),g('rpm',s.spacing,0,s.radius,[512,0,512])];
@@ -63,11 +63,12 @@ function instrumentAtlas(key,gauges){
   const [x,y,size]=gauge.cell,aux=['fuel','temp'].includes(gauge.kind),major=aux?2:gauge.kind==='rpm'?7:gauge.max/20,divisions=major*5;c.save();c.translate(x,y);c.scale(size/512,size/512);c.textAlign='center';c.textBaseline='middle';
   for(let i=0;i<=divisions;i++){const a=Math.PI*.75-i/divisions*Math.PI*1.5,big=i%5===0;c.strokeStyle=gauge.kind==='rpm'&&i>=30||gauge.kind==='temp'&&i>8?'#ed8c6c':ink;c.lineWidth=big?6:3;c.beginPath();c.moveTo(256-Math.sin(a)*(big?203:222),256-Math.cos(a)*(big?203:222));c.lineTo(256-Math.sin(a)*239,256-Math.cos(a)*239);c.stroke();}
   c.font='bold '+gauge.font+'px '+(classic?'Georgia, serif':'Arial, sans-serif');c.fillStyle=ink;
-  for(let i=0;i<=major;i++){const a=Math.PI*.75-i/major*Math.PI*1.5,label=gauge.kind==='fuel'?['E','½','F'][i]:gauge.kind==='temp'?['C','90','H'][i]:String(gauge.kind==='rpm'?i:i*20);c.fillText(label,256-Math.sin(a)*gauge.labelRadius,256-Math.cos(a)*gauge.labelRadius);}
+  // v108 본체는 작게, 숫자는 세로 크기를 유지하고 가로 폭만 줄여 눈금 사이를 확보한다.
+  for(let i=0;i<=major;i++){const a=Math.PI*.75-i/major*Math.PI*1.5,label=gauge.kind==='fuel'?['E','½','F'][i]:gauge.kind==='temp'?['C','90','H'][i]:String(gauge.kind==='rpm'?i:i*20);c.save();c.translate(256-Math.sin(a)*gauge.labelRadius,256-Math.cos(a)*gauge.labelRadius);c.scale(.80,1);c.fillText(label,0,0);c.restore();}
   c.font='bold 56px sans-serif';c.fillText({speed:'km/h',rpm:'×1000',fuel:'연료',temp:'수온'}[gauge.kind],256,316);
   c.font='bold 30px sans-serif';c.fillStyle=classic?'#b9a380':'#9bb5b8';if(gauge.kind==='speed')c.fillText('엔진 · 드리프트',256,447);c.restore();
  }
- const texture=new T.CanvasTexture(canvas);texture.name='차종별 계기판 '+key;texture.colorSpace=T.SRGBColorSpace;texture.generateMipmaps=true;texture.minFilter=T.LinearMipmapLinearFilter;texture.magFilter=T.LinearFilter;texture.anisotropy=Math.min(16,G.renderer.capabilities.getMaxAnisotropy());texture.userData.canvasDraws=1;texture.userData.labelFont=88;instrumentAtlases.set(key,texture);return texture;
+ const texture=new T.CanvasTexture(canvas);texture.name='차종별 계기판 '+key;texture.colorSpace=T.SRGBColorSpace;texture.generateMipmaps=true;texture.minFilter=T.LinearMipmapLinearFilter;texture.magFilter=T.LinearFilter;texture.anisotropy=Math.min(16,G.renderer.capabilities.getMaxAnisotropy());texture.userData.canvasDraws=1;texture.userData.labelFont=gauges[0].font;instrumentAtlases.set(key,texture);return texture;
 }
 function luminousMaterial(name,intensity){
  const mat=new T.MeshStandardMaterial({name,vertexColors:true,roughness:.7,metalness:.05,emissive:0xffffff,emissiveIntensity:intensity});
@@ -75,21 +76,23 @@ function luminousMaterial(name,intensity){
 }
 function clusterGeometry(key,parts){
  const s=profiles[key],spec=clusterSpecs[key],x=s.hip[0]+.02,y=s.dash+spec.up,z=s.front+spec.forward,gauges=gaugeLayout(key),faces=[];
- const add=(g,color,roughness,metalness)=>parts.push(finish(G.cg(g,color),roughness,metalness));
+ // v108 계기 하우징·차양·테·숫자·바늘을 같은 중심과 비율로 줄인다.
+ const scale=spec.scale,resize=g=>g.translate(-x,-y,-z).scale(scale,scale,scale).translate(x,y,z);
+ const add=(g,color,roughness,metalness)=>parts.push(finish(G.cg(resize(g),color),roughness,metalness));
  const width=key==='porter'?.65:key==='izh'?.565:spec.spacing*2+spec.radius*2+.045,height=.33;
  add(new T.ExtrudeGeometry(rounded(width,height,key==='porter'?.020:.10),{depth:.11,bevelEnabled:true,bevelSize:.006,bevelThickness:.006,bevelSegments:1,curveSegments:4,steps:1}).translate(x,y,z-.13),key==='izh'?0x39362d:0x202a2d,.86,.02);
  add(new T.BoxGeometry(width+.025,.025,.16).translate(x,y+height/2+.008,z-.062),key==='izh'?0x514c40:0x293235,.85,.04);
  for(const gi of gauges){
   gi.x=x+gi.dx;gi.y=y+gi.dy;gi.z=z;
   add(new T.TorusGeometry(gi.r,.007,6,40).translate(gi.x,gi.y,z-.004),key==='izh'?0xd1c8b2:0x4a6068,key==='izh'?.22:.55,key==='izh'?.88:.25);
-  const face=new T.CircleGeometry(gi.r-.004,48),uv=face.attributes.uv;for(let j=0;j<uv.count;j++){uv.setXY(j,(gi.cell[0]+uv.getX(j)*gi.cell[2])/1024,1-(gi.cell[1]+(1-uv.getY(j))*gi.cell[2])/512);}face.translate(gi.x,gi.y,z);faces.push(face);
+  const face=new T.CircleGeometry(gi.r-.004,48),uv=face.attributes.uv;for(let j=0;j<uv.count;j++){uv.setXY(j,(gi.cell[0]+uv.getX(j)*gi.cell[2])/1024,1-(gi.cell[1]+(1-uv.getY(j))*gi.cell[2])/512);}face.translate(gi.x,gi.y,z);faces.push(resize(face));gi.x=x+gi.dx*scale;gi.y=y+gi.dy*scale;gi.r*=scale;gi.faceRadius=(gi.r/scale-.004)*scale;
  }
  const faceGeo=T.mergeGeometries(faces,false);for(const g of faces)g.dispose();const r=gauges[0].r,shape=new T.Shape();shape.moveTo(-.004,-.019);shape.lineTo(.004,-.019);shape.lineTo(.005,.022);shape.lineTo(.001,r*.79);shape.lineTo(-.001,r*.79);shape.lineTo(-.005,.022);shape.closePath();
  const blade=G.cg(new T.ShapeGeometry(shape),key==='izh'?0xe5c99e:0xffa174),cap=G.cg(new T.CircleGeometry(.012,16).translate(0,0,.001),0x324650),needleGeo=G.mergeGeo([blade,cap]);blade.dispose();cap.dispose();
  const atlas=instrumentAtlas(key,gauges),dialMaterial=new T.MeshStandardMaterial({name:'차종별 숫자 '+key,map:atlas,emissiveMap:atlas,emissive:0xffffff,emissiveIntensity:.25,roughness:1,metalness:0});
- const lampX=key==='izh'?x+.16:x,lampY=key==='e2200'?y+.08:key==='izh'?y+.115:y-.060,lamps=[[-.018,0],[.018,0]].map(([dx,dy])=>[lampX+dx,lampY+dy,z+.009]);
+ const lampX=key==='izh'?x+.16:x,lampY=key==='e2200'?y+.08:key==='izh'?y+.115:y-.060,lamps=[[-.018,0],[.018,0]].map(([dx,dy])=>[x+(lampX+dx-x)*scale,y+(lampY+dy-y)*scale,z+.009]);
  if(key==='e2200')add(new T.BoxGeometry(.075,.028,.012).translate(lampX,lampY,z+.002),0x101719,.85,.02);
- return{faceGeo,needleGeo,atlas,dialMaterial,gauges,lamps,cluster:{x,y,z,radius:r,spacing:Math.abs(gauges[0].dx),maxKph:gauges[0].max,maxRpm:7000}};
+ return{faceGeo,needleGeo,atlas,dialMaterial,gauges,lamps,cluster:{x,y,z,radius:r,scale,spacing:Math.abs(gauges[0].dx)*scale,maxKph:gauges[0].max,maxRpm:7000}};
 }
 const C=G.VehicleCabin={
  profiles,wheelSpecs,templates:new Map(),glass:null,repairs:new WeakMap(),
