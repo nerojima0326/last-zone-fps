@@ -19,6 +19,6 @@ export const Nav={
  const b=this.building;if(!b)return;const until=performance.now()+1.2;let n=0;while(b.heap.length&&n++<700&&performance.now()<until){const {i,p:weight}=b.heap.pop();if(weight!==b.cost[i])continue;if(weight>62)continue;this.neighbors(i,(j,c)=>{const w=weight+c;if(w<b.cost[j]){b.cost[j]=w;b.next[j]=i;b.heap.push(j,w)}})}if(!b.heap.length){this.flow=b;this.building=null}
  },
  direction(a,target,out){const i=this.index(a.pos.x,a.pos.z),next=i>=0?this.flow?.next[i]:-1;if(next>=0){const p=this.point(next);out.set(p.x-a.pos.x,0,p.z-a.pos.z)}else out.set(target.x-a.pos.x,0,target.z-a.pos.z);return out.normalize()},
- invalidate(){this.revision++;this.refreshT=0},
+ invalidate(box){this.revision++;this.refreshT=0;if(box&&this.cells){const x0=Math.max(0,Math.floor((box.minX-this.x0-1)/this.step)),x1=Math.min(this.nx-1,Math.ceil((box.maxX-this.x0+1)/this.step)),z0=Math.max(0,Math.floor((box.minZ-this.z0-1)/this.step)),z1=Math.min(this.nz-1,Math.ceil((box.maxZ-this.z0+1)/this.step));for(let z=z0;z<=z1;z++)for(let x=x0;x<=x1;x++){const i=z*this.nx+x;this.cells[i]=this.free(this.x0+x*this.step,this.z0+z*this.step,this.heights[i])?1:0}}},
  clear(){this.flow=null;this.building=null;this.refreshT=0}
 };

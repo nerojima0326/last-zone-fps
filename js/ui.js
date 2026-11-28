@@ -24,7 +24,7 @@ const UI = G.UI = {
       if (Number.isInteger(size) && MODE_NOTES[size]) this.opts.size = size;
       if (Number.isFinite(saved.sens)) this.opts.sens = U.clamp(saved.sens, 0.2, 3);
       if (typeof saved.name === 'string') this.opts.name = saved.name.trim().slice(0, 12) || 'Player';
-      for (const seg of document.querySelectorAll('.seg')) {
+      for (const seg of document.querySelectorAll('.seg[data-opt]')) {
         const key = seg.dataset.opt;
         const choice = Array.from(seg.querySelectorAll('button')).find(b => b.dataset.v === String(saved[key]));
         if (choice) this.opts[key] = typeof this.opts[key] === 'number' ? Number(choice.dataset.v) : choice.dataset.v;
@@ -60,7 +60,7 @@ const UI = G.UI = {
     };
     modes.forEach(b => b.addEventListener('click', () => { setMode(+b.dataset.size); G.Audio.init(); G.Audio.click('ui'); }));
     setMode(this.opts.size);
-    document.querySelectorAll('.seg').forEach(seg => {
+    document.querySelectorAll('.seg[data-opt]').forEach(seg => {
       const key = seg.dataset.opt;
       const btns = seg.querySelectorAll('button');
       btns.forEach(b => {
@@ -83,7 +83,7 @@ const UI = G.UI = {
     // v109 모드 전용 파일은 직접 선택한 뒤에만 받는다.
     document.querySelectorAll('[data-family]').forEach(b => b.addEventListener('click', async () => {
       this.opts.mode=b.dataset.family;document.querySelectorAll('[data-family]').forEach(x=>x.classList.toggle('on',x===b));
-      if(this.opts.mode==='zombie') { try{await G.loadZombieMode();}catch(e){this.toast('좀비 모드를 불러오지 못했습니다 · 다시 선택하세요');console.error(e);} }
+      if(this.opts.mode==='zombie') { try{await G.loadZombieMode();}catch(e){this.toast('좀비 모드를 불러오지 못했습니다 · 다시 선택하세요');console.error(e);return;} }
       G.ZombieMode?.menu(this.opts.mode==='zombie');
     }));
     $('startBtn').addEventListener('click', () => {

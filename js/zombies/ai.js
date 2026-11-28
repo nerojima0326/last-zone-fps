@@ -1,5 +1,5 @@
 // v109 감염자는 총기 봇과 분리하고 근거리 판단·원거리 갱신을 나눈다.
-const G=window.G,T=window.THREE,dir=new T.Vector3(),probe=new T.Vector3(),tmp=new T.Vector3(),hit={};
+const G=window.G,T=window.THREE,dir=new T.Vector3(),probe=new T.Vector3(),tmp=new T.Vector3(),hit={normal:new T.Vector3()};
 export const TYPES={walker:{name:'감염자',speed:1.7,hp:82,damage:9,scale:1,index:0},runner:{name:'러너',speed:4.7,hp:58,damage:7,scale:.97,index:1},tank:{name:'탱커',speed:1.25,hp:460,damage:21,scale:1.32,index:2},screamer:{name:'비명자',speed:2.1,hp:110,damage:6,scale:1,index:3},exploder:{name:'폭발형',speed:2.6,hp:90,damage:27,scale:1.08,index:4},boss:{name:'차단자',speed:2.25,hp:2300,damage:24,scale:1.65,index:6}};
 export class Brain{
  constructor(a,mode,nav,models){this.a=a;this.mode=mode;this.nav=nav;this.models=models;this.goal=null;this.next=0;this.dir=new T.Vector3();this.stuck=0;this.lastPos=new T.Vector3();this.recoveries=0;this.vaults=0;this.soundAt=0;this.cool=1;this.special=5;this.state='walk'}

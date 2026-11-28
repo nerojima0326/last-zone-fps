@@ -749,7 +749,7 @@ async function prepareShaders(root, cam, viewmodel=false, targetScene=root) {
 }
 
 // v109 전용 인스턴스는 실제 월드 조명·안개 조건으로 미리 준비한다.
-G.prepareZombieScene=async function(root){await G.RenderPrep.textures([...new Set(root.children.flatMap(o=>Object.values(o.material||{}).filter(t=>t?.isTexture)))]);await prepareShaders(root,camera,false,scene);const viewport=new THREE.Vector4(),scissor=new THREE.Vector4(),target=renderer.getRenderTarget(),test=renderer.getScissorTest();renderer.getViewport(viewport);renderer.getScissor(scissor);try{renderer.setScissorTest(true);renderer.setScissor(0,0,1,1);renderer.render(scene,camera);await G.RenderPrep.gpuIdle()}finally{renderer.setRenderTarget(target);renderer.setViewport(viewport);renderer.setScissor(scissor);renderer.setScissorTest(test)}};
+G.prepareWorldShaders=root=>prepareShaders(root,camera,false,scene);
 
 // v108 필요한 인벤토리만 받고 GPU 업로드를 프레임 사이에 나눠 끝낸다.
 async function warmup() {

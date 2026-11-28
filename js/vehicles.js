@@ -731,7 +731,7 @@ const Vh = G.Vehicles = {
   update(dt) {
     G.VehicleSkids.update(dt);
     for (const v of this.list) if (v.dead) v.wreckT += dt;
-    for (const v of this.list.slice()) if (v.dead && v.wreckT > RESPAWN && (v.respawnT = (v.respawnT || 0) - dt) <= 0) { if (!this.respawn(v)) v.respawnT = 2; }
+    for (const v of this.list.slice()) if (v.dead && !v.noRespawn && v.wreckT > RESPAWN && (v.respawnT = (v.respawnT || 0) - dt) <= 0) { if (!this.respawn(v)) v.respawnT = 2; }
     // 봇이 운전하는 차 중 가장 가까운 차의 엔진 소리
     if (G.Audio.ctx) {
       let near = null, nd = 120;
