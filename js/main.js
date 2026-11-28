@@ -519,7 +519,7 @@ G.boot = async function () {
     if(G.preparing){if(!locked)G.prepUnlocked=true;return;} // v108 준비 중 잠금 해제로 게임이 진행되지 않게 한다
     if (G.Game.spectating && !locked) { G.Game.stopSpectate(); return; }
     if (G.Game.state !== 'playing') return;
-    if(G.Attachments?.open||G.Armory?.open||G.TrainingRecords?.open){G.paused=true;G.UI.showPause(false);return;}
+    if(G.Attachments?.open||G.Armory?.open||G.TrainingRecords?.open||G.ZombieMode?.gearOpen){G.paused=true;G.UI.showPause(false);return;}
     if (!locked) { G.paused = true; G.UI.showPause(true); }
     else { G.paused = false; G.UI.showPause(false); }
   };
@@ -842,7 +842,7 @@ G.startGame = function (opts) {
       Auto.downN = 0; Auto.upT = 0; Auto.lastChange = performance.now();
       if (G.quality !== q) applyQuality(q);
       else DRS.reset(basePixelRatio(G.quality));
-      if(opts.mode==='zombie'){await G.loadZombieMode();await G.ZombieMode.prepare(opts);}
+      if(opts.mode==='zombie'){await G.loadZombieMode();G.Game.cleanup();await G.ZombieMode.prepare(opts);}
       G.World.setTimeOfDay(opts.mode==='zombie'?'night':opts.tod);
       G.Game.start(opts);
       // v108 경기 초기화는 한 번만 하고 끊긴 GPU 준비가 끝날 때까지 시작을 보류한다.
@@ -895,6 +895,7 @@ function frame(now) {
       const r = 360 * G.World.HALF / 500;
       camera.position.set(Math.cos(menuAng) * r, 150 + Math.sin(menuAng * 2) * 20, Math.sin(menuAng) * r);
       camera.lookAt(Math.cos(menuAng + 0.6) * 60, 12, Math.sin(menuAng + 0.6) * 60);
+      G.ZombieMode?.menuCamera(dt);
       camera.fov = 60; camera.updateProjectionMatrix();
       G.VM.set(null);
       G.FX.update(dt);

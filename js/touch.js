@@ -290,7 +290,7 @@
     if (!playing) return;
     const P = G.Player, a = P && P.a;
     if (!a) return;
-    BY.shove.el.style.display=G.Game.zombie?'':'none';
+    BY.shove.el.style.display=G.Game.zombie&&!P.vehicle?'':'none';
     const driving=!!P.vehicle;
     if(ui.dataset.vehicle!==(driving?'1':'0')){
       if(driving)I.keys.ShiftLeft=boostHeld();
