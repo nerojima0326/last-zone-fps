@@ -761,7 +761,7 @@ async function warmup() {
   const temp = [];
   const seenK = new Set();
   for (const it of G.Game.loot) { if (seenK.has(it.kind)) continue; seenK.add(it.kind); show(it.mesh); }
-  for (const a of G.Game.actors) { const m = a.model; show(m.root); show(m.lodMesh); show(m.helmetMesh); }
+  for (const a of G.Game.actors) { if(a.zombie)continue; const m = a.model; show(m.root); show(m.lodMesh); show(m.helmetMesh); }
   const m0 = G.Game.actors[0].model;
   m0.showChute(true); m0.showChute(false); show(m0.chute);
   for (const k of G.THROW_ORDER) { const t = G.Guns.throwModel(k, false); t.position.copy(camera.position); scene.add(t); temp.push(t); }
@@ -817,6 +817,8 @@ G.prepareViewmodel = async root => {
     await G.RenderPrep.gpuIdle();
   }finally{renderer.domElement.removeEventListener('webglcontextlost',release);release()}
 };
+// v109 일반 모드에는 좀비 코드·모델 요청을 추가하지 않는다.
+G.loadZombieMode = function () { return G.zombieReady || (G.zombieReady=import('./zombies/entry.js?v='+window.LZ_BUILD).then(m=>m.load()).catch(e=>{G.zombieReady=null;throw e})); };
 G.startGame = function (opts) {
   if(G.preparing)return G.startReady;
   if (G.GraphicsRecovery.isLost()) return Promise.resolve(false);
@@ -837,15 +839,17 @@ G.startGame = function (opts) {
       Auto.downN = 0; Auto.upT = 0; Auto.lastChange = performance.now();
       if (G.quality !== q) applyQuality(q);
       else DRS.reset(basePixelRatio(G.quality));
-      G.World.setTimeOfDay(opts.tod);
+      if(opts.mode==='zombie'){await G.loadZombieMode();await G.ZombieMode.prepare(opts);}
+      G.World.setTimeOfDay(opts.mode==='zombie'?'night':opts.tod);
       G.Game.start(opts);
       // v108 경기 초기화는 한 번만 하고 끊긴 GPU 준비가 끝날 때까지 시작을 보류한다.
       await G.GraphicsRecovery.prepare(async()=>{
         await warmup();
+        if(opts.mode==='zombie')await G.ZombieMode.ready();
         if (G.RT) { G.RT.invalidate(); await G.RT.prepare(); }
       });
       G.qualityTransition('판 시작',6);G.Input.reset();last=performance.now();
-      G.paused=G.prepUnlocked;G.UI.showPause(G.paused);return true;
+      G.paused=G.prepUnlocked;G.UI.showPause(G.paused);G.ZombieMode?.resetClock();return true;
     }catch(e){
       console.error(e);G.Game.cleanup();G.Input.unlock();G.UI.showMenu();if(!G.GraphicsRecovery.isLost())G.UI.toast('게임 준비에 실패했습니다 · 다시 시도하세요');return false;
     }finally{G.preparing=false;if(!G.GraphicsRecovery.isLost())loading.classList.add('hidden');}
@@ -856,6 +860,7 @@ G.resume = function () {
   G.Audio.init();
   G.UI.showPause(false);
   G.paused = false;
+  G.ZombieMode?.resetClock();
   G.Input.lock();
 };
 G.toMenu = function () {

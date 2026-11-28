@@ -14,7 +14,7 @@ const _v = new V3();
 const $ = id => document.getElementById(id);
 
 const UI = G.UI = {
-  opts: { size: 1, players: 40, diff: 'normal', loadout: 'rifle', tod: 'day', quality: 'auto', renderResolution: 'auto', sens: 1, name: 'Player', fpsTarget: 120, showFps: 'on', qv: 2 },
+  opts: { mode: 'battle', size: 1, players: 40, diff: 'normal', loadout: 'rifle', tod: 'day', quality: 'auto', renderResolution: 'auto', sens: 1, name: 'Player', fpsTarget: 120, showFps: 'on', qv: 2 },
   feed: [], dmgDirs: [], hmT: 0, hurtV: 0, lowPulse: 0, centerT: 0, killT: 0, pickT: 0, mapOpen: false,
   init() {
     let saved;
@@ -80,6 +80,12 @@ const UI = G.UI = {
     sens.value = this.opts.sens; $('sensVal').textContent = (+this.opts.sens).toFixed(2);
     sens.addEventListener('input', () => { this.opts.sens = +sens.value; $('sensVal').textContent = this.opts.sens.toFixed(2); G.Player.sens = this.opts.sens; });
     $('optName').value = this.opts.name || 'Player';
+    // v109 모드 전용 파일은 직접 선택한 뒤에만 받는다.
+    document.querySelectorAll('[data-family]').forEach(b => b.addEventListener('click', async () => {
+      this.opts.mode=b.dataset.family;document.querySelectorAll('[data-family]').forEach(x=>x.classList.toggle('on',x===b));
+      if(this.opts.mode==='zombie') { try{await G.loadZombieMode();}catch(e){this.toast('좀비 모드를 불러오지 못했습니다 · 다시 선택하세요');console.error(e);} }
+      G.ZombieMode?.menu(this.opts.mode==='zombie');
+    }));
     $('startBtn').addEventListener('click', () => {
       this.opts.name = ($('optName').value || 'Player').trim().slice(0, 12) || 'Player';
       try { localStorage.setItem('lastzone_opts', JSON.stringify(this.opts)); } catch (e) { /* 무시 */ }
