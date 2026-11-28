@@ -11,6 +11,7 @@ blender -b -t 2 --python tools/zombies/build-city.py -- /tmp/last-zone-zombie-ci
 node tools/zombies/pack-city.cjs /tmp/last-zone-zombie-city.glb
 python tools/zombies/build-audio.py
 node tools/zombies/manifest.cjs
+node tools/zombies/capture-models.cjs
 npm run check:zombie
 ```
 
@@ -22,6 +23,8 @@ npm run check:zombie
 |---|---|
 | ZOMBIE_OUT | 저장소 밖 임시 폴더 |
 | ZOMBIE_DIFFICULTY | infected / survivor / nightmare / doomsday |
+| ZOMBIE_GPU | hardware이면 실제 GPU 사용 시도 · 결과의 렌더러 이름으로 확인 |
+| ZOMBIE_REQUIRE_TARGETS | 1이면 60FPS·99백분위 33ms·50ms 초과 0개도 합격 조건 |
 | ZOMBIE_QUALITY | potato / low / medium / high |
 | ZOMBIE_WIDTH, ZOMBIE_HEIGHT | 640, 360 · 소프트웨어 GPU 검증용 |
 | ZOMBIE_STRESS | 1이면 40마리 이상 고정 부하를 60초 측정 · 전체 미션 분량과 별도 |
@@ -30,3 +33,7 @@ npm run check:zombie
 | ZOMBIE_RETRY | 1이면 실제 체크포인트 재시작 최대 2회 |
 
 중간 사양 PC의 1920×1080 60FPS 여부는 하드웨어 GPU에서 같은 검사를 실행해 확인해야 한다. SwiftShader 결과와 섞어 표기하지 않는다.
+
+기본 CI의 성능 검사 통과는 전체 실제 조작 탈출과 실행 오류 없음의 뜻이다. `performanceTargets`는 별도로 기록하며 소프트웨어 GPU가 목표를 충족했다고 표기하지 않는다. 실제 GPU 인증 시에는 `ZOMBIE_GPU=hardware ZOMBIE_REQUIRE_TARGETS=1 ZOMBIE_WIDTH=1920 ZOMBIE_HEIGHT=1080`을 사용한다.
+
+모바일 검사는 844×390 터치 컨텍스트에서 길게 누르기·밀쳐내기·손전등과 목표/버튼 겹침을 확인한다. 실제 휴대폰 GPU의 성능 검증을 대신하지 않는다. 전체 미션 검사는 최소 15장과 코드·자원 지문, 원시 프레임·메모리·입력 조종 상태를 저장소 밖에 남긴다.

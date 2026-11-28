@@ -1,6 +1,6 @@
 // v109 목표 순서·상호작용·저장 복구와 성공·실패를 실제 게임에서 검사한다.
 require('./artifact-paths.cjs');const assert=require('assert'),fs=require('fs'),path=require('path'),fixture=require('./zombies/fixture.cjs');
-(async()=>{const f=await fixture();const rows=[];try{const p=f.page;async function test(name,fn){const value=await p.evaluate(fn);assert(value,name);rows.push({name,status:'통과'})}
+(async()=>{const f=await fixture();const rows=[];try{const p=f.page;async function test(name,fn){const value=await p.evaluate(fn);await p.evaluate(()=>G.paused=true);assert(value,name);rows.push({name,status:'통과'})}
  await test('난이도 4종과 이름',()=>Object.values(G.ZombieMode.modules.DIFFICULTIES).map(d=>d.name).join(',')==='생존자,감염 구역,악몽,최후의 날');
  assert(!f.bootstrapRequests.some(url=>url.includes('/zombies/')),'일반 초기 요청에 좀비 없음');rows.push({name:'일반 초기 요청에 좀비 없음',status:'통과'});
  await test('모든 목표 사이 지형 경로 존재',()=>{const m=G.ZombieMode,r=m.route,N=m.modules.Nav;window.zPaths=[];for(const[a,b]of [[r.start,r.rally],[r.rally,r.supply],[r.supply,r.generator],[r.generator,r.fuel[0]],[r.generator,r.fuel[1]],[r.generator,r.near],[r.far,r.tower],[r.tower,r.harbor]]){const path=N.path(a,b);zPaths.push({from:a.toArray(),to:b.toArray(),nodes:path?.length});if(!path)return false}return true});
@@ -12,11 +12,13 @@ require('./artifact-paths.cjs');const assert=require('assert'),fs=require('fs'),
   await p.screenshot({path:path.join(f.out,`phase-${phase}-end.jpg`),quality:75});
  }
  await test('차량 차단문 돌파와 경로 기록',()=>{const m=G.ZombieMode,v=m.scene.car,position=v.pos.clone(),phase=m.phase;v.pos.copy(m.route.gate).addScaledVector(m.route.axis,-8);v.speed=9;m.phase=3;G.Player.vehicle=v;m.scene.checkBreach();const ok=m.scene.gateOpen&&m.flags.bridgeRoute==='vehicle'&&m.stats.route==='vehicle';G.Player.vehicle=null;v.pos.copy(position);v.speed=0;m.phase=phase;return ok});
- await test('최종 탈출 기록 저장',()=>JSON.parse(localStorage.getItem('lz_zombie_records_v109')).infected.time>0);
+ await test('최종 탈출 기록 저장',()=>(()=>{const record=JSON.parse(localStorage.getItem('lz_zombie_records_v109')).infected;return record.time>0&&record.lastCompleted===5})());
  await test('체크포인트 체력·탄약 정확 복구',()=>{const m=G.ZombieMode;m.restore(m.checkpoint);const a=G.Game.player;a.hp=37;a.ammo['556']=17;m.saveCheckpoint();a.hp=2;a.ammo['556']=0;m.restore(m.checkpoint);return a.hp===37&&a.ammo['556']===17&&a.alive&&!m.finished});
+ await test('재시작 때 닫힌 통로·보강물 복구',()=>{const m=G.ZombieMode;m.phase=3;delete m.flags.bridgeRoute;m.flags.door=true;m.scene.barricadeHp=73;m.saveCheckpoint();m.scene.openGate();m.scene.barricadeHp=0;m.restore(m.checkpoint);return !m.scene.gateOpen&&!m.scene.footOpen&&!!m.scene.gateBox&&m.scene.barricadeHp===73});
+ await test('연료 투입을 가까운 보급 상자보다 우선',()=>{const m=G.ZombieMode;m.restore(m.checkpoint);m.phase=2;m.carry=0;G.Game.player.pos.copy(m.route.generator).add(new THREE.Vector3(2.7,0,.1));G.Input.keys.KeyF=true;m.interact(.05);const ok=m.hold?.action==='deliver';G.Input.keys.KeyF=false;m.hold=null;m.carry=null;return ok});
  await test('사망 실패와 재시작',()=>{const m=G.ZombieMode;m.hurtAt=-99;m.damage(G.Game.player,10000,null,'fall');if(m.result.win||!m.finished)return false;return m.restore(m.checkpoint)&&!m.finished});
  await test('시간 초과 실패',()=>{const m=G.ZombieMode;m.phase=5;m.flags.escaped=false;m.flags.evacStarted=m.time-1000;m.objectives(0);return m.finished&&!m.result.win&&m.result.reason.includes('대기')});
  await p.screenshot({path:path.join(f.out,'failure.jpg'),quality:75});
  await p.evaluate(()=>G.toMenu());await p.click('[data-family=battle]');assert(await p.locator('.modes').isVisible(),'일반 모드 선택 복귀');assert.deepStrictEqual(f.errors,[]);
  const report={rows,errors:f.errors,paths:await p.evaluate(()=>zPaths),out:f.out};fs.writeFileSync(process.env.REPORT||path.join(f.out,'mode.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(rows));
-}finally{await f.close()}})().catch(e=>{console.error(e);process.exitCode=1});
+}finally{await f.close()}const mobile=await require('./zombies/check-mobile.cjs')(f.out),reportFile=process.env.REPORT||path.join(f.out,'mode.json'),report=JSON.parse(fs.readFileSync(reportFile));report.rows.push(...mobile);fs.writeFileSync(reportFile,JSON.stringify(report,null,2));console.log('모바일',mobile);})().catch(e=>{console.error(e);process.exitCode=1});
