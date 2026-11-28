@@ -84,7 +84,7 @@ const UI = G.UI = {
     document.querySelectorAll('[data-family]').forEach(b => b.addEventListener('click', async () => {
       this.opts.mode=b.dataset.family;document.querySelectorAll('[data-family]').forEach(x=>x.classList.toggle('on',x===b));
       if(this.opts.mode==='zombie') { try{await G.loadZombieMode();}catch(e){this.toast('좀비 모드를 불러오지 못했습니다 · 다시 선택하세요');console.error(e);return;} }
-      G.ZombieMode?.menu(this.opts.mode==='zombie');
+      if(G.ZombieMode?.modules?.Map)await G.ZombieMode.menu(this.opts.mode==='zombie'); // v110 전용 맵 전환 완료
     }));
     $('startBtn').addEventListener('click', () => {
       this.opts.name = ($('optName').value || 'Player').trim().slice(0, 12) || 'Player';

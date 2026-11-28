@@ -843,6 +843,7 @@ G.startGame = function (opts) {
       if (G.quality !== q) applyQuality(q);
       else DRS.reset(basePixelRatio(G.quality));
       if(opts.mode==='zombie'){await G.loadZombieMode();G.Game.cleanup();await G.ZombieMode.prepare(opts);}
+      else if(G.ZombieMode?.modules?.Map?.active){G.Game.cleanup();G.ZombieMode.modules.Map.leave();} // v110 일반 경기의 섬 복원
       G.World.setTimeOfDay(opts.mode==='zombie'?'night':opts.tod);
       G.Game.start(opts);
       // v108 경기 초기화는 한 번만 하고 끊긴 GPU 준비가 끝날 때까지 시작을 보류한다.
@@ -883,7 +884,7 @@ function frame(now) {
   const ms = now - last;
   let dt = ms / 1000;
   last = now;
-  if (G.GraphicsRecovery.isLost() || G.preparing || (G.RenderPrep.running && G.RenderPrep.safe())) return;
+  if (G.GraphicsRecovery.isLost() || G.preparing || G.World.missionMap?.changing || (G.RenderPrep.running && G.RenderPrep.safe())) return; // v110 전용 맵 준비 중 첫 그리기 분산
   if (dt > 0.05) dt = 0.05;
   if (dt <= 0) dt = 0.001;
   frameNo++;

@@ -106,6 +106,7 @@ const W = G.World = {
   pick(values) { return values[Math.floor(this.decorRnd() * values.length)]; },
 
   async init(scene, renderer, progress) {
+    const mapBefore = new Set(scene.children); // v110 일반 섬 객체를 전용 맵과 분리한다
     this.scene = scene; this.renderer = renderer; this.windows = [];
     this.rnd = U.mulberry32(20261028);
     this.decorRnd = U.mulberry32(781245);
@@ -151,6 +152,7 @@ const W = G.World = {
     this.heightTex = new THREE.DataTexture(hf, N, N, THREE.RedFormat, THREE.HalfFloatType);
     this.heightTex.magFilter = this.heightTex.minFilter = THREE.LinearFilter;
     this.heightTex.needsUpdate = true;
+    this.mapObjects = scene.children.filter(o => !mapBefore.has(o));
   },
 
   /* -------------------------------------------------------------- */
@@ -456,6 +458,7 @@ const W = G.World = {
     return m;
   },
   heightAt(x, z) {
+    if (this.missionMap) return this.missionMap.heightAt(x, z); // v110 전용 지형
     let fx = (x + HALF) / CELL, fz = (z + HALF) / CELL;
     if (fx < 0) fx = 0; else if (fx > RES - 0.0001) fx = RES - 0.0001;
     if (fz < 0) fz = 0; else if (fz > RES - 0.0001) fz = RES - 0.0001;
@@ -467,6 +470,7 @@ const W = G.World = {
   },
   // 실제 수면과 마른 물가의 지하 참고 수위. 수역 밖 저지대에 가짜 웅덩이를 만들지 않는다.
   waterAt(x, z) {
+    if (this.missionMap) return this.missionMap.waterAt(x, z); // v110 섬 수면 분리
     const Wh = this.waterH;
     if (!Wh) return this.WATER;
     let fx = (x + HALF) / CELL, fz = (z + HALF) / CELL;
@@ -2040,6 +2044,7 @@ const W = G.World = {
     const mesh=new THREE.Mesh(geo,material);mesh.name='호수·강 통합 수면';mesh.renderOrder=1;mesh.matrixAutoUpdate=false;mesh.receiveShadow=true;this.scene.add(mesh);this.inlandWater=mesh;
   },
   setTimeOfDay(tod, restore=false) {
+    if (this.missionMap) return this.missionMap.applyLighting(tod, restore); // v110 전용 조명
     if (tod === 'random') tod = U.pick(['day', 'day', 'sunset', 'night', 'fog', 'rain']);
     if (!restore && this.tod === tod && this.envRT) return; // v108 연결 복구 때는 같은 시간대도 환경맵을 다시 만든다
     this.tod = tod;
@@ -2276,9 +2281,10 @@ const W = G.World = {
     });
   },
   setupGrass(quality) {
+    if (this.missionMap) { this.missionMap.cullT=0; return; } // v110 검역단지에 섬 식생을 생성하지 않는다
     if (G.Veg) G.Veg.setQuality(quality);
     if (this.rocks) { this.rocks.dist = { potato: 170, low: 230, medium: 340, high: 460 }[quality] || 460; this.rocks.dirty = true; }
-    if (this.grass) { this.scene.remove(this.grass); this.grass.geometry.dispose(); this.grass.material.dispose(); this.grass = null; }
+    if (this.grass) { if(this.mapObjects)this.mapObjects=this.mapObjects.filter(o=>o!==this.grass);this.scene.remove(this.grass); this.grass.geometry.dispose(); this.grass.material.dispose(); this.grass = null; }
     if (quality === 'low' || quality === 'potato') return;
     const count = quality === 'high' ? 40000 : 16000, PS = quality === 'high' ? 74 : 56;
     // 가는 풀잎 4장 묶음 (3마디, 휘어짐) — aT: 높이 비율, 잎 번호(색 변화)
@@ -2389,6 +2395,7 @@ const W = G.World = {
     mesh.frustumCulled = false;
     this.grass = mesh;
     this.scene.add(mesh);
+    if(this.mapObjects)this.mapObjects.push(mesh); // v110 뒤에 생성한 풀도 섬과 함께 보관한다
     this.syncGrassLight();
   },
   // 안개 배율 (저사양 단계는 시야 거리를 줄이는 대신 안개를 짙게)
@@ -2542,6 +2549,7 @@ const W = G.World = {
   },
   // Footstep classification uses the same painted weights as the terrain.
   surfaceAt(x, z) {
+    if (this.missionMap) return this.missionMap.surfaceAt(x, z); // v110 눈·제설 도로
     const tex = this.terrainW, data = tex?.image?.data;
     if (!data) return 'grass';
     const size = tex.image.width;
@@ -2592,6 +2600,7 @@ const W = G.World = {
   },
 
   update(dt, camPos, cam) {
+    if (this.missionMap) { this.missionMap.update(dt, camPos, cam); return; } // v110 섬 갱신 분리
     this.updateAirView(dt,camPos,cam);
     G.LODFade?.update(cam);
     this.time += dt;
