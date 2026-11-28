@@ -1,0 +1,46 @@
+// v109 검증 조종사는 게임 규칙을 바꾸지 않고 이동·조준·사격·상호작용만 입력한다.
+(function(){
+const G=window.G,T=window.THREE,m=G.ZombieMode,N=m.modules.Nav,P=G.Player,I=G.Input,route=m.route,paths=new Map(),points={start:route.start,relay:route.rally,door:m.scene.doorPos,supply:route.supply,generator:route.generator,fuel0:route.fuel[0],fuel1:route.fuel[1],foot:route.foot,far:route.far,tower:route.tower,harbor:route.harbor,genCache:route.generator.clone().add(new T.Vector3(4,0,1)),towerCache:route.tower.clone().add(new T.Vector3(6,0,0)),harborCache:route.harbor.clone().add(new T.Vector3(-8,0,0))};
+for(const[from,to]of [['start','relay'],['relay','door'],['door','supply'],['supply','fuel0'],['supply','fuel1'],['fuel0','generator'],['fuel1','generator'],['generator','fuel0'],['generator','fuel1'],['generator','foot'],['far','tower'],['tower','harbor'],['generator','genCache'],['tower','towerCache'],['harbor','harborCache']]){const path=N.path(points[from],points[to]);if(path)paths.set(from+'>'+to,path)}
+const state=window.zPilot={paths,steps:0,driverMs:0,maxDriverMs:0,route:[],index:0,key:'',lastPos:new T.Vector3(),stuck:0,retry:0,lastHeal:-99,lastReload:-99,lastFire:-99,cache:null,lastCache:-99,descend:false,notes:[]};
+const original=P.update.bind(P);state.originalUpdate=original;const desired=new T.Vector3(),direction=new T.Vector3(),forward=new T.Vector3(),hit={normal:new T.Vector3()},zero=new T.Vector3();
+function key(code,value){if(value&&!I.keys[code])I.hits[code]=true;I.keys[code]=value}
+function angle(a){while(a>Math.PI)a-=Math.PI*2;while(a<-Math.PI)a+=Math.PI*2;return a}
+function aimAt(pos){const a=G.Game.player;direction.copy(pos).sub(G.camera.position);const dist=direction.length();direction.divideScalar(dist||1);const yaw=Math.atan2(-direction.x,-direction.z),pitch=Math.asin(T.MathUtils.clamp(direction.y,-1,1));G.camera.getWorldDirection(forward);const currentYaw=Math.atan2(-forward.x,-forward.z),currentPitch=Math.asin(T.MathUtils.clamp(forward.y,-1,1)),k=.0022*P.sens*(G.camera.fov/P.fov)*(1+(P.adsSens-1)*P.ads);I.mdx=T.MathUtils.clamp(-angle(yaw-currentYaw)/k,-250,250);I.mdy=T.MathUtils.clamp(-(pitch-currentPitch)/k,-250,250);return dist}
+function navTo(target,keyName){
+ const a=G.Game.player;if(state.key!==keyName){state.key=keyName;state.index=0;let best=null,score=Infinity;for(const[k,path]of paths){if(!k.endsWith('>'+keyName))continue;const distance=a.pos.distanceToSquared(path[0]);if(distance<score){score=distance;best=path}}
+ if(keyName==='far'&&m.phase===3){best=[route.near.clone().addScaledVector(route.side,2.5),route.gate.clone().addScaledVector(route.axis,-4).addScaledVector(route.side,2.5),route.gate.clone().addScaledVector(route.axis,5).addScaledVector(route.side,2.5),route.far.clone().addScaledVector(route.side,2.5),route.far.clone()]}
+ if(keyName==='signal'){const base=paths.get('far>tower')||N.path(a.pos,route.tower)||[];best=[...base,...(N.path(route.tower,m.scene.towerStairs[0])||[]),...m.scene.towerStairs,route.towerTop.clone()]}
+ if(keyName==='descend')best=[...m.scene.towerStairs].reverse().concat([route.tower.clone()]);
+ if(!best||score>3000&&keyName!=='far'&&keyName!=='signal'&&keyName!=='descend')best=N.path(a.pos,target)||[target.clone()];state.route=best;let closest=0,bd=Infinity;for(let i=0;i<best.length;i++){const d=a.pos.distanceToSquared(best[i]);if(d<bd){bd=d;closest=i}}state.index=closest;}
+ let tolerance=keyName==='signal'||keyName==='descend'?.27:.28,vertical=keyName==='signal'||keyName==='descend'?.6:1.2;
+ while(state.index<state.route.length-1&&Math.hypot(a.pos.x-state.route[state.index].x,a.pos.z-state.route[state.index].z)<tolerance&&Math.abs(a.pos.y-state.route[state.index].y)<vertical)state.index++;
+ desired.copy(state.route[state.index]||target).sub(a.pos).setY(0);if(desired.length()<.2)desired.copy(target).sub(a.pos).setY(0);return desired.normalize();
+}
+P.update=function(dt){const start=performance.now(),a=G.Game.player;if(!a?.alive)return original(dt);state.steps++;for(const code of ['KeyW','KeyA','KeyS','KeyD','ShiftLeft','KeyF','KeyH','KeyR','KeyX','Space'])key(code,false);I.lmb=I.lmbHit=I.rmb=false;I.mdx=I.mdy=0;
+ if(m.cinematic)key('Space',true);
+ const target=m.target();if(!target)return original(dt);let goal=target.p,task=target.action||'wait',goalKey=task==='relay'?'relay':task==='door'?'door':task==='supply'?'supply':task.startsWith('fuel')?task:task==='deliver'||task==='startGenerator'?'generator':task==='foot'?'foot':m.phase===3?'far':task==='signal'?'signal':m.phase===4?'tower':'harbor';
+ let near=a.pos.distanceTo(goal);if(m.phase>=4&&m.flags.signal&&a.pos.y>route.tower.y+1&&Math.hypot(a.pos.x-route.tower.x,a.pos.z-route.tower.z)<20){goal=m.scene.towerStairs[0];goalKey='descend';near=a.pos.distanceTo(goal)}
+ const gun=a.weapons[a.cur],def=gun?G.WEAPONS[gun.id]:null,total=gun?gun.mag+a.ammo[def.ammo]:0;
+ if(m.carry===null&&(m.phase>=2||m.phase===1&&m.flags.door&&m.phaseKills>=18)&&(total<45||m.phase===2&&m.flags.delivered<2&&a.gunAmmo('pistol')<30||a.hp<50&&a.meds.medkit===0)&&m.time-state.lastCache>10&&!m.flags.escaped){const id=m.phase<2?'cache':m.phase===2||m.phase===3&&!m.flags.bridgeRoute?'gen-cache':m.phase<5?'tower-cache':'harbor-cache',point=id==='cache'?route.supply:id==='gen-cache'?points.genCache:id==='tower-cache'?points.towerCache:points.harborCache;if((m.uses[id]||0)<2){goal=point;goalKey=id==='cache'?'supply':id==='gen-cache'?'genCache':id==='tower-cache'?'towerCache':'harborCache';near=a.pos.distanceTo(goal);state.cache=id;task='cache:'+id;}else if(m.carry===null&&a.cur!=='rifle'&&a.gunAmmo('rifle')>0&&!P.sw)P.switchTo('rifle');
+ if(total===0&&a.cur!=='pistol')P.switchTo('pistol');}
+ if(m.carry===null&&a.cur!=='rifle'&&a.gunAmmo('rifle')>0&&!P.sw)P.switchTo('rifle');
+ if(total===0&&a.cur!=='pistol'&&a.gunAmmo('pistol')>0)P.switchTo('pistol');
+ if(state.cache&&m.uses[state.cache]&&near<3){state.lastCache=m.time;state.cache=null;state.key=''}
+ let enemy=null,closest=Infinity;for(const z of m.pool){if(!z.alive||!z.z.contacts.length||m.time-z.z.spawnAt<.4)continue;const d=z.pos.distanceTo(a.pos);if(d>(a.cur==='pistol'?28:42))continue;direction.copy(z.z.contacts[0]).sub(G.camera.position);const length=direction.length();direction.divideScalar(length||1);if(G.World.rayBoxes(G.camera.position.x,G.camera.position.y,G.camera.position.z,direction.x,direction.y,direction.z,length,hit)<length-.2)continue;const score=d+(z.z.kind==='screamer'?-4:0);if(score<closest){closest=score;enemy=z;}}
+ if((goalKey==='signal'||goalKey==='descend')&&a.pos.y>route.tower.y+.5){enemy=null;closest=Infinity;}
+ const moving=near>(task==='signal'?1.7:task==='foot'?2.3:task==='wait'?10:2.6);
+ if(moving)navTo(goal,goalKey);else desired.set(0,0,0);
+ if(enemy&&closest>8&&closest<42&&!P.reload&&!P.heal&&task!=='board')desired.set(0,0,0);
+ if(enemy&&closest<4.5&&!m.hold&&goalKey!=='signal'&&goalKey!=='descend'){const retreat=a.pos.clone().sub(enemy.pos).setY(0).normalize(),p=a.pos.clone().addScaledVector(retreat,2);if(N.free(p.x,p.z,N.height(p.x,p.z)))desired.copy(retreat);else desired.set(-retreat.z,0,retreat.x)}
+ if(enemy){const predicted=enemy.z.contacts[0].clone().addScaledVector(enemy.vel,.05+enemy.pos.distanceTo(a.pos)/(def?.vel||700));aimAt(predicted);I.rmb=true;G.camera.getWorldDirection(forward);direction.copy(predicted).sub(G.camera.position).normalize();if(forward.dot(direction)>.99996&&!P.reload&&!P.sw&&!P.heal&&m.time-state.lastFire>.13&&gun?.mag>0){I.lmb=I.lmbHit=true;state.lastFire=m.time}}
+ else if(desired.lengthSq())aimAt(a.pos.clone().addScaledVector(desired,8).add(new T.Vector3(0,a.eyeH(),0)));
+ if(desired.lengthSq()){const f=-Math.sin(a.yaw)*desired.x-Math.cos(a.yaw)*desired.z,r=Math.cos(a.yaw)*desired.x-Math.sin(a.yaw)*desired.z;key('KeyW',f>.35);key('KeyS',f<-.35);key('KeyD',r>.35);key('KeyA',r<-.35);}
+ if(near<3&&task!=='wait'&&goalKey!=='descend'){key('KeyF',true);if(m.interactionLabel?.includes('보급')&&m.uses[state.cache||'']>0)state.lastCache=m.time;}
+ if(gun&&gun.mag<3&&!P.reload&&m.time-state.lastReload>1){key('KeyR',true);state.lastReload=m.time;}
+ if(a.hp<55&&!P.heal&&m.time-state.lastHeal>2&&(a.meds.medkit||a.meds.bandage)){key('KeyH',true);state.lastHeal=m.time;}
+ if(m.grabbed||closest<1.9)key('KeyX',true);
+ state.stuck+=dt;if(state.stuck>1.8){if(a.pos.distanceTo(state.lastPos)<.35&&moving){key('Space',true);state.notes.push({time:m.time,event:'점프 우회',key:goalKey});if(state.notes.length%3===0){if(goalKey==='signal'||goalKey==='descend')state.key='';else{state.route=N.path(a.pos,goal)||state.route;state.index=0}}}state.lastPos.copy(a.pos);state.stuck=0;}
+ const cost=performance.now()-start;state.driverMs+=cost;state.maxDriverMs=Math.max(state.maxDriverMs,cost);return original(dt);
+};
+})();

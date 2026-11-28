@@ -6,9 +6,11 @@
 blender -b -t 2 --python tools/zombies/build-assets.py -- /tmp/last-zone-zombie-source
 node tools/zombies/pack-assets.cjs /tmp/last-zone-zombie-source
 node tools/zombies/bake-palettes.cjs
+node tools/zombies/bake-navigation.cjs
 blender -b -t 2 --python tools/zombies/build-city.py -- /tmp/last-zone-zombie-city.glb
 node tools/zombies/pack-city.cjs /tmp/last-zone-zombie-city.glb
 python tools/zombies/build-audio.py
+node tools/zombies/manifest.cjs
 npm run check:zombie
 ```
 
@@ -22,6 +24,7 @@ npm run check:zombie
 | ZOMBIE_DIFFICULTY | infected / survivor / nightmare / doomsday |
 | ZOMBIE_QUALITY | potato / low / medium / high |
 | ZOMBIE_WIDTH, ZOMBIE_HEIGHT | 640, 360 · 소프트웨어 GPU 검증용 |
+| ZOMBIE_STRESS | 1이면 40마리 이상 고정 부하를 60초 측정 · 전체 미션 분량과 별도 |
 | ZOMBIE_SECONDS | 지정하면 부분 검사로 명시, 전체 미션 통과로 집계하지 않음 |
 | ZOMBIE_TIMEOUT_MS | 2400000 · 전체 미션 한도 |
 | ZOMBIE_RETRY | 1이면 실제 체크포인트 재시작 최대 2회 |

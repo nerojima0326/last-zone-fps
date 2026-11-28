@@ -21,8 +21,8 @@ function save(){
   const dir=path.join(out,file.replace(/\.(cjs|mjs)$/,''));fs.mkdirSync(dir,{recursive:true});
   const args=[path.join('tools',file),...(extra[file]||[])],log=path.join(dir,'console.log'),fd=fs.openSync(log,'w'),started=performance.now();let timeout=false;
   const result=await new Promise(resolve=>{
-   const child=cp.spawn(process.execPath,args,{cwd:root,env:{...env,REPORT:path.join(dir,'report.json'),KNIFE_SHOTS:path.join(dir,'shots'),MOBILE_SHOTS:path.join(dir,'shots'),AIR_SHOTS_DIR:path.join(dir,'shots'),PLANE_SHOTS:path.join(dir,'shots')},stdio:['ignore',fd,fd],detached:process.platform!=='win32'});
-   const timer=setTimeout(()=>{timeout=true;try{process.platform==='win32'?child.kill():process.kill(-child.pid,'SIGKILL');}catch(e){}},Number(process.env.CHECK_TIMEOUT_MS)||600000);
+   const child=cp.spawn(process.execPath,args,{cwd:root,env:{...env,REPORT:path.join(dir,'report.json'),ZOMBIE_OUT:path.join(dir,'zombies'),KNIFE_SHOTS:path.join(dir,'shots'),MOBILE_SHOTS:path.join(dir,'shots'),AIR_SHOTS_DIR:path.join(dir,'shots'),PLANE_SHOTS:path.join(dir,'shots')},stdio:['ignore',fd,fd],detached:process.platform!=='win32'});
+   const timer=setTimeout(()=>{timeout=true;try{process.platform==='win32'?child.kill():process.kill(-child.pid,'SIGKILL');}catch(e){}},Number(process.env.CHECK_TIMEOUT_MS)||(file==='check-zombie-perf.cjs'?2700000:600000));
    child.once('error',error=>{clearTimeout(timer);resolve({code:null,error:error.message});});child.once('close',code=>{clearTimeout(timer);resolve({code});});
   });
   fs.closeSync(fd);const text=fs.readFileSync(log,'utf8'),reason=timeout?'검사 제한 시간 초과':result.error||(result.code===0?'':text.trim().split('\n').filter(l=>/Error|Timeout|FAIL|Assertion/.test(l)).slice(0,2).join(' / ')||'종료 코드 '+result.code);
