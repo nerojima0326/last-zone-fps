@@ -1,0 +1,750 @@
+{
+  "version": 110,
+  "scope": "전용 맵 작업 브랜치 검증",
+  "base": "2fc836cb4030daeea500d105c35ec933b3ff3b40",
+  "implementation": "e8fe5d12bf051e5fac58e3a95cd7b63eb3ceefd1",
+  "command": "CHECK_OUT=/workspace/artifacts/v110-zombie-map/full-checks npm run check",
+  "complete": true,
+  "passed": 64,
+  "total": 64,
+  "checks": [
+    {
+      "name": "check-aim.cjs",
+      "command": "node tools/check-aim.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 92.9,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/aim-recheck/check-aim/console.log",
+      "firstAttempt": {
+        "name": "check-aim.cjs",
+        "command": "node tools/check-aim.cjs",
+        "status": "실패",
+        "exitCode": 1,
+        "seconds": 61,
+        "reason": "AssertionError [ERR_ASSERTION]: Live ADS camera ray missed the 100m training target",
+        "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-aim/console.log"
+      }
+    },
+    {
+      "name": "check-air-hud.cjs",
+      "command": "node tools/check-air-hud.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 27.1,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-air-hud/console.log"
+    },
+    {
+      "name": "check-air-visibility.cjs",
+      "command": "node tools/check-air-visibility.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 29.3,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-air-visibility/console.log"
+    },
+    {
+      "name": "check-airdrop.cjs",
+      "command": "node tools/check-airdrop.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 42.3,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-airdrop/console.log"
+    },
+    {
+      "name": "check-artifact-paths.cjs",
+      "command": "node tools/check-artifact-paths.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 0.1,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-artifact-paths/console.log"
+    },
+    {
+      "name": "check-attachments.cjs",
+      "command": "node tools/check-attachments.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 45.9,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-attachments/console.log"
+    },
+    {
+      "name": "check-auto-quality.cjs",
+      "command": "node tools/check-auto-quality.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 37.7,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-auto-quality/console.log"
+    },
+    {
+      "name": "check-bundled-viewmodels.cjs",
+      "command": "node tools/check-bundled-viewmodels.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 140.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-bundled-viewmodels/console.log"
+    },
+    {
+      "name": "check-cabin-instruments.cjs",
+      "command": "node tools/check-cabin-instruments.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 31.4,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-cabin-instruments/console.log"
+    },
+    {
+      "name": "check-cabin-model.cjs",
+      "command": "node tools/check-cabin-model.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 29.8,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-cabin-model/console.log"
+    },
+    {
+      "name": "check-cabin-mounts.cjs",
+      "command": "node tools/check-cabin-mounts.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 30.3,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-cabin-mounts/console.log"
+    },
+    {
+      "name": "check-cabin-steering.cjs",
+      "command": "node tools/check-cabin-steering.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 30.1,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-cabin-steering/console.log"
+    },
+    {
+      "name": "check-classic-hands.cjs",
+      "command": "node tools/check-classic-hands.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 57.8,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-classic-hands/console.log"
+    },
+    {
+      "name": "check-clearance.cjs",
+      "command": "node tools/check-clearance.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 7.1,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-clearance/console.log"
+    },
+    {
+      "name": "check-combat-environment.cjs",
+      "command": "node tools/check-combat-environment.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 47.6,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-combat-environment/console.log"
+    },
+    {
+      "name": "check-combat.cjs",
+      "command": "node tools/check-combat.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 61.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-combat/console.log"
+    },
+    {
+      "name": "check-driving-controls.cjs",
+      "command": "node tools/check-driving-controls.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 31.5,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-driving-controls/console.log"
+    },
+    {
+      "name": "check-driving-input.cjs",
+      "command": "node tools/check-driving-input.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 29.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-driving-input/console.log"
+    },
+    {
+      "name": "check-expanded-motion.cjs",
+      "command": "node tools/check-expanded-motion.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 37.9,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-expanded-motion/console.log"
+    },
+    {
+      "name": "check-fire-flipbook.cjs",
+      "command": "node tools/check-fire-flipbook.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 66.7,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-fire-flipbook/console.log"
+    },
+    {
+      "name": "check-gameplay-polish.cjs",
+      "command": "node tools/check-gameplay-polish.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 51.3,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-gameplay-polish/console.log"
+    },
+    {
+      "name": "check-glock-import.mjs",
+      "command": "node tools/check-glock-import.mjs assets/models/viewmodels/glock17.fbx",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 0.5,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-glock-import/console.log"
+    },
+    {
+      "name": "check-graphics-recovery.cjs",
+      "command": "node tools/check-graphics-recovery.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 49.1,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-graphics-recovery/console.log"
+    },
+    {
+      "name": "check-hand-poses.cjs",
+      "command": "node tools/check-hand-poses.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 151.5,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-hand-poses/console.log"
+    },
+    {
+      "name": "check-knife-motions.cjs",
+      "command": "node tools/check-knife-motions.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 60.7,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-knife-motions/console.log"
+    },
+    {
+      "name": "check-knife-touch.cjs",
+      "command": "node tools/check-knife-touch.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 27.1,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-knife-touch/console.log"
+    },
+    {
+      "name": "check-knives.cjs",
+      "command": "node tools/check-knives.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 63.8,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-knives/console.log"
+    },
+    {
+      "name": "check-live-session.cjs",
+      "command": "node tools/check-live-session.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 144,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-live-session/console.log"
+    },
+    {
+      "name": "check-m4-model.mjs",
+      "command": "node tools/check-m4-model.mjs assets/models/viewmodels/m4_animations.zip",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 0.9,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-m4-model/console.log"
+    },
+    {
+      "name": "check-map-drive.cjs",
+      "command": "node tools/check-map-drive.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 44,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-map-drive/console.log"
+    },
+    {
+      "name": "check-map-hydrology.cjs",
+      "command": "node tools/check-map-hydrology.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 6.5,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-map-hydrology/console.log"
+    },
+    {
+      "name": "check-mobile-models.cjs",
+      "command": "node tools/check-mobile-models.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 0.1,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-mobile-models/console.log"
+    },
+    {
+      "name": "check-mobile-scene.cjs",
+      "command": "node tools/check-mobile-scene.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 130.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-mobile-scene/console.log"
+    },
+    {
+      "name": "check-mobile-stability.cjs",
+      "command": "node tools/check-mobile-stability.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 161.4,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-mobile-stability/console.log"
+    },
+    {
+      "name": "check-native-reticle.cjs",
+      "command": "node tools/check-native-reticle.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 38.1,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-native-reticle/console.log"
+    },
+    {
+      "name": "check-original-weapon-audio.cjs",
+      "command": "node tools/check-original-weapon-audio.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 2.9,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-original-weapon-audio/console.log"
+    },
+    {
+      "name": "check-patch-people.cjs",
+      "command": "node tools/check-patch-people.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 110.7,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-patch-people/console.log"
+    },
+    {
+      "name": "check-plane-model.cjs",
+      "command": "node tools/check-plane-model.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 36.8,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-plane-model/console.log"
+    },
+    {
+      "name": "check-primary-scopes.cjs",
+      "command": "node tools/check-primary-scopes.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 27.6,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-primary-scopes/console.log"
+    },
+    {
+      "name": "check-quality-performance.cjs",
+      "command": "node tools/check-quality-performance.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 62,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-quality-performance/console.log"
+    },
+    {
+      "name": "check-reloads.cjs",
+      "command": "node tools/check-reloads.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 47.6,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-reloads/console.log"
+    },
+    {
+      "name": "check-render-clarity.cjs",
+      "command": "node tools/check-render-clarity.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 137.7,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-render-clarity/console.log"
+    },
+    {
+      "name": "check-render-prep.cjs",
+      "command": "node tools/check-render-prep.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 70.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-render-prep/console.log"
+    },
+    {
+      "name": "check-scope-models.mjs",
+      "command": "node tools/check-scope-models.mjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 1.6,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-scope-models/console.log"
+    },
+    {
+      "name": "check-session-polish.cjs",
+      "command": "node tools/check-session-polish.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 47,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-session-polish/console.log"
+    },
+    {
+      "name": "check-shot-hearing.cjs",
+      "command": "node tools/check-shot-hearing.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 31.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-shot-hearing/console.log"
+    },
+    {
+      "name": "check-smoke-trail.cjs",
+      "command": "node tools/check-smoke-trail.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 28.3,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-smoke-trail/console.log"
+    },
+    {
+      "name": "check-spectator-prep.cjs",
+      "command": "node tools/check-spectator-prep.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 31.6,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-spectator-prep/console.log"
+    },
+    {
+      "name": "check-startup.cjs",
+      "command": "node tools/check-startup.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 48.4,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-startup/console.log"
+    },
+    {
+      "name": "check-throwable-motion.cjs",
+      "command": "node tools/check-throwable-motion.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 34.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-throwable-motion/console.log"
+    },
+    {
+      "name": "check-training-range.cjs",
+      "command": "node tools/check-training-range.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 91.7,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-training-range/console.log"
+    },
+    {
+      "name": "check-validation-reports.cjs",
+      "command": "node tools/check-validation-reports.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 0,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-validation-reports/console.log"
+    },
+    {
+      "name": "check-vehicle-cabin.cjs",
+      "command": "node tools/check-vehicle-cabin.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 35.8,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-vehicle-cabin/console.log"
+    },
+    {
+      "name": "check-vehicle-physics.cjs",
+      "command": "node tools/check-vehicle-physics.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 34.3,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-vehicle-physics/console.log"
+    },
+    {
+      "name": "check-vehicle-throwable-vfx.cjs",
+      "command": "node tools/check-vehicle-throwable-vfx.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 36.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-vehicle-throwable-vfx/console.log"
+    },
+    {
+      "name": "check-vehicle-tuning.cjs",
+      "command": "node tools/check-vehicle-tuning.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 31.8,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-vehicle-tuning/console.log"
+    },
+    {
+      "name": "check-vehicle-wheels.cjs",
+      "command": "node tools/check-vehicle-wheels.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 28.5,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-vehicle-wheels/console.log"
+    },
+    {
+      "name": "check-weapon-audio.cjs",
+      "command": "node tools/check-weapon-audio.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 43.4,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-weapon-audio/console.log"
+    },
+    {
+      "name": "check-weapon-catalog.cjs",
+      "command": "node tools/check-weapon-catalog.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 86.8,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-weapon-catalog/console.log"
+    },
+    {
+      "name": "check-weapon-surface.cjs",
+      "command": "node tools/check-weapon-surface.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 44.4,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-weapon-surface/console.log"
+    },
+    {
+      "name": "check-zombie-ai.cjs",
+      "command": "node tools/check-zombie-ai.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 47.7,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-zombie-ai/console.log"
+    },
+    {
+      "name": "check-zombie-map.cjs",
+      "command": "node tools/check-zombie-map.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 50,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-zombie-map/console.log"
+    },
+    {
+      "name": "check-zombie-mode.cjs",
+      "command": "node tools/check-zombie-mode.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 106.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-zombie-mode/console.log"
+    },
+    {
+      "name": "check-zombie-perf.cjs",
+      "command": "node tools/check-zombie-perf.cjs",
+      "status": "통과",
+      "exitCode": 0,
+      "seconds": 1016.2,
+      "reason": "",
+      "log": "/workspace/artifacts/v110-zombie-map/full-checks/check-zombie-perf/console.log"
+    }
+  ],
+  "artifactDirectory": "/workspace/artifacts/v110-zombie-map",
+  "mission": {
+    "complete": true,
+    "difficulty": "infected",
+    "gameSeconds": 973.7307999997432,
+    "wallSeconds": 976.891670652,
+    "stageSeconds": [
+      20.034500000000133,
+      47.703999999998445,
+      288.7501000000498,
+      60.45410000000595,
+      360.6774999998276,
+      196.11059999986128
+    ],
+    "checkpointRetries": 1,
+    "shots": 31,
+    "runtimeSourceHash": "ad469ce924d276b2e8f04bb0ccbd5726b4fa0d14e1fce7cf4e2095107de49451",
+    "FPS": 6.280300291433532,
+    "p99ms": 300,
+    "onePercentFPS": 2.8289059434401036,
+    "over50ms": 6027,
+    "peakHeap": 581474774,
+    "peakRendererRSS": 1810710528,
+    "peakGpuRSS": 2129047552,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "performanceTargets": {
+      "FPS": 60,
+      "p99ms": 33,
+      "over50ms": 0,
+      "meets": false,
+      "hardwareGPU": false
+    }
+  },
+  "normalLive": {
+    "renderer": "SwiftShader 소프트웨어 렌더러, 실제 휴대폰 FPS가 아님",
+    "sessions": [
+      {
+        "mode": "training",
+        "quality": "potato",
+        "viewport": {
+          "width": 320,
+          "height": 180
+        },
+        "players": 1,
+        "start": {
+          "callMs": 13366.70000000298,
+          "setup": {
+            "ms": 539,
+            "heapBefore": 550524315,
+            "heapAfter": 610014836
+          },
+          "warmup": {
+            "ms": 8971.20000000298,
+            "compileMs": 828.7999999970198,
+            "heapBefore": 610022376,
+            "heapAfter": 415296292,
+            "viewmodels": 6,
+            "texturesQueued": 149,
+            "texturesRemaining": 0
+          },
+          "paused": false,
+          "resolution": {
+            "scale": 0.6,
+            "percent": 60,
+            "mode": "자동",
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.6
+          },
+          "viewmodels": 6
+        },
+        "summary": {
+          "frames": 145,
+          "fps": 4.55039007826671,
+          "p50Ms": 216.59999999999854,
+          "p95Ms": 300,
+          "p99Ms": 316.6999999999971,
+          "maxMs": 383.29999999999563,
+          "firstFrameMs": 35,
+          "peakHeap": 133127560,
+          "peakBacking": 370866332,
+          "peakJsWithBacking": 501877439,
+          "peakMemoryApi": 610022376,
+          "peakRendererRss": 1626304512,
+          "longestTaskMs": 0
+        },
+        "errors": []
+      },
+      {
+        "mode": "match",
+        "quality": "potato",
+        "viewport": {
+          "width": 320,
+          "height": 180
+        },
+        "players": 40,
+        "start": {
+          "callMs": 12647.5,
+          "setup": {
+            "ms": 766.0999999940395,
+            "heapBefore": 347176929,
+            "heapAfter": 456267736
+          },
+          "warmup": {
+            "ms": 8316.70000000298,
+            "compileMs": 1393.7999999970198,
+            "heapBefore": 456275736,
+            "heapAfter": 463571416,
+            "viewmodels": 6,
+            "texturesQueued": 123,
+            "texturesRemaining": 0
+          },
+          "paused": false,
+          "resolution": {
+            "scale": 0.6,
+            "percent": 60,
+            "mode": "자동",
+            "rendererPixelRatio": 1,
+            "composerPixelRatio": 0.6
+          },
+          "viewmodels": 6
+        },
+        "summary": {
+          "frames": 192,
+          "fps": 4.1203308282294175,
+          "p50Ms": 250,
+          "p95Ms": 366.59999999999854,
+          "p99Ms": 566.7000000000044,
+          "maxMs": 583.3000000000029,
+          "firstFrameMs": 37.900000005960464,
+          "peakHeap": 102417720,
+          "peakBacking": 386602094,
+          "peakJsWithBacking": 488785995,
+          "peakMemoryApi": 463571416,
+          "peakRendererRss": 1604587520,
+          "longestTaskMs": 94
+        },
+        "errors": []
+      }
+    ]
+  },
+  "firstRun": {
+    "results": "/workspace/artifacts/v110-zombie-map/full-checks/results.json",
+    "complete": true,
+    "passed": 63,
+    "failed": 1,
+    "exitCode": 1
+  },
+  "recheck": {
+    "command": "CHECK_ONLY=check-aim.cjs CHECK_OUT=/workspace/artifacts/v110-zombie-map/aim-recheck npm run check",
+    "results": "/workspace/artifacts/v110-zombie-map/aim-recheck/results.json",
+    "exitCode": 0
+  },
+  "resultPolicy": "전체 첫 실행과 원본 조준 재검사 결과를 연결. 첫 실패는 firstAttempt 및 firstRun에 보존."
+}
