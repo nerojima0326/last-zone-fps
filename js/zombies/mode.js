@@ -83,7 +83,7 @@ export const Mode={
   return null;
  },
  interact(dt){
-  if(!this.active||this.finished)return false;const a=G.Game.player,target=this.target();this.interactionLabel='';let nearest=null;
+  if(!this.active||this.finished||this.flags.escaped)return false;const a=G.Game.player,target=this.target();this.interactionLabel='';let nearest=null;
   const actions=[];if(target?.action)actions.push(target);if(this.phase>=2||this.phase===1&&this.flags.door&&this.phaseKills>=18)for(const[key,p]of [['cache',this.route.supply],['gen-cache',this.route.generator.clone().add(new T.Vector3(4,0,1))],['tower-cache',this.route.tower.clone().add(new T.Vector3(6,0,0))],['harbor-cache',this.route.harbor.clone().add(new T.Vector3(-8,0,0))]])if((this.uses[key]||0)<2)actions.push({p,label:'탄약·치료 보급 / 장비 선택',action:'cache:'+key,hold:2});
   if(this.phase===2&&this.scene.barricadeHp<100)actions.push({p:this.scene.repairPos,label:'바리케이드 보강 '+Math.ceil(this.scene.barricadeHp)+'%',action:'repair',hold:3});
   let best=3.2;if(target?.action&&a.pos.distanceTo(target.p)<best)nearest=target;else for(const action of actions){const d=a.pos.distanceTo(action.p);if(d<best){best=d;nearest=action}}

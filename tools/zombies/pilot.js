@@ -19,7 +19,7 @@ function navTo(target,keyName){
  desired.copy(state.route[state.index]||target).sub(a.pos).setY(0);if(desired.length()<.2)desired.copy(target).sub(a.pos).setY(0);return desired.normalize();
 }
 m.step=function(dt){const start=performance.now(),a=G.Game.player;if(!a?.alive)return original(dt);state.steps++;for(const code of ['KeyW','KeyA','KeyS','KeyD','ShiftLeft','KeyF','KeyH','KeyR','KeyX','Space'])key(code,false);I.lmb=I.lmbHit=I.rmb=false;I.mdx=I.mdy=0;
- if(m.cinematic)key('Space',true);
+ if(m.cinematic){const cost=performance.now()-start;state.driverMs+=cost;state.maxDriverMs=Math.max(state.maxDriverMs,cost);return original(dt);}
  const target=m.target();if(!target)return original(dt);let goal=target.p,task=target.action||'wait',goalKey=m.phase===0?'relay':task==='relay'?'relay':task==='door'?'door':task==='supply'?'supply':task.startsWith('fuel')?task:task==='deliver'||task==='startGenerator'?'generator':task==='foot'?'foot':m.phase===3?'far':task==='signal'?'signal':m.phase===4?'tower':'harbor';
  let near=a.pos.distanceTo(goal);if(m.phase>=4&&m.flags.signal&&a.pos.y>route.tower.y+1&&Math.hypot(a.pos.x-route.tower.x,a.pos.z-route.tower.z)<20){goal=m.scene.towerStairs[0];goalKey='descend';near=a.pos.distanceTo(goal)}
  const gun=a.weapons[a.cur],def=gun?G.WEAPONS[gun.id]:null,total=gun?gun.mag+a.ammo[def.ammo]:0;
