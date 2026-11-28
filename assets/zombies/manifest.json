@@ -1,0 +1,66 @@
+{
+  "version": 109,
+  "license": "CC0-1.0",
+  "models": [
+    {
+      "file": "infected-0-lod0.glb",
+      "bytes": 502588,
+      "sha256": "4edcc9f842bf1163057815a8916f594b2b4e77d1579e6b95bb768499ee62927a",
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "attack",
+        "hurt",
+        "death",
+        "crawl",
+        "vault",
+        "roar",
+        "charge",
+        "slam"
+      ]
+    },
+    {
+      "file": "infected-0-lod1.glb",
+      "bytes": 375028,
+      "sha256": "4f2a0307d2cf88804cac51f97606d8ec9952ad210a14efe517252f1a7dcd1791",
+      "animations": []
+    },
+    {
+      "file": "infected-0-lod2.glb",
+      "bytes": 351076,
+      "sha256": "7964f96cec1d1a9d01cf1abdb65bd49fa3828d1c5e4591a331ef577681d02877",
+      "animations": []
+    },
+    {
+      "file": "infected-1-lod0.glb",
+      "bytes": 520080,
+      "sha256": "a103e1b9d9a9dc1121b4ffc1d8540e9c1a5cf7354aeaca892e9a37548112e904",
+      "animations": [
+        "idle",
+        "walk",
+        "run",
+        "attack",
+        "hurt",
+        "death",
+        "crawl",
+        "vault",
+        "roar",
+        "charge",
+        "slam"
+      ]
+    },
+    {
+      "file": "infected-1-lod1.glb",
+      "bytes": 389636,
+      "sha256": "1203cdbf6cdae46d090876d1de64efe664eb45b7cc1705c0916726a9a9674fc3",
+      "animations": []
+    },
+    {
+      "file": "infected-1-lod2.glb",
+      "bytes": 365012,
+      "sha256": "228d1fc7a5e81ba39cb5adcd13fa1d72f6dc6eff35c7f23053f9cee6cdf79080",
+      "animations": []
+    }
+  ]
+}

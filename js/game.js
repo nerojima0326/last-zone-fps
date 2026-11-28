@@ -490,6 +490,7 @@ const Game = G.Game = {
 
   /* ------------ 피해 / 처치 ------------ */
   damage(t, amount, attacker, weapon, head, point, dir, shot) {
+    if(this.zombie)return G.ZombieMode.damage(t,amount,attacker,weapon,head,point,dir,shot);
     if (!t.alive || (this.state !== 'playing' && !this.spectating)) return;
     if (this.training && t === this.player) return;
     if (t.state !== 'ground' && weapon !== 'zone') return;
@@ -542,6 +543,7 @@ const Game = G.Game = {
     this.checkTeam(t.team);
   },
   kill(t, attacker, weapon, head) {
+    if(this.zombie)return G.ZombieMode.kill(t,attacker,weapon,head);
     if (!t.alive) return;
     if ((!attacker || attacker === t) && t.knockedBy && t.knockedBy.alive !== undefined) attacker = t.knockedBy;
     if (t.brain) t.brain.clearGoal();

@@ -38,6 +38,13 @@
         "license": "CC0-1.0",
         "source": "https://patch.gg/api/v1/assets/mpfb%3Ahuman-0348",
         "author": "MakeHuman team, Cortu, MargaretToigo; prepared by Patch"
+      },
+      {
+        "files": "assets/zombies/infected-*-lod*.glb, assets/zombies/palette-*",
+        "license": "CC0-1.0",
+        "source": "https://github.com/makehumancommunity/mpfb2/tree/d0a32e57a7f915cb2f2b95410e2117648c7bbb7e",
+        "author": "MakeHuman team, Cortu, MargaretToigo; Patch; LAST ZONE 프로젝트",
+        "changes": "기존 Patch CC0 사람 0348·0408에서 Blender 감염 외형·11개 뼈대 동작·3단계 LOD 제작, meshopt 압축·GPU 뼈대 굽기. tools/zombies에서 재생성."
       }
     ]
   }

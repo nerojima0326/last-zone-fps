@@ -1,0 +1,24 @@
+// v109 충돌·수면·실제 다리 높이로 공유 경로망을 만든다.
+const G=window.G,T=window.THREE;
+class Heap{constructor(){this.items=[]}push(i,p){const a=this.items;let n=a.length;a.push({i,p});while(n){let b=(n-1)>>1;if(a[b].p<=p)break;a[n]=a[b];n=b}a[n]={i,p}}pop(){const a=this.items,top=a[0],end=a.pop();if(a.length){let n=0;while(n*2+1<a.length){let k=n*2+1;if(k+1<a.length&&a[k+1].p<a[k].p)k++;if(a[k].p>=end.p)break;a[n]=a[k];n=k}a[n]=end}return top}get length(){return this.items.length}}
+export const Nav={
+ step:2,x0:-240,z0:-230,nx:405,nz:485,revision:0,flow:null,building:null,
+ height(x,z){let h=G.World.heightAt(x,z);for(const b of G.World.bridges){const dx=x-b.x,dz=z-b.z;if(Math.abs(dx*b.ux+dz*b.uz)<b.half+1&&Math.abs(-dx*b.uz+dz*b.ux)<b.w*.5-.35)h=b.y}return h},
+ free(x,z,y=this.height(x,z),radius=.45){if(G.World.waterAt(x,z)>y+.32)return false;let blocked=false;G.World.queryBoxes(x-radius,z-radius,x+radius,z+radius,b=>{if(b.zombieIgnoreNav||b.maxY<=y+.55||b.minY>=y+1.7)return;if(b.maxX>x-radius&&b.minX<x+radius&&b.maxZ>z-radius&&b.minZ<z+radius)blocked=true});return !blocked},
+ index(x,z){const ix=Math.round((x-this.x0)/this.step),iz=Math.round((z-this.z0)/this.step);return ix<0||iz<0||ix>=this.nx||iz>=this.nz?-1:iz*this.nx+ix},
+ point(i){return new T.Vector3(this.x0+(i%this.nx)*this.step,this.heights[i],this.z0+Math.floor(i/this.nx)*this.step)},
+ async build(){if(this.cells)return;const n=this.nx*this.nz;this.cells=new Uint8Array(n);this.heights=new Float32Array(n);this.costs=[new Float32Array(n),new Float32Array(n)];this.nexts=[new Int32Array(n),new Int32Array(n)];
+ for(let i=0;i<n;){const end=Math.min(n,i+1200);for(;i<end;i++){const x=this.x0+(i%this.nx)*this.step,z=this.z0+Math.floor(i/this.nx)*this.step,h=this.height(x,z);this.heights[i]=h;this.cells[i]=this.free(x,z,h)?1:0}await G.RenderPrep.turn()}
+ },
+ nearest(x,z,r=18){let best=-1,dist=Infinity;const center=this.index(x,z);if(center>=0&&this.cells[center])return this.point(center);for(let dz=-r;dz<=r;dz+=this.step)for(let dx=-r;dx<=r;dx+=this.step){const i=this.index(x+dx,z+dz);if(i<0||!this.cells[i])continue;const d=dx*dx+dz*dz;if(d<dist){dist=d;best=i}}if(best<0)throw Error('목표 주변에 이동 가능한 지면이 없습니다: '+x+','+z);return this.point(best)},
+ neighbors(i,fn){const x=i%this.nx,z=Math.floor(i/this.nx);for(const [dx,dz,c]of [[-1,0,1],[1,0,1],[0,-1,1],[0,1,1],[-1,-1,1.414],[1,-1,1.414],[-1,1,1.414],[1,1,1.414]]){if(x+dx<0||z+dz<0||x+dx>=this.nx||z+dz>=this.nz)continue;const j=i+dx+dz*this.nx;if(!this.cells[j]||Math.abs(this.heights[j]-this.heights[i])>this.step*1.2)continue;if(dx&&dz&&(!this.cells[i+dx]||!this.cells[i+dz*this.nx]))continue;fn(j,c)}},
+ path(from,to,max=70000){const s=this.index(this.nearest(from.x,from.z).x,this.nearest(from.x,from.z).z),end=this.nearest(to.x,to.z),goal=this.index(end.x,end.z),q=new Heap(),cost=new Map([[s,0]]),parent=new Map();q.push(s,0);let seen=0;
+ while(q.length&&seen++<max){const {i}=q.pop();if(i===goal){const path=[end];let at=goal;while(at!==s){at=parent.get(at);path.push(this.point(at))}return path.reverse()}const v=cost.get(i);this.neighbors(i,(j,c)=>{const n=v+c;if(n>=(cost.get(j)??Infinity))return;cost.set(j,n);parent.set(j,i);const p=this.point(j);q.push(j,n+Math.hypot(p.x-end.x,p.z-end.z)/this.step)})}return null},
+ refresh(p,dt){this.refreshT=(this.refreshT||0)-dt;const goal=this.index(p.x,p.z);if(goal<0)return;if(!this.building&&this.refreshT<=0&&(!this.flow||Math.abs(p.x-this.flow.x)+Math.abs(p.z-this.flow.z)>3||this.flow.revision!==this.revision)){
+ const slot=this.flow?.slot===0?1:0,cost=this.costs[slot],next=this.nexts[slot];cost.fill(Infinity);next.fill(-1);cost[goal]=0;const heap=new Heap();heap.push(goal,0);this.building={slot,cost,next,heap,goal,x:p.x,z:p.z,revision:this.revision};this.refreshT=.7;}
+ const b=this.building;if(!b)return;const until=performance.now()+1.2;let n=0;while(b.heap.length&&n++<700&&performance.now()<until){const {i,p:weight}=b.heap.pop();if(weight!==b.cost[i])continue;if(weight>62)continue;this.neighbors(i,(j,c)=>{const w=weight+c;if(w<b.cost[j]){b.cost[j]=w;b.next[j]=i;b.heap.push(j,w)}})}if(!b.heap.length){this.flow=b;this.building=null}
+ },
+ direction(a,target,out){const i=this.index(a.pos.x,a.pos.z),next=i>=0?this.flow?.next[i]:-1;if(next>=0){const p=this.point(next);out.set(p.x-a.pos.x,0,p.z-a.pos.z)}else out.set(target.x-a.pos.x,0,target.z-a.pos.z);return out.normalize()},
+ invalidate(){this.revision++;this.refreshT=0},
+ clear(){this.flow=null;this.building=null;this.refreshT=0}
+};
