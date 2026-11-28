@@ -247,6 +247,7 @@ const UI = G.UI = {
   update(dt) {
     const Game = G.Game;
     if (Game.state !== 'playing' && Game.state !== 'ended') return;
+    if(Game.zombie&&G.paused){G.ZombieMode.audio?.update(dt);G.ZombieMode.modules.HUD.update(dt);}
     const P = G.Player, a = Game.player, el = this.el, cam = G.camera;
     // v108 강하 안내를 우선하고 착지 시 무기 HUD를 복원한다.
     document.getElementById('hud').classList.toggle('airborne',a.alive&&['plane','freefall','chute'].includes(a.state));
@@ -516,6 +517,7 @@ const UI = G.UI = {
   },
   drawActors(ctx, toS, scale) {
     const Game = G.Game, team = Game.teams[Game.player.team], P = G.Player;
+    if(Game.zombie)G.ZombieMode.modules.HUD.map(ctx,toS,scale);
     team.members.forEach((m, i) => {
       if (!m.alive && m !== Game.player) return;
       if (m.state === 'plane' && !(m === Game.player)) return;

@@ -52,6 +52,7 @@
     { id: 'leanL', name: '왼쪽 기울이기', html: '<span>◀기울</span>', act: 'key', key: 'KeyQ', ax: 'l', x: 290, y: 160, d: 74, fs: 14 },
     { id: 'leanR', name: '오른쪽 기울이기', html: '<span>기울▶</span>', act: 'key', key: 'KeyE', ax: 'l', x: 375, y: 160, d: 74, fs: 14 },
     { id: 'prone', name: '엎드리기', html: '<span>엎드려</span>', act: 'key', key: 'KeyZ', ax: 'l', x: 460, y: 160, d: 74, fs: 14 },
+    { id: 'shove', name: '밀쳐내기 (좀비)', html: '<span>밀치기</span>', act: 'key', key: 'KeyX', cls: 'tb-zombie', ax: 'l', x: 536, y: 160, d: 74, fs: 14 },
     { id: 'light', name: '손전등', html: '<span>손전등</span>', act: 'key', key: 'KeyL', ax: 'l', x: 536, y: 67, d: 74, fs: 14 },
     { id: 'map', name: '지도', html: '<span>지도</span>', act: 'key', key: 'KeyM', ax: 'l', x: 363, y: 67, d: 74, fs: 16 }
   ];
@@ -73,6 +74,7 @@
   ui.innerHTML = html;
   document.body.appendChild(ui);
   for (const el of ui.querySelectorAll('.tItem')) BY[el.dataset.id].el = el;
+  BY.shove.el.style.display='none';
   const stick = BY.stick.el, knob = ui.querySelector('#tKnob'), sprintTag = ui.querySelector('#tSprint');
   const fLabel = ui.querySelector('.tF'), fBtn = BY.f.el, adsBtn = BY.ads.el;
 
@@ -288,6 +290,7 @@
     if (!playing) return;
     const P = G.Player, a = P && P.a;
     if (!a) return;
+    BY.shove.el.style.display=G.Game.zombie?'':'none';
     const driving=!!P.vehicle;
     if(ui.dataset.vehicle!==(driving?'1':'0')){
       if(driving)I.keys.ShiftLeft=boostHeld();
@@ -306,6 +309,7 @@
     let label = '', on = false;
     if (st === 'air') { label = a.state === 'plane' ? '점프' : '낙하산'; on = true; }
     else if (P.vehicle) { label = '내리기'; on = true; }
+    else if (G.Game.zombie&&G.ZombieMode.interactionLabel) {label='상호작용';on=true;}
     else if (P.reviveTarget) { label = '소생'; on = true; }
     else if (P.lootTarget) { label = '줍기'; on = true; }
     else if (!a.knocked && G.Vehicles.near(a)) { label = '탑승'; on = true; }

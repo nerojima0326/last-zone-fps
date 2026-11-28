@@ -166,6 +166,7 @@ const P = G.Player = {
     if (this.ads > 0.5) speed *= 0.62;
     if (this.heal) speed = Math.min(speed, 1.6);
     if (this.revive) speed = 0;
+    if(G.Game.zombie){if(G.ZombieMode.carry!==null)speed=Math.min(speed,3.2);if(G.ZombieMode.hold)speed=Math.min(speed,1);if(G.ZombieMode.grabbed)speed*=.25;}
     if (a.swimming) speed = sprint ? 3.6 : 2.6;
     else if (a.inWater) speed *= 0.75;
     _f.set(-Math.sin(a.yaw), 0, -Math.cos(a.yaw)); _r.set(Math.cos(a.yaw), 0, -Math.sin(a.yaw));
@@ -308,6 +309,7 @@ const P = G.Player = {
   },
   switchTo(slot) {
     const a = this.a;
+    if(G.Game.zombie&&G.ZombieMode.carry!==null&&(slot==='rifle'||slot==='shotgun'))return;
     // 핀을 뽑기 전이면 들고 있던 투척물을 내리고 바꾼다 (뽑은 뒤에는 던져야 한다)
     if (this.throwSt) { if (this.throwSt.phase === 'hold' && this.throwSt.pinT < 0 && slot !== 'throw') this.throwSt = null; else return; }
     if (slot === 'throw') { if (a.throwCount() <= 0) return; if (a.throwables[this.throwKind] <= 0) this.cycleThrow(); }
@@ -345,6 +347,7 @@ const P = G.Player = {
   },
   fire(def, inst, now) {
     const a = this.a, cam = G.camera;
+    if(G.Game.zombie&&(G.ZombieMode.hold||(G.ZombieMode.carry!==null&&['rifle','shotgun'].includes(def.cls))))return false;
     if (G.WeaponObstruction && !G.WeaponObstruction.canFire(inst.id)) { this.nextFire = now + .07; return false; }
     inst.mag--;
     G.SessionPerf?.mark('발사');
@@ -360,7 +363,7 @@ const P = G.Player = {
     const zd = this.zeroDist(def, cam.position, _f);
     _f.addScaledVector(_u, 9.8 * zd / (2 * def.vel * def.vel)).normalize();
     const spread = this.currentSpread(def);
-    const shot = G.Game.training ? G.Training.onShot() : G.Stats.onShot();
+    const shot = G.Game.zombie ? G.ZombieMode.recordShot(inst.id) : G.Game.training ? G.Training.onShot() : G.Stats.onShot();
     for (let k = 0; k < def.pellets; k++) {
       const rr = spread * Math.sqrt(Math.random()), th = Math.random() * Math.PI * 2;
       _d.copy(_f).addScaledVector(_r, Math.cos(th) * rr).addScaledVector(_u, Math.sin(th) * rr).normalize();
@@ -615,6 +618,7 @@ const P = G.Player = {
   interact(dt) {
     const I = G.Input, a = this.a, Game = G.Game;
     this.prompt = ''; this.lootTarget = null; this.reviveTarget = null;
+    if(Game.zombie&&G.ZombieMode.interact(dt))return;
     a.eye(_e);
     // 소생
     if (!a.knocked) {

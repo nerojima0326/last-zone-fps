@@ -1,0 +1,48 @@
+// v109 공유 소품은 로딩 중 준비하고 구역 배치만 앞서 읽는다.
+const T=window.THREE,G=window.G,mat=new T.Matrix4(),q=new T.Quaternion(),up=new T.Vector3(0,1,0),scale=new T.Vector3(1,1,1),vec=new T.Vector3();
+export const Scene={root:new T.Group(),batches:new Map(),colliders:[],sectors:new Map(),queue:[],active:new Set(),lights:[],decor:[],loaded:false,
+ async load(){if(this.loaded)return;const base=new URL('../../assets/zombies/',import.meta.url),gltf=await new T.GLTFLoader().setMeshoptDecoder(T.MeshoptDecoder).loadAsync(new URL('city-kit.glb'+new URL(import.meta.url).search,base).href);gltf.scene.updateMatrixWorld(true);
+  const canvas=document.createElement('canvas');canvas.width=canvas.height=128;const ctx=canvas.getContext('2d'),image=ctx.createImageData(128,128);let seed=109;for(let i=0;i<image.data.length;i+=4){seed=(1664525*seed+1013904223)>>>0;const c=225+(seed>>>27);image.data.set([c,c-2,c-4,255],i)}ctx.putImageData(image,0,0);const texture=new T.CanvasTexture(canvas);texture.wrapS=texture.wrapT=T.RepeatWrapping;texture.colorSpace=T.SRGBColorSpace;this.material=new T.MeshStandardMaterial({vertexColors:true,map:texture,roughness:.83,metalness:.25});
+  for(const name of ['generator','fuel','barrier','tower','supply','warning','helicopter','rotor','helipad']){
+   const source=gltf.scene.getObjectByName(name);if(!source)throw Error('구역 소품이 없습니다: '+name);const geos=[];source.traverse(o=>{if(!o.isMesh)return;const geo=o.geometry.clone();geo.applyMatrix4(o.matrixWorld);const material=o.material,color=new Float32Array(geo.attributes.position.count*3);for(let i=0;i<color.length;i+=3){color[i]=material.color.r;color[i+1]=material.color.g;color[i+2]=material.color.b}geo.setAttribute('color',new T.BufferAttribute(color,3));for(const key of Object.keys(geo.attributes))if(!['position','normal','uv','color'].includes(key))geo.deleteAttribute(key);geos.push(geo.toNonIndexed())});
+   const geo=T.mergeGeometries(geos,false);if(!geo)throw Error('소품 병합 실패: '+name);const mesh=new T.InstancedMesh(geo,this.material,96);mesh.count=0;mesh.frustumCulled=false;mesh.receiveShadow=true;mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);this.root.add(mesh);this.batches.set(name,{mesh,items:[],changed:true});await G.RenderPrep.turn();
+  }
+  this.loaded=true;
+ },
+ configure(mode){this.mode=mode;this.nav=mode.modules.Nav;this.route=mode.route;this.colliders=[];this.active.clear();this.queue=[];for(const b of this.batches.values()){b.items=[];b.mesh.count=0}this.root.visible=true;G.scene.add(this.root);this.gateOpen=false;this.footOpen=false;this.power=false;this.doorOpen=false;this.barricadeHp=100;this.heli=null;this.lights=[];
+  const r=this.route;this.add('generator',r.generator,0,1,'generator');this.box(r.generator,1.6,2.6,1.55);
+  r.fuel.forEach((p,i)=>this.add('fuel',p,0,1,'fuel'+i));this.add('supply',r.supply,0,2,'cache');this.add('supply',r.generator.clone().add(new T.Vector3(4,0,1)),0,1.5,'gen-cache');this.add('supply',r.tower.clone().add(new T.Vector3(6,0,0)),0,1.5,'tower-cache');this.add('supply',r.harbor.clone().add(new T.Vector3(-8,0,0)),0,1.5,'harbor-cache');
+  this.gateItems=[];for(const side of [-1,1]){const p=r.gate.clone().addScaledVector(r.side,side*1.6);this.gateItems.push(this.add('barrier',p,Math.atan2(r.side.x,r.side.z)-Math.PI/2,1,'gate'));}this.gateBox=this.box(r.gate,Math.abs(r.side.x)*7+Math.abs(r.axis.x)*.8,Math.abs(r.side.z)*7+Math.abs(r.axis.z)*.8,1.3);
+  this.add('tower',r.tower,0,2);this.stairs(r.tower);this.add('helipad',r.harbor,0,1);this.add('warning',r.supply.clone().add(new T.Vector3(0,0,-3)),0,1);this.add('warning',r.near.clone().addScaledVector(r.side,4),Math.atan2(-r.axis.x,-r.axis.z),1);
+  this.doorPos=r.supply.clone().add(new T.Vector3(0,0,3));this.doorItem=this.add('barrier',this.doorPos,0,1,'door');this.doorBox=this.box(this.doorPos,3.2,.7,1);
+  this.repairPos=r.generator.clone().add(new T.Vector3(-4,0,2));this.repairItem=this.add('barrier',this.repairPos,0,1,'repair');this.repairBox=this.box(this.repairPos,3.2,.7,1);
+  const car=G.Vehicles.newVehicle(r.car.x,r.car.y,r.car.z,Math.atan2(-r.axis.x,-r.axis.z),{kind:'izh'});car.zombieMission=true;this.car=car;
+  this.wrecks=[];for(const [p,kind]of [[r.start.clone().add(new T.Vector3(-8,0,8)),'porter'],[r.far.clone().addScaledVector(r.side,6),'e2200'],[r.harbor.clone().add(new T.Vector3(10,0,4)),'izh']]){p.y=this.nav.height(p.x,p.z);const wreck=G.Vehicles.newVehicle(p.x,p.y,p.z,.7,{kind,hp:0,dead:true});wreck.zombieMission=true;wreck.wreckT=100000;wreck.mesh.traverse(o=>{if(!o.material)return;o.material=[].concat(o.material).map(m=>{const c=m.clone();c.color.multiplyScalar(.22);if(c.emissive)c.emissive.setHex(0x200400);return c});if(o.material.length===1)o.material=o.material[0]});this.wrecks.push(wreck)}
+  this.flush();this.prefetch(0);this.prefetch(1);
+ },
+ stairs(origin){
+  // v109 0.3m 계단은 실제 보행 충돌과 같은 높이를 사용한다.
+  const c=origin;this.towerStairs=[];for(let i=0;i<24;i++){const p=c.clone().add(new T.Vector3(3,0,12-i*.5));p.y=c.y+i*.3;const box=G.World.addCollider(p.x-1,p.y,p.z-.26,p.x+1,p.y+.3,p.z+.26,'metal',true);box.zombieIgnoreNav=true;this.colliders.push(box);this.towerStairs.push(new T.Vector3(p.x,p.y+.3,p.z));const item=this.add('barrier',p,0,.32,'stair');item.scale=new T.Vector3(.65,.3,.8);}
+  const platform=G.World.addCollider(c.x-2,c.y+7,c.z-2,c.x+4.1,c.y+7.2,c.z+2,'metal',true);platform.zombieIgnoreNav=true;this.colliders.push(platform);this.route.towerTop.set(c.x+1,c.y+7.2,c.z);
+ },
+ box(p,w,l,h){const b=G.World.addCollider(p.x-w/2,p.y,p.z-l/2,p.x+w/2,p.y+h,p.z+l/2,'metal',true);this.colliders.push(b);return b},
+ add(kind,p,yaw=0,size=1,id=''){const item={kind,p:p.clone(),yaw,size,id,hidden:false};this.batches.get(kind).items.push(item);this.batches.get(kind).changed=true;return item},
+ hide(item){if(item){item.hidden=true;this.batches.get(item.kind).changed=true}},
+ openDoor(){this.doorOpen=true;this.hide(this.doorItem);G.World.removeCollider(this.doorBox);this.nav.invalidate()},
+ openFoot(){if(this.footOpen)return;this.footOpen=true;this.hide(this.gateItems[1]);G.World.removeCollider(this.gateBox);const p=this.route.gate.clone().addScaledVector(this.route.side,-1.6);this.gateBox=this.box(p,Math.abs(this.route.side.x)*3.5+Math.abs(this.route.axis.x)*.8,Math.abs(this.route.side.z)*3.5+Math.abs(this.route.axis.z)*.8,1.3);this.nav.invalidate()},
+ openGate(){if(this.gateOpen)return;this.gateOpen=true;for(const p of this.gateItems)this.hide(p);G.World.removeCollider(this.gateBox);this.nav.invalidate();G.FX.dust(this.route.gate,12,0,1,0,.3,.27,.23,1.2)},
+ setPower(on){this.power=on;for(const l of this.lights)l.on=on;},
+ attackBarricade(a,dt){if(this.barricadeHp<=0||a.pos.distanceTo(this.repairPos)>2.1)return;this.barricadeHp=Math.max(0,this.barricadeHp-dt*9);if(!this.barricadeHp){this.hide(this.repairItem);G.World.removeCollider(this.repairBox);this.nav.invalidate()}},
+ async prefetch(stage){if(stage>5||this.sectors.has(stage))return;const pending=fetch(new URL('../../assets/zombies/sector-'+stage+'.json'+new URL(import.meta.url).search,import.meta.url)).then(r=>{if(!r.ok)throw Error('구역 자료 누락');return r.json()}).then(data=>{this.sectors.set(stage,data);return data}).catch(e=>{this.mode?.radio('구역 장식 전송을 다시 시도합니다.');this.sectors.delete(stage);console.warn(e);return null});this.sectors.set(stage,pending);return pending},
+ async activate(stage){const data=await this.prefetch(stage)||await this.sectors.get(stage);if(!data||this.active.has(stage))return;this.active.add(stage);const anchors=[this.route.start,this.route.supply,this.route.generator,this.route.far,this.route.tower,this.route.harbor];for(const p of data.props)this.queue.push({...p,anchor:anchors[stage]});this.prefetch(stage+1)},
+ update(dt){
+  for(let n=0;n<3&&this.queue.length;n++){const p=this.queue.shift(),x=p.anchor.x+p.offset[0],z=p.anchor.z+p.offset[1],v=new T.Vector3(x,this.nav.height(x,z),z);this.add(p.kind,v,p.yaw||0,p.size||1)}
+  const m=this.mode;if(m.phase===3&&!this.gateOpen&&G.Player.vehicle===this.car&&Math.abs(this.car.speed)>8&&this.car.pos.distanceTo(this.route.gate)<9){this.openGate();m.flags.bridgeRoute='vehicle';m.radio('차단문 돌파 성공. 다리를 건너 무전탑으로 이동하라.');}
+  if(m.phase===5&&m.flags.evacStarted){const left=m.difficulty.evac-(m.time-m.flags.evacStarted);if(left<20)this.flyHeli(Math.max(0,Math.min(1,(20-left)/20)),dt)}
+  this.flush();
+ },
+ flyHeli(k,dt){const p=this.route.harbor.clone();p.y+=1.2+Math.pow(1-k,2)*24;p.x+=(1-k)*65;p.z-=(1-k)*90;if(!this.heli){this.heli=this.add('helicopter',p,0,1);this.rotor=this.add('rotor',p,0,1)}this.heli.p.copy(p);this.rotor.p.copy(p).add(new T.Vector3(0,3.2,0));this.rotor.yaw+=dt*28;this.batches.get('helicopter').changed=true;this.batches.get('rotor').changed=true;this.heliPosition=p},
+ flush(){for(const b of this.batches.values()){if(!b.changed)continue;let n=0;for(const it of b.items){if(it.hidden||n>=96)continue;vec.copy(it.p);q.setFromAxisAngle(up,it.yaw);const s=it.scale||scale.setScalar(it.size);mat.compose(vec,q,s);b.mesh.setMatrixAt(n++,mat)}b.mesh.count=n;b.mesh.instanceMatrix.needsUpdate=true;b.changed=false}},
+ async ready(){await G.prepareZombieScene(this.root)},
+ stop(){this.root.removeFromParent();for(const b of this.colliders)G.World.removeCollider(b);this.colliders=[];this.queue=[];this.heli=null;this.nav?.invalidate();for(const w of this.wrecks||[])w.mesh.traverse(o=>{for(const m of [].concat(o.material||[]))m.dispose()});this.wrecks=[];}
+};
