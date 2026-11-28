@@ -40,7 +40,7 @@ for variant,source in enumerate(['survivor-cargo','survivor-sweater']):
    m=o.data.materials[poly.material_index];idx=slots.index(m)
    for li in poly.loop_indices:
     a=uv.data[li].uv;a.x=((a.x%1)*.94+.03+idx%4)/4;a.y=((a.y%1)*.94+.03+idx//4)/4
- image=bpy.data.images.new('感染者' if False else '감염자-피부-의복',width=1024,height=1024);image.pixels.foreach_set(atlas.ravel());image.filepath_raw=str(out/f'infected-{variant}-atlas.png');image.file_format='PNG';image.save()
+ image=bpy.data.images.new('감염자-피부-의복',width=1024,height=1024);image.pixels.foreach_set(atlas.ravel());image.filepath_raw=str(out/f'infected-{variant}-atlas.png');image.file_format='PNG';image.save()
  mat=bpy.data.materials.new('감염자-의복과피부');mat.use_nodes=True;bs=mat.node_tree.nodes.get('Principled BSDF');bs.inputs['Roughness'].default_value=.91;tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=image;mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
  bpy.ops.object.select_all(action='DESELECT')
  for o in meshes:o.select_set(True)
@@ -58,9 +58,9 @@ for variant,source in enumerate(['survivor-cargo','survivor-sweater']):
   for f in range(frames+1):
    t=f/fps;p=min(1,f/frames);cycle=2*math.pi*p;walk=name in ['walk','run','charge'];run=name in ['run','charge'];crawl=name=='crawl';dead=name=='death';attack=name in ['attack','slam'];qmap={}
    lean=.13 if not run else .27
-   if crawl:lean=1.17
+   if crawl:lean=1.38
    if dead:lean=1.5*min(1,p*1.5)
-   hipz=(.027*math.cos(cycle*2) if walk else .009*math.sin(cycle))-(.68 if crawl else 0)-(.82*min(1,p*1.4) if dead else 0)
+   hipz=(.027*math.cos(cycle*2) if walk else .009*math.sin(cycle))-(.55 if crawl else 0)-(.78*min(1,p*1.4) if dead else 0)
    if name=='vault':hipz+=.5*math.sin(math.pi*p)
    if name=='hurt':lean+=.25*math.sin(math.pi*p)
    if name=='roar':lean-=.22*math.sin(math.pi*p)
@@ -71,14 +71,19 @@ for variant,source in enumerate(['survivor-cargo','survivor-sweater']):
      phase=cycle+(0 if side=='l' else math.pi);swing=math.sin(phase);lift=max(0,math.cos(phase))
      if b.name==f'thigh_{side}':target=Vector((sign*.04,(.65 if run else .4)*swing if walk else (.4*math.sin(phase) if crawl else .06),-.9 if not crawl else -.4))
      if b.name==f'calf_{side}':target=Vector((sign*.02,.12+.7*lift if walk else (.55 if crawl else .04),-.9 if not crawl else -.2))
+     # v109 기어갈 때 무릎·발은 지면을 따라가고, 쓰러지면 다리를 뒤로 편다.
+     if crawl and b.name==f'thigh_{side}':target=Vector((sign*.08,.25+.1*math.sin(phase),-.4))
+     if crawl and b.name==f'calf_{side}':target=Vector((sign*.02,.65,-.02))
+     if dead and b.name in [f'thigh_{side}',f'calf_{side}']:
+      fall=min(1,p*1.4);target=Vector((sign*(.04+.1*fall),.06+.85*fall,-.9*(1-fall)-(.07 if b.name==f'thigh_{side}' else .03)*fall))
      if b.name==f'upperarm_{side}':
       forward=.44+(.24*math.sin(phase+math.pi) if walk else .03*math.sin(cycle));down=-.48
       if attack:forward=.45+.5*math.sin(math.pi*p);down=-.5+.9*math.sin(math.pi*p)
-      if crawl:forward=.5+.28*math.sin(phase);down=-.25
+      if crawl:forward=.42+.12*math.sin(phase);down=-.65
       if name=='roar':forward=.1;down=.65*math.sin(math.pi*p)-.35
-      if dead:forward=.2;down=-.9
+      if dead:forward=.2*(1-min(1,p*1.4));down=-.48*(1-min(1,p*1.4))-.02
       target=Vector((sign*.25,-forward,down))
-     if b.name==f'lowerarm_{side}':target=Vector((sign*.1,-.75,-.05 if not dead else -.4))
+     if b.name==f'lowerarm_{side}':target=Vector((sign*.1,-.42,-.6)) if crawl else Vector((sign*(.35 if dead else .1),-.4 if dead else -.75,-.02 if dead else -.05))
      if b.name==f'hand_{side}':target=Vector((sign*.04,-.3,-.18))
     parentq=qmap[b.parent.name] if b.parent else Quaternion();rel=restq[b.parent.name].inverted()@restq[b.name] if b.parent else restq[b.name];base=parentq@rel
     world=(dirs[b.name].rotation_difference(target.normalized())@restq[b.name]) if target else base@extra

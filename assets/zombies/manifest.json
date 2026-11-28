@@ -4,8 +4,8 @@
   "models": [
     {
       "file": "infected-0-lod0.glb",
-      "bytes": 502588,
-      "sha256": "4edcc9f842bf1163057815a8916f594b2b4e77d1579e6b95bb768499ee62927a",
+      "bytes": 505920,
+      "sha256": "6844d9b3dc6ebc69ee3a0a11ed3d49d5eee0014a582305297d7b8b38bc0691a4",
       "animations": [
         "idle",
         "walk",
@@ -22,20 +22,20 @@
     },
     {
       "file": "infected-0-lod1.glb",
-      "bytes": 375028,
-      "sha256": "4f2a0307d2cf88804cac51f97606d8ec9952ad210a14efe517252f1a7dcd1791",
+      "bytes": 51088,
+      "sha256": "f8ca241f05ed44081b6982b84dc4e160a23d87e3702e412b38114e5da81a0eee",
       "animations": []
     },
     {
       "file": "infected-0-lod2.glb",
-      "bytes": 351076,
-      "sha256": "7964f96cec1d1a9d01cf1abdb65bd49fa3828d1c5e4591a331ef577681d02877",
+      "bytes": 30724,
+      "sha256": "90d3f065b83a908df58a8cab41f04576891d403c290d9c117a0251708d81f527",
       "animations": []
     },
     {
       "file": "infected-1-lod0.glb",
-      "bytes": 520080,
-      "sha256": "a103e1b9d9a9dc1121b4ffc1d8540e9c1a5cf7354aeaca892e9a37548112e904",
+      "bytes": 522984,
+      "sha256": "623b956490ba3b78c0b950c4b647454af02c3945a1c46d78e62aad454e171876",
       "animations": [
         "idle",
         "walk",
@@ -52,14 +52,14 @@
     },
     {
       "file": "infected-1-lod1.glb",
-      "bytes": 389636,
-      "sha256": "1203cdbf6cdae46d090876d1de64efe664eb45b7cc1705c0916726a9a9674fc3",
+      "bytes": 52088,
+      "sha256": "0ceaae461ab7c64fcd640cf3ef51d4913273c3f4946e65217a5208b5fa8aebaf",
       "animations": []
     },
     {
       "file": "infected-1-lod2.glb",
-      "bytes": 365012,
-      "sha256": "228d1fc7a5e81ba39cb5adcd13fa1d72f6dc6eff35c7f23053f9cee6cdf79080",
+      "bytes": 31180,
+      "sha256": "bacc825a60d07835f5b0f00d3e59b6850a1f4d04171a862badf47dae1b97ca6b",
       "animations": []
     }
   ],
@@ -131,33 +131,33 @@
     },
     {
       "file": "infected-0-lod0.glb",
-      "bytes": 502588,
-      "sha256": "4edcc9f842bf1163057815a8916f594b2b4e77d1579e6b95bb768499ee62927a"
+      "bytes": 505920,
+      "sha256": "6844d9b3dc6ebc69ee3a0a11ed3d49d5eee0014a582305297d7b8b38bc0691a4"
     },
     {
       "file": "infected-0-lod1.glb",
-      "bytes": 375028,
-      "sha256": "4f2a0307d2cf88804cac51f97606d8ec9952ad210a14efe517252f1a7dcd1791"
+      "bytes": 51088,
+      "sha256": "f8ca241f05ed44081b6982b84dc4e160a23d87e3702e412b38114e5da81a0eee"
     },
     {
       "file": "infected-0-lod2.glb",
-      "bytes": 351076,
-      "sha256": "7964f96cec1d1a9d01cf1abdb65bd49fa3828d1c5e4591a331ef577681d02877"
+      "bytes": 30724,
+      "sha256": "90d3f065b83a908df58a8cab41f04576891d403c290d9c117a0251708d81f527"
     },
     {
       "file": "infected-1-lod0.glb",
-      "bytes": 520080,
-      "sha256": "a103e1b9d9a9dc1121b4ffc1d8540e9c1a5cf7354aeaca892e9a37548112e904"
+      "bytes": 522984,
+      "sha256": "623b956490ba3b78c0b950c4b647454af02c3945a1c46d78e62aad454e171876"
     },
     {
       "file": "infected-1-lod1.glb",
-      "bytes": 389636,
-      "sha256": "1203cdbf6cdae46d090876d1de64efe664eb45b7cc1705c0916726a9a9674fc3"
+      "bytes": 52088,
+      "sha256": "0ceaae461ab7c64fcd640cf3ef51d4913273c3f4946e65217a5208b5fa8aebaf"
     },
     {
       "file": "infected-1-lod2.glb",
-      "bytes": 365012,
-      "sha256": "228d1fc7a5e81ba39cb5adcd13fa1d72f6dc6eff35c7f23053f9cee6cdf79080"
+      "bytes": 31180,
+      "sha256": "bacc825a60d07835f5b0f00d3e59b6850a1f4d04171a862badf47dae1b97ca6b"
     },
     {
       "file": "nav-grid.bin.gz",
@@ -166,23 +166,23 @@
     },
     {
       "file": "palette-0.bin.gz",
-      "bytes": 32840,
-      "sha256": "ac2070f678e3757dfcc610443afc8db8c0d750a8c13a5afeaeef83a87dc6071b"
+      "bytes": 35658,
+      "sha256": "3b2e2217c833b85e91819d6a7a63fba2ab2b767cb8fabfa1cd131bbf06daaa92"
     },
     {
       "file": "palette-0.json",
-      "bytes": 195252,
-      "sha256": "ced262f9c32890ae40a80f1dd0eb1af9c4af47cde75dd89897eb8a0378c32991"
+      "bytes": 194965,
+      "sha256": "a8a784e874e7fb8d7493ad4228bffd98da6acaef2be06c1c543b0ab5ba206b64"
     },
     {
       "file": "palette-1.bin.gz",
-      "bytes": 33955,
-      "sha256": "8b0d90ebc95e23b86a575c387d13146abf7b4dfdbbebaa8cf295c94c08a73e0c"
+      "bytes": 36974,
+      "sha256": "be98a5f1d311dfa77bc31fb0f2d874c03f28f7fe9c615e1ebfd18409540bbf4e"
     },
     {
       "file": "palette-1.json",
-      "bytes": 195520,
-      "sha256": "9e9e869a35a5b3883b36d97bf752d2780051012e577e039f9227e56100ba5999"
+      "bytes": 195206,
+      "sha256": "6e0971487f205a49d4d088b4bd32a8c99c7831c450e169c7d4fb4f86d76069ce"
     },
     {
       "file": "sector-0.json",
@@ -215,5 +215,5 @@
       "sha256": "8064bec141655b99b5299740d3b48be65ba054946897b6f442a96a65817323be"
     }
   ],
-  "totalBytes": 6872085
+  "totalBytes": 5567885
 }

@@ -5,7 +5,8 @@ const {NodeIO}=require('@gltf-transform/core'),{ALL_EXTENSIONS}=require('@gltf-t
 for(let v=0;v<2;v++)for(let lod=0;lod<3;lod++){
  const file=`infected-${v}-lod${lod}.glb`,doc=await io.read(path.join(src,file)),root=doc.getRoot();
  for(const t of root.listTextures())t.setImage(new Uint8Array(await sharp(t.getImage()).resize(1024,1024).webp({quality:88}).toBuffer())).setMimeType('image/webp');
- if(lod)for(const a of root.listAnimations())a.dispose();
+ // v109 먼 모델은 첫 모델의 피부 텍스처를 공유해 중복 전송·해독을 없앤다.
+ if(lod){for(const a of root.listAnimations()){for(const c of a.listChannels())c.dispose();for(const sampler of a.listSamplers())sampler.dispose();a.dispose();}for(const t of root.listTextures())t.dispose();}
  await doc.transform(resample({tolerance:1e-5}),dedup(),prune({keepLeaves:true}),meshopt({encoder:MeshoptEncoder,level:'medium',quantizePosition:16,quantizeNormal:12,quantizeTexcoord:14}));
  const data=await io.writeBinary(doc);fs.writeFileSync('assets/zombies/'+file,data);list.push({file,bytes:data.length,sha256:crypto.createHash('sha256').update(data).digest('hex'),animations:root.listAnimations().map(a=>a.getName())});
 }
