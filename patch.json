@@ -66,6 +66,13 @@
         "source": "https://github.com/nerojima0326/last-zone-fps/tree/feat/zombie-mission-v109/tools/zombies/bake-navigation.cjs",
         "author": "LAST ZONE 프로젝트",
         "changes": "기존 섬의 지형·다리·정적 충돌에서 0.5m 간격 이동 경로를 굽고 gzip으로 압축. 월드 지문 불일치 시 프레임을 나누어 다시 계산."
+      },
+      {
+        "files": "assets/zombies/maps/quarantine/modules.glb, layout.json, sector-*.json, nav-grid.bin.gz",
+        "license": "CC0-1.0",
+        "source": "https://github.com/nerojima0326/last-zone-fps/tree/feat/zombie-quarantine-map-v110/tools/zombies/build-quarantine.py",
+        "author": "LAST ZONE 프로젝트",
+        "changes": "백야 검역단지 전용 Blender 건축 모듈·배관·저장 탱크·폐화차·컨테이너·경고등과 배치·충돌·압축 길찾기 자료를 직접 제작. 눈·제설 흔적·미니맵·표지판·조명 텍스처도 직접 생성하며 외부 다운로드 없음."
       }
     ]
   }

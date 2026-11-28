@@ -50,3 +50,15 @@ npm run check:zombie
 최고 난이도 자동 입력은 가까운 탱커가 있을 때 먼 비명자를 조준 중이어도 X로 밀쳐낸다. 폭발형의 실제 피해 반경(6m) 밖인 무전탑 위에서는 아래층 감염자 때문에 F 송출 입력을 취소하지 않는다. 이 두 입력은 `check-zombie-ai.cjs`에서 재현한다.
 
 깊은 물에는 육지 경로가 없을 수 있다. `check-zombie-ai`는 실제로 문제가 난 해안 좌표에서 빈 경로 반환과 6초 실시간 플레이 갱신을 확인한다. 자동 조작의 최후의 날 미완주·예외 기록은 완주 결과와 구분한다.
+
+## v110 백야 검역단지
+
+일반 섬 객체는 장면 밖에 보관하고, 좀비 모드는 전용 지형·건물·충돌 격자·미니맵·목표를 사용한다. 일반 선택 시 원래 참조와 조명을 복원한다. 전용 자원은 좀비 선택 때만 요청한다. 이전 v109 체크포인트와 기록은 삭제하지 않고 별도 저장 키를 쓴다.
+
+    python tools/zombies/build-quarantine-layout.py
+    blender -b -t 2 --python tools/zombies/build-quarantine.py -- /tmp/quarantine-modules.glb
+    node tools/zombies/pack-quarantine.cjs /tmp/quarantine-modules.glb
+    node tools/zombies/bake-navigation.cjs
+    node tools/zombies/manifest.cjs
+
+지금의 bake-navigation은 144만 칸의 전용 검역단지 경로를 굽는다. 이전 섬용 nav-grid.bin.gz와 sector 파일은 보관하지만 v110 좀비 미션에서는 요청하지 않는다. 전용 맵은 check-zombie-map에서 섬 분리·네 그래픽 단계·목표 연결·철교 높이·저장 분리·반복 진입과 일반 복원을 검사한다.

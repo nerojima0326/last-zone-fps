@@ -1,5 +1,5 @@
 {
-  "version": 109,
+  "version": 110,
   "license": "CC0-1.0",
   "models": [
     {
@@ -160,6 +160,51 @@
       "sha256": "bacc825a60d07835f5b0f00d3e59b6850a1f4d04171a862badf47dae1b97ca6b"
     },
     {
+      "file": "maps/quarantine/layout.json",
+      "bytes": 170311,
+      "sha256": "a4026b7cd69bbc636910b33ec91dcc5266fa0a38bd5c6361f50fd6be01a64f9f"
+    },
+    {
+      "file": "maps/quarantine/modules.glb",
+      "bytes": 243784,
+      "sha256": "1d92dc097786426e4bc68a9d645e0f8bfa067f35f561fc25587f69fcb8569f14"
+    },
+    {
+      "file": "maps/quarantine/nav-grid.bin.gz",
+      "bytes": 9507,
+      "sha256": "4d866975b55b0dfa59724e96d4a476a4b33e2134b59f8d4b457f48081666f6bd"
+    },
+    {
+      "file": "maps/quarantine/sector-0.json",
+      "bytes": 133,
+      "sha256": "ce0da2b8b11759fdbe7df1d052d31074ddd74eb03ebc2c6dff2a35d0c6888aee"
+    },
+    {
+      "file": "maps/quarantine/sector-1.json",
+      "bytes": 133,
+      "sha256": "6c19167dd4a3a6565ee24be3bedebac2676f59afe1d883a1f4fef3242aa3ecaa"
+    },
+    {
+      "file": "maps/quarantine/sector-2.json",
+      "bytes": 133,
+      "sha256": "26fedbf931e23731a63172cf9b8e027c897724ca4789ab5520031639e3b42363"
+    },
+    {
+      "file": "maps/quarantine/sector-3.json",
+      "bytes": 78,
+      "sha256": "36a0afb71f523e0cc4c4b48bf9f0422a864631f6cb8ebfcfac3219a0d15e13da"
+    },
+    {
+      "file": "maps/quarantine/sector-4.json",
+      "bytes": 133,
+      "sha256": "f3e11796c84153111effd6ac5ec470e5d634ff184f960770218db3c91dcbf305"
+    },
+    {
+      "file": "maps/quarantine/sector-5.json",
+      "bytes": 78,
+      "sha256": "87b07b31165df422bf37a479fd1dd97a50525a37abf63828b5db7127a600a15e"
+    },
+    {
       "file": "nav-grid.bin.gz",
       "bytes": 3315425,
       "sha256": "40b7f23ba04bcb074e5caa94df46cb6ae3216c751ad88297a986c31539c7b791"
@@ -215,5 +260,13 @@
       "sha256": "8064bec141655b99b5299740d3b48be65ba054946897b6f442a96a65817323be"
     }
   ],
-  "totalBytes": 5567885
+  "totalBytes": 5992175,
+  "maps": [
+    {
+      "id": "whiteout-quarantine",
+      "name": "백야 검역단지",
+      "folder": "maps/quarantine",
+      "license": "CC0-1.0"
+    }
+  ]
 }
