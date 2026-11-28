@@ -5,7 +5,7 @@
   "scripts": {
     "check": "node tools/run-checks.cjs",
     "check:live": "node tools/check-live-session.cjs",
-    "check:zombie": "node tools/check-zombie-mode.cjs && node tools/check-zombie-ai.cjs && node tools/check-zombie-perf.cjs"
+    "check:zombie": "node tools/check-zombie-map.cjs && node tools/check-zombie-mode.cjs && node tools/check-zombie-ai.cjs && node tools/check-zombie-perf.cjs"
   },
   "engines": {
     "node": ">=22"
