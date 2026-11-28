@@ -12,6 +12,7 @@ node tools/zombies/pack-city.cjs /tmp/last-zone-zombie-city.glb
 python tools/zombies/build-audio.py
 node tools/zombies/manifest.cjs
 node tools/zombies/capture-models.cjs
+node tools/zombies/capture-city.cjs
 npm run check:zombie
 ```
 
@@ -37,3 +38,5 @@ npm run check:zombie
 기본 CI의 성능 검사 통과는 전체 실제 조작 탈출과 실행 오류 없음의 뜻이다. `performanceTargets`는 별도로 기록하며 소프트웨어 GPU가 목표를 충족했다고 표기하지 않는다. 실제 GPU 인증 시에는 `ZOMBIE_GPU=hardware ZOMBIE_REQUIRE_TARGETS=1 ZOMBIE_WIDTH=1920 ZOMBIE_HEIGHT=1080`을 사용한다.
 
 모바일 검사는 844×390 터치 컨텍스트에서 길게 누르기·밀쳐내기·손전등과 목표/버튼 겹침을 확인한다. 실제 휴대폰 GPU의 성능 검증을 대신하지 않는다. 전체 미션 검사는 최소 15장과 코드·자원 지문, 원시 프레임·메모리·입력 조종 상태를 저장소 밖에 남긴다.
+
+`capture-city`는 별도 기능 촬영이다. 항구 장면을 정지 상태로 구성해 헬기 외부·위·정면을 1280×720으로 찍고 소품 치수를 기록한다. 이 화면을 실제 미션 완주 시간·성능 측정에 섞지 않는다.
