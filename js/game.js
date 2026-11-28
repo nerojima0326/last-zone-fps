@@ -59,6 +59,7 @@ const Game = G.Game = {
   start(o) {
     this.cleanup();
     this.opts = o;
+    if (o.mode === 'zombie') return G.ZombieMode.start(o);
     if (o.mode === 'training') return this.startTraining(o);
     this.diff = o.diff; this.teamSize = o.size; this.time = 0; this.ended = false;
     const names = U.shuffle(BOT_NAMES.slice());
@@ -120,6 +121,7 @@ const Game = G.Game = {
     G.UI.center('훈련 기지', '테이블의 총·조준경은 <b>' + G.Settings.label('KeyF') + '</b> 로 바꿔 들 수 있어요 · 탄약 무한 · 사격대 뒤(남쪽) 킬하우스·투척 훈련장 · 동쪽 운전 코스', '', 6);
   },
   cleanup() {
+    if(this.zombie)G.ZombieMode.stop();
     G.VehicleCabin?.leave(G.Player);
     G.Footsteps?.stop();
     if (G.Training) G.Training.stop();
@@ -488,6 +490,7 @@ const Game = G.Game = {
 
   /* ------------ 피해 / 처치 ------------ */
   damage(t, amount, attacker, weapon, head, point, dir, shot) {
+    if(this.zombie)return G.ZombieMode.damage(t,amount,attacker,weapon,head,point,dir,shot);
     if (!t.alive || (this.state !== 'playing' && !this.spectating)) return;
     if (this.training && t === this.player) return;
     if (t.state !== 'ground' && weapon !== 'zone') return;
@@ -540,6 +543,7 @@ const Game = G.Game = {
     this.checkTeam(t.team);
   },
   kill(t, attacker, weapon, head) {
+    if(this.zombie)return G.ZombieMode.kill(t,attacker,weapon,head);
     if (!t.alive) return;
     if ((!attacker || attacker === t) && t.knockedBy && t.knockedBy.alive !== undefined) attacker = t.knockedBy;
     if (t.brain) t.brain.clearGoal();
@@ -639,6 +643,7 @@ const Game = G.Game = {
 
   update(dt) {
     if (this.state !== 'playing' && !this.spectating) return;
+    if(this.zombie)return G.ZombieMode.update(dt);
     this.time += dt;
     if (this.pendingResult && this.time >= this.pendingResult.at) { this.finish(this.pendingResult.win); return; }
     this.updatePlane(dt);
@@ -674,6 +679,7 @@ const Game = G.Game = {
   syncModels(dt) {
     const cam = G.camera.position, P = G.Player;
     for (const a of this.actors) {
+      if(a.zombie)continue;
       const m = a.model;
       const vehicle=a.alive?(a.isPlayer?P.vehicle:a.inVehicle):null;
       if (a.state === 'plane') { m.root.visible = false; continue; }

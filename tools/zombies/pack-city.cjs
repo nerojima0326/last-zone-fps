@@ -1,0 +1,3 @@
+// v109 블렌더 도시 소품을 재현 가능한 meshopt 파일로 압축한다.
+const fs=require('fs'),{NodeIO}=require('@gltf-transform/core'),{ALL_EXTENSIONS}=require('@gltf-transform/extensions'),{meshopt,dedup}=require('@gltf-transform/functions'),{MeshoptEncoder}=require('meshoptimizer');
+(async()=>{if(!process.argv[2])throw Error('블렌더 도시 GLB 경로가 필요합니다');await MeshoptEncoder.ready;const io=new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({'meshopt.encoder':MeshoptEncoder}),d=await io.read(process.argv[2]);await d.transform(dedup(),meshopt({encoder:MeshoptEncoder,level:'medium'}));fs.writeFileSync('assets/zombies/city-kit.glb',await io.writeBinary(d))})().catch(e=>{console.error(e);process.exitCode=1});

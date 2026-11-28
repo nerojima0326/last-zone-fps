@@ -11,7 +11,7 @@
 <script>
 // 새 버전이 올라왔는데 휴대폰이 예전 페이지를 기억하고 있으면 새로 불러온다
 (function () {
-  var BUILD = '108';
+  var BUILD = '109';
   window.LZ_BUILD = BUILD;
   try {
     fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (v) {
@@ -136,6 +136,7 @@
 
     <div class="menu-body">
       <div class="section-title">게임 모드</div>
+      <div id="gameFamily" class="seg"><button class="on" data-family="battle">일반 모드</button><button data-family="zombie">좀비 모드</button></div>
       <div class="modes">
         <button class="mode on" data-size="1"><div class="ppl" data-n="1"></div><b>솔로</b><small>1인</small></button>
         <button class="mode" data-size="2"><div class="ppl" data-n="2"></div><b>듀오</b><small>2인</small></button>
@@ -377,16 +378,16 @@ const loadText = document.getElementById('loadText');
 const loadFill = document.getElementById('loadFill');
 try {
   // 모듈끼리 공유하는 의존성은 브라우저가 한 번만 읽고, 독립적인 다운로드는 겹친다.
-  const [T, { Sky }, { EffectComposer }, { RenderPass }, { UnrealBloomPass }, { OutputPass }, { ShaderPass }, { Pass },
+  const [T, { Sky }, { EffectComposer }, { RenderPass }, { UnrealBloomPass }, { ShaderPass }, { Pass },
     { mergeGeometries }, { RGBELoader }, { FBXLoader }, { GLTFLoader }, { KTX2Loader }, { MeshoptDecoder }, SkeletonUtils] = await Promise.all([
     import('three'), import('three/addons/objects/Sky.js'), import('three/addons/postprocessing/EffectComposer.js'),
     import('three/addons/postprocessing/RenderPass.js'), import('three/addons/postprocessing/UnrealBloomPass.js'),
-    import('three/addons/postprocessing/OutputPass.js'), import('three/addons/postprocessing/ShaderPass.js'),
+    import('three/addons/postprocessing/ShaderPass.js'),
     import('three/addons/postprocessing/Pass.js'), import('three/addons/utils/BufferGeometryUtils.js'),
     import('three/addons/loaders/RGBELoader.js'), import('three/addons/loaders/FBXLoader.js'), import('three/addons/loaders/GLTFLoader.js'),
     import('three/addons/loaders/KTX2Loader.js'), import('three/addons/libs/meshopt_decoder.module.js'), import('three/addons/utils/SkeletonUtils.js')
   ]);
-  window.THREE = Object.assign({}, T, { Sky, EffectComposer, RenderPass, UnrealBloomPass, OutputPass, ShaderPass, Pass, mergeGeometries, RGBELoader, FBXLoader, GLTFLoader, KTX2Loader, MeshoptDecoder, SkeletonUtils });
+  window.THREE = Object.assign({}, T, { Sky, EffectComposer, RenderPass, UnrealBloomPass, ShaderPass, Pass, mergeGeometries, RGBELoader, FBXLoader, GLTFLoader, KTX2Loader, MeshoptDecoder, SkeletonUtils });
   // 실사 나무 생성기 (download-assets.bat 으로 받음). 없으면 기존 나무를 쓴다
   const vegetation = location.protocol === 'file:' ? Promise.resolve() : import('./vendor/ez-tree.es.js')
     .then(module => { window.EZTree = module; }).catch(() => console.info('[veg] vendor/ez-tree.es.js 없음 — 기존 나무 사용'));

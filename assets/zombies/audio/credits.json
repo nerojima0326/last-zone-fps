@@ -1,0 +1,18 @@
+{
+  "author": "LAST ZONE 프로젝트",
+  "license": "CC0-1.0",
+  "source": "tools/zombies/build-audio.py",
+  "files": [
+    "attack.ogg",
+    "escape.ogg",
+    "breath.ogg",
+    "combat.ogg",
+    "scream.ogg",
+    "explore.ogg",
+    "moan.ogg",
+    "step.ogg",
+    "defense.ogg",
+    "radio.ogg"
+  ],
+  "description": "신음·호흡·공격·발소리·무전 잡음과 4개 음악 루프를 원본 합성. 외부 음원·샘플 없음."
+}

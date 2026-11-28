@@ -1350,6 +1350,7 @@ const Ballistics = G.Ballistics = {
   },
   // 액터 히트 테스트: {t, head}
   hitActor(a, o, d, maxT) {
+    if(a.zombie)return G.ZombieMode.modules.Combat.hit(a,o,d,maxT);
     let best = Infinity, head = false;
     const px = a.pos.x, py = a.pos.y, pz = a.pos.z;
     if (a.low()) {

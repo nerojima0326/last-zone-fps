@@ -14,7 +14,7 @@ const _v = new V3();
 const $ = id => document.getElementById(id);
 
 const UI = G.UI = {
-  opts: { size: 1, players: 40, diff: 'normal', loadout: 'rifle', tod: 'day', quality: 'auto', renderResolution: 'auto', sens: 1, name: 'Player', fpsTarget: 120, showFps: 'on', qv: 2 },
+  opts: { mode: 'battle', size: 1, players: 40, diff: 'normal', loadout: 'rifle', tod: 'day', quality: 'auto', renderResolution: 'auto', sens: 1, name: 'Player', fpsTarget: 120, showFps: 'on', qv: 2 },
   feed: [], dmgDirs: [], hmT: 0, hurtV: 0, lowPulse: 0, centerT: 0, killT: 0, pickT: 0, mapOpen: false,
   init() {
     let saved;
@@ -24,7 +24,7 @@ const UI = G.UI = {
       if (Number.isInteger(size) && MODE_NOTES[size]) this.opts.size = size;
       if (Number.isFinite(saved.sens)) this.opts.sens = U.clamp(saved.sens, 0.2, 3);
       if (typeof saved.name === 'string') this.opts.name = saved.name.trim().slice(0, 12) || 'Player';
-      for (const seg of document.querySelectorAll('.seg')) {
+      for (const seg of document.querySelectorAll('.seg[data-opt]')) {
         const key = seg.dataset.opt;
         const choice = Array.from(seg.querySelectorAll('button')).find(b => b.dataset.v === String(saved[key]));
         if (choice) this.opts[key] = typeof this.opts[key] === 'number' ? Number(choice.dataset.v) : choice.dataset.v;
@@ -60,7 +60,7 @@ const UI = G.UI = {
     };
     modes.forEach(b => b.addEventListener('click', () => { setMode(+b.dataset.size); G.Audio.init(); G.Audio.click('ui'); }));
     setMode(this.opts.size);
-    document.querySelectorAll('.seg').forEach(seg => {
+    document.querySelectorAll('.seg[data-opt]').forEach(seg => {
       const key = seg.dataset.opt;
       const btns = seg.querySelectorAll('button');
       btns.forEach(b => {
@@ -80,6 +80,12 @@ const UI = G.UI = {
     sens.value = this.opts.sens; $('sensVal').textContent = (+this.opts.sens).toFixed(2);
     sens.addEventListener('input', () => { this.opts.sens = +sens.value; $('sensVal').textContent = this.opts.sens.toFixed(2); G.Player.sens = this.opts.sens; });
     $('optName').value = this.opts.name || 'Player';
+    // v109 모드 전용 파일은 직접 선택한 뒤에만 받는다.
+    document.querySelectorAll('[data-family]').forEach(b => b.addEventListener('click', async () => {
+      this.opts.mode=b.dataset.family;document.querySelectorAll('[data-family]').forEach(x=>x.classList.toggle('on',x===b));
+      if(this.opts.mode==='zombie') { try{await G.loadZombieMode();}catch(e){this.toast('좀비 모드를 불러오지 못했습니다 · 다시 선택하세요');console.error(e);return;} }
+      G.ZombieMode?.menu(this.opts.mode==='zombie');
+    }));
     $('startBtn').addEventListener('click', () => {
       this.opts.name = ($('optName').value || 'Player').trim().slice(0, 12) || 'Player';
       try { localStorage.setItem('lastzone_opts', JSON.stringify(this.opts)); } catch (e) { /* 무시 */ }
@@ -241,6 +247,7 @@ const UI = G.UI = {
   update(dt) {
     const Game = G.Game;
     if (Game.state !== 'playing' && Game.state !== 'ended') return;
+    if(Game.zombie&&G.paused){G.ZombieMode.audio?.update(dt);G.ZombieMode.modules.HUD.update(dt);}
     const P = G.Player, a = Game.player, el = this.el, cam = G.camera;
     // v108 강하 안내를 우선하고 착지 시 무기 HUD를 복원한다.
     document.getElementById('hud').classList.toggle('airborne',a.alive&&['plane','freefall','chute'].includes(a.state));
@@ -510,6 +517,7 @@ const UI = G.UI = {
   },
   drawActors(ctx, toS, scale) {
     const Game = G.Game, team = Game.teams[Game.player.team], P = G.Player;
+    if(Game.zombie)G.ZombieMode.modules.HUD.map(ctx,toS,scale);
     team.members.forEach((m, i) => {
       if (!m.alive && m !== Game.player) return;
       if (m.state === 'plane' && !(m === Game.player)) return;

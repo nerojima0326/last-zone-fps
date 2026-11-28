@@ -38,6 +38,34 @@
         "license": "CC0-1.0",
         "source": "https://patch.gg/api/v1/assets/mpfb%3Ahuman-0348",
         "author": "MakeHuman team, Cortu, MargaretToigo; prepared by Patch"
+      },
+      {
+        "files": "assets/zombies/infected-*-lod*.glb, assets/zombies/palette-*",
+        "license": "CC0-1.0",
+        "source": "https://github.com/makehumancommunity/mpfb2/tree/d0a32e57a7f915cb2f2b95410e2117648c7bbb7e",
+        "author": "MakeHuman team, Cortu, MargaretToigo; Patch; LAST ZONE 프로젝트",
+        "changes": "기존 Patch CC0 사람 0348·0408에서 Blender 감염 외형·11개 뼈대 동작·3단계 LOD 제작, meshopt 압축·GPU 뼈대 굽기. tools/zombies에서 재생성."
+      },
+      {
+        "files": "assets/zombies/city-kit.glb, assets/zombies/sector-*.json",
+        "license": "CC0-1.0",
+        "source": "https://github.com/nerojima0326/last-zone-fps/tree/feat/zombie-mission-v109/tools/zombies/build-city.py",
+        "author": "LAST ZONE 프로젝트",
+        "changes": "Blender로 발전기·연료통·바리케이드·무전탑·보급 상자·헬리콥터·착륙장 직접 제작, meshopt 압축. 외부 모델 다운로드 없음."
+      },
+      {
+        "files": "assets/zombies/audio/*.ogg",
+        "license": "CC0-1.0",
+        "source": "https://github.com/nerojima0326/last-zone-fps/tree/feat/zombie-mission-v109/tools/zombies/build-audio.py",
+        "author": "LAST ZONE 프로젝트",
+        "changes": "신음·공격·숨·발소리·무전 잡음·탐색/전투/방어/탈출 음악을 직접 합성. 외부 녹음이나 샘플 없음."
+      },
+      {
+        "files": "assets/zombies/nav-grid.bin.gz",
+        "license": "CC0-1.0",
+        "source": "https://github.com/nerojima0326/last-zone-fps/tree/feat/zombie-mission-v109/tools/zombies/bake-navigation.cjs",
+        "author": "LAST ZONE 프로젝트",
+        "changes": "기존 섬의 지형·다리·정적 충돌에서 0.5m 간격 이동 경로를 굽고 gzip으로 압축. 월드 지문 불일치 시 프레임을 나누어 다시 계산."
       }
     ]
   }
