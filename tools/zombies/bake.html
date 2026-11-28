@@ -5,7 +5,7 @@ window.bake=async function(variant){
  const gltf=await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync('/assets/zombies/infected-'+variant+'-lod0.glb');const scene=gltf.scene;scene.updateMatrixWorld(true);let mesh;scene.traverse(o=>{if(o.isSkinnedMesh)mesh=o});if(!mesh)throw Error('뼈대 메시가 없습니다');
  const mixer=new T.AnimationMixer(scene),fps=20,bones=mesh.skeleton.bones,frames=[],contacts=[],clips={},jointNames=['head','spine_02','upperarm_l','lowerarm_l','upperarm_r','lowerarm_r','thigh_l','calf_l','thigh_r','calf_r'];let offset=0;
  for(const clip of gltf.animations){
-  mixer.stopAllAction();const action=mixer.clipAction(clip);action.setLoop(T.LoopOnce,1);action.clampWhenFinished=true;action.play();const count=Math.ceil(clip.duration*fps)+1;clips[clip.name]={offset,count,duration:clip.duration,loop:['idle','walk','run','crawl','charge'].includes(clip.name)};
+  mixer.stopAllAction();const action=mixer.clipAction(clip);action.setLoop(T.LoopOnce,1);action.clampWhenFinished=true;action.play();const count=Math.round(clip.duration*fps)+1;clips[clip.name]={offset,count,duration:clip.duration,loop:['idle','walk','run','crawl','charge'].includes(clip.name)};
   for(let f=0;f<count;f++){mixer.setTime(Math.min(clip.duration,f/fps));scene.updateMatrixWorld(true);mesh.skeleton.update();frames.push(...mesh.skeleton.boneMatrices);for(const name of jointNames){const b=bones.find(b=>b.name===name),v=new T.Vector3();b.getWorldPosition(v);contacts.push(v.x,v.y,v.z)}}offset+=count;
  }
  mixer.stopAllAction();scene.updateMatrixWorld(true);const box=new T.Box3().setFromObject(scene),height=box.max.y-box.min.y;

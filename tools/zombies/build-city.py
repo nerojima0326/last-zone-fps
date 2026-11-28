@@ -42,10 +42,16 @@ cube((0,0,.16),(.55,.38,.32),'paint');cube((0,0,.34),(.57,.4,.045),'iron');cube(
 cube((0,0,.52),(1.4,.2,1),'iron');cube((0,-.12,.52),(1.2,.03,.72),'blood');finish('warning')
 # v109 헬기는 실제 치수·기수 창·스키드·회전익을 갖춘 원본 제작물이다.
 bpy.ops.mesh.primitive_uv_sphere_add(segments=24,ring_count=12,location=(0,0,1.55));o=bpy.context.object;o.scale=(1.16,2.55,1.12);o.data.materials.append(mats['paint']);parts.append(o)
+for face in o.data.polygons:face.use_smooth=True
 for side in [-1,1]:
  cube((side*1.02,-1.02,1.9),(.035,1.45,.82),'glass',.09);cube((side*1.14,.45,1.55),(.035,1.3,1.35),'iron',.04);cube((side*1.17,.38,1.9),(.035,.92,.62),'glass',.04)
  cube((side*1.03,0,.15),(.1,4.6,.1),'iron');cyl((side*.85,-.8,.52),.055,.75,'chrome');cyl((side*.85,1.1,.52),.055,.75,'chrome')
-cube((0,-2.3,1.92),(1.25,.04,.8),'glass',.09);o=cube((0,4,1.85),(.35,5,.4),'paint',.07);o.rotation_euler.x=.045;cube((0,6.1,2.6),(.07,1.1,1.5),'paint');cube((0,4.9,1.94),(3,.6,.08),'paint');cyl((0,.35,2.8),.11,.85,'chrome');finish('helicopter')
+cube((0,-2.3,1.92),(1.25,.04,.8),'glass',.09);o=cube((0,4,1.85),(.35,5,.4),'paint',.07);o.rotation_euler.x=.045;cube((0,6.1,2.6),(.07,1.1,1.5),'paint');cube((0,4.9,1.94),(3,.6,.08),'paint');cyl((0,.35,2.8),.11,.85,'chrome');cyl((.25,6.1,2.6),.1,.55,'chrome',(0,math.pi/2,0));
+for side in [-1,1]:
+ for y in [-.6,-.3,0,.3,.6]:cube((side*.75,y,2.55),(.28,.07,.04),'iron',.006)
+ for y in [-1.2,-.4,.4,1.2]:cyl((side*1.17,y,1.5),.018,.035,'chrome',(0,math.pi/2,0),n=8)
+finish('helicopter')
+cube((0,0,0),(.04,1.8,.14),'iron');cube((0,0,0),(.04,.14,1.8),'iron');finish('tail-rotor')
 cube((0,0,0),(.15,11,.035),'iron');cube((0,0,0),(11,.15,.035),'iron');finish('rotor')
 cube((0,0,.02),(12,12,.04),'iron',.002)
 for x in [-.8,.8]:cube((x,0,.05),(.2,3,.015),'chrome',0)

@@ -183,8 +183,8 @@ G.ARMOR = { helmet: [1, 0.7, 0.6, 0.45], vest: [1, 0.8, 0.7, 0.55] };
 G.Physics = {
   STEP: 0.5, R: 0.33, GRAV: 22,
   move(a, dt) {
-    const W = G.World, r = this.R, STEP = this.STEP;
-    const height = a.low() ? 0.6 : a.crouch ? 1.25 : 1.8;
+    const W = G.World, unit = a.bodyScale || 1, r = this.R * unit, STEP = this.STEP;
+    const height = (a.low() ? 0.6 : a.crouch ? 1.25 : 1.8) * unit;
     a.vel.y -= this.GRAV * dt;
     if (a.vel.y < -55) a.vel.y = -55;
     let x = a.pos.x + a.vel.x * dt, z = a.pos.z + a.vel.z * dt;

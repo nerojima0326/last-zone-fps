@@ -62,5 +62,158 @@
       "sha256": "228d1fc7a5e81ba39cb5adcd13fa1d72f6dc6eff35c7f23053f9cee6cdf79080",
       "animations": []
     }
-  ]
+  ],
+  "files": [
+    {
+      "file": "CC0-1.0.txt",
+      "bytes": 7048,
+      "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499"
+    },
+    {
+      "file": "audio/attack.ogg",
+      "bytes": 7129,
+      "sha256": "7c903006c44c2325ec7fcfe10586970c75cd93065cbe8c5c5ceb26db975dbfdf"
+    },
+    {
+      "file": "audio/breath.ogg",
+      "bytes": 10863,
+      "sha256": "30cd8e15b24202be39b1fb550d20e1d0ddd0770d5e95d1150f42cf048dd82458"
+    },
+    {
+      "file": "audio/combat.ogg",
+      "bytes": 72740,
+      "sha256": "9bd0a27c99e4167638514c4c9004e8f8fe2dab5ff8a799a935d676b0f5bc4a42"
+    },
+    {
+      "file": "audio/credits.json",
+      "bytes": 441,
+      "sha256": "6e62662710bcffc5a2bd190e0af0d77fafab067e3a2ef6b94c3d8192a6b86066"
+    },
+    {
+      "file": "audio/defense.ogg",
+      "bytes": 84488,
+      "sha256": "dd5576ec46a107adfc35740deb75c98009c2ea9cb5c16f9a90fe2f554b0f708d"
+    },
+    {
+      "file": "audio/escape.ogg",
+      "bytes": 93325,
+      "sha256": "125cd8da95312bac2ff23f836da2ce40ee4560b9bd8cd4aafeefbe859a52c150"
+    },
+    {
+      "file": "audio/explore.ogg",
+      "bytes": 38110,
+      "sha256": "5221b207de974149db15599b3cb517fd9ae4d036ee555bd2fec3e4a2adf19c6d"
+    },
+    {
+      "file": "audio/moan.ogg",
+      "bytes": 17283,
+      "sha256": "d8f2ef6283155f1b612d9e9a9afc14dfe69bff8ee6ae938e247cc52e7e0736c6"
+    },
+    {
+      "file": "audio/radio.ogg",
+      "bytes": 5093,
+      "sha256": "7db7b0f278d1a457c65e88eb8f10b62a5d87daab19135503337cdd5f15c00ecd"
+    },
+    {
+      "file": "audio/scream.ogg",
+      "bytes": 13035,
+      "sha256": "12c2007b51ab1d62f381a21bd7820032b73aa956487387f2c9b55b4aa8e9d57a"
+    },
+    {
+      "file": "audio/step.ogg",
+      "bytes": 4930,
+      "sha256": "62c9bcba0df9f8572f0d14286de943210589b8022d3a12246f588ea16e3446e3"
+    },
+    {
+      "file": "city-kit.glb",
+      "bytes": 237396,
+      "sha256": "6a058318341c1a0810116bc8b1a0181bcbcfd5d97201adf62082dfbd6565ca66"
+    },
+    {
+      "file": "infected-0-lod0.glb",
+      "bytes": 502588,
+      "sha256": "4edcc9f842bf1163057815a8916f594b2b4e77d1579e6b95bb768499ee62927a"
+    },
+    {
+      "file": "infected-0-lod1.glb",
+      "bytes": 375028,
+      "sha256": "4f2a0307d2cf88804cac51f97606d8ec9952ad210a14efe517252f1a7dcd1791"
+    },
+    {
+      "file": "infected-0-lod2.glb",
+      "bytes": 351076,
+      "sha256": "7964f96cec1d1a9d01cf1abdb65bd49fa3828d1c5e4591a331ef577681d02877"
+    },
+    {
+      "file": "infected-1-lod0.glb",
+      "bytes": 520080,
+      "sha256": "a103e1b9d9a9dc1121b4ffc1d8540e9c1a5cf7354aeaca892e9a37548112e904"
+    },
+    {
+      "file": "infected-1-lod1.glb",
+      "bytes": 389636,
+      "sha256": "1203cdbf6cdae46d090876d1de64efe664eb45b7cc1705c0916726a9a9674fc3"
+    },
+    {
+      "file": "infected-1-lod2.glb",
+      "bytes": 365012,
+      "sha256": "228d1fc7a5e81ba39cb5adcd13fa1d72f6dc6eff35c7f23053f9cee6cdf79080"
+    },
+    {
+      "file": "nav-grid.bin.gz",
+      "bytes": 3315425,
+      "sha256": "40b7f23ba04bcb074e5caa94df46cb6ae3216c751ad88297a986c31539c7b791"
+    },
+    {
+      "file": "palette-0.bin.gz",
+      "bytes": 32840,
+      "sha256": "ac2070f678e3757dfcc610443afc8db8c0d750a8c13a5afeaeef83a87dc6071b"
+    },
+    {
+      "file": "palette-0.json",
+      "bytes": 195252,
+      "sha256": "ced262f9c32890ae40a80f1dd0eb1af9c4af47cde75dd89897eb8a0378c32991"
+    },
+    {
+      "file": "palette-1.bin.gz",
+      "bytes": 33955,
+      "sha256": "8b0d90ebc95e23b86a575c387d13146abf7b4dfdbbebaa8cf295c94c08a73e0c"
+    },
+    {
+      "file": "palette-1.json",
+      "bytes": 195520,
+      "sha256": "9e9e869a35a5b3883b36d97bf752d2780051012e577e039f9227e56100ba5999"
+    },
+    {
+      "file": "sector-0.json",
+      "bytes": 632,
+      "sha256": "f6d95ce491a309e461f2f0700d74dd930e50af49885dfdea8781328a7501be6d"
+    },
+    {
+      "file": "sector-1.json",
+      "bytes": 632,
+      "sha256": "0ac979f445dc2849194c765a1916e9e9c202e22f37c940cf30e58261cb6e2e69"
+    },
+    {
+      "file": "sector-2.json",
+      "bytes": 632,
+      "sha256": "ad314d928f90f1f7d6f5ad6ff9d069416db94b700093558c367a968dbff0958a"
+    },
+    {
+      "file": "sector-3.json",
+      "bytes": 632,
+      "sha256": "be2a2fc3349ee5691c63ac530d25def872e220dec13001cf17c3d288a7bab95c"
+    },
+    {
+      "file": "sector-4.json",
+      "bytes": 632,
+      "sha256": "d3a086324d96e7d4294f4ee12ff3a846965a3f160077a6f76499cf264aac9fb3"
+    },
+    {
+      "file": "sector-5.json",
+      "bytes": 632,
+      "sha256": "8064bec141655b99b5299740d3b48be65ba054946897b6f442a96a65817323be"
+    }
+  ],
+  "totalBytes": 6872085
 }
