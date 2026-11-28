@@ -1,0 +1,25 @@
+// v110 전용 지형·충돌·목표·미니맵과 일반 섬 복원을 실제 브라우저에서 검사한다.
+require('./artifact-paths.cjs');
+const assert=require('assert'),fs=require('fs'),path=require('path'),os=require('os'),fixture=require('./optimize/browser-fixture.cjs');
+(async()=>{const out=path.resolve(process.env.ZOMBIE_OUT||path.join(os.tmpdir(),'last-zone-map-'+Date.now()));fs.mkdirSync(out,{recursive:true});const f=await fixture({viewport:{width:960,height:540},shaderDebug:false});const rows=[];try{const p=f.page;async function check(name,fn){assert(await p.evaluate(fn),name);rows.push({name,status:'통과'})}
+ await p.evaluate(()=>{const W=G.World;window.zIsland={boxes:W.boxes,grid:W.grid,mapCanvas:W.mapCanvas,roads:W.roads,towns:W.towns,size:W.SIZE,roots:W.mapObjects.filter(o=>!o.isLight&&o!==W.sun.target),sun:W.sun.color.getHex(),hemi:W.hemi.color.getHex()};localStorage.setItem('lz_zombie_save_v109',JSON.stringify({infected:{phase:4,schema:109,mission:'blackout'}}))});
+ assert(!f.requests.some(s=>s.includes('/zombies/')),'일반 첫 로딩에 전용 맵 요청 없음');rows.push({name:'일반 첫 로딩에 전용 맵 요청 없음',status:'통과'});
+ await p.click('[data-family=zombie]');await p.waitForFunction(()=>G.World.missionMap?.active&&!G.World.missionMap.changing&&!document.getElementById('startBtn').disabled,null,{timeout:180000});
+ await check('섬과 독립된 백야 검역단지 선택',()=>G.World.missionMap.id==='whiteout-quarantine'&&document.getElementById('zombieMenu').textContent.includes('백야 검역단지'));
+ await check('기존 섬 렌더 객체가 장면에서 분리됨',()=>zIsland.roots.every(o=>{for(let p=o.parent;p;p=p.parent)if(p===G.scene)return false;return true}));
+ await check('새 충돌·도로·지도 자료로 완전히 교체',()=>{const W=G.World;return W.boxes!==zIsland.boxes&&W.grid!==zIsland.grid&&W.roads!==zIsland.roads&&W.mapCanvas!==zIsland.mapCanvas&&W.SIZE===800&&W.boxes.length>700&&!W.boxes.some(b=>zIsland.boxes.includes(b))});
+ await check('바다·녹지 없는 전용 지형과 배수로',()=>G.World.heightAt(0,0)===2&&G.World.heightAt(0,-100)===8&&G.World.waterAt(0,0)===-100&&G.World.weather==='snow');
+ for(const q of['potato','low','medium','high']){await p.evaluate(q=>G.__apply(q),q);await check(q+' 품질에서 섬·풀 부활 없음',()=>{G.World.update(.1,G.camera.position,G.camera);return !G.World.grass&&zIsland.roots.every(o=>{for(let p=o.parent;p;p=p.parent)if(p===G.scene)return false;return true})});}
+ await p.evaluate(()=>G.__apply('potato'));await p.screenshot({path:path.join(out,'menu-960x540.jpg'),quality:80});
+ const start=await p.evaluate(async()=>{G.Input.lock=function(){this.locked=true};return G.startGame({...G.UI.opts,mode:'zombie',zDifficulty:'infected',quality:'potato'})});assert(start,'새 맵 미션 시작');await p.evaluate(()=>G.paused=true);
+ await check('전용 좌표와 144만 칸 압축 경로 사용',()=>{const m=G.ZombieMode,N=m.modules.Nav;return N.cacheVersion===110&&N.cells.length===1440000&&N.cacheStatus==='압축 경로 사용'&&Math.abs(m.route.start.x+185)<1&&Math.abs(m.route.harbor.z-300)<1});
+ await check('모든 목표·연료·철교·출구가 연결됨',()=>{const m=G.ZombieMode,N=m.modules.Nav,r=m.route;return [[r.start,r.rally],[r.rally,m.scene.doorPos],[r.supply,r.generator],[r.generator,r.fuel[0]],[r.generator,r.fuel[1]],[r.generator,r.foot],[r.far,r.tower],[r.tower,r.harbor]].every(([a,b])=>{const p=N.path(a,b);return p&&p.length>4&&p.at(-1).distanceTo(b)<3.1})});
+ await check('철교의 보이는 높이와 실제 바닥 일치',()=>{const r=G.ZombieMode.route,b=r.bridge,y=G.World.ground(b.x,b.z,b.y,.3,.3);return Math.abs(y-8.2)<.001&&Math.abs(G.ZombieMode.modules.Nav.height(b.x,b.z)-y)<.001&&G.World.heightAt(b.x,b.z)===2});
+ await check('이전 섬 체크포인트와 새 진행이 섞이지 않음',()=>{const m=G.ZombieMode,old=JSON.parse(localStorage.getItem('lz_zombie_save_v109'));return m.phase===0&&m.storageKeys.save!=='lz_zombie_save_v109'&&m.snapshot().mission==='whiteout-quarantine'&&!m.validSave(old.infected)&&old.infected.phase===4});
+ await check('헬기 접근·회전익을 위한 새 착륙장 공간',()=>{const m=G.ZombieMode,r=m.route;for(let i=0;i<=20;i++){const k=i/20,p=r.harbor.clone();p.x+=(1-k)*65;p.z-=(1-k)*90;p.y+=.025+Math.pow(1-k,2)*24;let blocked=false;G.World.queryBoxes(p.x-1.5,p.z-4.6,p.x+1.5,p.z+4.6,b=>{if(b.maxY>p.y+.1&&b.minY<p.y+3.4)blocked=true});if(blocked)return false;}return true});
+ await p.evaluate(()=>G.toMenu());await p.click('[data-family=battle]');await p.waitForFunction(()=>!G.World.missionMap);
+ await check('일반 모드의 같은 섬 객체·충돌·미니맵 복원',()=>{const W=G.World;return W.SIZE===zIsland.size&&W.boxes===zIsland.boxes&&W.grid===zIsland.grid&&W.roads===zIsland.roads&&W.towns===zIsland.towns&&W.mapCanvas===zIsland.mapCanvas&&zIsland.roots.filter(o=>o!==zIsland.grass&&!o.geometry?.isInstancedBufferGeometry).every(o=>o.parent===G.scene)});
+ await check('일반 모드에서 전용 건축 객체 제거',()=>!G.ZombieMode.modules.Map.root.parent&&!G.ZombieMode.modules.Map.active);
+ await p.click('[data-family=zombie]');await p.waitForFunction(()=>G.World.missionMap?.active&&!G.World.missionMap.changing);await check('반복 진입 때 전용 건축·자료 재사용',()=>G.ZombieMode.modules.Map.batches.length===48&&G.World.missionMap.id==='whiteout-quarantine');
+ assert.deepStrictEqual(f.errors,[]);fs.writeFileSync(process.env.REPORT||path.join(out,'map.json'),JSON.stringify({rows,errors:f.errors,out},null,2));console.log(rows);
+ }finally{await f.close()}})().catch(e=>{console.error(e);process.exitCode=1});
